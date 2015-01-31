@@ -1,0 +1,22 @@
+//
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import <SystemConfiguration/SystemConfiguration.h>
+
+    #import <MachOKit/MachOKit.h>
+
+    #import "Specta.h"
+
+    #define EXP_SHORTHAND
+    #import "Expecta.h"
+
+    #import "NSTask+MKTests.h"
+    #import "NSFileManager+MKTest.h"
+    #import "OtoolUtil.h"
+    #import "Binary.h"
+#endif
