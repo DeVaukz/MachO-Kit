@@ -41,17 +41,17 @@
 //! Member function prototype for the \ref mk_data_model_get_byte_order
 //! polymorphic function.  Your implementation should return a pointer to the
 //! \ref mk_byteorder_t for the data model.
-typedef const mk_byteorder_t* (*_mk_data_model_get_byte_order)(mk_data_model_ref self);
+typedef const mk_byteorder_t* (*_mk_data_model_get_byte_order)(mk_data_model_ref self, void* reserved);
 
 //! Member function prototype for the \ref mk_data_model_get_pointer_size
 //! polymorphic function.  Your implementation should return the size of a
 //! pointer for the data model.
-typedef size_t (*_mk_data_model_get_pointer_size)(mk_data_model_ref self);
+typedef size_t (*_mk_data_model_get_pointer_size)(mk_data_model_ref self, void* reserved);
 
 //! Member function prototype for the \ref mk_data_model_get_pointer_alignment
 //! polymorphic function.  Your implementation should return the alignment of
 //! a pointer for the data model.
-typedef size_t (*_mk_data_model_get_pointer_alignment)(mk_data_model_ref self);
+typedef size_t (*_mk_data_model_get_pointer_alignment)(mk_data_model_ref self, void* reserved);
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal

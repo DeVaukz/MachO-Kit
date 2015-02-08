@@ -30,6 +30,11 @@
 
 #include <sys/param.h>
 
+#if __MACHOKIT__
+#include <objc/runtime.h>
+#include <objc/message.h>
+#endif
+
 #include "base.h"
 
 //----------------------------------------------------------------------------//

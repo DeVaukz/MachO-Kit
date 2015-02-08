@@ -62,6 +62,11 @@ typedef size_t (*_mk_type_copy_description)(mk_type_ref self, char* output, size
 //! Member function table declaration for the root type.
 //
 struct _mk_type_vtable {
+#if __MACHOKIT__
+    //! Used for bridging between libMachO and Mach-O Kit.  libMachO types
+    //! must leave this field \c NULL.
+    const void *metaclass;
+#endif
     const void *super;
     const char *name;
     _mk_type_get_context get_context;
@@ -100,11 +105,21 @@ typedef struct _mk_runtime_base_s {
 //! @name       Runtime
 //----------------------------------------------------------------------------//
 
+//! Helper macro for invoking a method on a bridged MachOKit type provided to
+//! a polymorphic libMachO function.
+#if __MACHOKIT__
+    #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING) \
+        if (((struct _mk_type_vtable*)INSTANCE.TYPE->vtable)->metaclass != NULL) \
+            return ((CAST)objc_msgSend)(INSTANCE.type, sel_getUid(SELECTOR_STRING))
+#else
+    #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING)
+#endif
+
 //! Helper macro for invoking instance methods of an instance of a type.
 #define MK_TYPE_INVOKE(INSTANCE, TYPE, METHOD) \
     struct _mk_ ## TYPE ## _vtable *vtable = (typeof(vtable))INSTANCE.TYPE->vtable; \
     while (vtable->METHOD == NULL) { \
-        vtable = (typeof(vtable))*(void**)vtable;\
+        vtable = (typeof(vtable))((struct _mk_type_vtable *)vtable)->super;\
     } \
     return vtable->METHOD
 

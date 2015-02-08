@@ -2700,7 +2700,6 @@
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1.0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__MACHOKIT__=1",
 					"__TESTS__=1",
 					"NDEBUG=1",
 					"NS_BLOCK_ASSERTIONS=1",
@@ -2765,6 +2764,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__MACHOKIT__=1",
+					"__TESTS__=1",
+					"NDEBUG=1",
+					"NS_BLOCK_ASSERTIONS=1",
+				);
 				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
@@ -2789,7 +2794,6 @@
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1.0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__MACHOKIT__=1",
 					"__DEBUG__=1",
 					"DEBUG=1",
 				);
@@ -2802,7 +2806,6 @@
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1.0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__MACHOKIT__=1",
 					"__RELEASE__=1",
 					"NDEBUG=1",
 					"NS_BLOCK_ASSERTIONS=1",
@@ -2919,6 +2922,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__MACHOKIT__=1",
+					"__DEBUG__=1",
+					"DEBUG=1",
+				);
 				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
@@ -2934,6 +2942,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"__MACHOKIT__=1",
+					"__RELEASE__=1",
+					"NDEBUG=1",
+					"NS_BLOCK_ASSERTIONS=1",
+				);
 				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;

@@ -33,27 +33,30 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 static const mk_byteorder_t*
-__mk_data_model_get_byte_order(mk_data_model_ref self)
+__mk_data_model_get_byte_order(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     fprintf(stderr, "No default implementation of __mk_data_model_get_byte_order.");
     __builtin_trap();
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_get_pointer_size(mk_data_model_ref self)
+__mk_data_model_get_pointer_size(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     fprintf(stderr, "No default implementation of __mk_data_model_get_pointer_size.");
     __builtin_trap();
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_get_pointer_alignment(mk_data_model_ref self)
+__mk_data_model_get_pointer_alignment(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     fprintf(stderr, "No default implementation of __mk_data_model_get_pointer_alignment.");
     __builtin_trap();
 }
@@ -72,9 +75,10 @@ static struct _mk_data_model_vtable __mk_data_model_class = {
 
 //|++++++++++++++++++++++++++++++++++++|//
 static const mk_byteorder_t*
-__mk_data_model_ilp32_get_byte_order(mk_data_model_ref self)
+__mk_data_model_ilp32_get_byte_order(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
 #if TARGET_RT_BIG_ENDIAN
     return &mk_byteorder_swapped;
 #else
@@ -84,17 +88,19 @@ __mk_data_model_ilp32_get_byte_order(mk_data_model_ref self)
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_ilp32_get_pointer_size(mk_data_model_ref self)
+__mk_data_model_ilp32_get_pointer_size(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     return 4;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_ilp32_get_pointer_alignment(mk_data_model_ref self)
+__mk_data_model_ilp32_get_pointer_alignment(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     return 4;
 }
 
@@ -112,9 +118,10 @@ static struct _mk_data_model_vtable __mk_data_model_ilp32_class = {
 
 //|++++++++++++++++++++++++++++++++++++|//
 static const mk_byteorder_t*
-__mk_data_model_lp64_get_byte_order(mk_data_model_ref self)
+__mk_data_model_lp64_get_byte_order(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
 #if TARGET_RT_BIG_ENDIAN
     return &mk_byteorder_swapped;
 #else
@@ -124,17 +131,19 @@ __mk_data_model_lp64_get_byte_order(mk_data_model_ref self)
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_lp64_get_pointer_size(mk_data_model_ref self)
+__mk_data_model_lp64_get_pointer_size(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     return 8;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_data_model_lp64_get_pointer_alignment(mk_data_model_ref self)
+__mk_data_model_lp64_get_pointer_alignment(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
+#pragma unused (reserved)
     return 8;
 }
 
@@ -187,14 +196,23 @@ mk_data_model_lp64()
 //|++++++++++++++++++++++++++++++++++++|//
 const mk_byteorder_t*
 mk_data_model_get_byte_order(mk_data_model_ref data_model)
-{ MK_TYPE_INVOKE(data_model, data_model, get_byte_order)(data_model); }
+{
+    MK_OBJC_BRIDGED_INVOKE(data_model, data_model, _mk_data_model_get_byte_order, "byteOrder");
+    MK_TYPE_INVOKE(data_model, data_model, get_byte_order)(data_model, NULL);
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
 mk_data_model_get_pointer_size(mk_data_model_ref data_model)
-{ MK_TYPE_INVOKE(data_model, data_model, get_pointer_size)(data_model); }
+{
+    MK_OBJC_BRIDGED_INVOKE(data_model, data_model, _mk_data_model_get_pointer_size, "pointerSize");
+    MK_TYPE_INVOKE(data_model, data_model, get_pointer_size)(data_model, NULL);
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
 mk_data_model_get_pointer_alignment(mk_data_model_ref data_model)
-{ MK_TYPE_INVOKE(data_model, data_model, get_pointer_alignment)(data_model); }
+{
+    MK_OBJC_BRIDGED_INVOKE(data_model, data_model, _mk_data_model_get_pointer_alignment, "pointerAlignment");
+    MK_TYPE_INVOKE(data_model, data_model, get_pointer_alignment)(data_model, NULL);
+}

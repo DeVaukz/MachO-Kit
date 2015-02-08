@@ -39,11 +39,11 @@ describe(@"The ILP32 Data Model", ^{
     
     it(@"should properly byte swap", ^{
 #if !TARGET_RT_BIG_ENDIAN
-        uint32_t in32 = MH_CIGAM;
-        uint32_t in64 = MH_CIGAM_64;
+        uint32_t in32 = 0x01020304;
+        uint64_t in64 = 0x0102030405060708;
         
-        expect(mk_data_model_get_byte_order(ilp32)->swap32( in32 )).to.equal(@(MH_CIGAM));
-        expect(mk_data_model_get_byte_order(ilp32)->swap64( in64 )).to.equal(@(MH_CIGAM_64));
+        expect(mk_data_model_get_byte_order(ilp32)->swap32( in32 )).to.equal(@(0x01020304));
+        expect(mk_data_model_get_byte_order(ilp32)->swap64( in64 )).to.equal(@(0x0102030405060708));
 #else
 #error Implement this
 #endif
@@ -54,18 +54,40 @@ describe(@"The ILP32 Data Model", ^{
 describe(@"The LP64 Data Model", ^{
     mk_data_model_ref lp64 = mk_data_model_lp64();
     
-    it(@"should have 4 byte pointers", ^{
+    it(@"should have 8 byte pointers", ^{
         expect(mk_data_model_get_pointer_size(lp64)).to.equal(@(8));
         expect(mk_data_model_get_pointer_alignment(lp64)).to.equal(@(8));
     });
     
     it(@"should properly byte swap", ^{
 #if !TARGET_RT_BIG_ENDIAN
-        uint32_t in32 = MH_CIGAM;
-        uint32_t in64 = MH_CIGAM_64;
+        uint32_t in32 = 0x01020304;
+        uint64_t in64 = 0x0102030405060708;
         
-        expect(mk_data_model_get_byte_order(lp64)->swap32( in32 )).to.equal(@(MH_CIGAM));
-        expect(mk_data_model_get_byte_order(lp64)->swap64( in64 )).to.equal(@(MH_CIGAM_64));
+        expect(mk_data_model_get_byte_order(lp64)->swap32( in32 )).to.equal(@(0x01020304));
+        expect(mk_data_model_get_byte_order(lp64)->swap64( in64 )).to.equal(@(0x0102030405060708));
+#else
+#error Implement this
+#endif
+    });
+});
+
+describe(@"A Bridged Data Model", ^{
+    mk_data_model_ref ppc32;
+    ppc32.type = (__bridge_retained void*)[MKPPC32DataModel sharedDataModel];
+    
+    it(@"should have 4 byte pointers", ^{
+        expect(mk_data_model_get_pointer_size(ppc32)).to.equal(@(4));
+        expect(mk_data_model_get_pointer_alignment(ppc32)).to.equal(@(4));
+    });
+    
+    it(@"should properly byte swap", ^{
+#if !TARGET_RT_BIG_ENDIAN
+        uint32_t in32 = 0x01020304;
+        uint64_t in64 = 0x0102030405060708;
+        
+        expect(mk_data_model_get_byte_order(ppc32)->swap32( in32 )).to.equal(@(0x04030201));
+        expect(mk_data_model_get_byte_order(ppc32)->swap64( in64 )).to.equal(@(0x0807060504030201));
 #else
 #error Implement this
 #endif
