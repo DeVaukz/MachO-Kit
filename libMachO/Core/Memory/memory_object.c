@@ -202,7 +202,7 @@ mk_memory_object_read_word(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_
     
     MK_ERROR_OUT = MK_ESUCCESS;
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap16( *(uint16_t*)remapped_address );
+        return mk_data_model_get_byte_order(data_model)->swap16( *(uint16_t*)remapped_address );
     else
         return *(uint16_t*)remapped_address;
 }
@@ -217,7 +217,7 @@ mk_memory_object_read_dword(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk
     
     MK_ERROR_OUT = MK_ESUCCESS;
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap32( *(uint32_t*)remapped_address );
+        return mk_data_model_get_byte_order(data_model)->swap32( *(uint32_t*)remapped_address );
     else
         return *(uint32_t*)remapped_address;
 }
@@ -232,7 +232,7 @@ mk_memory_object_read_qword(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk
     
     MK_ERROR_OUT = MK_ESUCCESS;
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap64( *(uint64_t*)remapped_address );
+        return mk_data_model_get_byte_order(data_model)->swap64( *(uint64_t*)remapped_address );
     else
         return *(uint64_t*)remapped_address;
 }

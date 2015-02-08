@@ -38,14 +38,41 @@
 //! @name       Classes
 //----------------------------------------------------------------------------//
 
+//! Member function prototype for the \ref mk_data_model_get_byte_order
+//! polymorphic function.  Your implementation should return a pointer to the
+//! \ref mk_byteorder_t for the data model.
+typedef const mk_byteorder_t* (*_mk_data_model_get_byte_order)(mk_data_model_ref self);
+
+//! Member function prototype for the \ref mk_data_model_get_pointer_size
+//! polymorphic function.  Your implementation should return the size of a
+//! pointer for the data model.
+typedef size_t (*_mk_data_model_get_pointer_size)(mk_data_model_ref self);
+
+//! Member function prototype for the \ref mk_data_model_get_pointer_alignment
+//! polymorphic function.  Your implementation should return the alignment of
+//! a pointer for the data model.
+typedef size_t (*_mk_data_model_get_pointer_alignment)(mk_data_model_ref self);
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //!
 //! Member function table declaration for the \c data_model type.
 //
-struct mk_data_model_vtable {
+struct _mk_data_model_vtable {
     __MK_RUNTIME_TYPE_BASE
+    //! This method is abstract.  Subclasses must provide an implementation.
+    _mk_data_model_get_byte_order get_byte_order;
+    //! This method is abstract.  Subclasses must provide an implementation.
+    _mk_data_model_get_pointer_size get_pointer_size;
+    //! This method is abstract.  Subclasses must provide an implementation.
+    _mk_data_model_get_pointer_alignment get_pointer_alignment;
 };
+
+//! The member function table for the\c data_model type.  Contains
+//! implementations of all non-abstract methods in
+//! \c struct mk_data_model_vtable.
+_mk_internal_extern
+const struct _mk_memory_map_vtable _mk_memory_map_class;
 
 
 //! @} DATA_MODEL !//

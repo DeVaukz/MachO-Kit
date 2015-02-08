@@ -14,13 +14,11 @@
 		D010B3721A74466700AED697 /* MKPrimativeNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B36E1A74466700AED697 /* MKPrimativeNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3731A74466700AED697 /* MKPrimativeNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */; };
 		D010B3741A74466700AED697 /* MKPrimativeNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */; };
-		D010B3751A74466700AED697 /* MKPrimativeNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */; };
 		D010B3781A744B7800AED697 /* MKHexNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3761A744B7800AED697 /* MKHexNumberFormatter.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		D010B3791A744B7800AED697 /* MKHexNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3761A744B7800AED697 /* MKHexNumberFormatter.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		D010B37A1A744B7800AED697 /* MKHexNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3761A744B7800AED697 /* MKHexNumberFormatter.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		D010B37B1A744B7800AED697 /* MKHexNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B3771A744B7800AED697 /* MKHexNumberFormatter.m */; };
 		D010B37C1A744B7800AED697 /* MKHexNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B3771A744B7800AED697 /* MKHexNumberFormatter.m */; };
-		D010B37D1A744B7800AED697 /* MKHexNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B3771A744B7800AED697 /* MKHexNumberFormatter.m */; };
 		D010B3851A747D0B00AED697 /* MKDylibVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3831A747D0B00AED697 /* MKDylibVersion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3861A747D0B00AED697 /* MKDylibVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3831A747D0B00AED697 /* MKDylibVersion.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3871A747D0B00AED697 /* MKDylibVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3831A747D0B00AED697 /* MKDylibVersion.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -416,43 +414,36 @@
 		D09959F11A6A5D65007134CE /* MKMachO+Segments.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959ED1A6A5D65007134CE /* MKMachO+Segments.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09959F21A6A5D65007134CE /* MKMachO+Segments.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959EE1A6A5D65007134CE /* MKMachO+Segments.m */; };
 		D09959F31A6A5D65007134CE /* MKMachO+Segments.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959EE1A6A5D65007134CE /* MKMachO+Segments.m */; };
-		D09959F41A6A5D65007134CE /* MKMachO+Segments.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959EE1A6A5D65007134CE /* MKMachO+Segments.m */; };
 		D09959F71A6A5F14007134CE /* MKMachO+Symbols.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959F51A6A5F14007134CE /* MKMachO+Symbols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09959F81A6A5F14007134CE /* MKMachO+Symbols.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959F51A6A5F14007134CE /* MKMachO+Symbols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09959F91A6A5F14007134CE /* MKMachO+Symbols.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959F51A6A5F14007134CE /* MKMachO+Symbols.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09959FA1A6A5F14007134CE /* MKMachO+Symbols.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959F61A6A5F14007134CE /* MKMachO+Symbols.m */; };
 		D09959FB1A6A5F14007134CE /* MKMachO+Symbols.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959F61A6A5F14007134CE /* MKMachO+Symbols.m */; };
-		D09959FC1A6A5F14007134CE /* MKMachO+Symbols.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959F61A6A5F14007134CE /* MKMachO+Symbols.m */; };
 		D09959FF1A6B45C3007134CE /* MKIndirectSymbolTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959FD1A6B45C3007134CE /* MKIndirectSymbolTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A001A6B45C3007134CE /* MKIndirectSymbolTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959FD1A6B45C3007134CE /* MKIndirectSymbolTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A011A6B45C3007134CE /* MKIndirectSymbolTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959FD1A6B45C3007134CE /* MKIndirectSymbolTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A021A6B45C3007134CE /* MKIndirectSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959FE1A6B45C3007134CE /* MKIndirectSymbolTable.m */; };
 		D0995A031A6B45C3007134CE /* MKIndirectSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959FE1A6B45C3007134CE /* MKIndirectSymbolTable.m */; };
-		D0995A041A6B45C3007134CE /* MKIndirectSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D09959FE1A6B45C3007134CE /* MKIndirectSymbolTable.m */; };
 		D0995A071A6B7B3D007134CE /* MKLinkEditNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A051A6B7B3D007134CE /* MKLinkEditNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A081A6B7B3D007134CE /* MKLinkEditNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A051A6B7B3D007134CE /* MKLinkEditNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A091A6B7B3D007134CE /* MKLinkEditNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A051A6B7B3D007134CE /* MKLinkEditNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A0A1A6B7B3D007134CE /* MKLinkEditNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A061A6B7B3D007134CE /* MKLinkEditNode.m */; };
 		D0995A0B1A6B7B3D007134CE /* MKLinkEditNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A061A6B7B3D007134CE /* MKLinkEditNode.m */; };
-		D0995A0C1A6B7B3D007134CE /* MKLinkEditNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A061A6B7B3D007134CE /* MKLinkEditNode.m */; };
 		D0995A0F1A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A0D1A6B8DC9007134CE /* MKIndirectSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A101A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A0D1A6B8DC9007134CE /* MKIndirectSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A111A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A0D1A6B8DC9007134CE /* MKIndirectSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A121A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A0E1A6B8DC9007134CE /* MKIndirectSymbol.m */; };
 		D0995A131A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A0E1A6B8DC9007134CE /* MKIndirectSymbol.m */; };
-		D0995A141A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A0E1A6B8DC9007134CE /* MKIndirectSymbol.m */; };
 		D0995A1F1A6C8D52007134CE /* MKFatBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A1D1A6C8D52007134CE /* MKFatBinary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A201A6C8D52007134CE /* MKFatBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A1D1A6C8D52007134CE /* MKFatBinary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A211A6C8D52007134CE /* MKFatBinary.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A1D1A6C8D52007134CE /* MKFatBinary.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A221A6C8D52007134CE /* MKFatBinary.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A1E1A6C8D52007134CE /* MKFatBinary.m */; };
 		D0995A231A6C8D52007134CE /* MKFatBinary.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A1E1A6C8D52007134CE /* MKFatBinary.m */; };
-		D0995A241A6C8D52007134CE /* MKFatBinary.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A1E1A6C8D52007134CE /* MKFatBinary.m */; };
 		D0995A271A6C914D007134CE /* MKFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A251A6C914D007134CE /* MKFatArch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A281A6C914D007134CE /* MKFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A251A6C914D007134CE /* MKFatArch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A291A6C914D007134CE /* MKFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A251A6C914D007134CE /* MKFatArch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A261A6C914D007134CE /* MKFatArch.m */; };
 		D0995A2B1A6C914D007134CE /* MKFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A261A6C914D007134CE /* MKFatArch.m */; };
-		D0995A2C1A6C914D007134CE /* MKFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A261A6C914D007134CE /* MKFatArch.m */; };
 		D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */; };
 		D09F6C511A14847700AB21E3 /* MKMemoryMap.h in Headers */ = {isa = PBXBuildFile; fileRef = D09F6C4F1A14847700AB21E3 /* MKMemoryMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09F6C521A14847700AB21E3 /* MKMemoryMap.m in Sources */ = {isa = PBXBuildFile; fileRef = D09F6C501A14847700AB21E3 /* MKMemoryMap.m */; };
@@ -760,6 +751,20 @@
 			proxyType = 2;
 			remoteGlobalIDString = E9536D0B1968D3EE003D1FBA;
 			remoteInfo = "Specta-iOSTests";
+		};
+		D0E4B55B1A7DBABD00B4C213 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0C5AC1B19CBDD2700EBF837 /* Specta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E91713F119DF07BB00921712;
+			remoteInfo = libSpecta;
+		};
+		D0E4B55D1A7DBABD00B4C213 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D0C5AC1B19CBDD2700EBF837 /* Specta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E917140919DF07D700921712;
+			remoteInfo = "libSpecta-iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1566,6 +1571,8 @@
 				D0C5AC2519CBDD2800EBF837 /* SpectaTests.xctest */,
 				D0C5AC2719CBDD2800EBF837 /* Specta.framework */,
 				D0C5AC2919CBDD2800EBF837 /* Specta-iOSTests.xctest */,
+				D0E4B55C1A7DBABD00B4C213 /* libSpecta.a */,
+				D0E4B55E1A7DBABD00B4C213 /* libSpecta.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2287,6 +2294,20 @@
 			remoteRef = D0C5AC2819CBDD2800EBF837 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		D0E4B55C1A7DBABD00B4C213 /* libSpecta.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSpecta.a;
+			remoteRef = D0E4B55B1A7DBABD00B4C213 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D0E4B55E1A7DBABD00B4C213 /* libSpecta.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSpecta.a;
+			remoteRef = D0E4B55D1A7DBABD00B4C213 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -2631,8 +2652,6 @@
 				D0A3BBCF1A68ECBF00D663A0 /* load_command_segment_64.c in Sources */,
 				D0A3BBAF1A68ECBF00D663A0 /* load_command_dylib_code_sign_drs.c in Sources */,
 				D0A3BBA31A68ECBF00D663A0 /* load_command_code_signature.c in Sources */,
-				D0995A041A6B45C3007134CE /* MKIndirectSymbolTable.m in Sources */,
-				D0995A2C1A6C914D007134CE /* MKFatArch.m in Sources */,
 				D0A3BB7C1A68EC8600D663A0 /* data_model.c in Sources */,
 				D0A3BBD91A68ECBF00D663A0 /* load_command_sub_library.c in Sources */,
 				D0A3BBD31A68ECBF00D663A0 /* load_command_source_version.c in Sources */,
@@ -2643,12 +2662,9 @@
 				D0A3BBA11A68ECBF00D663A0 /* _load_command_linkedit.c in Sources */,
 				D0A3BB811A68EC8600D663A0 /* macho_image.c in Sources */,
 				D0A3BBDD1A68ECBF00D663A0 /* load_command_twolevel_hints.c in Sources */,
-				D010B37D1A744B7800AED697 /* MKHexNumberFormatter.m in Sources */,
 				D0A3BBD51A68ECBF00D663A0 /* load_command_sub_client.c in Sources */,
-				D09959F41A6A5D65007134CE /* MKMachO+Segments.m in Sources */,
 				D0A3BBC31A68ECBF00D663A0 /* load_command_prebind_cksum.c in Sources */,
 				D0A3BB7E1A68EC8600D663A0 /* memory_map.c in Sources */,
-				D010B3751A74466700AED697 /* MKPrimativeNodeField.m in Sources */,
 				D0A3BBA91A68ECBF00D663A0 /* load_command_dyld_environment.c in Sources */,
 				D0590CD01A74286F00CF9FD0 /* load_command_load_upward_dylib.c in Sources */,
 				D0A3BBC71A68ECBF00D663A0 /* load_command_routines.c in Sources */,
@@ -2657,17 +2673,13 @@
 				D0A3BBDF1A68ECBF00D663A0 /* load_command_uuid.c in Sources */,
 				D0A3BB801A68EC8600D663A0 /* memory_map_self.c in Sources */,
 				D0A3BBAD1A68ECBF00D663A0 /* load_command_dyld_info_only.c in Sources */,
-				D0995A0C1A6B7B3D007134CE /* MKLinkEditNode.m in Sources */,
-				D09959FC1A6A5F14007134CE /* MKMachO+Symbols.m in Sources */,
 				D0A3BBD71A68ECBF00D663A0 /* load_command_sub_framework.c in Sources */,
 				D0A3BBAB1A68ECBF00D663A0 /* load_command_dyld_info.c in Sources */,
 				D0A3BBDB1A68ECBF00D663A0 /* load_command_symtab.c in Sources */,
 				D0A3BBC51A68ECBF00D663A0 /* load_command_reexport_dylib.c in Sources */,
 				D0A3BB791A68EC8600D663A0 /* context.c in Sources */,
-				D0995A141A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */,
 				D0A3BBE11A68ECBF00D663A0 /* load_command_version_min_iphoneos.c in Sources */,
 				D0A3BB7A1A68EC8600D663A0 /* core.c in Sources */,
-				D0995A241A6C8D52007134CE /* MKFatBinary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2764,8 +2776,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = MachO;
+				PUBLIC_HEADERS_FOLDER_PATH = include/$EXECUTABLE_PREFIX$PRODUCT_NAME;
 			};
 			name = Tests;
 		};
@@ -2931,8 +2945,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = MachO;
+				PUBLIC_HEADERS_FOLDER_PATH = include/$EXECUTABLE_PREFIX$PRODUCT_NAME;
 			};
 			name = Debug;
 		};
@@ -2940,8 +2956,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
 				EXECUTABLE_PREFIX = lib;
 				PRODUCT_NAME = MachO;
+				PUBLIC_HEADERS_FOLDER_PATH = include/$EXECUTABLE_PREFIX$PRODUCT_NAME;
 			};
 			name = Release;
 		};

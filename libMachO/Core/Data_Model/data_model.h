@@ -50,14 +50,6 @@
 //
 struct mk_data_model_s {
     __MK_RUNTIME_BASE
-    // A structure of functions used to convert between the endianess of
-    // data respresented by this data model and the emdianess of the
-    // current process.
-    const mk_byteorder_t *byte_order;
-    // The natural size of a pointer.
-    size_t pointer_size;
-    // The natural alignment of a pointer.
-    size_t pointer_alignment;
 };
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

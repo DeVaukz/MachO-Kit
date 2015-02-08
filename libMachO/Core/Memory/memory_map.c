@@ -125,7 +125,7 @@ __mk_memory_map_read_word(struct mk_memory_map_s* self, mk_vm_offset_t offset, m
         return 0;
     
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap16( retValue );
+        return mk_data_model_get_byte_order(data_model)->swap16( retValue );
     else
         return retValue;
 }
@@ -142,7 +142,7 @@ __mk_memory_map_read_dword(struct mk_memory_map_s* self, mk_vm_offset_t offset, 
         return 0;
     
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap32( retValue );
+        return mk_data_model_get_byte_order(data_model)->swap32( retValue );
     else
         return retValue;
 }
@@ -159,7 +159,7 @@ __mk_memory_map_read_qword(struct mk_memory_map_s* self, mk_vm_offset_t offset, 
         return 0;
     
     if (data_model.data_model)
-        return data_model.data_model->byte_order->swap64( retValue );
+        return mk_data_model_get_byte_order(data_model)->swap64( retValue );
     else
         return retValue;
 }

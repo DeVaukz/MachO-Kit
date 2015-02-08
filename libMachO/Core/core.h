@@ -227,7 +227,7 @@ typedef struct {
     //! The byte-swap function to use for 64-bit values.
     uint64_t (*swap64)(uint64_t);
     //! The byte-swap function to use for arbitrary length values.
-    uint8_t* (*swap)(uint8_t *input, size_t length);
+    uint8_t* (*swap_any)(uint8_t *input, size_t length);
     
 #ifdef __cplusplus
 public:
