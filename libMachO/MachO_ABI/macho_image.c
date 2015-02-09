@@ -33,7 +33,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_vm_addr,
+mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_addr,
               mk_memory_map_ref memory_map, mk_macho_options_t options, mk_macho_t *image)
 {
     if (image == NULL) return MK_EINVAL;
@@ -49,7 +49,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     image->name = name;
     
     struct mach_header header;
-    if (mk_memory_map_copy_bytes(memory_map, 0, header_vm_addr, &header, sizeof(header), true, &err) < sizeof(header))
+    if (mk_memory_map_copy_bytes(memory_map, 0, header_addr, &header, sizeof(header), true, &err) < sizeof(header))
         return err;
     
     // Load the appropriate data model for the image
@@ -84,7 +84,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     }
     
     // Map in the header + load command.
-    if (mk_memory_map_init_object(memory_map, 0, header_vm_addr, (mk_vm_size_t)header.sizeofcmds + image->header_size, true, &image->header_mapping)) {
+    if (mk_memory_map_init_object(memory_map, 0, header_addr, (mk_vm_size_t)header.sizeofcmds + image->header_size, true, &image->header_mapping)) {
         _mkl_error(ctx, "Failed to map Mach-O header for %s", image->name);
         return err;
     }
@@ -113,12 +113,28 @@ void mk_macho_free(mk_macho_ref image)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_memory_map_ref mk_macho_get_memory_map(mk_macho_ref image)
+{ return image.macho->memory_map; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 mk_data_model_ref mk_macho_get_data_model(mk_macho_ref image)
 { return image.macho->data_model; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 const mk_byteorder_t* mk_macho_get_byte_order(mk_macho_ref image)
 { return mk_data_model_get_byte_order(image.macho->data_model); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+intptr_t mk_macho_get_slide(mk_macho_ref image)
+{ return image.macho->slide; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+const char* mk_macho_get_name(mk_macho_ref image)
+{ return image.macho->name; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_vm_address_t mk_macho_get_header_address(mk_macho_ref image)
+{ return mk_memory_object_base_address(&image.macho->header_mapping); }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Mach-O Header Values

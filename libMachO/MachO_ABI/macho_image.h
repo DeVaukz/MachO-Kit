@@ -84,6 +84,7 @@ typedef struct mk_macho_s {
     mk_vm_size_t header_size;
 } mk_macho_t;
 
+    
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! The Mach-O image polymorphic type.
 //
@@ -100,12 +101,17 @@ typedef union {
 
 //! Initializes a new MachO image.
 _mk_export mk_error_t
-mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_vm_addr,
+mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_addr,
               mk_memory_map_ref memory_map, mk_macho_options_t options, mk_macho_t *image);
 
 //! Cleans up resources held by a MachO image.
 _mk_export void
 mk_macho_free(mk_macho_ref image);
+    
+//! Returns the \ref mk_memory_map_ref the provided \a image was initialized
+//! with.
+_mk_export mk_memory_map_ref
+mk_macho_get_memory_map(mk_macho_ref image);
 
 //! The \ref data_model representing the architecture the provided \a image
 //! is built to run on.
@@ -116,6 +122,18 @@ mk_macho_get_data_model(mk_macho_ref image);
 //! by calling \ref mk_macho_data_model.
 _mk_export const mk_byteorder_t*
 mk_macho_get_byte_order(mk_macho_ref image);
+    
+//! Returns the slide that the provided \a image was initialized with.
+_mk_export intptr_t
+mk_macho_get_slide(mk_macho_ref image);
+    
+//! Returns the name that the provided \a image was initialized with.
+_mk_export const char*
+mk_macho_get_name(mk_macho_ref image);
+    
+//! Returns the header address that the provided \a image was initialized with.
+_mk_export mk_vm_address_t
+mk_macho_get_header_address(mk_macho_ref image);
 
 
 //----------------------------------------------------------------------------//
