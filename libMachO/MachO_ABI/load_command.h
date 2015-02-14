@@ -114,6 +114,10 @@ typedef union {
 _mk_export mk_error_t
 mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command);
 
+//! Returns the address of the provided \a load_command.
+_mk_export mk_vm_address_t
+mk_load_command_address(mk_load_command_ref load_command);
+
 //! Returns the id of the provided \a load_command.  This will match the value
 //! defined in \c <mach-o/loader.h> for the load command type.
 _mk_export uint32_t

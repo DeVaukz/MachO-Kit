@@ -44,8 +44,7 @@
 //! @name    MachO Image Options
 //
 typedef MK_ENUM(uint16_t, mk_macho_options_t) {
-    //! The Mach-O image has been processed by the dynamic linker.
-    mk_macho_was_processed_by_dyld        = 1<<0,
+    mk_macho_option_none            = 0,
 };
 
 
@@ -133,8 +132,8 @@ mk_macho_get_name(mk_macho_ref image);
     
 //! Returns the header address that the provided \a image was initialized with.
 _mk_export mk_vm_address_t
-mk_macho_get_header_address(mk_macho_ref image);
-
+mk_macho_get_address(mk_macho_ref image);
+    
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Mach-O Header Values
@@ -153,6 +152,10 @@ _mk_export uint32_t
 mk_macho_get_sizeofcmds(mk_macho_ref image);
 _mk_export uint32_t
 mk_macho_get_flags(mk_macho_ref image);
+    
+//! Returns \c true if the provided \a image is part of the dy;d shared cache.
+_mk_export bool
+mk_macho_is_from_shared_cache(mk_macho_ref image);
 
 
 //----------------------------------------------------------------------------//
@@ -173,7 +176,7 @@ mk_macho_get_flags(mk_macho_ref image);
 //! @return
 //! A process-relative pointer to the load command or \c NULL if there was an
 //! error.  The returned command is gauranteed to be readable, and fully within
-//! process address space.
+//! the process address space.
 _mk_export struct load_command*
 mk_macho_next_command(mk_macho_ref image, struct load_command *previous,
                       mk_vm_address_t *context_address);
@@ -201,7 +204,7 @@ mk_macho_enumerate_commands(mk_macho_ref image,
 //! @return
 //! A process-relative pointer to the load command or \c NULL if there was an
 //! error.  The returned command is gauranteed to be readable, and fully within
-//! process address space.
+//! the process address space.
 _mk_export struct load_command*
 mk_macho_next_command_type(mk_macho_ref image, struct load_command *previous,
                            uint32_t expected_command, mk_vm_address_t *context_address);

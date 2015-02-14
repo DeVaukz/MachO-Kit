@@ -103,9 +103,6 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
 //|++++++++++++++++++++++++++++++++++++|//
 void mk_macho_free(mk_macho_ref image)
 {
-    if (image.type == NULL)
-        return;
-    
     mk_memory_map_free_object(image.macho->memory_map, &image.macho->header_mapping, NULL);
     image.macho->vtable = NULL;
     image.macho->context = NULL;
@@ -133,7 +130,7 @@ const char* mk_macho_get_name(mk_macho_ref image)
 { return image.macho->name; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_address_t mk_macho_get_header_address(mk_macho_ref image)
+mk_vm_address_t mk_macho_get_address(mk_macho_ref image)
 { return mk_memory_object_base_address(&image.macho->header_mapping); }
 
 //----------------------------------------------------------------------------//
@@ -163,6 +160,10 @@ uint32_t mk_macho_get_sizeofcmds(mk_macho_ref image)
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t mk_macho_get_flags(mk_macho_ref image)
 { return mk_macho_get_byte_order(image)->swap32( image.macho->header->flags ); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+bool mk_macho_is_from_shared_cache(mk_macho_ref image)
+{ return !!(mk_macho_get_flags(image) & 0x80000000); }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Enumerating Load Commands

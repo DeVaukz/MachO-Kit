@@ -34,5 +34,6 @@
 #include "_mach_lcstr.h"
 
 #include "load_command_internal.h"
+#include "segment_internal.h"
 
 #endif /* _macho_abi_internal_h */

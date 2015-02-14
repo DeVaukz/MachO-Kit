@@ -142,7 +142,7 @@
     }
     
     // Due to a bug in update_dyld_shared_cache(1), the segment vmsize defined
-    // in the Mach-O load commands may  be invalid, and the declared size may
+    // in the Mach-O load commands may be invalid, and the declared size may
     // be unmappable.  This bug appears to be caused by a bug in computing the
     // correct vmsize when update_dyld_shared_cache(1) generates the single
     // shared LINKEDIT segment.  Landon F. has reported this bug to Apple

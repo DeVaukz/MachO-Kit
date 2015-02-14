@@ -181,7 +181,7 @@ mk_error_t mk_load_command_init(const mk_macho_ref image, struct load_command* l
         _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
         return MK_EINVALID_DATA;
     }
-    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, lc->cmdsize, NULL)) {
+    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, mk_macho_get_byte_order(image)->swap32(lc->cmdsize), NULL)) {
         _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
         return MK_EINVALID_DATA;
     }
@@ -334,6 +334,14 @@ mk_error_t mk_load_command_init(const mk_macho_ref image, struct load_command* l
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_vm_address_t
+mk_load_command_address(mk_load_command_ref load_command)
+{
+    _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
+    return mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)load_command.load_command->mach_load_command, mk_load_command_size(load_command), NULL);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 uint32_t
 mk_load_command_id(mk_load_command_ref load_command)
 {
@@ -352,7 +360,7 @@ mk_vm_size_t
 mk_load_command_size(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
-    return (mk_vm_size_t)(load_command.load_command)->mach_load_command->cmdsize;
+    return (mk_vm_size_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( load_command.load_command->mach_load_command->cmdsize );
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

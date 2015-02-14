@@ -40,5 +40,6 @@
 #include "macho_image.h"
 
 #include "load_command.h"
+#include "segment.h"
 
 #endif /* _macho_abi_h */

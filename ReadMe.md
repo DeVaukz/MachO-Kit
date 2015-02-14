@@ -23,7 +23,7 @@ Mach-O Kit is not yet complete.  Currently the libraries can parse these parts o
     * LC_LAZY_LOAD_DYLIB
     * LC_LINKER_OPTION
     * LC_LINKER_OPTIMIZATION_HINT
-- Segments and Sections (MachOKit only)
+- Segments and Sections
     * Not all types of sections are fully parsed
 - Link Edit string table (MachOKit only)
 - Link Edit symbol table (MachOKit only)
@@ -32,9 +32,9 @@ Mach-O Kit is not yet complete.  Currently the libraries can parse these parts o
 
 ## libMachO
 
-libMachO is a lightweight, C library for parsing Mach-O binaries. To keep the library lightweight libMachO overlays itself atop the MachO binary and provides a structured set of APIs to parse the data. libMachO does not build up its own independent representation of the Mach-O opting to continuously walk the Mach-O structures to access requested data.  This means that libMachO generally expects well-formed MachO binaries.
+libMachO is a lightweight, C library for parsing in-memory Mach-O images. To keep the library lightweight libMachO overlays itself atop the MachO binary and provides a structured set of APIs to parse the data. libMachO does not build up its own independent representation of the Mach-O opting to continuously walk the Mach-O structures to access requested data.  This means that libMachO generally expects well-formed MachO binaries.
 
-Differences between the target architecture of the Mach-O binary and your process are handled by libMachO.  Access to data of the Mach-O binary is abstracted by a memory map and one or more memory objects vended by the map.  libMachO includes memory maps for accessing MachO binaries loaded into the current process, or another process for which your process has rights to the task port.  Memory access through a memory map is checked to ensure invalid memory cannot be accidentally accessed, in the case of a malformed Mach-O binary.
+Differences between the target architecture of the Mach-O binary and your process are handled by libMachO.  Access to data of the Mach-O image is abstracted by a memory map and one or more memory objects vended by the map.  libMachO includes memory maps for accessing MachO images loaded into the current process, or another process for which your process has rights to the task port.  Memory access through a memory map is checked to ensure invalid memory cannot be accidentally accessed, in the case of a malformed Mach-O binary.
 
 libMachO does not perform any dynamic memory allocation.  Clients are responsible for allocating buffers which are then initialized by the various parsers in libMachO.  Consequently, the lifetimes of these buffers must be managed by clients.
 
