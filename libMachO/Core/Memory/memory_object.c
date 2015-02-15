@@ -59,6 +59,14 @@ mk_vm_address_t mk_memory_object_base_address(mk_memory_object_ref mobj)
 { return mobj.memory_object->context_address; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_vm_range_t mk_memory_object_range(mk_memory_object_ref mobj)
+{ return mk_vm_range_make(mk_memory_object_address(mobj), mk_memory_object_length(mobj)); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_vm_range_t mk_memory_object_context_range(mk_memory_object_ref mobj)
+{ return mk_vm_range_make(mk_memory_object_base_address(mobj), mk_memory_object_length(mobj)); }
+
+//|++++++++++++++++++++++++++++++++++++|//
 bool
 mk_memory_object_verify_local_pointer(mk_memory_object_ref mobj, vm_offset_t offset, vm_address_t address, vm_size_t length, mk_error_t* error)
 {

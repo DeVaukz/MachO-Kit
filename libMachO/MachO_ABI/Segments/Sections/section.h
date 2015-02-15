@@ -26,16 +26,16 @@
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
-//! @defgroup SEGMENTS Segments
-//! @ingroup MACH
+//! @defgroup SECTIONS Sections
+//! @ingroup SEGMENTS
 //!
-//! Parsers for Segments.
+//! Parsers for Sections.
 //----------------------------------------------------------------------------//
 
-#ifndef _segment_h
-#define _segment_h
+#ifndef _section_h
+#define _section_h
 
-//! @addtogroup SEGMENTS
+//! @addtogroup SECTIONS
 //! @{
 //!
 
@@ -47,80 +47,90 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
-typedef struct mk_segment_s {
+typedef struct mk_section_s {
     __MK_RUNTIME_BASE
-    // The load command identifying this segment
-    mk_load_command_ref segment_load_command;
-    // Memory object for accessing this segment.
+    // The segment containing this section.
+    mk_segment_ref section_segment;
+    // The mach section structure.
+    union {
+        mk_load_command_section_t section;
+        mk_load_command_section_64_t section_64;
+    };
+    // Memory object for accessing this section.
     mk_memory_object_t memory_object;
-} mk_segment_t;
+} mk_section_t;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-//! The Segment polymorphic type.
+//! The Section polymorphic type.
 //
 typedef union {
     mk_type_ref type;
-    struct mk_segment_s *segment;
-} mk_segment_ref __attribute__((__transparent_union__));
+    struct mk_section_s *section;
+} mk_section_ref __attribute__((__transparent_union__));
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Working With Segments
-//! @name       Working With Segments
+#pragma mark -  Working With Sections
+//! @name       Working With Sections
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided segment with the provided Mach load command.
-//!
-//! @param  load_command
-//!         A reference to a \c segment or \c segment_64 load command.
-//! @param  segment
-//!         A pointer to the \ref mk_segment_t that will be initialized.
+//! Initializes the provided \a section with the provided Mach \c section.
 _mk_export mk_error_t
-mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment);
+mk_section_init_with_section(mk_segment_ref segment, struct section* s, mk_section_t* section);
 
-//! Releases any resources held by \a segment
+//! Initializes the provided \a section with the provided Mach \c section_64.
+_mk_export mk_error_t
+mk_section_init_with_section_64(mk_segment_ref segment, struct section_64* s, mk_section_t* section);
+
+//! Releases any resources held by \a section
 _mk_export void
-mk_segment_free(mk_segment_ref segment);
+mk_section_free(mk_section_ref section);
 
-//! Returns the image that \a segment resides within.
+//! Returns the image that \a section resides within.
 _mk_export mk_macho_ref
-mk_segment_get_macho(mk_segment_ref segment);
+mk_section_get_macho(mk_section_ref section);
 
-//! Returns the load command that was used to initialize \a segment.
-_mk_export mk_load_command_ref
-mk_segment_get_load_command(mk_segment_ref segment);
+//! Returns the segment that \a section resides within.
+_mk_export mk_segment_ref
+mk_section_get_segment(mk_section_ref section);
 
-//! Returns a memory object that can be used to safely access \a segments
+//! Returns a memory object that can be used to safely access the \a section
 //! contents.
 _mk_export mk_memory_object_ref
-mk_segment_get_mobj(mk_segment_ref segment);
+mk_section_get_mobj(mk_section_ref section);
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Segment Values
-//! @name       Segment Values
+#pragma mark -  Section Values
+//! @name       Section Values
 //----------------------------------------------------------------------------//
 
 _mk_export size_t
-mk_segment_copy_name(mk_segment_ref segment, char output[16]);
+mk_section_copy_section_name(mk_section_ref section, char output[16]);
+_mk_export size_t
+mk_section_copy_segment_name(mk_section_ref section, char output[16]);
 _mk_export mk_vm_address_t
-mk_segment_get_vm_address(mk_segment_ref segment);
+mk_section_get_vm_address(mk_section_ref section);
 _mk_export mk_vm_size_t
-mk_segment_get_vm_size(mk_segment_ref segment);
+mk_section_get_vm_size(mk_section_ref section);
 _mk_export mk_vm_address_t
-mk_segment_get_file_offset(mk_segment_ref segment);
-_mk_export mk_vm_size_t
-mk_segment_get_file_size(mk_segment_ref segment);
-_mk_export vm_prot_t
-mk_segment_get_max_vm_prot(mk_segment_ref segment);
-_mk_export vm_prot_t
-mk_segment_get_initial_vm_prot(mk_segment_ref segment);
+mk_section_get_vm_offset(mk_section_ref section);
 _mk_export uint32_t
-mk_segment_get_nsects(mk_segment_ref segment);
+mk_section_get_alignment(mk_section_ref section);
 _mk_export uint32_t
-mk_segment_get_flags(mk_segment_ref segment);
+mk_section_get_relocations_offset(mk_section_ref section);
+_mk_export uint32_t
+mk_section_get_number_relocations(mk_section_ref section);
+_mk_export uint8_t
+mk_section_get_type(mk_section_ref section);
+_mk_export uint32_t
+mk_section_get_attributes(mk_section_ref section);
+_mk_export uint32_t
+mk_section_get_reserved1(mk_section_ref section);
+_mk_export uint32_t
+mk_section_get_reserved2(mk_section_ref section);
 
 
-//! @} SEGMENTS !//
+//! @} SECTIONS !//
 
-#endif /* _segment_h */
+#endif /* _section_h */

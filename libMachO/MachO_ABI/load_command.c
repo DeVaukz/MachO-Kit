@@ -166,11 +166,32 @@ const struct _mk_load_command_vtable _mk_load_command_class = {
 };
 
 //----------------------------------------------------------------------------//
+#pragma mark -  Static Methods
+//----------------------------------------------------------------------------//
+
+//|++++++++++++++++++++++++++++++++++++|//
+uint32_t
+mk_mach_load_command_id(mk_macho_ref image, struct load_command* lc)
+{
+    if (!image.macho) return 0;
+    if (!lc) return 0;
+    
+    // Need to first verify it is safe to dereference lc.
+    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, sizeof(*lc), NULL)) {
+        _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+        return 0;
+    }
+    
+    return mk_macho_get_byte_order(image)->swap32( lc->cmd );
+}
+
+//----------------------------------------------------------------------------//
 #pragma mark -  Working With Mach-O Load Commands
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_error_t mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command)
+mk_error_t
+mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command)
 {
     if (!image.macho) return MK_EINVAL;
     if (!lc) return MK_EINVAL;
@@ -334,19 +355,39 @@ mk_error_t mk_load_command_init(const mk_macho_ref image, struct load_command* l
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_address_t
-mk_load_command_address(mk_load_command_ref load_command)
+mk_error_t
+mk_load_command_copy(mk_load_command_ref load_command, mk_load_command_t* copy)
 {
-    _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
+    if (!copy) return MK_EINVAL;
+    if (!load_command.type) return MK_EINVAL;
+    
+    copy->vtable = load_command.load_command->vtable;
+    copy->image = load_command.load_command->image;
+    copy->mach_load_command = load_command.load_command->mach_load_command;
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_macho_ref
+mk_load_command_get_macho(mk_load_command_ref load_command)
+{ return load_command.load_command->image; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_vm_address_t
+mk_load_command_get_address(mk_load_command_ref load_command)
+{
     return mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)load_command.load_command->mach_load_command, mk_load_command_size(load_command), NULL);
 }
+
+//----------------------------------------------------------------------------//
+#pragma mark -  Load Command Values
+//----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
 mk_load_command_id(mk_load_command_ref load_command)
 {
-    _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
-    
     struct _mk_load_command_vtable *vtable = (struct _mk_load_command_vtable*)load_command.load_command->vtable;
     if (vtable->command_id)
         return vtable->command_id;
@@ -356,19 +397,13 @@ mk_load_command_id(mk_load_command_ref load_command)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_size_t
-mk_load_command_size(mk_load_command_ref load_command)
-{
-    _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
-    return (mk_vm_size_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( load_command.load_command->mach_load_command->cmdsize );
-}
+mk_vm_size_t mk_load_command_size(mk_load_command_ref load_command)
+{ return (mk_vm_size_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( load_command.load_command->mach_load_command->cmdsize ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
 mk_load_command_base_size(const mk_load_command_ref load_command)
 {
-    _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
-    
     struct _mk_load_command_vtable *vtable = (struct _mk_load_command_vtable*)load_command.load_command->vtable;
     if (vtable->commnd_base_size)
         return vtable->commnd_base_size;

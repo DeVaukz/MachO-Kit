@@ -56,40 +56,34 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
     mk_error_t err;
     
     if (mk_load_command_id(load_command) != mk_load_command_segment_id() && mk_load_command_id(load_command) != mk_load_command_segment_64_id()) {
-        _mkl_error(mk_type_get_context(load_command.type), "load_command used to initialize an mk_segment must be one of LC_SEGMENT or LC_SEGMENT64, got %s", mk_type_name(load_command.type));
+        _mkl_error(mk_type_get_context(load_command.type), "The load_command used to initialize an mk_segment must be one of LC_SEGMENT or LC_SEGMENT64, got %s", mk_type_name(load_command.type));
         return MK_EINVAL;
     }
     
-    mk_macho_ref image = load_command.load_command->image;
+    mk_macho_ref image = mk_load_command_get_macho(load_command);
     
-    char segname[17] = {0x0};
-    mk_load_command_segment_copy_name(load_command, segname);
-    
-    mk_vm_address_t vmAddress;
-    mk_vm_size_t vmSize;
+    mk_vm_address_t vm_address;
+    mk_vm_size_t vm_size;
+    char seg_name[17] = {0x0};
     
     if (mk_load_command_id(load_command) == mk_load_command_segment_64_id()) {
-        vmAddress = mk_load_command_segment_64_get_vmaddr(load_command);
-        vmSize = mk_load_command_segment_64_get_vmsize(load_command);
+        vm_address = mk_load_command_segment_64_get_vmaddr(load_command);
+        vm_size = mk_load_command_segment_64_get_vmsize(load_command);
+        mk_load_command_segment_64_copy_name(load_command, seg_name);
     } else {
-        vmAddress = mk_load_command_segment_get_vmaddr(load_command);
-        vmSize = mk_load_command_segment_get_vmsize(load_command);
+        vm_address = mk_load_command_segment_get_vmaddr(load_command);
+        vm_size = mk_load_command_segment_get_vmsize(load_command);
+        mk_load_command_segment_copy_name(load_command, seg_name);
     }
     
-    // Pre-flight sliding the node address.
+    // Slide the vmAddress
     {
         mk_vm_offset_t slide = mk_macho_get_slide(image);
         
-        if ((err = mk_vm_address_apply_offset(vmAddress, slide, NULL))) {
-            _mkl_error(mk_type_get_context(load_command.type), "Arithmetic error %s while applying slide (%" MK_VM_PRIiOFFSET ") to vmAddress (%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, vmAddress);
+        if ((err = mk_vm_address_apply_offset(vm_address, slide, &vm_address))) {
+            _mkl_error(mk_type_get_context(load_command.type), "Arithmetic error %s while applying slide (%" MK_VM_PRIiOFFSET ") to vm_address (%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, vm_address);
             return err;
         }
-    }
-    
-    // Check the vmAddress + vmSize for potential overflow.
-    if ((err = mk_vm_address_check_length(vmAddress, vmSize))) {
-        _mkl_error(mk_type_get_context(load_command.type), "Adding vmSize (%" MK_VM_PRIiSIZE ") to vmAddress (%" MK_VM_PRIxADDR ") would trigger %s.", vmSize, vmAddress, mk_error_string(err));
-        return err;
     }
     
     // Due to a bug in update_dyld_shared_cache(1), the segment vmsize defined
@@ -99,17 +93,18 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
     // shared LINKEDIT segment.  Landon F. has reported this bug to Apple
     // as rdar://13707406.
     bool allowShortMappings = false;
-    if (mk_macho_is_from_shared_cache(image) && !strncmp(segname, SEG_LINKEDIT, sizeof(segname)))
+    if (mk_macho_is_from_shared_cache(image) && !strncmp(seg_name, SEG_LINKEDIT, sizeof(seg_name)))
         allowShortMappings = true;
     
-    segment->vtable = &_mk_segment_class;
-    segment->segment_load_command = *load_command.load_command;
-    
-    // Create a memory object for accessing this segment.
-    if ((err = mk_memory_map_init_object(mk_macho_get_memory_map(image), 0, vmAddress, vmSize, !allowShortMappings, &segment->memory_object))) {
-        _mkl_error(mk_type_get_context(load_command.type), "Failed to init memory object for segment %s at (vmAddress = %" MK_VM_PRIxADDR ", vmSize = %" MK_VM_PRIiSIZE "", segname, vmAddress, vmSize);
+    // Create a memory object for accessing this segment.  This will also check
+    // vmAddress + vmSize for potential overflow.
+    if ((err = mk_memory_map_init_object(mk_macho_get_memory_map(image), 0, vm_address, vm_size, !allowShortMappings, &segment->memory_object))) {
+        _mkl_error(mk_type_get_context(load_command.type), "Failed to init memory object for segment %s at (vmAddress = %" MK_VM_PRIxADDR ", vmSize = %" MK_VM_PRIiSIZE "", seg_name, vm_address, vm_size);
         return err;
     }
+    
+    segment->vtable = &_mk_segment_class;
+    segment->segment_load_command = load_command;
     
     return MK_ESUCCESS;
 }
@@ -118,13 +113,17 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
 void
 mk_segment_free(mk_segment_ref segment)
 {
-    mk_memory_map_free_object(segment.segment->segment_load_command.image.macho->memory_map, &segment.segment->memory_object, NULL);
+    mk_memory_map_free_object(mk_macho_get_memory_map(mk_load_command_get_macho(segment.segment->segment_load_command)), &segment.segment->memory_object, NULL);
     segment.segment->vtable = NULL;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_macho_ref mk_segment_get_macho(mk_segment_ref segment)
-{ return segment.segment->segment_load_command.image; }
+{ return mk_load_command_get_macho(segment.segment->segment_load_command); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_load_command_ref mk_segment_get_load_command(mk_segment_ref segment)
+{ return segment.segment->segment_load_command; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_memory_object_ref

@@ -87,42 +87,42 @@ typedef struct mk_section_64_s {
     mk_load_command_ref segment;
     // The Mach-O section.
     struct section_64 *mach_section;
-} mk_section_64_t;
+} mk_load_command_section_64_t;
 
 
 //! Initializes a new Section.
 _mk_export mk_error_t
-mk_load_command_segment_64_section_init(mk_load_command_ref segment, struct section_64 *sec, mk_section_64_t *section);
+mk_load_command_segment_64_section_init(mk_load_command_ref segment, struct section_64 *sec, mk_load_command_section_64_t *section);
 
 _mk_export mk_error_t
-mk_load_command_segment_64_section_copy_native(mk_section_64_t *section, struct section_64 *result);
+mk_load_command_segment_64_section_copy_native(mk_load_command_section_64_t *section, struct section_64 *result);
 
 _mk_export size_t
-mk_load_command_segment_64_section_copy_name(mk_section_64_t *section, char output[16]);
+mk_load_command_segment_64_section_copy_name(mk_load_command_section_64_t *section, char output[16]);
 _mk_export size_t
-mk_load_command_segment_64_section_copy_segment_name(mk_section_64_t *section, char output[16]);
+mk_load_command_segment_64_section_copy_segment_name(mk_load_command_section_64_t *section, char output[16]);
 _mk_export uint64_t
-mk_load_command_segment_64_section_get_addr(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_addr(mk_load_command_section_64_t *section);
 _mk_export uint64_t
-mk_load_command_segment_64_section_get_size(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_size(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_offset(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_offset(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_align(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_align(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_reloff(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_reloff(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_nreloc(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_nreloc(mk_load_command_section_64_t *section);
 _mk_export uint8_t
-mk_load_command_segment_64_section_get_type(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_type(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_attributes(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_attributes(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_reserved1(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_reserved1(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_reserved2(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_reserved2(mk_load_command_section_64_t *section);
 _mk_export uint32_t
-mk_load_command_segment_64_section_get_reserved3(mk_section_64_t *section);
+mk_load_command_segment_64_section_get_reserved3(mk_load_command_section_64_t *section);
 
 
 //! @} LOAD_COMMANDS !//

@@ -81,42 +81,46 @@ mk_load_command_segment_enumerate_sections(mk_load_command_ref load_command,
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
-typedef struct mk_section_s {
+typedef struct mk_load_command_section_s {
     // The segment this section resides in.
     mk_load_command_ref segment;
     // The Mach-O section.
     struct section *mach_section;
-} mk_section_t;
+} mk_load_command_section_t;
 
 
 //! Initializes a new Section.
 _mk_export mk_error_t
 mk_load_command_segment_section_init(mk_load_command_ref segment, struct section *sec,
-                                     mk_section_t *section);
+                                     mk_load_command_section_t *section);
 
 _mk_export mk_error_t
-mk_load_command_segment_section_copy_native(mk_section_t *section, struct section *result);
+mk_load_command_segment_section_copy_native(mk_load_command_section_t *section, struct section *result);
 
 _mk_export size_t
-mk_load_command_segment_section_copy_name(mk_section_t *section, char output[16]);
+mk_load_command_segment_section_copy_name(mk_load_command_section_t *section, char output[16]);
 _mk_export size_t
-mk_load_command_segment_section_copy_segment_name(mk_section_t *section, char output[16]);
+mk_load_command_segment_section_copy_segment_name(mk_load_command_section_t *section, char output[16]);
 _mk_export uint32_t
-mk_load_command_segment_section_get_addr(mk_section_t *section);
+mk_load_command_segment_section_get_addr(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_size(mk_section_t *section);
+mk_load_command_segment_section_get_size(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_offset(mk_section_t *section);
+mk_load_command_segment_section_get_offset(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_align(mk_section_t *section);
+mk_load_command_segment_section_get_align(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_reloff(mk_section_t *section);
+mk_load_command_segment_section_get_reloff(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_nreloc(mk_section_t *section);
+mk_load_command_segment_section_get_nreloc(mk_load_command_section_t *section);
 _mk_export uint8_t
-mk_load_command_segment_section_get_type(mk_section_t *section);
+mk_load_command_segment_section_get_type(mk_load_command_section_t *section);
 _mk_export uint32_t
-mk_load_command_segment_section_get_attributes(mk_section_t *section);
+mk_load_command_segment_section_get_attributes(mk_load_command_section_t *section);
+_mk_export uint32_t
+mk_load_command_segment_section_get_reserved1(mk_load_command_section_t *section);
+_mk_export uint32_t
+mk_load_command_segment_section_get_reserved2(mk_load_command_section_t *section);
 
 
 //! @} LOAD_COMMANDS !//

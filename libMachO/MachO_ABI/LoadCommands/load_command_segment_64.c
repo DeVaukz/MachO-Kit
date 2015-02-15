@@ -265,7 +265,7 @@ mk_load_command_segment_64_enumerate_sections(mk_load_command_ref load_command, 
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_load_command_segment_64_section_init(mk_load_command_ref segment, struct section_64 *sec, mk_section_64_t *section)
+mk_load_command_segment_64_section_init(mk_load_command_ref segment, struct section_64 *sec, mk_load_command_section_64_t *section)
 {
     if (!segment.type) return MK_EINVAL;
     if (!sec) return MK_EINVAL;
@@ -284,7 +284,7 @@ mk_load_command_segment_64_section_init(mk_load_command_ref segment, struct sect
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_load_command_segment_64_section_copy_native(mk_section_64_t *section, struct section_64 *result)
+mk_load_command_segment_64_section_copy_native(mk_load_command_section_64_t *section, struct section_64 *result)
 {
     if (section == NULL) return MK_EINVAL;
     if (result == NULL) return MK_EINVAL;
@@ -310,7 +310,7 @@ mk_load_command_segment_64_section_copy_native(mk_section_64_t *section, struct 
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
-mk_load_command_segment_64_section_copy_name(mk_section_64_t *section, char output[16])
+mk_load_command_segment_64_section_copy_name(mk_load_command_section_64_t *section, char output[16])
 {
     if (section == NULL) return 0;
     
@@ -322,7 +322,7 @@ mk_load_command_segment_64_section_copy_name(mk_section_64_t *section, char outp
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
-mk_load_command_segment_64_section_copy_segment_name(mk_section_64_t *section, char output[16])
+mk_load_command_segment_64_section_copy_segment_name(mk_load_command_section_64_t *section, char output[16])
 {
     if (section == NULL) return 0;
     
@@ -334,7 +334,7 @@ mk_load_command_segment_64_section_copy_segment_name(mk_section_64_t *section, c
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint64_t
-mk_load_command_segment_64_section_get_addr(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_addr(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT64_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -343,7 +343,7 @@ mk_load_command_segment_64_section_get_addr(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint64_t
-mk_load_command_segment_64_section_get_size(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_size(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT64_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -352,7 +352,7 @@ mk_load_command_segment_64_section_get_size(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_offset(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_offset(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -361,7 +361,7 @@ mk_load_command_segment_64_section_get_offset(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_align(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_align(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -370,7 +370,7 @@ mk_load_command_segment_64_section_get_align(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_reloff(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_reloff(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -379,7 +379,7 @@ mk_load_command_segment_64_section_get_reloff(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_nreloc(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_nreloc(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -388,7 +388,7 @@ mk_load_command_segment_64_section_get_nreloc(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint8_t
-mk_load_command_segment_64_section_get_type(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_type(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT8_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -397,7 +397,7 @@ mk_load_command_segment_64_section_get_type(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_attributes(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_attributes(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -406,7 +406,7 @@ mk_load_command_segment_64_section_get_attributes(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_reserved1(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_reserved1(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -415,7 +415,7 @@ mk_load_command_segment_64_section_get_reserved1(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_reserved2(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_reserved2(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;
@@ -424,7 +424,7 @@ mk_load_command_segment_64_section_get_reserved2(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_64_section_get_reserved3(mk_section_64_t *section)
+mk_load_command_segment_64_section_get_reserved3(mk_load_command_section_64_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section_64 *mach_section = (struct section_64*)section->mach_section;

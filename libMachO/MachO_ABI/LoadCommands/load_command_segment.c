@@ -265,7 +265,7 @@ mk_load_command_segment_enumerate_sections(mk_load_command_ref load_command, voi
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_load_command_segment_section_init(mk_load_command_ref segment, struct section *sec, mk_section_t *section)
+mk_load_command_segment_section_init(mk_load_command_ref segment, struct section *sec, mk_load_command_section_t *section)
 {
     if (!segment.type) return MK_EINVAL;
     if (!sec) return MK_EINVAL;
@@ -284,7 +284,7 @@ mk_load_command_segment_section_init(mk_load_command_ref segment, struct section
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_load_command_segment_section_copy_native(mk_section_t *section, struct section *result)
+mk_load_command_segment_section_copy_native(mk_load_command_section_t *section, struct section *result)
 {
     if (section == NULL) return MK_EINVAL;
     if (result == NULL) return MK_EINVAL;
@@ -309,7 +309,7 @@ mk_load_command_segment_section_copy_native(mk_section_t *section, struct sectio
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
-mk_load_command_segment_section_copy_name(mk_section_t *section, char output[16])
+mk_load_command_segment_section_copy_name(mk_load_command_section_t *section, char output[16])
 {
     if (section == NULL) return UINT32_MAX;
     
@@ -321,7 +321,7 @@ mk_load_command_segment_section_copy_name(mk_section_t *section, char output[16]
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
-mk_load_command_segment_section_copy_segment_name(mk_section_t *section, char output[16])
+mk_load_command_segment_section_copy_segment_name(mk_load_command_section_t *section, char output[16])
 {
     if (section == NULL) return UINT32_MAX;
     
@@ -333,7 +333,7 @@ mk_load_command_segment_section_copy_segment_name(mk_section_t *section, char ou
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_addr(mk_section_t *section)
+mk_load_command_segment_section_get_addr(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -342,7 +342,7 @@ mk_load_command_segment_section_get_addr(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_size(mk_section_t *section)
+mk_load_command_segment_section_get_size(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -351,7 +351,7 @@ mk_load_command_segment_section_get_size(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_offset(mk_section_t *section)
+mk_load_command_segment_section_get_offset(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -360,7 +360,7 @@ mk_load_command_segment_section_get_offset(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_align(mk_section_t *section)
+mk_load_command_segment_section_get_align(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -369,7 +369,7 @@ mk_load_command_segment_section_get_align(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_reloff(mk_section_t *section)
+mk_load_command_segment_section_get_reloff(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -378,7 +378,7 @@ mk_load_command_segment_section_get_reloff(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_nreloc(mk_section_t *section)
+mk_load_command_segment_section_get_nreloc(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -387,7 +387,7 @@ mk_load_command_segment_section_get_nreloc(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint8_t
-mk_load_command_segment_section_get_type(mk_section_t *section)
+mk_load_command_segment_section_get_type(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT8_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -396,7 +396,7 @@ mk_load_command_segment_section_get_type(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_attributes(mk_section_t *section)
+mk_load_command_segment_section_get_attributes(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -405,7 +405,7 @@ mk_load_command_segment_section_get_attributes(mk_section_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_reserved1(mk_section_64_t *section)
+mk_load_command_segment_section_get_reserved1(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;
@@ -414,7 +414,7 @@ mk_load_command_segment_section_get_reserved1(mk_section_64_t *section)
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
-mk_load_command_segment_section_get_reserved2(mk_section_64_t *section)
+mk_load_command_segment_section_get_reserved2(mk_load_command_section_t *section)
 {
     if (section == NULL) return UINT32_MAX;
     struct section *mach_section = (struct section*)section->mach_section;

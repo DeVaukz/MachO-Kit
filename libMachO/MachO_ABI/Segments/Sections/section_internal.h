@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       macho_abi_internal.h
+//! @file       section_internal.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,16 +25,34 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef _macho_abi_internal_h
-#define _macho_abi_internal_h
+#ifndef _section_internal_h
+#define _section_internal_h
+#ifndef DOXYGEN
 
-#include "core_internal.h"
-#include "macho_abi.h"
+#include "section.h"
 
-#include "_mach_lcstr.h"
+//! @addtogroup SECTIONS
+//! @{
+//!
 
-#include "load_command_internal.h"
-#include "segment_internal.h"
-#include "section_internal.h"
+//----------------------------------------------------------------------------//
+#pragma mark -  Classes
+//! @name       Classes
+//----------------------------------------------------------------------------//
 
-#endif /* _macho_abi_internal_h */
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+//! Member function table declaration for the \c section type.
+//
+struct _mk_section_vtable {
+    __MK_RUNTIME_TYPE_BASE
+};
+
+//! The member function table for the \c section type type.
+_mk_internal_extern
+const struct _mk_section_vtable _mk_section_class;
+
+
+//! @} SECTIONS !//
+
+#endif
+#endif /* _section_internal_h */

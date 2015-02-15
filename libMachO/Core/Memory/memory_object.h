@@ -96,6 +96,22 @@ mk_memory_object_length(mk_memory_object_ref mobj);
 _mk_export mk_vm_address_t
 mk_memory_object_base_address(mk_memory_object_ref mobj);
 
+//! Returns the range of memory in the current process represented by
+//! \a mobj.
+//!
+//! @param  mobj
+//!         An initialized memory object.
+_mk_export mk_vm_range_t
+mk_memory_object_range(mk_memory_object_ref mobj);
+
+//! Returns the range of memory in the originating context represented by
+//! \a mobj.
+//!
+//! @param  mobj
+//!         An initialized memory object.
+_mk_export mk_vm_range_t
+mk_memory_object_context_range(mk_memory_object_ref mobj);
+
 //! Verifies that \a length bytes starting at the process relative
 //! (\a address + \a offset) is within \a mobj's mapped range.
 //!

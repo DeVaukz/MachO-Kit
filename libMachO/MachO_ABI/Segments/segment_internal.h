@@ -52,7 +52,7 @@ _mk_internal_extern
 const struct _mk_segment_vtable _mk_segment_class;
 
 
-//! @} LOAD_COMMANDS !//
+//! @} SEGMENTS !//
 
 #endif
 #endif /* _segment_internal_h */

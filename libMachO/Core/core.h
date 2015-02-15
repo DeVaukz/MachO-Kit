@@ -262,7 +262,7 @@ _mk_export const mk_byteorder_t mk_byteorder_swapped;
     const void* vtable;
 #endif
 
-//! A pointer to any polymorphic type.
+//! A reference to an instance of any polymorphic type.
 typedef void* mk_type_ref;
 
 //! Returns the name name of the provided instance of any polymorphic type.
@@ -278,6 +278,7 @@ mk_type_equal(mk_type_ref mk1, mk_type_ref mk2);
 //! returns the length of the complete description.
 _mk_export size_t
 mk_type_copy_description(mk_type_ref mk, char* output, size_t output_len);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Includes

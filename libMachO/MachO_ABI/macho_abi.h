@@ -41,5 +41,6 @@
 
 #include "load_command.h"
 #include "segment.h"
+#include "section.h"
 
 #endif /* _macho_abi_h */
