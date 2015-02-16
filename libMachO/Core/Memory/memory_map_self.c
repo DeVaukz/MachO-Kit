@@ -118,7 +118,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     // Initialize the memory object.
     memory_object->vtable = &_mk_memory_object_class;
     memory_object->mapping = self.memory_map;
-    memory_object->context_address = context_address;
+    memory_object->host_address = context_address;
     memory_object->address = vm_address;
     memory_object->length = (vm_size_t)length;
     memory_object->reserved1 = 0;

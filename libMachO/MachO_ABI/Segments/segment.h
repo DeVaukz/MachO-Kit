@@ -90,6 +90,10 @@ mk_segment_get_macho(mk_segment_ref segment);
 _mk_export mk_load_command_ref
 mk_segment_get_load_command(mk_segment_ref segment);
 
+//! Returns the process-relative range of memory occupied by \a segment.
+_mk_export mk_vm_range_t
+mk_segment_get_range(mk_segment_ref segment);
+
 //! Returns a memory object that can be used to safely access \a segments
 //! contents.
 _mk_export mk_memory_object_ref
@@ -99,26 +103,57 @@ mk_segment_get_mobj(mk_segment_ref segment);
 //----------------------------------------------------------------------------//
 #pragma mark -  Segment Values
 //! @name       Segment Values
+//!
+//! These functions return values directly from the underlying Mach
+//! segment(_64) structure.
 //----------------------------------------------------------------------------//
 
 _mk_export size_t
 mk_segment_copy_name(mk_segment_ref segment, char output[16]);
 _mk_export mk_vm_address_t
-mk_segment_get_vm_address(mk_segment_ref segment);
+mk_segment_get_vmaddr(mk_segment_ref segment);
 _mk_export mk_vm_size_t
-mk_segment_get_vm_size(mk_segment_ref segment);
+mk_segment_get_vmsize(mk_segment_ref segment);
 _mk_export mk_vm_address_t
-mk_segment_get_file_offset(mk_segment_ref segment);
+mk_segment_get_fileoff(mk_segment_ref segment);
 _mk_export mk_vm_size_t
-mk_segment_get_file_size(mk_segment_ref segment);
+mk_segment_get_filesize(mk_segment_ref segment);
 _mk_export vm_prot_t
-mk_segment_get_max_vm_prot(mk_segment_ref segment);
+mk_segment_get_maxprot(mk_segment_ref segment);
 _mk_export vm_prot_t
-mk_segment_get_initial_vm_prot(mk_segment_ref segment);
+mk_segment_get_initprot(mk_segment_ref segment);
 _mk_export uint32_t
 mk_segment_get_nsects(mk_segment_ref segment);
 _mk_export uint32_t
 mk_segment_get_flags(mk_segment_ref segment);
+
+
+//----------------------------------------------------------------------------//
+#pragma mark -  Enumerating Sections
+//! @name       Enumerating Sections
+//----------------------------------------------------------------------------//
+
+//! Iterate over the sections in this segment.
+//!
+//! @param  segment
+//!         The segment to iterate.
+//! @param  previous
+//!         The previously returned section, or \c NULL to iterate from
+//!         the first section.
+//! @return
+//! A process-relative pointer to the section or \c NULL if there was an
+//! error.  The returned structure may be a section or section_64 and is
+//! gauranteed to be readable, and fully within the process address space.
+//! You should initialize an \c mk_section to parse the data.
+_mk_export void*
+mk_segment_next_section(mk_segment_ref segment, void* previous);
+
+#if __BLOCKS__
+//! Iterate over the available sections using a block.
+_mk_export void
+mk_segment_enumerate_sections(mk_segment_ref segment,
+                              void (^enumerator)(void *section, uint32_t index));
+#endif
 
 
 //! @} SEGMENTS !//

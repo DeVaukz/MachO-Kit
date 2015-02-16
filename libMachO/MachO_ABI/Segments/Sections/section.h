@@ -56,8 +56,6 @@ typedef struct mk_section_s {
         mk_load_command_section_t section;
         mk_load_command_section_64_t section_64;
     };
-    // Memory object for accessing this section.
-    mk_memory_object_t memory_object;
 } mk_section_t;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -94,33 +92,44 @@ mk_section_get_macho(mk_section_ref section);
 _mk_export mk_segment_ref
 mk_section_get_segment(mk_section_ref section);
 
-//! Returns a memory object that can be used to safely access the \a section
-//! contents.
-_mk_export mk_memory_object_ref
-mk_section_get_mobj(mk_section_ref section);
+//! Returns the range of memory in the originating context occupied by
+//! \a section.
+//!
+//! @param  mobj
+//!         An initialized memory object.
+_mk_export mk_vm_range_t
+mk_section_get_range(mk_section_ref section);
+
+//! Initializes a memory object that can be used to safely access the
+//! \a section contents.
+_mk_export mk_error_t
+mk_section_init_mobj(mk_section_ref section, mk_memory_object_t *mobj);
 
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Section Values
 //! @name       Section Values
+//!
+//! These functions return values directly from the underlying Mach
+//! section(_64) structure.
 //----------------------------------------------------------------------------//
 
 _mk_export size_t
-mk_section_copy_section_name(mk_section_ref section, char output[16]);
+mk_section_copy_name(mk_section_ref section, char output[16]);
 _mk_export size_t
 mk_section_copy_segment_name(mk_section_ref section, char output[16]);
 _mk_export mk_vm_address_t
-mk_section_get_vm_address(mk_section_ref section);
+mk_section_get_addr(mk_section_ref section);
 _mk_export mk_vm_size_t
-mk_section_get_vm_size(mk_section_ref section);
+mk_section_get_size(mk_section_ref section);
 _mk_export mk_vm_address_t
-mk_section_get_vm_offset(mk_section_ref section);
+mk_section_get_offset(mk_section_ref section);
 _mk_export uint32_t
-mk_section_get_alignment(mk_section_ref section);
+mk_section_get_align(mk_section_ref section);
 _mk_export uint32_t
-mk_section_get_relocations_offset(mk_section_ref section);
+mk_section_get_reloff(mk_section_ref section);
 _mk_export uint32_t
-mk_section_get_number_relocations(mk_section_ref section);
+mk_section_get_nreloc(mk_section_ref section);
 _mk_export uint8_t
 mk_section_get_type(mk_section_ref section);
 _mk_export uint32_t

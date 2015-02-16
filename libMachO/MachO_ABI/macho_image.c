@@ -131,7 +131,7 @@ const char* mk_macho_get_name(mk_macho_ref image)
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_address_t mk_macho_get_address(mk_macho_ref image)
-{ return mk_memory_object_base_address(&image.macho->header_mapping); }
+{ return mk_memory_object_host_address(&image.macho->header_mapping); }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Mach-O Header Values

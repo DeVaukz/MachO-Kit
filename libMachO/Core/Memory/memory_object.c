@@ -55,16 +55,16 @@ vm_size_t mk_memory_object_length(mk_memory_object_ref mobj)
 { return mobj.memory_object->length; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_address_t mk_memory_object_base_address(mk_memory_object_ref mobj)
-{ return mobj.memory_object->context_address; }
+mk_vm_address_t mk_memory_object_host_address(mk_memory_object_ref mobj)
+{ return mobj.memory_object->host_address; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t mk_memory_object_range(mk_memory_object_ref mobj)
 { return mk_vm_range_make(mk_memory_object_address(mobj), mk_memory_object_length(mobj)); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_range_t mk_memory_object_context_range(mk_memory_object_ref mobj)
-{ return mk_vm_range_make(mk_memory_object_base_address(mobj), mk_memory_object_length(mobj)); }
+mk_vm_range_t mk_memory_object_host_range(mk_memory_object_ref mobj)
+{ return mk_vm_range_make(mk_memory_object_host_address(mobj), mk_memory_object_length(mobj)); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 bool
@@ -134,7 +134,7 @@ mk_memory_object_remap_address(mk_memory_object_ref mobj, mk_vm_offset_t offset,
         return UINTPTR_MAX;
     }
     
-    mk_vm_address_t mobj_context_address = mk_memory_object_base_address(mobj);
+    mk_vm_address_t mobj_context_address = mk_memory_object_host_address(mobj);
     vm_address_t mobj_address = mk_memory_object_address(mobj);
     vm_size_t mobj_length = mk_memory_object_length(mobj);
     
@@ -170,7 +170,7 @@ mk_memory_object_unmap_address(mk_memory_object_ref mobj, vm_offset_t offset, vm
     if (!mk_memory_object_verify_local_pointer(mobj, address, offset, length, error))
         return MK_VM_ADDRESS_INVALID;
     
-    mk_vm_address_t mobj_context_address = mk_memory_object_base_address(mobj);
+    mk_vm_address_t mobj_host_address = mk_memory_object_host_address(mobj);
     vm_address_t mobj_process_address = mk_memory_object_address(mobj);
     
     // _mk_memory_object_verify_local_pointer already verified
@@ -184,7 +184,7 @@ mk_memory_object_unmap_address(mk_memory_object_ref mobj, vm_offset_t offset, vm
     // (mobj_context_address + slide) can not overflow.
     
     MK_ERROR_OUT = MK_ESUCCESS;
-    return mobj_context_address + slide;
+    return mobj_host_address + slide;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
