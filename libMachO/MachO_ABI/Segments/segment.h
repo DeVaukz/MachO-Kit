@@ -59,9 +59,18 @@ typedef struct mk_segment_s {
 //! The Segment polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_segment_s *segment;
 } mk_segment_ref __attribute__((__transparent_union__));
+
+//! The identifier for the Segment type.
+_mk_export intptr_t mk_segment_type;
+
+
+//----------------------------------------------------------------------------//
+#pragma mark -  Includes
+//----------------------------------------------------------------------------//
+
+#include "section.h"
 
 
 //----------------------------------------------------------------------------//
@@ -137,22 +146,21 @@ mk_segment_get_flags(mk_segment_ref segment);
 //!
 //! @param  segment
 //!         The segment to iterate.
-//! @param  previous
-//!         The previously returned section, or \c NULL to iterate from
-//!         the first section.
+//! @param  section
+//!         A pointer to a \ref mk_section_t, which will be initialized with
+//!         the data for the next section.
 //! @return
-//! A process-relative pointer to the section or \c NULL if there was an
-//! error.  The returned structure may be a section or section_64 and is
-//! gauranteed to be readable, and fully within the process address space.
-//! You should initialize an \c mk_section to parse the data.
-_mk_export void*
-mk_segment_next_section(mk_segment_ref segment, void* previous);
+//! An \ref mk_error_t indicating whether \a section was initialized with the
+//! next section's data.  If there are no sections left to enumerate,
+//! \ref MK_ENOT_FOUND is returned.
+_mk_export mk_error_t
+mk_segment_next_section(mk_segment_ref segment, mk_section_t* section);
 
 #if __BLOCKS__
 //! Iterate over the available sections using a block.
 _mk_export void
 mk_segment_enumerate_sections(mk_segment_ref segment,
-                              void (^enumerator)(void *section, uint32_t index));
+                              void (^enumerator)(mk_section_ref section, uint32_t index));
 #endif
 
 

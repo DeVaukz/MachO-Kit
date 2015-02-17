@@ -40,7 +40,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     // Verify that the offset value won't overrun a native pointer and compute
     // the offset address
     if ((mk_err = mk_vm_address_apply_offset(context_address, offset, &context_address))) {
-        _mkl_error(mk_type_get_context(self.type), "Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(mk_err), offset, context_address);
+        _mkl_error(mk_type_get_context(self.memory_map), "Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(mk_err), offset, context_address);
         return mk_err;
     }
     
@@ -57,7 +57,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         if (!require_full)
             total_length = UINT64_MAX;
         else {
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
             return MK_EBAD_ACCESS;
         }
     }
@@ -67,13 +67,13 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         if (!require_full)
             total_length = UINT64_MAX - base_context_address;
         else {
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
             return MK_EBAD_ACCESS;
         }
     }
     
     // total_length should still be page aligned.
-    _mk_assert((total_length & vm_page_mask) == 0x0, mk_type_get_context(self.type), "total_length must be paged aligned.");
+    _mk_assert((total_length & vm_page_mask) == 0x0, mk_type_get_context(self.memory_map), "total_length must be paged aligned.");
     
     mach_vm_size_t mapped_length = 0;
     
@@ -91,7 +91,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
             if (!require_full)
                 break;
             
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
             return MK_EBAD_ACCESS;
         }
         
@@ -106,7 +106,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     
     // No mappable pages found at contextAddress.
     if (mapped_length == 0) {
-        _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
+        _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not valid in this process.", context_address, length);
         return MK_EBAD_ACCESS;
     }
     
@@ -129,11 +129,10 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
 
 //|++++++++++++++++++++++++++++++++++++|//
 static void
-__mk_memory_map_self_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object, mk_error_t* error)
+__mk_memory_map_self_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object)
 {
 #pragma unused (self)
 #pragma unused (memory_object)
-#pragma unused (error)
 }
 
 const struct _mk_memory_map_vtable _mk_memory_map_self_class = {
@@ -142,6 +141,8 @@ const struct _mk_memory_map_vtable _mk_memory_map_self_class = {
     .init_object                = &__mk_memory_map_self_init_object,
     .free_object                = &__mk_memory_map_self_free_object
 };
+
+intptr_t mk_memory_map_task_self = (intptr_t)&_mk_memory_map_self_class;
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating A Task Memory Map

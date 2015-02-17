@@ -62,9 +62,11 @@ typedef struct mk_section_s {
 //! The Section polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_section_s *section;
 } mk_section_ref __attribute__((__transparent_union__));
+
+//! The identifier for the Section type.
+_mk_export intptr_t mk_section_type;
 
 
 //----------------------------------------------------------------------------//
@@ -73,12 +75,15 @@ typedef union {
 //----------------------------------------------------------------------------//
 
 //! Initializes the provided \a section with the provided Mach \c section.
+//!
+//! @param  segment
+//!         The segment in which \a s resides.
+//! @param  s
+//!         A pointer to a Mach \c section or \c section_64 structure.
+//! @param  section
+//!         A pointer to the \ref to be initialized.
 _mk_export mk_error_t
-mk_section_init_with_section(mk_segment_ref segment, struct section* s, mk_section_t* section);
-
-//! Initializes the provided \a section with the provided Mach \c section_64.
-_mk_export mk_error_t
-mk_section_init_with_section_64(mk_segment_ref segment, struct section_64* s, mk_section_t* section);
+mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t* section);
 
 //! Releases any resources held by \a section
 _mk_export void

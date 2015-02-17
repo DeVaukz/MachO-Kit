@@ -72,7 +72,7 @@ struct _mk_data_model_vtable {
 //! implementations of all non-abstract methods in
 //! \c struct mk_data_model_vtable.
 _mk_internal_extern
-const struct _mk_memory_map_vtable _mk_memory_map_class;
+const struct _mk_data_model_vtable _mk_data_model_class;
 
 
 //! @} DATA_MODEL !//

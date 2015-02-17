@@ -64,11 +64,13 @@ struct mk_memory_map_s {
 //! The Memory Map polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_memory_map_s *memory_map;
     struct mk_memory_map_task_s *memory_map_task;
     struct mk_memory_map_self_s *memory_map_self;
 } mk_memory_map_ref __attribute__((__transparent_union__));
+
+//! The identifier for the Memory Map type.
+_mk_export intptr_t mk_memory_map_type;
 
 
 //----------------------------------------------------------------------------//
@@ -107,7 +109,7 @@ mk_memory_map_init_object(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_ad
 //! Cleans up any resources held by \a memory_object.  It is no longer safe to
 //! use \a memory_object after calling this function.
 _mk_export void
-mk_memory_map_free_object(mk_memory_map_ref map, mk_memory_object_t* memory_object, mk_error_t* error);
+mk_memory_map_free_object(mk_memory_map_ref map, mk_memory_object_t* memory_object);
 
 //! Returns \c true if \a length bytes at (\a address + \a offset) can be
 //! accessed using \a map.

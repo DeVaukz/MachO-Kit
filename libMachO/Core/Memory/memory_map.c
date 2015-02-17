@@ -52,11 +52,10 @@ __mk_memory_map_init_object(struct mk_memory_map_s* self, mk_vm_offset_t offset,
 
 //|++++++++++++++++++++++++++++++++++++|//
 static void
-__mk_memory_map_free_object(struct mk_memory_map_s* self, mk_memory_object_t* memory_object, mk_error_t* error)
+__mk_memory_map_free_object(struct mk_memory_map_s* self, mk_memory_object_t* memory_object)
 {
 #pragma unused (self)
 #pragma unused (memory_object)
-#pragma unused (error)
     fprintf(stderr, "No default implementation of __mk_memory_map_free_object.");
     __builtin_trap();
 }
@@ -75,7 +74,7 @@ __mk_memory_map_has_mapping(struct mk_memory_map_s* self, mk_vm_offset_t offset,
     
     bool retValue = mk_memory_object_length(&memory_object) > length;
     
-    mk_memory_map_free_object(self, &memory_object, NULL);
+    mk_memory_map_free_object(self, &memory_object);
     return retValue;
 }
 
@@ -94,7 +93,7 @@ __mk_memory_map_copy_bytes(struct mk_memory_map_s* self, mk_vm_offset_t offset, 
     vm_size_t mappingLength = mk_memory_object_length(&memory_object);
     memcpy(buffer, (void*)mk_memory_object_address(&memory_object), MIN(length, (mk_vm_size_t)mappingLength));
     
-    mk_memory_map_free_object(self, &memory_object, NULL);
+    mk_memory_map_free_object(self, &memory_object);
     return (vm_size_t)MIN(length, (mk_vm_size_t)mappingLength);
 }
 
@@ -178,6 +177,8 @@ const struct _mk_memory_map_vtable _mk_memory_map_class = {
     .read_qword                 = &__mk_memory_map_read_qword
 };
 
+intptr_t mk_memory_map_type = (intptr_t)&_mk_memory_map_class;
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Static Methods
 //----------------------------------------------------------------------------//
@@ -195,8 +196,8 @@ mk_error_t mk_memory_map_init_object(mk_memory_map_ref map, mk_vm_offset_t offse
 { MK_TYPE_INVOKE(map, memory_map, init_object)(map, offset, address, length, require_full, memory_object); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-void mk_memory_map_free_object(mk_memory_map_ref map, mk_memory_object_t* memory_object, mk_error_t* error)
-{ MK_TYPE_INVOKE(map, memory_map, free_object)(map, memory_object, error); }
+void mk_memory_map_free_object(mk_memory_map_ref map, mk_memory_object_t* memory_object)
+{ MK_TYPE_INVOKE(map, memory_map, free_object)(map, memory_object); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 bool mk_memory_map_has_mapping(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error)

@@ -42,6 +42,8 @@ const struct _mk_segment_vtable _mk_segment_class = {
     .base.get_context           = &__mk_segment_get_context
 };
 
+intptr_t mk_segment_type = (intptr_t)&_mk_segment_class;
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Working With Segments
 //----------------------------------------------------------------------------//
@@ -113,7 +115,7 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
 void
 mk_segment_free(mk_segment_ref segment)
 {
-    mk_memory_map_free_object(mk_macho_get_memory_map(mk_load_command_get_macho(segment.segment->segment_load_command)), &segment.segment->memory_object, NULL);
+    mk_memory_map_free_object(mk_macho_get_memory_map(mk_load_command_get_macho(segment.segment->segment_load_command)), &segment.segment->memory_object);
     segment.segment->vtable = NULL;
 }
 
@@ -237,28 +239,45 @@ mk_segment_get_flags(mk_segment_ref segment)
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-void*
-mk_segment_next_section(mk_segment_ref segment, void* previous)
+mk_error_t
+mk_segment_next_section(mk_segment_ref segment, mk_section_t* section)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return (void*)mk_load_command_segment_64_next_section(segment.segment->segment_load_command, previous, NULL);
-    else
-        return (void*)mk_load_command_segment_next_section(segment.segment->segment_load_command, previous, NULL);
+    void *cursor = NULL;
+    
+    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id()) {
+        // If *section is initialized, this is a continuation.
+        if (section->vtable == &_mk_section_class) {
+            cursor = section->section_64.mach_section;
+            mk_section_free(section);
+        }
+            
+        cursor = mk_load_command_segment_64_next_section(mk_segment_get_load_command(segment), cursor, NULL);
+    } else {
+        // If *section is initialized, this is a continuation.
+        if (section->vtable == &_mk_section_class) {
+            cursor = section->section.mach_section;
+            mk_section_free(section);
+        }
+        
+        cursor = mk_load_command_segment_next_section(mk_segment_get_load_command(segment), cursor, NULL);
+    }
+    
+    if (cursor == NULL)
+        return MK_ENOT_FOUND;
+    
+    return mk_section_init_with_mach_section(segment, cursor, section);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(void *section, uint32_t index))
+mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(mk_section_ref section, uint32_t index))
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_enumerate_sections(segment.segment->segment_load_command, ^(struct section_64 *command, uint32_t index, mk_vm_address_t __unused context_address) {
-            enumerator(command, index);
-        });
-    else
-        return mk_load_command_segment_enumerate_sections(segment.segment->segment_load_command, ^(struct section *command, uint32_t index, mk_vm_address_t __unused context_address) {
-            enumerator(command, index);
-        });
+    mk_section_t section;
+    uint32_t i = 0;
+    while (mk_segment_next_section(segment, &section) == MK_ESUCCESS) {
+        enumerator(&section, i++);
+    }
 }
 #endif
 

@@ -54,6 +54,9 @@ typedef struct mk_memory_map_task_s {
     mach_port_t task;
 } mk_memory_map_task_t;
 
+//! The identifier for the Memory Map Task type.
+_mk_export intptr_t mk_memory_map_task_type;
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating A Task Memory Map

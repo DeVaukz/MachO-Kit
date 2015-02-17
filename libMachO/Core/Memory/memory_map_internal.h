@@ -45,7 +45,7 @@
 typedef mk_error_t (*_mk_memory_map_init_object)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, bool require_full, mk_memory_object_t* memory_object);
 
 //!
-typedef void (*_mk_memory_map_free_object)(mk_memory_map_ref self, mk_memory_object_t* memory_object, mk_error_t* error);
+typedef void (*_mk_memory_map_free_object)(mk_memory_map_ref self, mk_memory_object_t* memory_object);
 
 //!
 typedef bool (*_mk_memory_map_has_mapping)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error);

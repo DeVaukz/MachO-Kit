@@ -61,13 +61,15 @@ __mk_data_model_get_pointer_alignment(mk_data_model_ref self, void* reserved)
     __builtin_trap();
 }
 
-static struct _mk_data_model_vtable __mk_data_model_class = {
+const struct _mk_data_model_vtable _mk_data_model_class = {
     .base.super             = &_mk_type_class,
     .base.name              = "data_model",
     .get_byte_order         = &__mk_data_model_get_byte_order,
     .get_pointer_size       = &__mk_data_model_get_pointer_size,
     .get_pointer_alignment  = &__mk_data_model_get_pointer_alignment
 };
+
+intptr_t mk_data_model_type = (intptr_t)&_mk_data_model_class;
 
 //----------------------------------------------------------------------------//
 #pragma mark -  ILP32 Class
@@ -104,13 +106,15 @@ __mk_data_model_ilp32_get_pointer_alignment(mk_data_model_ref self, void* reserv
     return 4;
 }
 
-static struct _mk_data_model_vtable __mk_data_model_ilp32_class = {
-    .base.super             = &__mk_data_model_class,
+static struct _mk_data_model_vtable _mk_data_model_ilp32_class = {
+    .base.super             = &_mk_data_model_class,
     .base.name              = "ilp32_data_model",
     .get_byte_order         = &__mk_data_model_ilp32_get_byte_order,
     .get_pointer_size       = &__mk_data_model_ilp32_get_pointer_size,
     .get_pointer_alignment  = &__mk_data_model_ilp32_get_pointer_alignment
 };
+
+intptr_t mk_data_model_ilp32_type = (intptr_t)&_mk_data_model_ilp32_class;
 
 //----------------------------------------------------------------------------//
 #pragma mark -  LP64 Class
@@ -147,24 +151,26 @@ __mk_data_model_lp64_get_pointer_alignment(mk_data_model_ref self, void* reserve
     return 8;
 }
 
-static struct _mk_data_model_vtable __mk_data_model_lp64_class = {
-    .base.super             = &__mk_data_model_class,
+static struct _mk_data_model_vtable _mk_data_model_lp64_class = {
+    .base.super             = &_mk_data_model_class,
     .base.name              = "lp64_data_model",
     .get_byte_order         = &__mk_data_model_lp64_get_byte_order,
     .get_pointer_size       = &__mk_data_model_lp64_get_pointer_size,
     .get_pointer_alignment  = &__mk_data_model_lp64_get_pointer_alignment
 };
 
+intptr_t mk_data_model_lp64_type = (intptr_t)&_mk_data_model_lp64_class;
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Static Types
 //----------------------------------------------------------------------------//
 
 struct mk_data_model_s ILP32_byte_order = {
-    .vtable                 = &__mk_data_model_ilp32_class,
+    .vtable                 = &_mk_data_model_ilp32_class,
 };
 
 struct mk_data_model_s LP64_byte_order = {
-    .vtable                 = &__mk_data_model_lp64_class,
+    .vtable                 = &_mk_data_model_lp64_class,
 };
 
 //----------------------------------------------------------------------------//

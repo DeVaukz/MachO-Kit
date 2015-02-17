@@ -40,7 +40,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     // Verify that the offset value won't overrun a native pointer and compute
     // the offset address
     if ((mk_err = mk_vm_address_apply_offset(context_address, offset, &context_address))) {
-        _mkl_error(mk_type_get_context(self.type), "Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(mk_err), offset, context_address);
+        _mkl_error(mk_type_get_context(self.memory_map), "Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(mk_err), offset, context_address);
         return mk_err;
     }
     
@@ -57,7 +57,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         if (!require_full)
             total_length = UINT64_MAX;
         else {
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.type), self.type);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.memory_map), self.memory_map);
             return MK_EBAD_ACCESS;
         }
     }
@@ -67,13 +67,13 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         if (!require_full)
             total_length = UINT64_MAX - base_context_address;
         else {
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.type), self.type);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.memory_map), self.memory_map);
             return MK_EBAD_ACCESS;
         }
     }
     
     // total_length should still be page aligned.
-    _mk_assert((total_length & vm_page_mask) == 0x0, mk_type_get_context(self.type), "total_length must be page aligned.");
+    _mk_assert((total_length & vm_page_mask) == 0x0, mk_type_get_context(self.memory_map), "total_length must be page aligned.");
     
     // If short mappings are permitted, determine the actual mappable size of
     // the target range.
@@ -102,7 +102,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         
         // No mappable pages found at contextAddress.
         if (verified_length == 0) {
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.type), self.type);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <%s %p>.", context_address, length, mk_type_name(self.memory_map), self.memory_map);
             return MK_EBAD_ACCESS;
         }
         
@@ -116,7 +116,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     // Reserve enough pages to contain the mapping.
     kern_return_t err = mach_vm_allocate(mach_task_self(), &mapping_address, total_length, VM_FLAGS_ANYWHERE);
     if (err != KERN_SUCCESS) {
-        _mkl_error(mk_type_get_context(self.type), "Failed to allocate a target page range for the page remapping.");
+        _mkl_error(mk_type_get_context(self.memory_map), "Failed to allocate a target page range for the page remapping.");
         return MK_EBAD_ACCESS;
     }
     
@@ -137,7 +137,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
                 // TODO - Log this.  We're leaking pages.
             }
             
-            _mkl_error(mk_type_get_context(self.type), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIiSIZE ") is not within memory map.", context_address, length);
+            _mkl_error(mk_type_get_context(self.memory_map), "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIiSIZE ") is not within memory map.", context_address, length);
             return MK_EBAD_ACCESS;
         }
         
@@ -159,7 +159,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
                 // TODO - Log this.  We're leaking ports.
             }
             
-            _mkl_error(mk_type_get_context(self.type), "mach_vm_map() failure.");
+            _mkl_error(mk_type_get_context(self.memory_map), "mach_vm_map() failure.");
             return MK_EBAD_ACCESS;
         }
         
@@ -191,10 +191,9 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
 
 //|++++++++++++++++++++++++++++++++++++|//
 static void
-__mk_memory_map_task_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object, mk_error_t* error)
+__mk_memory_map_task_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object)
 {
 #pragma unused (self)
-#pragma unused (error)
     kern_return_t err = mach_vm_deallocate(mach_task_self(), memory_object->reserved1, memory_object->reserved2);
     if (err != KERN_SUCCESS) {
         // TODO - Warning
@@ -207,6 +206,8 @@ const struct _mk_memory_map_vtable _mk_memory_map_task_class = {
     .init_object                = &__mk_memory_map_task_init_object,
     .free_object                = &__mk_memory_map_task_free_object
 };
+
+intptr_t mk_memory_map_task_type = (intptr_t)&_mk_memory_map_task_class;
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating A Task Memory Map

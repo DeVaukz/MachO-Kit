@@ -34,7 +34,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
 __mk_memory_object_get_context(mk_type_ref self)
-{ return mk_type_get_context( mk_memory_map_for_object(self).type ); }
+{ return mk_type_get_context( mk_memory_map_for_object(self).memory_map ); }
 
 const struct mk_memory_object_vtable _mk_memory_object_class = {
     .base.super                 = &_mk_type_class,
@@ -42,9 +42,15 @@ const struct mk_memory_object_vtable _mk_memory_object_class = {
     .base.get_context           = &__mk_memory_object_get_context,
 };
 
+intptr_t mk_memory_object_type = (intptr_t)&_mk_memory_object_class;
+
 //---------------------------------------------------------------------------//
 #pragma mark -  Instance Methods
 //---------------------------------------------------------------------------//
+
+//|++++++++++++++++++++++++++++++++++++|//
+void mk_memory_object_free(mk_memory_object_ref memory_object)
+{ return mk_memory_map_free_object(mk_memory_map_for_object(memory_object), memory_object.memory_object); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 vm_address_t mk_memory_object_address(mk_memory_object_ref mobj)
@@ -70,7 +76,7 @@ mk_vm_range_t mk_memory_object_host_range(mk_memory_object_ref mobj)
 bool
 mk_memory_object_verify_local_pointer(mk_memory_object_ref mobj, vm_offset_t offset, vm_address_t address, vm_size_t length, mk_error_t* error)
 {
-    mk_context_t *ctx = mk_type_get_context(mobj.type);
+    mk_context_t *ctx = mk_type_get_context(mobj.memory_object);
     
     // Verify that the offset value won't overrun a native pointer
     if (UINTPTR_MAX - offset < address) {
@@ -97,14 +103,14 @@ mk_memory_object_verify_local_pointer(mk_memory_object_ref mobj, vm_offset_t off
     
     // Verify that the address starts within range
     if (address < mobj_address) {
-        _mkl_error(ctx, "Input range (offset address = 0x%" PRIxPTR ", length = %" PRIuPTR ") is not within <mk_memory_object_t %p (base = 0x%" PRIxPTR ", length = %" PRIuPTR ")>", (uintptr_t)address, (uintptr_t)length, mobj.type, (uintptr_t)mobj_address, (uintptr_t)mobj_length);
+        _mkl_error(ctx, "Input range (offset address = 0x%" PRIxPTR ", length = %" PRIuPTR ") is not within <mk_memory_object_t %p (base = 0x%" PRIxPTR ", length = %" PRIuPTR ")>", (uintptr_t)address, (uintptr_t)length, mobj.memory_object, (uintptr_t)mobj_address, (uintptr_t)mobj_length);
         MK_ERROR_OUT = MK_EOUT_OF_RANGE;
         return false;
     }
     
     // Check that the block ends within range
     if (mobj_address + mobj_length < address + length) {
-        _mkl_error(ctx, "Input range (offset address = 0x%" PRIxPTR ", length = %" PRIuPTR ") is not within <mk_memory_object_t %p (base = 0x%" PRIxPTR ", length = %" PRIuPTR ")>", (uintptr_t)address, (uintptr_t)length, mobj.type, (uintptr_t)mobj_address, (uintptr_t)mobj_length);
+        _mkl_error(ctx, "Input range (offset address = 0x%" PRIxPTR ", length = %" PRIuPTR ") is not within <mk_memory_object_t %p (base = 0x%" PRIxPTR ", length = %" PRIuPTR ")>", (uintptr_t)address, (uintptr_t)length, mobj.memory_object, (uintptr_t)mobj_address, (uintptr_t)mobj_length);
         MK_ERROR_OUT = MK_EOUT_OF_RANGE;
         return false;
     }
@@ -118,7 +124,7 @@ vm_address_t
 mk_memory_object_remap_address(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error)
 {
     mk_error_t err;
-    mk_context_t *ctx = mk_type_get_context(mobj.type);
+    mk_context_t *ctx = mk_type_get_context(mobj.memory_object);
     
     // Adjust the address using the verified offset
     if ((err = mk_vm_address_apply_offset(address, offset, &address))) {
@@ -143,14 +149,14 @@ mk_memory_object_remap_address(mk_memory_object_ref mobj, mk_vm_offset_t offset,
     
     // Verify that the address starts within range
     if (address < mobj_context_address) {
-        _mkl_error(ctx, "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <mk_memory_object_t %p (base = 0x%" MK_VM_PRIxADDR ", length = %" PRIuPTR ")>", address, length, mobj.type, mobj_context_address, (uintptr_t)mobj_length);
+        _mkl_error(ctx, "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <mk_memory_object_t %p (base = 0x%" MK_VM_PRIxADDR ", length = %" PRIuPTR ")>", address, length, mobj.memory_object, mobj_context_address, (uintptr_t)mobj_length);
         MK_ERROR_OUT = MK_EOUT_OF_RANGE;
         return UINTPTR_MAX;
     }
     
     // Verify that the block ends within range
     if (mobj_context_address + mobj_length < address + length) {
-        _mkl_error(ctx, "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <mk_memory_object_t %p (base = 0x%" MK_VM_PRIxADDR ", length = %" PRIuPTR ")>", address, length, mobj.type, mobj_context_address, (uintptr_t)mobj_length);
+        _mkl_error(ctx, "Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIuSIZE ") is not within <mk_memory_object_t %p (base = 0x%" MK_VM_PRIxADDR ", length = %" PRIuPTR ")>", address, length, mobj.memory_object, mobj_context_address, (uintptr_t)mobj_length);
         MK_ERROR_OUT = MK_EOUT_OF_RANGE;
         return UINTPTR_MAX;
     }

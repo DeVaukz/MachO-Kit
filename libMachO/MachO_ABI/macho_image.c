@@ -38,7 +38,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
 {
     if (image == NULL) return MK_EINVAL;
     if (name == NULL) return MK_EINVAL;
-    if (memory_map.type == NULL) return MK_EINVAL;
+    if (memory_map.memory_map == NULL) return MK_EINVAL;
     
     mk_error_t err;
     
@@ -103,7 +103,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
 //|++++++++++++++++++++++++++++++++++++|//
 void mk_macho_free(mk_macho_ref image)
 {
-    mk_memory_map_free_object(image.macho->memory_map, &image.macho->header_mapping, NULL);
+    mk_memory_map_free_object(image.macho->memory_map, &image.macho->header_mapping);
     image.macho->vtable = NULL;
     image.macho->context = NULL;
     image.macho->header = NULL;

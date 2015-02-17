@@ -65,15 +65,22 @@ typedef struct mk_memory_object_s {
 //! The Memory Object polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_memory_object_s *memory_object;
 } mk_memory_object_ref __attribute__((__transparent_union__));
+
+//! The identifier for the Memory Object type.
+_mk_export intptr_t mk_memory_object_type;
 
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Instance Methods
 //! @name       Instance Methods
 //----------------------------------------------------------------------------//
+
+//! Cleans up any resources held by \a memory_object.  It is no longer safe to
+//! use \a memory_object after calling this function.
+_mk_export void
+mk_memory_object_free(mk_memory_object_ref memory_object);
 
 //! Returns the base process-relative address of \a mobj.
 //!

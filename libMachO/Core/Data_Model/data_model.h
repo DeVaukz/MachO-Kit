@@ -56,9 +56,17 @@ struct mk_data_model_s {
 //! The Data Model polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_data_model_s *data_model;
 } mk_data_model_ref __attribute__((__transparent_union__));
+
+//! The identifier for the Data Model type.
+_mk_export intptr_t mk_data_model_type;
+
+//! The identifier for the ILP32 Data Model type.
+_mk_export intptr_t mk_data_model_ilp32_type;
+
+//! The identifier for the LP64 Data Model type.
+_mk_export intptr_t mk_data_model_lp64_type;
 
 
 //----------------------------------------------------------------------------//

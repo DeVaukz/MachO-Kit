@@ -110,7 +110,7 @@ typedef struct _mk_runtime_base_s {
 #if __MACHOKIT__
     #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING) \
         if (((struct _mk_type_vtable*)INSTANCE.TYPE->vtable)->metaclass != NULL) \
-            return ((CAST)objc_msgSend)(INSTANCE.type, sel_getUid(SELECTOR_STRING))
+            return ((CAST)objc_msgSend)(INSTANCE.TYPE, sel_getUid(SELECTOR_STRING))
 #else
     #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING)
 #endif

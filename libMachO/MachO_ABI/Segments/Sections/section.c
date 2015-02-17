@@ -42,15 +42,17 @@ const struct _mk_section_vtable _mk_section_class = {
     .base.get_context           = &__mk_section_get_context
 };
 
+intptr_t mk_section_type = (intptr_t)&_mk_section_class;
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Working With Sections
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-__mk_section_common_init(mk_segment_ref segment, struct section* s, mk_section_t* section)
+mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t* section)
 {
-    if (segment.type == NULL) return MK_EINVAL;
+    if (segment.segment == NULL) return MK_EINVAL;
     if (s == NULL) return MK_EINVAL;
     if (section == NULL) return MK_EINVAL;
     
@@ -109,14 +111,6 @@ __mk_section_common_init(mk_segment_ref segment, struct section* s, mk_section_t
     
     return MK_ESUCCESS;
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-mk_error_t mk_section_init_with_section(mk_segment_ref segment, struct section* s, mk_section_t* section)
-{ return __mk_section_common_init(segment, s, section); }
-
-//|++++++++++++++++++++++++++++++++++++|//
-mk_error_t mk_section_init_with_section_64(mk_segment_ref segment, struct section_64* s, mk_section_t* section)
-{ return __mk_section_common_init(segment, (struct section*)s, section); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 void

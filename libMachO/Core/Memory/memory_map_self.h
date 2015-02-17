@@ -52,6 +52,9 @@ typedef struct mk_memory_map_self_s {
     struct mk_memory_map_s base;
 } mk_memory_map_self_t;
 
+//! The identifier for the Memory Map Self type.
+_mk_export intptr_t mk_memory_map_task_self;
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating A Memory Map

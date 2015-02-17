@@ -74,7 +74,7 @@ describe(@"The LP64 Data Model", ^{
 
 describe(@"A Bridged Data Model", ^{
     mk_data_model_ref ppc32;
-    ppc32.type = (__bridge_retained void*)[MKPPC32DataModel sharedDataModel];
+    ppc32.data_model = (__bridge_retained void*)[MKPPC32DataModel sharedDataModel];
     
     it(@"should have 4 byte pointers", ^{
         expect(mk_data_model_get_pointer_size(ppc32)).to.equal(@(4));
