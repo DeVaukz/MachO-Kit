@@ -74,7 +74,7 @@ struct _mk_load_command_vtable {
     size_t commnd_base_size;
 };
 
-//! The member function table for the \c load_command type type.
+//! The member function table for the \c load_command type.
 _mk_internal_extern
 const struct _mk_load_command_vtable _mk_load_command_class;
 

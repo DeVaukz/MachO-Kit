@@ -88,7 +88,6 @@ typedef struct mk_macho_s {
 //! The Mach-O image polymorphic type.
 //
 typedef union {
-    mk_type_ref type;
     struct mk_macho_s *macho;
 } mk_macho_ref __attribute__((__transparent_union__));
 

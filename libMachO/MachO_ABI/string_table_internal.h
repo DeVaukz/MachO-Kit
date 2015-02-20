@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       macho_abi_internal.h
+//! @file       string_table_internal.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,19 +25,34 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef _macho_abi_internal_h
-#define _macho_abi_internal_h
+#ifndef _string_table_internal_h
+#define _string_table_internal_h
+#ifndef DOXYGEN
 
-#include "core_internal.h"
-#include "macho_abi.h"
+#include "string_table.h"
 
-#include "_mach_lcstr.h"
+//! @addtogroup MACH
+//! @{
+//!
 
-#include "load_command_internal.h"
-#include "segment_internal.h"
-#include "section_internal.h"
-#include "symbol_internal.h"
-#include "string_table_internal.h"
-#include "symbol_table_internal.h"
+//----------------------------------------------------------------------------//
+#pragma mark -  Classes
+//! @name       Classes
+//----------------------------------------------------------------------------//
 
-#endif /* _macho_abi_internal_h */
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+//! Member function table declaration for the \c string_table type.
+//
+struct _mk_string_table_vtable {
+    __MK_RUNTIME_TYPE_BASE
+};
+
+//! The member function table for the \c string_table type type.
+_mk_internal_extern
+const struct _mk_string_table_vtable _mk_string_table_class;
+
+
+//! @} MACH !//
+
+#endif
+#endif /* _string_table_internal_h */

@@ -41,5 +41,7 @@
 
 #include "load_command.h"
 #include "segment.h"
+#include "string_table.h"
+#include "symbol_table.h"
 
 #endif /* _macho_abi_h */

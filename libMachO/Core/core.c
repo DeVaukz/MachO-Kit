@@ -275,6 +275,26 @@ const struct _mk_type_vtable _mk_type_class = {
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
+bool
+mk_type_is(mk_type_ref mk, intptr_t type)
+{
+    struct _mk_type_vtable *vtable = (struct _mk_type_vtable*)((_mk_runtime_base_t*)mk)->vtable;
+    return (vtable == (void*)type);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+bool
+mk_type_is_kind_of(mk_type_ref mk, intptr_t type)
+{
+    struct _mk_type_vtable *vtable = (struct _mk_type_vtable*)((_mk_runtime_base_t*)mk)->vtable;
+    while (vtable != NULL) {
+        if (vtable == (void*)type) return true;
+        vtable = (typeof(vtable))vtable->super;
+    }
+    return false;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 const char*
 mk_type_name(mk_type_ref mk)
 {

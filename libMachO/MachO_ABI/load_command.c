@@ -131,7 +131,7 @@ const uint32_t _mk_load_command_classes_count = sizeof(_mk_load_command_classes)
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
 __mk_load_command_get_context(mk_type_ref self)
-{ return mk_type_get_context( ((mk_load_command_t*)self)->image.type ); }
+{ return mk_type_get_context( ((mk_load_command_t*)self)->image.macho ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static bool
@@ -141,7 +141,7 @@ __mk_load_command_equal(mk_type_ref self, mk_type_ref other)
     mk_load_command_t *other_command = (mk_load_command_t*)other;
     
     if (load_command->vtable != other_command->vtable) return false;
-    if (!mk_type_equal(load_command->image.type, other_command->image.type)) return false;
+    if (!mk_type_equal(load_command->image.macho, other_command->image.macho)) return false;
     if (load_command->mach_load_command->cmdsize != other_command->mach_load_command->cmdsize) return false;
     
     return (memcmp(load_command->mach_load_command, other_command->mach_load_command, load_command->mach_load_command->cmdsize) == 0);
@@ -165,6 +165,8 @@ const struct _mk_load_command_vtable _mk_load_command_class = {
     .commnd_base_size           = 0
 };
 
+intptr_t mk_load_command_type = (intptr_t)&_mk_load_command_class;
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Static Methods
 //----------------------------------------------------------------------------//
@@ -178,7 +180,7 @@ mk_mach_load_command_id(mk_macho_ref image, struct load_command* lc)
     
     // Need to first verify it is safe to dereference lc.
     if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, sizeof(*lc), NULL)) {
-        _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
         return 0;
     }
     
@@ -199,11 +201,11 @@ mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_
     
     // Need to first verify it is safe to dereference lc.
     if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, sizeof(*lc), NULL)) {
-        _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
         return MK_EINVALID_DATA;
     }
     if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, mk_macho_get_byte_order(image)->swap32(lc->cmdsize), NULL)) {
-        _mkl_error(mk_type_get_context(image.type), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
         return MK_EINVALID_DATA;
     }
     
@@ -347,7 +349,7 @@ mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_
         //  load_command->vtable =
         //  break;
         default:
-            _mkl_error(mk_type_get_context(image.type), "Unknown load command %d in image %s", lc->cmd, image.macho->name);
+            _mkl_error(mk_type_get_context(image.macho), "Unknown load command %d in image %s", lc->cmd, image.macho->name);
             return MK_ENOT_FOUND;
     }
     

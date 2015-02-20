@@ -182,7 +182,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
         
         // Sanity Check
         if (mk_macho_get_byte_order(image)->swap32(image.macho->header->sizeofcmds) < sizeof(struct load_command)) {
-            _mkl_error(mk_type_get_context(image.type), "Mach-O sizeofcmds is less than sizeof(struct load_command) in %s", image.macho->name);
+            _mkl_error(mk_type_get_context(image.macho), "Mach-O sizeofcmds is less than sizeof(struct load_command) in %s", image.macho->name);
             return NULL;
         }
         
@@ -193,7 +193,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
         // We need the size from the previous load command; first, verify the pointer.
         cmd = previous;
         if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)cmd, sizeof(*cmd), NULL)) {
-            _mkl_error(mk_type_get_context(image.type), "LC_CMD at address %p is not in: %s", cmd, image.macho->name);
+            _mkl_error(mk_type_get_context(image.macho), "LC_CMD at address %p is not in: %s", cmd, image.macho->name);
             return NULL;
         }
         
@@ -208,7 +208,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
     
     // Verify that the header mapping holds at least the new load_command
     if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)cmd, sizeof(*cmd), NULL)) {
-        _mkl_error(mk_type_get_context(image.type), "Failed to map LC_CMD at address %p in: %s", cmd, image.macho->name);
+        _mkl_error(mk_type_get_context(image.macho), "Failed to map LC_CMD at address %p in: %s", cmd, image.macho->name);
         return NULL;
     }
     

@@ -99,11 +99,11 @@ mk_segment_get_macho(mk_segment_ref segment);
 _mk_export mk_load_command_ref
 mk_segment_get_load_command(mk_segment_ref segment);
 
-//! Returns the process-relative range of memory occupied by \a segment.
+//! Returns the host-relative range of memory occupied by \a segment.
 _mk_export mk_vm_range_t
 mk_segment_get_range(mk_segment_ref segment);
 
-//! Returns a memory object that can be used to safely access \a segments
+//! Returns a memory object that can be used to safely access \a segment
 //! contents.
 _mk_export mk_memory_object_ref
 mk_segment_get_mobj(mk_segment_ref segment);

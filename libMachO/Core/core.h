@@ -265,6 +265,16 @@ _mk_export const mk_byteorder_t mk_byteorder_swapped;
 //! A reference to an instance of any polymorphic type.
 typedef void* mk_type_ref;
 
+//! Returns a boolean indicating whether the provided instance of any
+//! polymorphic type is a member of \a type.
+_mk_export bool
+mk_type_is(mk_type_ref mk, intptr_t type);
+
+//! Returns a boolean indicating whether the provided instance of any
+//! polymorphic type is a member or subtype of \a type.
+_mk_export bool
+mk_type_is_kind_of(mk_type_ref mk, intptr_t type);
+
 //! Returns the name name of the provided instance of any polymorphic type.
 _mk_export const char*
 mk_type_name(mk_type_ref mk);

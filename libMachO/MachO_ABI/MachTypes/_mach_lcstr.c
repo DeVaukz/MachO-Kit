@@ -39,7 +39,7 @@ _mk_mach_lc_str_copy_native(mk_load_command_ref source_lc, union lc_str *source_
     mk_vm_range_t src_cmd_range = mk_vm_range_make((mk_vm_address_t)src_lc, src_cmd_size);
     
     if (lc_base_size > src_cmd_size) {
-        _mkl_error(mk_type_get_context(image.type), "Input lc_base_size is > source_lc->cmdsize.");
+        _mkl_error(mk_type_get_context(image.macho), "Input lc_base_size is > source_lc->cmdsize.");
         return 0;
     }
     
@@ -51,7 +51,7 @@ _mk_mach_lc_str_copy_native(mk_load_command_ref source_lc, union lc_str *source_
     {
         // We can't handle this case in copy_native.  What would we assign to
         // dest_str->offset?
-        _mkl_error(mk_type_get_context(image.type), "source_str is not within source_lc.");
+        _mkl_error(mk_type_get_context(image.macho), "source_str is not within source_lc.");
         return 0;
     }
     
@@ -63,7 +63,7 @@ _mk_mach_lc_str_copy_native(mk_load_command_ref source_lc, union lc_str *source_
     mk_vm_range_t dst_cmd_range = mk_vm_range_make((mk_vm_address_t)dest_lc, dest_cmd_size);
     
     if (src_string_offset > dest_cmd_size) {
-        _mkl_error(mk_type_get_context(image.type), "src_string_offset is > dest_cmd_size.");
+        _mkl_error(mk_type_get_context(image.macho), "src_string_offset is > dest_cmd_size.");
         return 0;
     }
     
@@ -91,7 +91,7 @@ _mk_mach_lc_str_copy(mk_load_command_ref source_lc, union lc_str *source_str, ch
     mk_vm_range_t cmd_range = mk_vm_range_make((mk_vm_address_t)lc, cmd_len);
     
     if (lc_base_size > cmd_len) {
-        _mkl_error(mk_type_get_context(image.type), "Input lc_base_size is > lc->cmdsize.");
+        _mkl_error(mk_type_get_context(image.macho), "Input lc_base_size is > lc->cmdsize.");
         return 0;
     }
     
@@ -115,7 +115,7 @@ _mk_mach_lc_str_copy(mk_load_command_ref source_lc, union lc_str *source_str, ch
     else
     {
         // TODO?
-        _mkl_error(mk_type_get_context(image.type), "Input str is not within the provided load command.");
+        _mkl_error(mk_type_get_context(image.macho), "Input str is not within the provided load command.");
         return 0;
     }
 }
