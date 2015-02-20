@@ -25,8 +25,8 @@ Mach-O Kit is not yet complete.  Currently the libraries can parse these parts o
     * LC_LINKER_OPTIMIZATION_HINT
 - Segments and Sections
     * Not all types of sections are fully parsed
-- Link Edit string table (MachOKit only)
-- Link Edit symbol table (MachOKit only)
+- Link Edit string table
+- Link Edit symbol table
     * Not all types of symbols are fully parsed
 - Indirect symbol table (MachOKit only)
 

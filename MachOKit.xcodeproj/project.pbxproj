@@ -113,9 +113,6 @@
 		D04623501A64F21D00537651 /* memory_map.c in Sources */ = {isa = PBXBuildFile; fileRef = D0E3FD311A592E31007B2771 /* memory_map.c */; };
 		D04623531A64F22800537651 /* memory_map_self.h in Headers */ = {isa = PBXBuildFile; fileRef = D0F7EBAA1A63413400FA834F /* memory_map_self.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D04623541A64F22C00537651 /* memory_map_self.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F7EBA91A63413400FA834F /* memory_map_self.c */; };
-		D04623551A64F29F00537651 /* macho_abi.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1E7FB1A61F3A6008892C8 /* macho_abi.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D04623561A64F2A300537651 /* macho_abi_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85419E4EE580095870C /* macho_abi_internal.h */; };
-		D04623571A64F2A600537651 /* macho_image.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85319E4EE580095870C /* macho_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D04623581A64F2B200537651 /* macho_image.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D85219E4EE580095870C /* macho_image.c */; };
 		D04623591A64F2B500537651 /* load_command_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D84F19E4EE580095870C /* load_command_internal.h */; };
 		D046235A1A64F2B800537651 /* load_command.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85119E4EE580095870C /* load_command.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -480,8 +477,6 @@
 		D0A1D85619E4EE580095870C /* load_command.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D85019E4EE580095870C /* load_command.c */; };
 		D0A1D85719E4EE580095870C /* load_command.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85119E4EE580095870C /* load_command.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A1D85819E4EE580095870C /* macho_image.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D85219E4EE580095870C /* macho_image.c */; };
-		D0A1D85919E4EE580095870C /* macho_image.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85319E4EE580095870C /* macho_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D0A1D85A19E4EE580095870C /* macho_abi_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85419E4EE580095870C /* macho_abi_internal.h */; };
 		D0A1D85D19E4EE840095870C /* _mach_lcstr.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D85B19E4EE840095870C /* _mach_lcstr.c */; };
 		D0A1D85E19E4EE840095870C /* _mach_lcstr.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85C19E4EE840095870C /* _mach_lcstr.h */; };
 		D0A1D8A919E4EEB80095870C /* _load_command_dyld_info.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D85F19E4EEB80095870C /* _load_command_dyld_info.c */; };
@@ -558,7 +553,6 @@
 		D0A1D8F019E4EEB80095870C /* load_command_version_min_iphoneos.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D8A619E4EEB80095870C /* load_command_version_min_iphoneos.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A1D8F119E4EEB80095870C /* load_command_version_min_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D8A719E4EEB80095870C /* load_command_version_min_macosx.c */; };
 		D0A1D8F219E4EEB80095870C /* load_command_version_min_macosx.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D8A819E4EEB80095870C /* load_command_version_min_macosx.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D0A1E7FC1A61F3EA008892C8 /* macho_abi.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1E7FB1A61F3A6008892C8 /* macho_abi.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A3BB541A68DEF200D663A0 /* macho_image_spec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A3BB531A68DEF200D663A0 /* macho_image_spec.m */; };
 		D0A3BB781A68EC8600D663A0 /* macho.c in Sources */ = {isa = PBXBuildFile; fileRef = D0079FE11895D15900E9D0CF /* macho.c */; };
 		D0A3BB791A68EC8600D663A0 /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D83919E4EE170095870C /* context.c */; };
@@ -718,6 +712,12 @@
 		D0EB58EA1A6CDD7A00953DF9 /* NSFileManager+MKTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EB58E91A6CDD7A00953DF9 /* NSFileManager+MKTest.m */; };
 		D0EB58ED1A6CE72800953DF9 /* Binary.m in Sources */ = {isa = PBXBuildFile; fileRef = D0EB58EC1A6CE72800953DF9 /* Binary.m */; };
 		D0F2032219E3A86500533165 /* macho.c in Sources */ = {isa = PBXBuildFile; fileRef = D0079FE11895D15900E9D0CF /* macho.c */; };
+		D0F3BEFA1A970BB100A92334 /* macho_abi.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1E7FB1A61F3A6008892C8 /* macho_abi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F3BEFB1A970BB400A92334 /* macho_abi.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1E7FB1A61F3A6008892C8 /* macho_abi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F3BEFC1A970BB800A92334 /* macho_abi_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85419E4EE580095870C /* macho_abi_internal.h */; };
+		D0F3BEFD1A970BB800A92334 /* macho_abi_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85419E4EE580095870C /* macho_abi_internal.h */; };
+		D0F3BEFE1A970BBB00A92334 /* macho_image.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85319E4EE580095870C /* macho_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0F3BEFF1A970BBB00A92334 /* macho_image.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D85319E4EE580095870C /* macho_image.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F7EB9E1A631B9A00FA834F /* memory_map_task.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F7EB9C1A631B9A00FA834F /* memory_map_task.c */; };
 		D0F7EB9F1A631B9A00FA834F /* memory_map_task.h in Headers */ = {isa = PBXBuildFile; fileRef = D0F7EB9D1A631B9A00FA834F /* memory_map_task.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F7EBAB1A63413400FA834F /* memory_map_self.c in Sources */ = {isa = PBXBuildFile; fileRef = D0F7EBA91A63413400FA834F /* memory_map_self.c */; };
@@ -1854,7 +1854,6 @@
 				D03030241A23B96900288B3E /* MKLCRoutines.h in Headers */,
 				D0995A271A6C914D007134CE /* MKFatArch.h in Headers */,
 				D0C3B2DC19F37ACF00CAFE58 /* MKLoadCommand.h in Headers */,
-				D0A1E7FC1A61F3EA008892C8 /* macho_abi.h in Headers */,
 				D0E3FD301A58F608007B2771 /* data_model.h in Headers */,
 				D038B7081A0FFF3A008621AE /* MKDataModel.h in Headers */,
 				D010B38D1A7492FB00AED697 /* MKFlagsNodeField.h in Headers */,
@@ -1900,12 +1899,12 @@
 				D0A1D8F019E4EEB80095870C /* load_command_version_min_iphoneos.h in Headers */,
 				D03030441A23CD9800288B3E /* MKLCRoutines64.h in Headers */,
 				D0A9EAAE1A8FD6FA00280D38 /* section.h in Headers */,
+				D0F3BEFA1A970BB100A92334 /* macho_abi.h in Headers */,
 				D03030081A22F46200288B3E /* MKLCSymtab.h in Headers */,
 				D08B77A71A89D1E100E61338 /* segment_internal.h in Headers */,
 				D0E3FD341A592E31007B2771 /* memory_map.h in Headers */,
 				D0590CD11A74286F00CF9FD0 /* load_command_load_upward_dylib.h in Headers */,
 				D0A1D8AA19E4EEB80095870C /* _load_command_dyld_info.h in Headers */,
-				D0A1D85A19E4EE580095870C /* macho_abi_internal.h in Headers */,
 				D046E57A199B3EBD00371953 /* internal.h in Headers */,
 				D0C3B2F019F463EA00CAFE58 /* MKNode.h in Headers */,
 				D0A1D8D819E4EEB80095870C /* load_command_routines_64.h in Headers */,
@@ -1922,6 +1921,7 @@
 				D0539BCC1A23DCD700D3A5F0 /* MKDylibLoadCommand.h in Headers */,
 				D0539BE81A24199C00D3A5F0 /* MKSourceVersion.h in Headers */,
 				D0C564121A94517100443090 /* string_table.h in Headers */,
+				D0F3BEFE1A970BBB00A92334 /* macho_image.h in Headers */,
 				D0079FE41895D1AE00E9D0CF /* macho.h in Headers */,
 				D0995A1F1A6C8D52007134CE /* MKFatBinary.h in Headers */,
 				D0C563FB1A944E2800443090 /* symbol.h in Headers */,
@@ -1941,6 +1941,7 @@
 				D01DF2C61A2EE4F100CB1510 /* _MKTaskMemoryMap.h in Headers */,
 				D0672B3F1A52771500D44610 /* MKOffsetNode.h in Headers */,
 				D0A1D8AE19E4EEB80095870C /* _load_command_dylinker.h in Headers */,
+				D0F3BEFC1A970BB800A92334 /* macho_abi_internal.h in Headers */,
 				D0BC7C161A2D975D0011517D /* MKBackedNode.h in Headers */,
 				D0672B471A535DFB00D44610 /* MKNode+MachO.h in Headers */,
 				D0672B331A51FD1900D44610 /* MKStringTable.h in Headers */,
@@ -1969,7 +1970,6 @@
 				D0539BA81A23D28400D3A5F0 /* MKLCVersionMinMacOSX.h in Headers */,
 				D0A1D8EC19E4EEB80095870C /* load_command_twolevel_hints.h in Headers */,
 				D0BA9D8D1A95778E0080F445 /* string_table_internal.h in Headers */,
-				D0A1D85919E4EE580095870C /* macho_image.h in Headers */,
 				D03030581A23D00B00288B3E /* MKLCReExportDylib.h in Headers */,
 				D0C7C7831A5A44A400B41355 /* data_model_internal.h in Headers */,
 				D0E3FD361A59D6B3007B2771 /* memory_map_internal.h in Headers */,
@@ -2048,7 +2048,6 @@
 				D04623421A64F1EC00537651 /* core_internal.h in Headers */,
 				D04623751A64F30200537651 /* load_command_main.h in Headers */,
 				D04623491A64F20600537651 /* data_model.h in Headers */,
-				D04623571A64F2A600537651 /* macho_image.h in Headers */,
 				D04623861A64F30200537651 /* load_command_version_min_macosx.h in Headers */,
 				D04623D31A64F5BD00537651 /* MKDylibLoadCommand.h in Headers */,
 				D04623B81A64F57500537651 /* MKDataModel.h in Headers */,
@@ -2068,6 +2067,7 @@
 				D04623431A64F1F200537651 /* core.h in Headers */,
 				D09959F01A6A5D65007134CE /* MKMachO+Segments.h in Headers */,
 				D04623C31A64F58700537651 /* MKMachHeader64.h in Headers */,
+				D0F3BEFB1A970BB400A92334 /* macho_abi.h in Headers */,
 				D04623EC1A64F5BD00537651 /* MKLCEncryptionInfo.h in Headers */,
 				D04623C81A64F59200537651 /* MKLoadCommandString.h in Headers */,
 				D0848AE31A959E390076976F /* symbol_table.h in Headers */,
@@ -2087,7 +2087,6 @@
 				D0848AF21A959E6C0076976F /* symbol_table_internal.h in Headers */,
 				D046236D1A64F30200537651 /* load_command_encryption_info.h in Headers */,
 				D04623E81A64F5BD00537651 /* MKLCRPath.h in Headers */,
-				D04623551A64F29F00537651 /* macho_abi.h in Headers */,
 				D08B77A81A89D1E100E61338 /* segment_internal.h in Headers */,
 				D04623DB1A64F5BD00537651 /* MKLCIDDylib.h in Headers */,
 				D010B38E1A7492FB00AED697 /* MKFlagsNodeField.h in Headers */,
@@ -2101,7 +2100,6 @@
 				D0995A001A6B45C3007134CE /* MKIndirectSymbolTable.h in Headers */,
 				D04623F11A64F5BD00537651 /* MKLCFunctionStarts.h in Headers */,
 				D0C5640B1A944E3E00443090 /* symbol_internal.h in Headers */,
-				D04623561A64F2A300537651 /* macho_abi_internal.h in Headers */,
 				D046234F1A64F21A00537651 /* memory_map.h in Headers */,
 				D04623F51A64F5BD00537651 /* MKLCSourceVersion.h in Headers */,
 				D046235E1A64F2DD00537651 /* _load_command_dyld_info.h in Headers */,
@@ -2109,6 +2107,7 @@
 				D04623481A64F20200537651 /* data_model_internal.h in Headers */,
 				D04623DD1A64F5BD00537651 /* MKLCIDDylinker.h in Headers */,
 				D010B3861A747D0B00AED697 /* MKDylibVersion.h in Headers */,
+				D0F3BEFF1A970BBB00A92334 /* macho_image.h in Headers */,
 				D04623E31A64F5BD00537651 /* MKLCPrebindChecksum.h in Headers */,
 				D04623F41A64F5BD00537651 /* MKLCDataInCode.h in Headers */,
 				D046233C1A64F1D300537651 /* macho.h in Headers */,
@@ -2138,6 +2137,7 @@
 				D046237B1A64F30200537651 /* load_command_segment.h in Headers */,
 				D04623461A64F1FC00537651 /* logging.h in Headers */,
 				D04623721A64F30200537651 /* load_command_load_dylib.h in Headers */,
+				D0F3BEFD1A970BB800A92334 /* macho_abi_internal.h in Headers */,
 				D04623A81A64F54700537651 /* MachOKit.h in Headers */,
 				D046234E1A64F21700537651 /* memory_map_internal.h in Headers */,
 				D04623D51A64F5BD00537651 /* MKLinkEditDataLoadCommand.h in Headers */,
