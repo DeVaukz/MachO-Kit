@@ -376,6 +376,13 @@ mk_load_command_get_macho(mk_load_command_ref load_command)
 { return load_command.load_command->image; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_vm_range_t
+mk_load_command_get_range(mk_load_command_ref load_command)
+{
+    return mk_vm_range_make(mk_load_command_get_address(load_command), mk_load_command_size(load_command));
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 mk_vm_address_t
 mk_load_command_get_address(mk_load_command_ref load_command)
 {

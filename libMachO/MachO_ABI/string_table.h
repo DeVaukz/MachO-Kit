@@ -67,7 +67,15 @@ _mk_export intptr_t mk_string_table_type;
 
 //! Initializes the provided \ref mk_string_table_t.
 _mk_export mk_error_t
-mk_string_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, mk_string_table_t *string_table);
+mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_string_table_t *string_table);
+
+//! Initializes the provided \ref mk_string_table_t.
+_mk_export mk_error_t
+mk_string_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, mk_string_table_t *string_table);
+
+//! Initializes the provided \ref mk_string_table_t.
+_mk_export mk_error_t
+mk_string_table_init_with_segment(mk_segment_ref link_edit, mk_string_table_t *string_table);
 
 //! Releases any resources held by \a string_table
 _mk_export void

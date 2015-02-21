@@ -38,13 +38,6 @@
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-typedef union {
-    void *any;
-    struct nlist *nlist;
-    struct nlist_64 *nlist_64;
-} mk_nlist;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_symbol_table_s {
@@ -53,8 +46,10 @@ typedef struct mk_symbol_table_s {
     mk_segment_ref link_edit;
     //! The range of the symbol table in the link edit segment.
     mk_vm_range_t range;
-    //! The number of symbols.
+    //! The total number of symbols.
     uint32_t symbol_count;
+    //! Dynamic Symbol Table information.
+    mk_load_command_t dysymtab_cmd;
 } mk_symbol_table_t;
 
 
@@ -83,11 +78,15 @@ _mk_export intptr_t mk_symbol_table_type;
 
 //! Initializes the provided \ref mk_symbol_table_t.
 _mk_export mk_error_t
-mk_symbol_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, mk_symbol_table_t *symbol_table);
+mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_load_command_ref dysymtab_cmd, mk_symbol_table_t *symbol_table);
 
-//! Releases any resources held by \a symbol_table
-_mk_export void
-mk_symbol_table_free(mk_symbol_table_ref symbol_table);
+//! Initializes the provided \ref mk_string_table_t.
+_mk_export mk_error_t
+mk_symbol_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, struct dysymtab_command *mach_dysymtab, mk_symbol_table_t *symbol_table);
+
+//! Initializes the provided \ref mk_string_table_t.
+_mk_export mk_error_t
+mk_symbol_table_init_with_segment(mk_segment_ref link_edit, mk_symbol_table_t *symbol_table);
 
 //! Returns the image that \a symbol_table resides within.
 _mk_export mk_macho_ref
@@ -105,6 +104,10 @@ mk_symbol_table_get_range(mk_symbol_table_ref symbol_table);
 _mk_export uint32_t
 mk_symbol_table_get_count(mk_symbol_table_ref symbol_table);
 
+//!
+_mk_export mk_load_command_ref
+mk_symbol_table_get_dysymtab_load_command(mk_symbol_table_ref symbol_table);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Looking Up Symbols
@@ -114,18 +117,18 @@ mk_symbol_table_get_count(mk_symbol_table_ref symbol_table);
 //! Returns a pointer to the symbol at \a index in \a symbol_table.  The
 //! returned pointer should be considered valid for the lifetime of
 //! \a symbol_table.
-_mk_export mk_nlist
+_mk_export mk_mach_nlist
 mk_symbol_table_get_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* host_address);
 
 //! 
-_mk_export mk_nlist
-mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_nlist previous, uint32_t* index, mk_vm_address_t* host_address);
+_mk_export mk_mach_nlist
+mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_mach_nlist previous, uint32_t* index, mk_vm_address_t* host_address);
 
 #if __BLOCKS__
 //! Iterate over the mach symbols using a block.
 _mk_export void
 mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index,
-                                       void (^enumerator)(const mk_nlist symbol, uint32_t index, mk_vm_address_t host_address));
+                                       void (^enumerator)(const mk_mach_nlist symbol, uint32_t index, mk_vm_address_t host_address));
 #endif
 
 

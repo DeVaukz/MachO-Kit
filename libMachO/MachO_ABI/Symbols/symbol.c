@@ -50,7 +50,7 @@ intptr_t mk_symbol_type = (intptr_t)&_mk_symbol_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_nlist nlist, mk_symbol_t* load_command)
+mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_mach_nlist nlist, mk_symbol_t* load_command)
 {
     if (symbol_table.symbol_table == NULL) return MK_EINVAL;
     if (nlist.any == NULL) return MK_EINVAL;

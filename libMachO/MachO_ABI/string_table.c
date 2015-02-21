@@ -50,7 +50,7 @@ intptr_t mk_string_table_type = (intptr_t)&_mk_string_table_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_string_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, mk_string_table_t *string_table)
+mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_string_table_t *string_table)
 {
     if (string_table == NULL) return MK_EINVAL;
     if (link_edit.segment == NULL) return MK_EINVAL;
@@ -74,7 +74,7 @@ mk_string_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, m
     // For some reason we need to subtract the fileOffset of the __LINKEDIT
     // segment.
     if ((err = mk_vm_address_substract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
-        _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while subtracting __LINKEDIT fileOffset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), mk_segment_get_fileoff(link_edit), vm_address);
+        _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while subtracting __LINKEDIT file offset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), mk_segment_get_fileoff(link_edit), vm_address);
         return err;
     }
     
@@ -87,7 +87,39 @@ mk_string_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, m
         return err;
     }
     
+    string_table->vtable = &_mk_string_table_class;
     return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_string_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, mk_string_table_t *string_table)
+{
+    if (link_edit.segment == NULL) return MK_EINVAL;
+    if (mach_symtab == NULL) return MK_EINVAL;
+    
+    mk_error_t err;
+    mk_load_command_t symtab_cmd;
+    
+    if ((err = mk_load_command_init(mk_segment_get_macho(link_edit), (struct load_command*)mach_symtab, &symtab_cmd)))
+        return err;
+    
+    return mk_string_table_init(link_edit, &symtab_cmd, string_table);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_string_table_init_with_segment(mk_segment_ref link_edit, mk_string_table_t *string_table)
+{
+    if (link_edit.segment == NULL) return MK_EINVAL;
+    
+    struct load_command *mach_symtab = mk_macho_find_command(mk_segment_get_macho(link_edit), LC_SYMTAB, NULL);
+    if (mach_symtab == NULL) {
+        _mkl_error(mk_type_get_context(link_edit.segment), "No LC_SYMTAB command in %s", mk_macho_get_name(mk_segment_get_macho(link_edit)));
+        return MK_ENOT_FOUND;
+    }
+    
+    return mk_string_table_init_with_mach_symtab(link_edit, (struct symtab_command*)mach_symtab, string_table);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -227,7 +259,7 @@ mk_string_table_enumerate_strings(mk_string_table_ref string_table, uint32_t off
         size_t len = strnlen((const char*)address, (size_t)max_length) + 1;
         host_address += len;
         address += len;
-        // If this happens to wrap around, host_address will have gone out of
+        // If this happens to wrap around, host_address would have gone out of
         // range.
         max_length -= len;
         

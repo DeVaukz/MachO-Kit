@@ -158,7 +158,7 @@ mk_error_string(mk_error_t error);
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-//! A structure used to describe a portion of memory.
+//! A structure used to describe a portion of host memory.
 //
 typedef struct {
     mk_vm_address_t location;

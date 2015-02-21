@@ -137,6 +137,10 @@ mk_load_command_copy(mk_load_command_ref load_command, mk_load_command_t* copy);
 _mk_export mk_macho_ref
 mk_load_command_get_macho(mk_load_command_ref load_command);
 
+//! Returns the host-relative range of memory occupied by \a load_command.
+_mk_export mk_vm_range_t
+mk_load_command_get_range(mk_load_command_ref load_command);
+
 //! Returns the address of the provided \a load_command.
 _mk_export mk_vm_address_t
 mk_load_command_get_address(mk_load_command_ref load_command);

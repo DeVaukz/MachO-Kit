@@ -103,6 +103,10 @@ mk_data_model_get_pointer_size(mk_data_model_ref data_model);
 _mk_export size_t
 mk_data_model_get_pointer_alignment(mk_data_model_ref data_model);
 
+//! Returns \c true if \a data_model represents a 64-bit ISA.
+_mk_export bool
+mk_data_model_is_64_bit(mk_data_model_ref data_model);
+
 
 //! @} DATA_MODEL !//
 

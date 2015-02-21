@@ -45,12 +45,19 @@
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+typedef union {
+    void *any;
+    struct nlist *nlist;
+    struct nlist_64 *nlist_64;
+} mk_mach_nlist __attribute__((__transparent_union__));
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_symbol_s {
     __MK_RUNTIME_BASE
     mk_symbol_table_ref symbol_table;
-    mk_nlist nlist;
+    mk_mach_nlist nlist;
 } mk_symbol_t;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -72,7 +79,7 @@ _mk_export intptr_t mk_symbol_type;
 //! Initializes the provided symbol with the provided Mach nlist structure
 //! in \a image.
 _mk_export mk_error_t
-mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_nlist nlist, mk_symbol_t* load_command);
+mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_mach_nlist nlist, mk_symbol_t* load_command);
 
 //! Returns the image that \a symbol resides within.
 _mk_export mk_macho_ref

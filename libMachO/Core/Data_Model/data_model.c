@@ -222,3 +222,8 @@ mk_data_model_get_pointer_alignment(mk_data_model_ref data_model)
     MK_OBJC_BRIDGED_INVOKE(data_model, data_model, _mk_data_model_get_pointer_alignment, "pointerAlignment");
     MK_TYPE_INVOKE(data_model, data_model, get_pointer_alignment)(data_model, NULL);
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+bool
+mk_data_model_is_64_bit(mk_data_model_ref data_model)
+{ return (mk_data_model_get_pointer_size(data_model) == 8); }

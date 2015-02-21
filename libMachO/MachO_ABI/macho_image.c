@@ -34,7 +34,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
 mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_addr,
-              mk_memory_map_ref memory_map, mk_macho_options_t options, mk_macho_t *image)
+              mk_memory_map_ref memory_map, mk_macho_t *image)
 {
     if (image == NULL) return MK_EINVAL;
     if (name == NULL) return MK_EINVAL;
@@ -43,7 +43,6 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     mk_error_t err;
     
     image->context = ctx;
-    image->options = options;
     image->memory_map = memory_map;
     image->slide = slide;
     image->name = name;
@@ -85,7 +84,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     
     // Map in the header + load command.
     if (mk_memory_map_init_object(memory_map, 0, header_addr, (mk_vm_size_t)header.sizeofcmds + image->header_size, true, &image->header_mapping)) {
-        _mkl_error(ctx, "Failed to map Mach-O header for %s", image->name);
+        _mkl_error(ctx, "Failed to map Mach-O header in %s", image->name);
         return err;
     }
     
@@ -120,6 +119,10 @@ mk_data_model_ref mk_macho_get_data_model(mk_macho_ref image)
 //|++++++++++++++++++++++++++++++++++++|//
 const mk_byteorder_t* mk_macho_get_byte_order(mk_macho_ref image)
 { return mk_data_model_get_byte_order(image.macho->data_model); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+bool mk_macho_is_64_bit(mk_macho_ref image)
+{ return mk_data_model_is_64_bit(image.macho->data_model); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 intptr_t mk_macho_get_slide(mk_macho_ref image)
@@ -171,7 +174,7 @@ bool mk_macho_is_from_shared_cache(mk_macho_ref image)
 
 //|++++++++++++++++++++++++++++++++++++|//
 struct load_command*
-mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_address_t *context_address)
+mk_macho_next_command(mk_macho_ref image, struct load_command* previous, mk_vm_address_t* host_address)
 {
     struct load_command *cmd;
     
@@ -186,7 +189,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
             return NULL;
         }
         
-        cmd = (typeof(cmd))((uint8_t*)image.macho->header + image.macho->header_size);
+        cmd = (typeof(cmd))((uintptr_t)image.macho->header + image.macho->header_size);
     }
     else
     {
@@ -199,7 +202,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
         
         // Advance to the next command
         uint32_t cmdsize = mk_macho_get_byte_order(image)->swap32(cmd->cmdsize);
-        cmd = (typeof(cmd))( ((uint8_t *)previous) + cmdsize );
+        cmd = (typeof(cmd))( ((uintptr_t)previous) + cmdsize );
     }
     
     // Avoid walking off the end of the cmd buffer
@@ -212,10 +215,16 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
         return NULL;
     }
     
-    if (context_address)
+    // Verify that the actual size
+    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)cmd, mk_macho_get_byte_order(image)->swap32(cmd->cmdsize), NULL)) {
+        _mkl_error(mk_type_get_context(image.macho), "Failed to map LC_CMD at address %p in: %s", cmd, image.macho->name);
+        return NULL;
+    }
+    
+    if (host_address)
     {
         mk_error_t err;
-        *context_address = mk_memory_object_unmap_address(&image.macho->header_mapping, 0, (vm_address_t)cmd, sizeof(*cmd), &err);
+        *host_address = mk_memory_object_unmap_address(&image.macho->header_mapping, 0, (vm_address_t)cmd, sizeof(*cmd), &err);
         if (err != MK_ESUCCESS)
             return NULL;
     }
@@ -225,7 +234,7 @@ mk_macho_next_command(mk_macho_ref image, struct load_command *previous, mk_vm_a
 
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
-void mk_macho_enumerate_commands(mk_macho_ref image, void (^enumerator)(struct load_command *command, uint32_t index, mk_vm_address_t context_address))
+void mk_macho_enumerate_commands(mk_macho_ref image, void (^enumerator)(struct load_command* command, uint32_t index, mk_vm_address_t host_address))
 {
     struct load_command *cmd = NULL;
     uint32_t index = 0;
@@ -238,12 +247,13 @@ void mk_macho_enumerate_commands(mk_macho_ref image, void (^enumerator)(struct l
 #endif
 
 //|++++++++++++++++++++++++++++++++++++|//
-struct load_command* mk_macho_next_command_type(mk_macho_ref image, struct load_command *previous, uint32_t expected_command, mk_vm_address_t *context_address)
+struct load_command*
+mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, uint32_t expected_command, mk_vm_address_t* host_address)
 {
     struct load_command *cmd = previous;
     
     // Iterate commands until we either find a match, or reach the end
-    while ((cmd = mk_macho_next_command(image, cmd, context_address)) != NULL) {
+    while ((cmd = mk_macho_next_command(image, cmd, host_address)) != NULL) {
         // Return a match
         if (mk_macho_get_byte_order(image)->swap32(cmd->cmd) == expected_command) {
             return cmd;
@@ -253,4 +263,8 @@ struct load_command* mk_macho_next_command_type(mk_macho_ref image, struct load_
     // No match found
     return NULL;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+struct load_command* mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* host_address)
+{ return mk_macho_next_command_type(image, NULL, expected_command, host_address); }
 

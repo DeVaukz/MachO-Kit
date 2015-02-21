@@ -45,12 +45,19 @@
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+typedef union {
+    void *any;
+    struct segment_command *segment_command;
+    struct segment_command_64 *segment_command_64;
+} mk_mach_segment __attribute__((__transparent_union__));
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_segment_s {
     __MK_RUNTIME_BASE
-    // The load command identifying this segment
-    mk_load_command_ref segment_load_command;
+    // The load command for this segment.
+    mk_load_command_t command;
     // Memory object for accessing this segment.
     mk_memory_object_t memory_object;
 } mk_segment_t;
@@ -78,7 +85,7 @@ _mk_export intptr_t mk_segment_type;
 //! @name       Working With Segments
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided segment with the provided Mach load command.
+//! Initializes the provided segment with the provided load command.
 //!
 //! @param  load_command
 //!         A reference to a \c segment or \c segment_64 load command.
@@ -86,6 +93,11 @@ _mk_export intptr_t mk_segment_type;
 //!         A pointer to the \ref mk_segment_t that will be initialized.
 _mk_export mk_error_t
 mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment);
+
+//! Initializes the provided segment with the provided image and mach load
+//! command.
+_mk_export mk_error_t
+mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_mach_segment mach_segment, mk_segment_t* segment);
 
 //! Releases any resources held by \a segment
 _mk_export void
@@ -95,7 +107,7 @@ mk_segment_free(mk_segment_ref segment);
 _mk_export mk_macho_ref
 mk_segment_get_macho(mk_segment_ref segment);
 
-//! Returns the load command that was used to initialize \a segment.
+//! Returns the underlying load command for \a segment.
 _mk_export mk_load_command_ref
 mk_segment_get_load_command(mk_segment_ref segment);
 
@@ -143,24 +155,14 @@ mk_segment_get_flags(mk_segment_ref segment);
 //----------------------------------------------------------------------------//
 
 //! Iterate over the sections in this segment.
-//!
-//! @param  segment
-//!         The segment to iterate.
-//! @param  section
-//!         A pointer to a \ref mk_section_t, which will be initialized with
-//!         the data for the next section.
-//! @return
-//! An \ref mk_error_t indicating whether \a section was initialized with the
-//! next section's data.  If there are no sections left to enumerate,
-//! \ref MK_ENOT_FOUND is returned.
-_mk_export mk_error_t
-mk_segment_next_section(mk_segment_ref segment, mk_section_t* section);
+_mk_export mk_mach_section
+mk_segment_next_section(mk_segment_ref segment, mk_mach_section previous, mk_vm_address_t* host_address);
 
 #if __BLOCKS__
 //! Iterate over the available sections using a block.
 _mk_export void
 mk_segment_enumerate_sections(mk_segment_ref segment,
-                              void (^enumerator)(mk_section_ref section, uint32_t index));
+                              void (^enumerator)(mk_mach_section section, uint32_t index));
 #endif
 
 

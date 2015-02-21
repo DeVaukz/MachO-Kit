@@ -34,7 +34,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
 __mk_section_get_context(mk_type_ref self)
-{ return mk_type_get_context( &((mk_section_t*)self)->section_segment ); }
+{ return mk_type_get_context( &((mk_section_t*)self)->segment ); }
 
 const struct _mk_section_vtable _mk_section_class = {
     .base.super                 = &_mk_type_class,
@@ -50,10 +50,10 @@ intptr_t mk_section_type = (intptr_t)&_mk_section_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t* section)
+mk_section_init(mk_segment_ref segment, mk_load_command_section lc_section, mk_section_t* section)
 {
     if (segment.segment == NULL) return MK_EINVAL;
-    if (s == NULL) return MK_EINVAL;
+    if (lc_section.any == NULL) return MK_EINVAL;
     if (section == NULL) return MK_EINVAL;
     
     mk_error_t err;
@@ -69,26 +69,24 @@ mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t*
     
     if (is64)
     {
-        err = mk_load_command_segment_64_section_init(load_command, (struct section_64*)s, &section->section_64);
-        if (err != MK_ESUCCESS)
-            return err;
+        // Copy lc_section
+        section->section_64 = *lc_section.section_64;
         
         vm_address = mk_load_command_segment_64_section_get_addr(&section->section_64);
         vm_size = mk_load_command_segment_64_section_get_size(&section->section_64);
         mk_load_command_segment_64_section_copy_name(&section->section_64, sect_name);
+        mk_load_command_segment_64_section_copy_segment_name(&section->section_64, seg_name);
     }
     else
     {
-        err = mk_load_command_segment_section_init(load_command, (struct section*)s, &section->section);
-        if (err != MK_ESUCCESS)
-            return err;
+        // Copy lc_section
+        section->section = *lc_section.section;
         
         vm_address = mk_load_command_segment_section_get_addr(&section->section);
         vm_size = mk_load_command_segment_section_get_size(&section->section);
         mk_load_command_segment_section_copy_name(&section->section, sect_name);
+        mk_load_command_segment_section_copy_segment_name(&section->section, seg_name);
     }
-    
-    mk_segment_copy_name(segment, seg_name);
     
     // Slide the vmAddress
     {
@@ -107,25 +105,47 @@ mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t*
     }
     
     section->vtable = &_mk_section_class;
-    section->section_segment = segment;
+    section->segment = segment;
     
     return MK_ESUCCESS;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-void
-mk_section_free(mk_section_ref section)
+mk_error_t
+mk_section_init_wih_mach_section(mk_segment_ref segment, mk_mach_section mach_section, mk_section_t* section)
 {
-    section.section->vtable = NULL;
+    if (segment.segment == NULL) return MK_EINVAL;
+    if (mach_section.any == NULL) return MK_EINVAL;
+    if (section == NULL) return MK_EINVAL;
+    
+    mk_load_command_ref load_command = mk_segment_get_load_command(segment);
+    
+    if (mk_load_command_id(load_command) == mk_load_command_segment_64_id()) {
+        mk_load_command_section_64_t sec;
+        mk_error_t err;
+        
+        if ((err = mk_load_command_segment_64_section_init(load_command, mach_section.section_64, &sec)))
+            return err;
+        
+        return mk_section_init(segment, &sec, section);
+    } else {
+        mk_load_command_section_t sec;
+        mk_error_t err;
+        
+        if ((err = mk_load_command_segment_section_init(load_command, mach_section.section, &sec)))
+            return err;
+        
+        return mk_section_init(segment, &sec, section);
+    }
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_macho_ref mk_section_get_macho(mk_section_ref section)
-{ return mk_segment_get_macho(section.section->section_segment); }
+{ return mk_segment_get_macho(section.section->segment); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_segment_ref mk_section_get_segment(mk_section_ref section)
-{ return section.section->section_segment; }
+{ return section.section->segment; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t
@@ -152,7 +172,7 @@ mk_section_init_mobj(mk_section_ref section, mk_memory_object_t *mobj)
 size_t
 mk_section_copy_name(mk_section_ref section, char output[16])
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_copy_name(&section.section->section_64, output);
     else
         return mk_load_command_segment_section_copy_name(&section.section->section, output);
@@ -162,7 +182,7 @@ mk_section_copy_name(mk_section_ref section, char output[16])
 size_t
 mk_section_copy_segment_name(mk_section_ref section, char output[16])
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_copy_segment_name(&section.section->section_64, output);
     else
         return mk_load_command_segment_section_copy_segment_name(&section.section->section, output);
@@ -172,7 +192,7 @@ mk_section_copy_segment_name(mk_section_ref section, char output[16])
 mk_vm_address_t
 mk_section_get_addr(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_addr(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_addr(&section.section->section);
@@ -182,7 +202,7 @@ mk_section_get_addr(mk_section_ref section)
 mk_vm_size_t
 mk_section_get_size(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_size(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_size(&section.section->section);
@@ -192,7 +212,7 @@ mk_section_get_size(mk_section_ref section)
 mk_vm_address_t
 mk_section_get_offset(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_offset(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_offset(&section.section->section);
@@ -202,7 +222,7 @@ mk_section_get_offset(mk_section_ref section)
 uint32_t
 mk_section_get_align(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_align(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_align(&section.section->section);
@@ -212,7 +232,7 @@ mk_section_get_align(mk_section_ref section)
 uint32_t
 mk_section_get_reloff(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_offset(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_offset(&section.section->section);
@@ -222,7 +242,7 @@ mk_section_get_reloff(mk_section_ref section)
 uint32_t
 mk_section_get_nreloc(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_nreloc(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_nreloc(&section.section->section);
@@ -232,7 +252,7 @@ mk_section_get_nreloc(mk_section_ref section)
 uint8_t
 mk_section_get_type(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_type(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_type(&section.section->section);
@@ -242,7 +262,7 @@ mk_section_get_type(mk_section_ref section)
 uint32_t
 mk_section_get_attributes(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_attributes(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_attributes(&section.section->section);
@@ -252,7 +272,7 @@ mk_section_get_attributes(mk_section_ref section)
 uint32_t
 mk_section_get_reserved1(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_reserved1(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_reserved1(&section.section->section);
@@ -262,7 +282,7 @@ mk_section_get_reserved1(mk_section_ref section)
 uint32_t
 mk_section_get_reserved2(mk_section_ref section)
 {
-    if (mk_load_command_id(mk_segment_get_load_command(section.section->section_segment)) == mk_load_command_segment_64_id())
+    if (mk_load_command_id(mk_segment_get_load_command(section.section->segment)) == mk_load_command_segment_64_id())
         return mk_load_command_segment_64_section_get_reserved2(&section.section->section_64);
     else
         return mk_load_command_segment_section_get_reserved2(&section.section->section);

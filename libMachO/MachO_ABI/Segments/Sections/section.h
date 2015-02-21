@@ -45,16 +45,30 @@
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+typedef union {
+    void *any;
+    struct section *section;
+    struct section_64 *section_64;
+} mk_mach_section __attribute__((__transparent_union__));
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+typedef union {
+    void *any;
+    mk_load_command_section_t *section;
+    mk_load_command_section_64_t *section_64;
+} mk_load_command_section __attribute__((__transparent_union__));
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_section_s {
     __MK_RUNTIME_BASE
     // The segment containing this section.
-    mk_segment_ref section_segment;
-    // The mach section structure.
+    mk_segment_ref segment;
+    // The section structure.
     union {
-        mk_load_command_section_t section;
         mk_load_command_section_64_t section_64;
+        mk_load_command_section_t section;
     };
 } mk_section_t;
 
@@ -74,20 +88,28 @@ _mk_export intptr_t mk_section_type;
 //! @name       Working With Sections
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided \a section with the provided Mach \c section.
+//! Initializes the provided \a section with the provided
+//! \ref mk_load_command_section_64_t or \ref mk_load_command_section_t.
 //!
 //! @param  segment
-//!         The segment in which \a s resides.
-//! @param  s
+//!         The segment in which \a lc_section resides.
+//! @param  lc_section
+//!         A \ref mk_load_command_section.
+//! @param  section
+//!         A pointer to the \ref to be initialized.
+_mk_export mk_error_t
+mk_section_init(mk_segment_ref segment, mk_load_command_section lc_section, mk_section_t* section);
+
+//! Initializes the provided \a section with the provided \a mach_section.
+//!
+//! @param  segment
+//!         The segment in which \a mach_section resides.
+//! @param  mach_section
 //!         A pointer to a Mach \c section or \c section_64 structure.
 //! @param  section
 //!         A pointer to the \ref to be initialized.
 _mk_export mk_error_t
-mk_section_init_with_mach_section(mk_segment_ref segment, void* s, mk_section_t* section);
-
-//! Releases any resources held by \a section
-_mk_export void
-mk_section_free(mk_section_ref section);
+mk_section_init_wih_mach_section(mk_segment_ref segment, mk_mach_section mach_section, mk_section_t* section);
 
 //! Returns the image that \a section resides within.
 _mk_export mk_macho_ref

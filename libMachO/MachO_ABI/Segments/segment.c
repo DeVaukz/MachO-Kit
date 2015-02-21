@@ -34,7 +34,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
 __mk_segment_get_context(mk_type_ref self)
-{ return mk_type_get_context( &((mk_segment_t*)self)->segment_load_command ); }
+{ return mk_type_get_context( &((mk_segment_t*)self)->command ); }
 
 const struct _mk_segment_vtable _mk_segment_class = {
     .base.super                 = &_mk_type_class,
@@ -106,26 +106,44 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
     }
     
     segment->vtable = &_mk_segment_class;
-    segment->segment_load_command = load_command;
+    mk_load_command_copy(load_command, &segment->command);
     
     return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_mach_segment mach_segment, mk_segment_t* segment)
+{
+    mk_error_t err;
+    mk_load_command_t load_command;
+    
+    if ((err = mk_load_command_init(image, mach_segment.any, &load_command)))
+        return err;
+    
+    return mk_segment_init(&load_command, segment);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 void
 mk_segment_free(mk_segment_ref segment)
 {
-    mk_memory_map_free_object(mk_macho_get_memory_map(mk_load_command_get_macho(segment.segment->segment_load_command)), &segment.segment->memory_object);
+    mk_memory_object_free(&segment.segment->memory_object);
     segment.segment->vtable = NULL;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_macho_ref mk_segment_get_macho(mk_segment_ref segment)
-{ return mk_load_command_get_macho(mk_segment_get_load_command(segment)); }
+{ return mk_load_command_get_macho(&segment.segment->command); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_load_command_ref mk_segment_get_load_command(mk_segment_ref segment)
-{ return segment.segment->segment_load_command; }
+mk_load_command_ref
+mk_segment_get_load_command(mk_segment_ref segment)
+{
+    mk_load_command_ref ret;
+    ret.load_command = &segment.segment->command;
+    return ret;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t mk_segment_get_range(mk_segment_ref segment)
@@ -148,90 +166,90 @@ mk_segment_get_mobj(mk_segment_ref segment)
 size_t
 mk_segment_copy_name(mk_segment_ref segment, char output[16])
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_copy_name(&segment.segment->segment_load_command, output);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_copy_name(&segment.segment->command, output);
     else
-        return mk_load_command_segment_copy_name(segment.segment->segment_load_command, output);
+        return mk_load_command_segment_copy_name(&segment.segment->command, output);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_address_t
 mk_segment_get_vmaddr(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_vmaddr(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_vmaddr(&segment.segment->command);
     else
-        return mk_load_command_segment_get_vmaddr(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_vmaddr(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_size_t
 mk_segment_get_vmsize(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_vmsize(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_vmsize(&segment.segment->command);
     else
-        return mk_load_command_segment_get_vmsize(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_vmsize(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_address_t
 mk_segment_get_fileoff(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_fileoff(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_fileoff(&segment.segment->command);
     else
-        return mk_load_command_segment_get_fileoff(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_fileoff(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_size_t
 mk_segment_get_filesize(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_filesize(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_filesize(&segment.segment->command);
     else
-        return mk_load_command_segment_get_filesize(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_filesize(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 vm_prot_t
 mk_segment_get_maxprot(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_maxprot(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_maxprot(&segment.segment->command);
     else
-        return mk_load_command_segment_get_maxprot(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_maxprot(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 vm_prot_t
 mk_segment_get_initprot(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_initprot(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_initprot(&segment.segment->command);
     else
-        return mk_load_command_segment_get_initprot(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_initprot(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
 mk_segment_get_nsects(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_nsects(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_nsects(&segment.segment->command);
     else
-        return mk_load_command_segment_get_nsects(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_nsects(&segment.segment->command);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t
 mk_segment_get_flags(mk_segment_ref segment)
 {
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id())
-        return mk_load_command_segment_64_get_flags(&segment.segment->segment_load_command);
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        return mk_load_command_segment_64_get_flags(&segment.segment->command);
     else
-        return mk_load_command_segment_get_flags(segment.segment->segment_load_command);
+        return mk_load_command_segment_get_flags(&segment.segment->command);
 }
 
 //----------------------------------------------------------------------------//
@@ -239,44 +257,28 @@ mk_segment_get_flags(mk_segment_ref segment)
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_error_t
-mk_segment_next_section(mk_segment_ref segment, mk_section_t* section)
+mk_mach_section
+mk_segment_next_section(mk_segment_ref segment, mk_mach_section previous, mk_vm_address_t* host_address)
 {
-    void *cursor = NULL;
+    mk_mach_section cmd;
     
-    if (mk_load_command_id(&segment.segment->segment_load_command) == mk_load_command_segment_64_id()) {
-        // If *section is initialized, this is a continuation.
-        if (section->vtable == &_mk_section_class) {
-            cursor = section->section_64.mach_section;
-            mk_section_free(section);
-        }
-            
-        cursor = mk_load_command_segment_64_next_section(mk_segment_get_load_command(segment), cursor, NULL);
-    } else {
-        // If *section is initialized, this is a continuation.
-        if (section->vtable == &_mk_section_class) {
-            cursor = section->section.mach_section;
-            mk_section_free(section);
-        }
-        
-        cursor = mk_load_command_segment_next_section(mk_segment_get_load_command(segment), cursor, NULL);
-    }
+    if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
+        cmd.section_64 = mk_load_command_segment_64_next_section(&segment.segment->command, previous.section_64, host_address);
+    else
+        cmd.section = mk_load_command_segment_next_section(&segment.segment->command, previous.section, host_address);
     
-    if (cursor == NULL)
-        return MK_ENOT_FOUND;
-    
-    return mk_section_init_with_mach_section(segment, cursor, section);
+    return cmd;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(mk_section_ref section, uint32_t index))
+mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(mk_mach_section section, uint32_t index))
 {
-    mk_section_t section;
+    mk_mach_section section; section.any = NULL;
     uint32_t i = 0;
-    while (mk_segment_next_section(segment, &section) == MK_ESUCCESS) {
-        enumerator(&section, i++);
+    while ((section = mk_segment_next_section(segment, section, NULL)).any) {
+        enumerator(section, i++);
     }
 }
 #endif

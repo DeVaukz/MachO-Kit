@@ -48,7 +48,7 @@ describe(@"mk_macho_image", ^{
             intptr_t slide = _dyld_get_image_vmaddr_slide(i);
             const char * name = _dyld_get_image_name(i);
             
-            mk_error_t err = mk_macho_init(NULL, name, slide, headerAddress, &memory_map, 0, &macho);
+            mk_error_t err = mk_macho_init(NULL, name, slide, headerAddress, &memory_map, &macho);
             expect(err).to.equal(MK_ESUCCESS);
             
             expect(macho.slide).to.equal(slide);

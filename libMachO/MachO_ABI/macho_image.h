@@ -41,14 +41,6 @@
 //----------------------------------------------------------------------------//
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-//! @name    MachO Image Options
-//
-typedef MK_ENUM(uint16_t, mk_macho_options_t) {
-    mk_macho_option_none            = 0,
-};
-
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_macho_s {
@@ -56,10 +48,8 @@ typedef struct mk_macho_s {
     
     // The context associated with this Mach-O.
     mk_context_t *context;
-    // See \ref mk_macho_options
-    mk_macho_options_t options;
     
-    //
+    // The memory map to use for this image.
     mk_memory_map_ref memory_map;
     // See \ref mk_data_model
     mk_data_model_ref data_model;
@@ -99,8 +89,8 @@ typedef union {
 
 //! Initializes a new MachO image.
 _mk_export mk_error_t
-mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_addr,
-              mk_memory_map_ref memory_map, mk_macho_options_t options, mk_macho_t *image);
+mk_macho_init(mk_context_t* ctx, const char* name, intptr_t slide, mk_vm_address_t header_addr,
+              mk_memory_map_ref memory_map, mk_macho_t* image);
 
 //! Cleans up resources held by a MachO image.
 _mk_export void
@@ -120,6 +110,11 @@ mk_macho_get_data_model(mk_macho_ref image);
 //! by calling \ref mk_macho_data_model.
 _mk_export const mk_byteorder_t*
 mk_macho_get_byte_order(mk_macho_ref image);
+
+//! Shortcut to calling \ref mk_data_model_is_64_bit on the underlying
+//! data model.
+_mk_export bool
+mk_macho_is_64_bit(mk_macho_ref image);
     
 //! Returns the slide that the provided \a image was initialized with.
 _mk_export intptr_t
@@ -169,22 +164,22 @@ mk_macho_is_from_shared_cache(mk_macho_ref image);
 //! @param  previous
 //!         The previously returned load command, or \c NULL to iterate from
 //!         the first command.
-//! @param  context_address [out]
-//!         If not \c NULL, populated with the context-relative address of the
+//! @param  host_address [out]
+//!         If not \c NULL, populated with the host-relative address of the
 //!         load command upon successful return.
 //! @return
 //! A process-relative pointer to the load command or \c NULL if there was an
 //! error.  The returned command is gauranteed to be readable, and fully within
 //! the process address space.
 _mk_export struct load_command*
-mk_macho_next_command(mk_macho_ref image, struct load_command *previous,
-                      mk_vm_address_t *context_address);
+mk_macho_next_command(mk_macho_ref image, struct load_command* previous,
+                      mk_vm_address_t* host_address);
 
 #if __BLOCKS__
 //! Iterate over the available Mach-O LC_CMD entries using a block.
 _mk_export void
 mk_macho_enumerate_commands(mk_macho_ref image,
-                            void (^enumerator)(struct load_command *command, uint32_t index, mk_vm_address_t context_address));
+                            void (^enumerator)(struct load_command* command, uint32_t index, mk_vm_address_t host_address));
 #endif
 
 //! Iterate over the available Mach-O LC_CMD entries.
@@ -197,16 +192,33 @@ mk_macho_enumerate_commands(mk_macho_ref image,
 //! @param  expectedCommand
 //!         The LC_* command type to be returned. Only commands matching this
 //!         type will be returned by the iterator.
-//! @param  context_address [out]
-//!         If not \c NULL, populated with the context-relative address of the
+//! @param  host_address [out]
+//!         If not \c NULL, populated with the host-relative address of the
 //!         load command upon successful return.
 //! @return
 //! A process-relative pointer to the load command or \c NULL if there was an
 //! error.  The returned command is gauranteed to be readable, and fully within
 //! the process address space.
 _mk_export struct load_command*
-mk_macho_next_command_type(mk_macho_ref image, struct load_command *previous,
-                           uint32_t expected_command, mk_vm_address_t *context_address);
+mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous,
+                           uint32_t expected_command, mk_vm_address_t* host_address);
+
+//! Find the first instance of the specified command type.
+//!
+//! @param  image
+//!         The image to iterate.
+//! @param  expectedCommand
+//!         The LC_* command type to be returned.
+//! @param  host_address [out]
+//!         If not \c NULL, populated with the host-relative address of the
+//!         load command upon successful return.
+//! @return
+//! A process-relative pointer to the load command or \c NULL if there was an
+//! error.  The returned command is gauranteed to be readable, and fully within
+//! the process address space.
+_mk_export struct load_command*
+mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* host_address);
+
 
 //! @} MACH !//
 

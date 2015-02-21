@@ -50,19 +50,22 @@ intptr_t mk_symbol_table_type = (intptr_t)&_mk_symbol_table_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, mk_symbol_table_t *symbol_table)
+mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_load_command_ref dysymtab_cmd, mk_symbol_table_t *symbol_table)
 {
     if (symbol_table == NULL) return MK_EINVAL;
     if (link_edit.segment == NULL) return MK_EINVAL;
     if (symtab_cmd.load_command == NULL || mk_load_command_id(symtab_cmd) != mk_load_command_symtab_id()) return MK_EINVAL;
+    if (dysymtab_cmd.load_command && mk_load_command_id(dysymtab_cmd) != mk_load_command_dysymtab_id()) return MK_EINVAL;
     
     if (mk_load_command_get_macho(symtab_cmd).macho != mk_segment_get_macho(link_edit).macho)
+        return MK_EINVAL;
+    if (dysymtab_cmd.load_command && mk_load_command_get_macho(dysymtab_cmd).macho != mk_segment_get_macho(link_edit).macho)
         return MK_EINVAL;
     
     uint32_t symoff = mk_load_command_symtab_get_symoff(symtab_cmd);
     uint32_t nsyms = mk_load_command_symtab_get_nsyms(symtab_cmd);
     mk_vm_size_t symsize;
-    if (mk_data_model_get_pointer_size(mk_macho_get_data_model(mk_segment_get_macho(link_edit))) == 8)
+    if (mk_data_model_is_64_bit(mk_macho_get_data_model(mk_segment_get_macho(link_edit))))
         symsize = nsyms * sizeof(struct nlist_64);
     else
         symsize = nsyms * sizeof(struct nlist);
@@ -93,15 +96,48 @@ mk_symbol_table_init(mk_load_command_ref symtab_cmd, mk_segment_ref link_edit, m
         return err;
     }
     
+    if (dysymtab_cmd.load_command)
+        mk_load_command_copy(dysymtab_cmd, &symbol_table->dysymtab_cmd);
+    
     symbol_table->vtable = &_mk_symbol_table_class;
     return MK_ESUCCESS;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-void
-mk_symbol_table_free(mk_symbol_table_ref symbol_table)
+mk_error_t
+mk_symbol_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, struct dysymtab_command *mach_dysymtab, mk_symbol_table_t *symbol_table)
 {
-    symbol_table.symbol_table->vtable = NULL;
+    if (link_edit.segment == NULL) return MK_EINVAL;
+    if (mach_symtab == NULL) return MK_EINVAL;
+    
+    mk_error_t err;
+    mk_load_command_t symtab_cmd;
+    mk_load_command_t dysymtab_cmd;
+    
+    if ((err = mk_load_command_init(mk_segment_get_macho(link_edit), (struct load_command*)mach_symtab, &symtab_cmd)))
+        return err;
+    
+    if (mach_dysymtab && (err = mk_load_command_init(mk_segment_get_macho(link_edit), (struct load_command*)mach_dysymtab, &dysymtab_cmd)))
+        return err;
+    
+    return mk_symbol_table_init(link_edit, &symtab_cmd, (mach_dysymtab ? &dysymtab_cmd : NULL), symbol_table);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_symbol_table_init_with_segment(mk_segment_ref link_edit, mk_symbol_table_t *symbol_table)
+{
+    if (link_edit.segment == NULL) return MK_EINVAL;
+    
+    struct load_command *mach_symtab = mk_macho_find_command(mk_segment_get_macho(link_edit), LC_SYMTAB, NULL);
+    if (mach_symtab == NULL) {
+        _mkl_error(mk_type_get_context(link_edit.segment), "No LC_SYMTAB command in %s", mk_macho_get_name(mk_segment_get_macho(link_edit)));
+        return MK_ENOT_FOUND;
+    }
+    
+    struct load_command *mach_dysymtab = mk_macho_find_command(mk_segment_get_macho(link_edit), LC_DYSYMTAB, NULL);
+    
+    return mk_symbol_table_init_with_mach_symtab(link_edit, (struct symtab_command*)mach_symtab, (struct dysymtab_command*)mach_dysymtab, symbol_table);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -120,15 +156,24 @@ mk_vm_range_t mk_symbol_table_get_range(mk_symbol_table_ref symbol_table)
 uint32_t mk_symbol_table_get_count(mk_symbol_table_ref symbol_table)
 { return symbol_table.symbol_table->symbol_count; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+mk_load_command_ref
+mk_symbol_table_get_dysymtab_load_command(mk_symbol_table_ref symbol_table)
+{
+    mk_load_command_ref lc;
+    lc.load_command = &symbol_table.symbol_table->dysymtab_cmd;
+    return lc;
+}
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Looking Up Symbols
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_nlist
+mk_mach_nlist
 mk_symbol_table_get_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* host_address)
 {
-    mk_nlist symbol; symbol.any = NULL;
+    mk_mach_nlist symbol; symbol.any = NULL;
     mk_vm_offset_t sym_off;
     mk_vm_size_t sym_size;
     vm_address_t addr;
@@ -154,10 +199,10 @@ mk_symbol_table_get_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t i
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_nlist
-mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_nlist previous, uint32_t* index, mk_vm_address_t* host_address)
+mk_mach_nlist
+mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_mach_nlist previous, uint32_t* index, mk_vm_address_t* host_address)
 {
-    mk_nlist symbol; symbol.any = NULL;
+    mk_mach_nlist symbol; symbol.any = NULL;
     mk_vm_offset_t sym_off;
     mk_vm_address_t sym_addr;
     mk_vm_size_t sym_size;
@@ -183,7 +228,7 @@ mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_nlis
     sym_off = sym_addr - symbol_table.symbol_table->range.location;
     sym_index = (uint32_t)(sym_off / sym_size);
     
-    mk_nlist retValue = mk_symbol_table_get_symbol_at_index(symbol_table, ++sym_index, host_address);
+    mk_mach_nlist retValue = mk_symbol_table_get_symbol_at_index(symbol_table, ++sym_index, host_address);
     if (retValue.any != NULL && index) *index = sym_index;
     return retValue;
 }
@@ -191,9 +236,9 @@ mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_nlis
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index, void (^enumerator)(const mk_nlist symbol, uint32_t index, mk_vm_address_t host_address))
+mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index, void (^enumerator)(const mk_mach_nlist symbol, uint32_t index, mk_vm_address_t host_address))
 {
-    mk_nlist symbol;
+    mk_mach_nlist symbol;
     mk_vm_size_t sym_size;
     mk_vm_address_t sym_addr;
     uint32_t sym_index;
