@@ -81,6 +81,9 @@ typedef union {
     struct mk_macho_s *macho;
 } mk_macho_ref __attribute__((__transparent_union__));
 
+//! The identifier for the Mach-O Image type.
+_mk_export intptr_t mk_macho_image_type;
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Working With MachO Binaries

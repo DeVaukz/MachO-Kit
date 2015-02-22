@@ -28,6 +28,23 @@
 #include "macho_abi_internal.h"
 
 //----------------------------------------------------------------------------//
+#pragma mark -  Classes
+//----------------------------------------------------------------------------//
+
+//|++++++++++++++++++++++++++++++++++++|//
+static mk_context_t*
+__mk_macho_image_get_context(mk_type_ref self)
+{ return ((mk_macho_t*)self)->context; }
+
+const struct _mk_macho_image_vtable _mk_macho_image_class = {
+    .base.super                 = &_mk_type_class,
+    .base.name                  = "macho image",
+    .base.get_context           = &__mk_macho_image_get_context
+};
+
+intptr_t mk_macho_image_type = (intptr_t)&_mk_macho_image_class;
+
+//----------------------------------------------------------------------------//
 #pragma mark -  Working With MachO Binaries
 //----------------------------------------------------------------------------//
 
@@ -96,6 +113,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
         return MK_ECLIENT_INVALID_RESULT;
     }
     
+    image->vtable = &_mk_macho_image_class;
     return MK_ESUCCESS;
 }
 
