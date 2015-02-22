@@ -43,5 +43,6 @@
 #include "segment.h"
 #include "string_table.h"
 #include "symbol_table.h"
+#include "indirect_symbol_table.h"
 
 #endif /* _macho_abi_h */
