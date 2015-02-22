@@ -28,7 +28,7 @@ Mach-O Kit is not yet complete.  Currently the libraries can parse these parts o
 - Link Edit string table
 - Link Edit symbol table
     * Not all types of symbols are fully parsed
-- Indirect symbol table (MachOKit only)
+- Indirect symbol table
 
 ## libMachO
 
