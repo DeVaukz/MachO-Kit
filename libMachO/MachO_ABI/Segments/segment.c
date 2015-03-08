@@ -88,6 +88,11 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
         }
     }
     
+    // __PAGEZERO can not be mapped in a 64-bit process.  The kernel sets the
+    // start of the process vm map to be just after it.
+    if (!strncmp(seg_name, SEG_PAGEZERO, sizeof(seg_name)))
+        return MK_EUNAVAILABLE;
+    
     // Due to a bug in update_dyld_shared_cache(1), the segment vmsize defined
     // in the Mach-O load commands may be invalid, and the declared size may
     // be unmappable.  This bug appears to be caused by a bug in computing the

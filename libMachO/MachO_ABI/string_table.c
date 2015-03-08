@@ -62,6 +62,9 @@ mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     uint32_t stroff = mk_load_command_symtab_get_stroff(symtab_cmd);
     uint32_t strsize = mk_load_command_symtab_get_strsize(symtab_cmd);
     
+    if (stroff == 0)
+        return MK_ENOT_FOUND;
+    
     mk_vm_address_t vm_address = mk_segment_get_range(link_edit).location;
     mk_error_t err;
     

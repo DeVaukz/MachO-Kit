@@ -124,6 +124,8 @@ typedef enum {
     MK_EINVALID_DATA,
     //!
     MK_ENOT_FOUND,
+    //! The data is unavailable.
+    MK_EUNAVAILABLE,
     //!
     MK_EOUT_OF_RANGE,
     //! Adding the provided inputs would result in an overflow.

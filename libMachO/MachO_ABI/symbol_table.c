@@ -70,6 +70,9 @@ mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     else
         symsize = nsyms * sizeof(struct nlist);
     
+    if (symoff == 0)
+        return MK_ENOT_FOUND;
+    
     mk_vm_address_t vm_address = mk_segment_get_range(link_edit).location;
     mk_error_t err;
     
@@ -241,6 +244,7 @@ mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_
     mk_mach_nlist symbol;
     mk_vm_size_t sym_size;
     mk_vm_address_t sym_addr;
+    mk_vm_size_t map_length;
     uint32_t sym_index;
     vm_address_t addr;
     
@@ -254,7 +258,9 @@ mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_
         return;
     if (mk_vm_address_add(symbol_table.symbol_table->range.location, sym_index * sym_size, &sym_addr))
         return;
-    addr = mk_memory_object_remap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), 0, sym_addr, symbol_table.symbol_table->range.length, NULL);
+    if (mk_vm_address_substract(symbol_table.symbol_table->range.length, sym_index * sym_size, &map_length))
+        return;
+    addr = mk_memory_object_remap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), 0, sym_addr, map_length, NULL);
     if (addr == UINTPTR_MAX)
         return;
     

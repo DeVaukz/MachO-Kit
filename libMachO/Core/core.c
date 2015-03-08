@@ -50,6 +50,8 @@ mk_error_string(mk_error_t error)
             return "INVALID DATA";
         case MK_ENOT_FOUND:
             return "NOT FOUND";
+        case MK_EUNAVAILABLE:
+            return "UNAVAILABLE";
         case MK_EOUT_OF_RANGE:
             return "OUT OF RANGE";
         case MK_EOVERFLOW:
