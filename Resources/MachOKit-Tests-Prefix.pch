@@ -10,10 +10,8 @@
 
     #import <MachOKit/MachOKit.h>
 
-    #import "Specta.h"
-
-    #define EXP_SHORTHAND
-    #import "Expecta.h"
+    #import <Specta/Specta.h>
+    #import <Expecta/Expecta.h>
 
     #import "NSTask+MKTests.h"
     #import "NSFileManager+MKTest.h"

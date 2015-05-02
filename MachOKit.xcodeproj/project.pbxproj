@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D000F40A1AF541D20004DAF6 /* Expecta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D000F4071AF5416B0004DAF6 /* Expecta.framework */; };
+		D000F40B1AF543A40004DAF6 /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C617021A4772ED00BF4F5A /* base.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D005C1AB1A70CA9E001D9B7B /* OtoolUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D005C1AA1A70CA9E001D9B7B /* OtoolUtil.m */; };
 		D0079FE41895D1AE00E9D0CF /* macho.h in Headers */ = {isa = PBXBuildFile; fileRef = D0079FE31895D16E00E9D0CF /* macho.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3701A74466700AED697 /* MKPrimativeNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B36E1A74466700AED697 /* MKPrimativeNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -337,7 +339,6 @@
 		D046242B1A64F5FB00537651 /* MKStringTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B321A51FD1900D44610 /* MKStringTable.m */; };
 		D046242C1A64F5FB00537651 /* MKSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D07727681A553C8000A517D3 /* MKSymbolTable.m */; };
 		D046242D1A64F5FB00537651 /* MKSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D07727761A55E14600A517D3 /* MKSymbol.m */; };
-		D046E577199B3ABF00371953 /* libExpecta.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D046E56E199B3A4C00371953 /* libExpecta.a */; };
 		D046E57A199B3EBD00371953 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E2F92319949D0E00C38EC0 /* internal.h */; };
 		D0539BA41A23D1F900D3A5F0 /* MKLCDyldInfoOnly.h in Headers */ = {isa = PBXBuildFile; fileRef = D0539BA21A23D1F900D3A5F0 /* MKLCDyldInfoOnly.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0539BA51A23D1F900D3A5F0 /* MKLCDyldInfoOnly.m in Sources */ = {isa = PBXBuildFile; fileRef = D0539BA31A23D1F900D3A5F0 /* MKLCDyldInfoOnly.m */; };
@@ -711,7 +712,6 @@
 		D0C564131A94517100443090 /* string_table.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C5640E1A94517100443090 /* string_table.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C564141A94517100443090 /* string_table.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C5640E1A94517100443090 /* string_table.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C5AC2A19CBDD3100EBF837 /* Specta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0C5AC2319CBDD2800EBF837 /* Specta.framework */; };
-		D0C617031A4772ED00BF4F5A /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C617021A4772ED00BF4F5A /* base.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C7C7831A5A44A400B41355 /* data_model_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C7C7821A5A44A400B41355 /* data_model_internal.h */; };
 		D0CAF8E119E638B700C833F0 /* MachOKit.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CAF8DF19E638B700C833F0 /* MachOKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0CAF8E219E638B700C833F0 /* MachOKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CAF8E019E638B700C833F0 /* MachOKit.m */; };
@@ -739,6 +739,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		D000F4041AF5416B0004DAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D046E565199B3A4B00371953 /* Expecta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 908379791A8B972C009844DA;
+			remoteInfo = Expecta;
+		};
+		D000F4061AF5416B0004DAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D046E565199B3A4B00371953 /* Expecta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 908379111A8B9660009844DA;
+			remoteInfo = "Expecta-iOS";
+		};
+		D000F4081AF5416B0004DAF6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D046E565199B3A4B00371953 /* Expecta.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3A0A59BF1AD441CB003DA3E4;
+			remoteInfo = "Expecta-iOSTests";
+		};
 		D02FEB511890FF88004E88ED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D02FEB2D1890FF88004E88ED /* Project object */;
@@ -826,6 +847,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		D000F4001AF4B3E90004DAF6 /* Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Framework.xcconfig; path = Configuration/Base/Targets/Framework.xcconfig; sourceTree = "<group>"; };
 		D005C1A91A70CA9E001D9B7B /* OtoolUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OtoolUtil.h; sourceTree = "<group>"; };
 		D005C1AA1A70CA9E001D9B7B /* OtoolUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OtoolUtil.m; sourceTree = "<group>"; };
 		D0079FCB1895BFE500E9D0CF /* Common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Common.xcconfig; path = Configuration/Base/Common.xcconfig; sourceTree = "<group>"; };
@@ -1169,7 +1191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0C5AC2A19CBDD3100EBF837 /* Specta.framework in Frameworks */,
-				D046E577199B3ABF00371953 /* libExpecta.a in Frameworks */,
+				D000F40A1AF541D20004DAF6 /* Expecta.framework in Frameworks */,
 				D02FEB531890FF88004E88ED /* MachOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1224,6 +1246,7 @@
 		D0079FD01895C05500E9D0CF /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				D000F4001AF4B3E90004DAF6 /* Framework.xcconfig */,
 				D0079FD11895C06F00E9D0CF /* Application.xcconfig */,
 				D0079FD21895C06F00E9D0CF /* StaticLibrary.xcconfig */,
 			);
@@ -1465,11 +1488,14 @@
 		D046E566199B3A4B00371953 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				D000F4051AF5416B0004DAF6 /* Expecta.framework */,
+				D000F4071AF5416B0004DAF6 /* Expecta.framework */,
+				D046E572199B3A4C00371953 /* ExpectaTests.octest */,
+				D000F4091AF5416B0004DAF6 /* Expecta-iOSTests.xctest */,
 				D046E56E199B3A4C00371953 /* libExpecta.a */,
 				D046E570199B3A4C00371953 /* libExpecta-iOS.a */,
-				D046E572199B3A4C00371953 /* ExpectaTests.octest */,
-				D046E574199B3A4C00371953 /* Expecta-iOSTests.octest */,
 				D046E576199B3A4C00371953 /* ExpectaTests-XCTest.xctest */,
+				D046E574199B3A4C00371953 /* Expecta-iOSTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1903,7 +1929,6 @@
 				D0F7EBAC1A63413400FA834F /* memory_map_self.h in Headers */,
 				D0A1D8B819E4EEB80095870C /* load_command_dyld_environment.h in Headers */,
 				D0A1D8B619E4EEB80095870C /* load_command_dsymtab.h in Headers */,
-				D0C617031A4772ED00BF4F5A /* base.h in Headers */,
 				D09F6C511A14847700AB21E3 /* MKMemoryMap.h in Headers */,
 				D0539BD81A2405DB00D3A5F0 /* MKDylinkerLoadCommand.h in Headers */,
 				D0F7EB9F1A631B9A00FA834F /* memory_map_task.h in Headers */,
@@ -1955,6 +1980,7 @@
 				D0A1D85719E4EE580095870C /* load_command.h in Headers */,
 				D0672B2B1A4FD69600D44610 /* MKCStringSection.h in Headers */,
 				D0A1D8DA19E4EEB80095870C /* load_command_rpath.h in Headers */,
+				D000F40B1AF543A40004DAF6 /* base.h in Headers */,
 				D0A1D8BA19E4EEB80095870C /* load_command_dyld_info.h in Headers */,
 				D0A1D8D419E4EEB80095870C /* load_command_reexport_dylib.h in Headers */,
 				D0A1D8E419E4EEB80095870C /* load_command_sub_client.h in Headers */,
@@ -2389,6 +2415,27 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		D000F4051AF5416B0004DAF6 /* Expecta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Expecta.framework;
+			remoteRef = D000F4041AF5416B0004DAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D000F4071AF5416B0004DAF6 /* Expecta.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Expecta.framework;
+			remoteRef = D000F4061AF5416B0004DAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		D000F4091AF5416B0004DAF6 /* Expecta-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Expecta-iOSTests.xctest";
+			remoteRef = D000F4081AF5416B0004DAF6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		D046E56E199B3A4C00371953 /* libExpecta.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -2910,22 +2957,8 @@
 			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/External/specta/Specta/Specta\"",
-					"\"$(SRCROOT)/External/expecta/src\"/**",
-				);
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/REF",
-				);
-				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -3036,26 +3069,12 @@
 			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/External/specta/Specta/Specta\"",
-					"\"$(SRCROOT)/External/expecta/src\"/**",
-				);
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/REF",
-				);
-				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -3067,22 +3086,8 @@
 			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/External/specta/Specta/Specta\"",
-					"\"$(SRCROOT)/External/expecta/src\"/**",
-				);
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/REF",
-				);
-				OTHER_LDFLAGS = "-all_load";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
