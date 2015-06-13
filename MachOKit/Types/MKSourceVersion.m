@@ -69,6 +69,10 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{ return [self initWithMachVersion:0]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
     [_components release];

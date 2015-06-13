@@ -2370,7 +2370,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D02FEB4C1890FF88004E88ED = {
@@ -2446,28 +2446,28 @@
 		D046E570199B3A4C00371953 /* libExpecta-iOS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = "libExpecta-iOS.a";
+			path = libExpecta.a;
 			remoteRef = D046E56F199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D046E572199B3A4C00371953 /* ExpectaTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = ExpectaTests.octest;
+			path = ExpectaTests.xctest;
 			remoteRef = D046E571199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D046E574199B3A4C00371953 /* Expecta-iOSTests.octest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "Expecta-iOSTests.octest";
+			path = "libExpecta-iOSTests.xctest";
 			remoteRef = D046E573199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		D046E576199B3A4C00371953 /* ExpectaTests-XCTest.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
-			path = "ExpectaTests-XCTest.xctest";
+			path = libExpectaTests.xctest;
 			remoteRef = D046E575199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};

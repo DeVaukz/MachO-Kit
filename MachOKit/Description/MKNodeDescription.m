@@ -49,6 +49,10 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{ return [self initWithParentDescription:nil fields:nil]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
     [_parent release];

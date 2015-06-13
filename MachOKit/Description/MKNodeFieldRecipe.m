@@ -43,6 +43,10 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{ return [self initWithKey:nil]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
     [_key release];
@@ -75,6 +79,10 @@
     
     return self;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{ return [self initWithValue:nil]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
