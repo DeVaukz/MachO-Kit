@@ -27,6 +27,8 @@
 
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKHexNumberFormatter formats the textual representation
 //! of NSNumber objects in hexadecimal notation.
@@ -42,3 +44,5 @@
 @property (nonatomic, readwrite) size_t digits;
 
 @end
+
+NS_ASSUME_NONNULL_END

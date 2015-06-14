@@ -30,12 +30,16 @@
 
 #import <MachOKit/MKMemoryMap.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface _MKFileMemoryMap : MKMemoryMap {
     NSURL *_fileURL;
     NSData *_fileData;
 }
 
-- (instancetype)initWithURL:(NSURL*)fileURL error:(NSError**)error;
+- (nullable instancetype)initWithURL:(NSURL*)fileURL error:(NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

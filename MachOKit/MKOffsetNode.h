@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKBackedNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! \c MKOffsetNode is a specialization of \ref MKBackedNode that represents
 //! the contents of memory residing at a fixed offset from the parent node
@@ -42,7 +44,7 @@
 }
 
 //! Initializes the receiver with the provided \a offset from a \a parent node.
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Memory Layout
@@ -53,3 +55,5 @@
 @property (nonatomic, readonly) mk_vm_offset_t nodeOffset;
 
 @end
+
+NS_ASSUME_NONNULL_END

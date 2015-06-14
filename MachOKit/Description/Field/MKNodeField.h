@@ -28,8 +28,11 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-@class MKNode;
 #import <MachOKit/MKNodeFieldRecipe.h>
+
+@class MKNode;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKNodeField : NSObject {
@@ -39,19 +42,23 @@
     id<MKNodeFieldRecipe> _valueRecipe;
 }
 
-+ (instancetype)nodeFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description;
-+ (instancetype)nodeFieldWithProperty:(NSString*)property description:(NSString*)description;
++ (instancetype)nodeFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description;
++ (instancetype)nodeFieldWithProperty:(NSString*)property description:(nullable NSString*)description;
 
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 //! The name of this field.  This usually matches the name of the property
 //! used to retreive the data for this field from the node.
 @property (nonatomic, readonly) NSString *name;
 //! A short description of this field.
-@property (nonatomic, readonly) NSString *description;
+@property (nonatomic, readonly, nullable) NSString *description;
 //! A sequence of steps to retreive the value for this field from a node.
 @property (nonatomic, readonly) id<MKNodeFieldRecipe> valueRecipe;
 
 - (NSString*)formattedDescriptionForNode:(MKNode*)node;
 
 @end
+
+NS_ASSUME_NONNULL_END

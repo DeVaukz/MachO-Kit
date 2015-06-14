@@ -33,6 +33,8 @@
 @class MKSegment;
 @class MKSection;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKMachOImage (Segments)
 
@@ -41,13 +43,15 @@
 //! @name       Segments and Sections
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@property (nonatomic, readonly) NSSet /*MKSegment*/ *segments;
+@property (nonatomic, readonly) NSSet<MKSegment*> *segments;
 
 - (NSArray*)segmentsWithName:(NSString*)name;
 
-@property (nonatomic, readonly) NSDictionary /*NSNumber -> MKSection*/ *sections;
+@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSection*> *sections;
 
 - (NSArray*)sectionsWithName:(NSString*)sectName inSegment:(MKSegment*)segment;
 - (NSArray*)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName;
 
 @end
+
+NS_ASSUME_NONNULL_END

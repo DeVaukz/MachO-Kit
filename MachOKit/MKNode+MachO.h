@@ -34,10 +34,14 @@
 
 @class MKMachOImage;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKNode (MachO)
 
 //! The nearest \ref MKMachOImage ancestor node.
-@property (nonatomic, readonly) MKMachOImage *macho;
+@property (nonatomic, readonly, nullable) MKMachOImage *macho;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKMachHeader.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKMachHeader64 parses the structure at the beginning of a Mach-O
 //! binary.
@@ -57,3 +59,5 @@
 @property (nonatomic, readonly) uint32_t reserved;
 
 @end
+
+NS_ASSUME_NONNULL_END

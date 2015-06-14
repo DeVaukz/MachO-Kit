@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! @name       Node Address Types
 //! @relates    MKBackedNode
@@ -81,3 +83,5 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
 @property (nonatomic, readonly) NSData *data;
 
 @end
+
+NS_ASSUME_NONNULL_END

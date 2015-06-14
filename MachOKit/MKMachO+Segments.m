@@ -51,11 +51,11 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 {
     if (_segments == nil)
     @autoreleasepool {
-        NSMutableArray *segments = [[NSMutableArray alloc] initWithCapacity:4];
+        NSMutableArray<MKSegment*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
         NSMapTable *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
         
-        NSMutableArray *sections = [[NSMutableArray alloc] init];
-        NSMutableDictionary *sectionsByIndex = [[NSMutableDictionary alloc] init];
+        NSMutableArray<MKSection*> *sections = [[NSMutableArray alloc] init];
+        NSMutableDictionary<NSNumber*, MKSection*> *sectionsByIndex = [[NSMutableDictionary alloc] init];
         // Use a uint64_t to avoid overflow issues if we have bad data.
         uint64_t sectionBaseIndex = 0;
         

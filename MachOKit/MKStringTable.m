@@ -50,7 +50,7 @@
     if (self.nodeSize == 0)
         return self;
     
-    NSMutableDictionary *strings = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary<NSNumber*, MKCString*> *strings = [[NSMutableDictionary alloc] init];
     
     offset = 0;
     

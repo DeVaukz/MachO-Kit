@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKFatArch represents the structure identifying a
 //! slice of a fat binary.
@@ -63,3 +65,5 @@
 @property (nonatomic, readonly) uint32_t align;
 
 @end
+
+NS_ASSUME_NONNULL_END

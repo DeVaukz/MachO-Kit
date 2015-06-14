@@ -31,6 +31,9 @@
 #import <MachOKit/MKLinkEditNode.h>
 
 @class MKMachOImage;
+@class MKSymbol;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKSymbolTable class parses the link-edit symbol table, building
@@ -40,19 +43,19 @@
 //
 @interface MKSymbolTable : MKLinkEditNode {
 @package
-    NSArray *_symbols;
+    NSArray<MKSymbol*> *_symbols;
     NSRange _localSymbols;
     NSRange _externalSymbols;
     NSRange _undefinedSymbols;
 }
 
 //! Initializes the receiver with the provided \ref MKMachOImage.
-- (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
+- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
 //! An array of \ref MKSymbol instances, each representing an entry in the
 //! symbol table.  The order of this array matches the ordering of the
 //! symbol structures in the Mach-O image.
-@property (nonatomic, readonly) NSArray /*MKSymbol*/ *symbols;
+@property (nonatomic, readonly) NSArray<MKSymbol*> *symbols;
 
 //! The range of indexes in the \ref symbols array which correspond to
 //! local symbols.  These symbols are typically included for debugging.
@@ -66,3 +69,5 @@
 @property (nonatomic, readonly) NSRange undefinedSymbols;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -34,6 +34,8 @@
 @class MKSymbolTable;
 @class MKIndirectSymbolTable;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKMachOImage (Symbols)
 
@@ -43,8 +45,10 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The link-edit string table for this Mach-O image.
-@property (nonatomic, readonly) MKStringTable *stringTable;
-@property (nonatomic, readonly) MKSymbolTable *symbolTable;
-@property (nonatomic, readonly) MKIndirectSymbolTable *indirectSymbolTable;
+@property (nonatomic, readonly, nullable) MKStringTable *stringTable;
+@property (nonatomic, readonly, nullable) MKSymbolTable *symbolTable;
+@property (nonatomic, readonly, nullable) MKIndirectSymbolTable *indirectSymbolTable;
 
 @end
+
+NS_ASSUME_NONNULL_END

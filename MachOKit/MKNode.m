@@ -108,6 +108,8 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 //|++++++++++++++++++++++++++++++++++++|//
 - (id)nearestAncestorOfType:(Class)cls
 {
+    NSAssert([cls isSubclassOfClass:MKNode.class], @"cls must be an MKNode.");
+    
     for (MKNode *n = self; n != nil; n = n.parent) {
         if ([n isKindOfClass:cls])
             return n;

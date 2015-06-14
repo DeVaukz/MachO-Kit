@@ -28,6 +28,8 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //! Converts the provided property identifier into an \c NSString literal.
 #define MK_PROPERTY(PROPERTY) @#PROPERTY
 
@@ -94,13 +96,15 @@ extern NSString * const MKPropertyKey;
 
 //! Creates and initializes an NSError object for a given domain and code
 //! with a given description.
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code description:(NSString*)description, ...;
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code property:(NSString*)property description:(NSString*)description, ...;
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(NSString*)description, ...;
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(NSString*)description, ...;
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code description:(nullable NSString*)description, ...;
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property description:(nullable NSString*)description, ...;
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(nullable NSString*)description, ...;
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(nullable NSString*)description, ...;
 
 //! The value associated with the \ref MKPropertyKey in this error's
 //! \c userInfo dictionary.
-@property (nonatomic, readonly) NSString *mk_property;
+@property (nonatomic, readonly, nullable) NSString *mk_property;
 
 @end
+
+NS_ASSUME_NONNULL_END

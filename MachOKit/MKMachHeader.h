@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKMachHeader parses the structure at the beginning of a Mach-O
 //! binary.
@@ -62,3 +64,5 @@
 @property (nonatomic, readonly) uint32_t flags;
 
 @end
+
+NS_ASSUME_NONNULL_END

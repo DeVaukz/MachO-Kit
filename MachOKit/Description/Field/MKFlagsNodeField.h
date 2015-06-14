@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKNodeField.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKFlagsNodeField : MKNodeField {
 @package
@@ -38,13 +40,15 @@
     NSDictionary *_flags;
 }
 
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
++ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
++ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
 
 @property (nonatomic, readonly) id<MKNodeFieldRecipe> offsetRecipe;
 @property (nonatomic, readonly) id<MKNodeFieldRecipe> sizeRecipe;
 @property (nonatomic, readonly) NSDictionary *flags;
 
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe flags:(NSDictionary*)flags;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe flags:(NSDictionary*)flags;
 
 @end
+
+NS_ASSUME_NONNULL_END

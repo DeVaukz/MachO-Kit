@@ -33,6 +33,8 @@
 @class MKMemoryMap;
 @class MKMachOImage;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! \c MKLinkEditNode is a specialization of \ref MKBackedNode for blobs
 //! of data in the \c __LINKEDIT segment.  It contains logic for determining
@@ -47,6 +49,8 @@
     mk_vm_size_t _nodeSize;
 }
 
-- (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset inImage:(MKMachOImage*)image error:(NSError**)error;
+- (nullable instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset inImage:(MKMachOImage*)image error:(NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

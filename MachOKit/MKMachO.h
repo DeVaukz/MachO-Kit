@@ -35,9 +35,12 @@
 @protocol MKLCSegment;
 @class MKMachOImage;
 @class MKMachHeader;
+@class MKLoadCommand;
 @class MKStringTable;
 @class MKSymbolTable;
 @class MKIndirectSymbolTable;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       Mach-O Image Options
@@ -67,7 +70,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     intptr_t _slide;
     // Header //
     MKMachHeader *_header;
-    NSArray *_loadCommands;
+    NSArray<MKLoadCommand*> *_loadCommands;
     // Segments //
     NSDictionary *_segments;
     // Symbols //
@@ -76,15 +79,13 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     MKIndirectSymbolTable *_indirectSymbolTable;
 }
 
-- (instancetype)initWithName:(const char*)name slide:(intptr_t)slide flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithName:(nullable const char*)name slide:(intptr_t)slide flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Retrieving the Initialization Context
 //! @name       Retrieving the Initialization Context
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The \ref <MKDataModel> that this Mach-O image was initialized with.
-@property (nonatomic, readonly) id<MKDataModel> dataModel;
 //! The context that this Mach-O image was initialized with.
 @property (nonatomic, readonly) mk_context_t *context;
 //! The flags that this Mach-O image was initialized with.
@@ -96,7 +97,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The name that this Mach-O image was initialized with.
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly, nullable) NSString *name;
 //! The slide value that this Mach-O image was initialized with.
 @property (nonatomic, readonly) intptr_t slide;
 
@@ -118,12 +119,14 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 //! appear in the Mach-O header.  The count of the returned array may be less
 //! than the value of ncmds in the \ref header, if the Mach-O is malformed
 //! and trailing load commands could not be accessed.
-@property (nonatomic, readonly) NSArray /*MKLoadCommand*/ *loadCommands;
+@property (nonatomic, readonly) NSArray<__kindof MKLoadCommand*> *loadCommands;
 
 //! Filters the \ref loadCommands array to those of the specified \a type
 //! and returns the result.  The relative ordering of the returned load
 //! commands is preserved.
-- (NSArray*)loadCommandsOfType:(uint32_t)type;
+- (NSArray<__kindof MKLoadCommand*> *)loadCommandsOfType:(uint32_t)type;
 
 @end
+
+NS_ASSUME_NONNULL_END
 

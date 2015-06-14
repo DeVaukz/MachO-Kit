@@ -31,7 +31,10 @@
 #import <MachOKit/MKNodeDescription.h>
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKDataModel.h>
+
 @class MKNode;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @protocol MKNodeDelegate <NSObject>
@@ -54,7 +57,7 @@
 //! Initializes the receiver with the provided \a parent node.  Subclasses
 //! are expected to override this method and may place restrictions on
 //! which type(s) of nodes may be provided as a parent.
-- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -76,7 +79,7 @@
 
 //! The delegate for this node.  If no delegate has been set for this node,
 //! the delegate of this node's ancestor.
-@property (nonatomic, assign) id<MKNodeDelegate> delegate;
+@property (nonatomic, assign, nullable) id<MKNodeDelegate> delegate;
 
 //! The memory map for this node.  By default this is the memory map of this
 //! node's parent.  Subclasses should override the getter for this property
@@ -91,7 +94,7 @@
 
 //! An array of warnings raised while initiaizing this node.  Each warning
 //! is represented by an instance of \c NSError.
-@property (nonatomic, copy) NSArray /*NSError*/ *warnings;
+@property (nonatomic, copy) NSArray<NSError*> *warnings;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Navigating the Node Tree
@@ -99,10 +102,10 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The parent node, or \c nil if this node has no parent.
-@property (nonatomic, readonly) MKNode *parent;
+@property (nonatomic, readonly, nullable) MKNode *parent;
 
 //! Returns the nearest ancestor node of type \a cls.
-- (id)nearestAncestorOfType:(Class)cls;
+- (nullable __kindof MKNode*)nearestAncestorOfType:(Class)cls;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Discovering Subclasses
@@ -120,3 +123,5 @@
 + (Class)bestSubclassWithRanking:(uint32_t (^)(Class cls))rank;
 
 @end
+
+NS_ASSUME_NONNULL_END

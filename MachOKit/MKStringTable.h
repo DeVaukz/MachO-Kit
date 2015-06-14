@@ -31,20 +31,25 @@
 #import <MachOKit/MKLinkEditNode.h>
 
 @class MKMachOImage;
+@class MKCString;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKStringTable class parses the link-edit string table.
 //
 @interface MKStringTable : MKLinkEditNode {
 @package
-    NSDictionary *_strings;
+    NSDictionary<NSNumber*, MKCString*> *_strings;
 }
 
 //! Initializes the receiver with the provided Mach-O image.
-- (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
+- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
 //! An \c NSDictionary mapping offsets from the start of this node node to
 //! string entries, represented by instances of \c MKCString.
-@property (nonatomic, readonly) NSDictionary /*NSNumber -> MKCString*/ *strings;
+@property (nonatomic, readonly) NSDictionary<NSNumber*, MKCString*> *strings;
 
 @end
+
+NS_ASSUME_NONNULL_END

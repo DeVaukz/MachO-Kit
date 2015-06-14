@@ -35,7 +35,7 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
 @implementation NSError (MK)
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code description:(NSString*)description, ...
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code description:(NSString*)description, ...
 {
     va_list ap;
     va_start(ap, description);
@@ -49,7 +49,7 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code property:(NSString*)property description:(NSString*)description, ...
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property description:(NSString*)description, ...
 {
     NSParameterAssert(property);
     
@@ -67,7 +67,7 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
 {
     va_list ap;
     va_start(ap, description);
@@ -81,7 +81,7 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)mk_errorWithDomain:(NSString *)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
 {
     NSParameterAssert(property);
     

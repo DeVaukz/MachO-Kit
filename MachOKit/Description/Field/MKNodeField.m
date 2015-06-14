@@ -65,6 +65,10 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-init unavailable." userInfo:nil]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
     [_name release];

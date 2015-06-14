@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKDataModel.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKMemoryMap : NSObject
 
@@ -40,12 +42,12 @@
 
 //! Creates and returns an \ref MKMemoryMap for the contents of the file
 //! at the provided \a fileURL.
-+ (instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error;
++ (nullable instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error;
 
 #if (TARGET_OS_MAC && !TARGET_OS_IPHONE)
 //! Creates and returns an \ref MKMemoryMap for the contents of another
 //! task's memory.
-+ (instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error;
++ (nullable instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error;
 #endif
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -84,16 +86,18 @@
 //! valid for the duration of the handler's execution.
 - (void)remapBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull withHandler:(void (^)(vm_address_t address, vm_size_t length, NSError *error))handler;
 
-- (NSData*)dataAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error;
+- (nullable NSData*)dataAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error;
 
 - (vm_size_t)copyBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress into:(void*)buffer length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error;
 
-- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
 
-- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
 
-- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
 
-- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

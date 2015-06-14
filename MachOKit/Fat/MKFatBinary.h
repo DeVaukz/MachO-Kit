@@ -29,6 +29,9 @@
 @import Foundation;
 
 #import <MachOKit/MKBackedNode.h>
+@class MKFatArch;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! An instance of \c MKFatBinary describes the structures of the file format
@@ -37,7 +40,7 @@
 @interface MKFatBinary : MKBackedNode {
 @package
     MKMemoryMap *_memoryMap;
-    NSArray *_architectures;
+    NSArray<MKFatArch*> *_architectures;
     /// fat_header ///
     uint32_t _magic;
     uint32_t _nfat_arch;
@@ -49,7 +52,7 @@
 
 //! An array of \ref MKFatArch instances, each represeting an architecture
 //! present in this fat binary.
-@property (nonatomic, readonly) NSArray /*MKFatArch*/ *architectures;
+@property (nonatomic, readonly) NSArray<MKFatArch*> *architectures;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  fat_header Values
@@ -65,3 +68,5 @@
 @property (nonatomic, readonly) uint32_t nfat_arch;
 
 @end
+
+NS_ASSUME_NONNULL_END

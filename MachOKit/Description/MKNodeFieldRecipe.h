@@ -30,9 +30,11 @@
 
 @class MKNode;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldRecipe <NSObject>
-- (id)valueForNode:(MKNode*)input;
+- (nullable id)valueForNode:(MKNode*)input;
 @end
 
 
@@ -43,7 +45,7 @@
     NSString *_key;
 }
 
-- (instancetype)initWithKey:(NSString*)key NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithKey:(nullable NSString*)key NS_DESIGNATED_INITIALIZER;
 
 @end
 
@@ -55,6 +57,8 @@
     id _value;
 }
 
-- (instancetype)initWithValue:(id)value NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithValue:(nullable id)value NS_DESIGNATED_INITIALIZER;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -31,12 +31,16 @@
 
 #import <MachOKit/MKMemoryMap.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface _MKTaskMemoryMap : MKMemoryMap {
 @package
     mach_port_t _task;
 }
 
-- (instancetype)initWithTask:(mach_port_t)task error:(NSError**)error;
+- (nullable instancetype)initWithTask:(mach_port_t)task error:(NSError**)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

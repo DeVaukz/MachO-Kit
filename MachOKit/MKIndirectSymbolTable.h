@@ -31,6 +31,9 @@
 #import <MachOKit/MKLinkEditNode.h>
 
 @class MKMachOImage;
+@class MKIndirectSymbol;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKIndirectSymbolTable class parses the entries in the indirect
@@ -42,15 +45,17 @@
 //
 @interface MKIndirectSymbolTable : MKLinkEditNode {
 @package
-    NSArray *_symbols;
+    NSArray<MKIndirectSymbol*> *_symbols;
 }
 
 //! Initializes the receiver with the provided \ref MKMachOImage.
-- (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
+- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
 //! An array of \ref MKIndirectSymbol instances, each representing an entry
 //! in the indirect symbol table.  The order of this array matches the
 //! ordering of the entries in the indirect symbol table in the Mach-O image.
-@property (nonatomic, readonly) NSArray /*MKIndirectSymbol*/ *symbols;
+@property (nonatomic, readonly) NSArray<MKIndirectSymbol*> *symbols;
 
 @end
+
+NS_ASSUME_NONNULL_END

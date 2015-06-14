@@ -32,20 +32,24 @@
 #import <MachOKit/MKPrimativeNodeField.h>
 #import <MachOKit/MKFlagsNodeField.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKNodeDescription : NSObject {
 @package
     MKNodeDescription *_parent;
-    NSArray *_fields;
+    NSArray<MKNodeField*> *_fields;
 }
 
-+ (instancetype)nodeDescriptionWithParentDescription:(MKNodeDescription*)parent fields:(NSArray*)fields;
++ (instancetype)nodeDescriptionWithParentDescription:(nullable MKNodeDescription*)parent fields:(nullable NSArray<MKNodeField*> *)fields;
 
-- (instancetype)initWithParentDescription:(MKNodeDescription*)parent fields:(NSArray*)fields NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithParentDescription:(nullable MKNodeDescription*)parent fields:(nullable NSArray<MKNodeField*> *)fields NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic, readonly) MKNodeDescription* parent;
+@property (nonatomic, readonly, nullable) MKNodeDescription* parent;
 
-@property (nonatomic, readonly) NSArray /*MKNodeField*/ *fields;
-@property (nonatomic, readonly) NSArray /*MKNodeField*/ *allFields;
+@property (nonatomic, readonly) NSArray<MKNodeField*> *fields;
+@property (nonatomic, readonly) NSArray<MKNodeField*> *allFields;
 
 @end
+
+NS_ASSUME_NONNULL_END

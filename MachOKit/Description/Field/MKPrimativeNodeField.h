@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKNodeField.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKPrimativeNodeField : MKNodeField {
 @package
@@ -38,17 +40,19 @@
     id<MKNodeFieldRecipe> _sizeRecipe;
 }
 
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
 
-+ (instancetype)hexFormattedFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-+ (instancetype)hexFormattedFieldWithProperty:(NSString*)property description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)hexFormattedFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)hexFormattedFieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
 
-@property (nonatomic, readonly) NSFormatter *valueFormatter;
+@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
 
 @property (nonatomic, readonly) id<MKNodeFieldRecipe> offsetRecipe;
 @property (nonatomic, readonly) id<MKNodeFieldRecipe> sizeRecipe;
 
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(NSFormatter*)valueFormatter offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(nullable NSFormatter*)valueFormatter offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe;
 
 @end
+
+NS_ASSUME_NONNULL_END

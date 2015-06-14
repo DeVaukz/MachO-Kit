@@ -167,7 +167,7 @@
 #pragma unused (parent)
 #pragma unused (error)
     // TODO - We could actually provide an implementation of this method.
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Unavailable" userInfo:nil];
+    @throw [NSException exceptionWithName:NSGenericException reason:@"Currently unavailable" userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

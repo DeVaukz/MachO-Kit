@@ -28,6 +28,8 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define MKSwapLValue16(LVALUE, DATA_MODEL) \
     (LVALUE = DATA_MODEL.byteOrder->swap16( LVALUE ))
 #define MKSwapLValue32(LVALUE, DATA_MODEL) \
@@ -93,3 +95,5 @@
 + (instancetype)sharedDataModel;
 
 @end
+
+NS_ASSUME_NONNULL_END
