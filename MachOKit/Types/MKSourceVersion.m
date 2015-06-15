@@ -39,7 +39,7 @@
     self = [super init];
     if (self == nil) return nil;
     
-    NSMutableArray *components = [[NSMutableArray alloc] initWithObjects:
+    NSMutableArray<NSNumber*> *components = [[NSMutableArray alloc] initWithObjects:
         @( (version >> 40) & 0xFFFFFF ),
         @( (version >> 30) & 0x3FF ),
         @( (version >> 20) & 0x3FF ),

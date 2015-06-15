@@ -49,7 +49,7 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
     
-    NSMutableArray *strings = [[NSMutableArray alloc] init];
+    NSMutableArray<MKCString*> *strings = [[NSMutableArray alloc] init];
     
     mk_vm_offset_t offset = 0;
     

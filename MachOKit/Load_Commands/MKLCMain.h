@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_MAIN.
 //!
@@ -50,3 +52,5 @@
 @property (nonatomic, readonly) uint64_t stacksize;
 
 @end
+
+NS_ASSUME_NONNULL_END

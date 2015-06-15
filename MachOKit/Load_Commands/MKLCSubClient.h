@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKLoadCommandString.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SUB_CLIENT.
 //!
@@ -51,3 +53,5 @@
 @property (nonatomic, readonly) MKLoadCommandString *client;
 
 @end
+
+NS_ASSUME_NONNULL_END

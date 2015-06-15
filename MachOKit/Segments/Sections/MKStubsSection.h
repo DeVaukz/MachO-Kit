@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKSection.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKStub : MKOffsetNode
 @end
@@ -39,14 +41,16 @@
 //----------------------------------------------------------------------------//
 @interface MKStubsSection : MKSection {
 @package
-    NSArray *_stubs;
+    NSArray<MKStub*> *_stubs;
     uint32_t _indirectSymbolIndex;
     uint32_t _stubSize;
 }
 
-@property (nonatomic, readonly) NSArray /*MKStub*/ *stubs;
+@property (nonatomic, readonly) NSArray<MKStub*> *stubs;
 
 @property (nonatomic, readonly) uint32_t indirectSymbolIndex;
 @property (nonatomic, readonly) uint32_t stubSize;
 
 @end
+
+NS_ASSUME_NONNULL_END

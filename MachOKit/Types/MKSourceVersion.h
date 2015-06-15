@@ -28,17 +28,21 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKSourceVersion parses the packed source version
 //! information found in certain load commands.
 //
 @interface MKSourceVersion : NSObject {
 @package
-    NSArray *_components;
+    NSArray<NSNumber*> *_components;
 }
 
 - (instancetype)initWithMachVersion:(uint64_t)version NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic, readonly) NSArray /*NSNumber*/ *components;
+@property (nonatomic, readonly) NSArray<NSNumber*> *components;
 
 @end
+
+NS_ASSUME_NONNULL_END

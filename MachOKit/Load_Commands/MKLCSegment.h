@@ -31,12 +31,15 @@
 #import <MachOKit/MKLoadCommand.h>
 
 @class MKMachOImage;
+@class MKLCSection;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @protocol MKLCSegment <NSObject>
 @property (nonatomic, readonly) MKMachOImage *macho;
 @property (nonatomic, readonly) NSArray /*MKLCSection*/ *sections;
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 @property (nonatomic, readonly) mk_vm_address_t mk_vmaddr;
 @property (nonatomic, readonly) mk_vm_size_t mk_vmsize;
 @property (nonatomic, readonly) mk_vm_address_t mk_fileoff;
@@ -51,8 +54,8 @@
 //----------------------------------------------------------------------------//
 @protocol MKLCSection <NSObject>
 @property (nonatomic, readonly) MKMachOImage *macho;
-@property (nonatomic, readonly) NSString *sectname;
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *sectname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 @property (nonatomic, readonly) mk_vm_address_t mk_addr;
 @property (nonatomic, readonly) mk_vm_size_t mk_size;
 @property (nonatomic, readonly) mk_vm_address_t mk_offset;
@@ -76,7 +79,7 @@
 //
 @interface MKLCSegment : MKLoadCommand <MKLCSegment> {
 @package
-    NSArray *_sections;
+    NSArray<MKLCSection*> *_sections;
     NSString *_segname;
     uint32_t _vmaddr;
     uint32_t _vmsize;
@@ -90,7 +93,7 @@
 
 //! An array of \ref MKLCSection instances, each representing a section
 //! specified in this segment's load command.
-@property (nonatomic, readonly) NSArray /*MKLCSection*/ *sections;
+@property (nonatomic, readonly) NSArray<MKLCSection*> *sections;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Mach-O Struct Values
@@ -101,7 +104,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! Segment name.
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 //! The memory address of this segment.
 @property (nonatomic, readonly) uint32_t vmaddr;
 //! The memory size of this segment.
@@ -150,9 +153,9 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The name of this section.
-@property (nonatomic, readonly) NSString *sectname;
+@property (nonatomic, readonly, nullable) NSString *sectname;
 //! The name of the segment this section goes in.
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 //! Memory address of this section.
 @property (nonatomic, readonly) uint32_t addr;
 //! Size in bytes of this section.
@@ -173,3 +176,5 @@
 @property (nonatomic, readonly) uint32_t reserved2;
 
 @end
+
+NS_ASSUME_NONNULL_END

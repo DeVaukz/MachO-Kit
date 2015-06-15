@@ -30,6 +30,10 @@
 
 #import <MachOKit/MKVersion.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKDylibVersion : MKVersion
 @end
+
+NS_ASSUME_NONNULL_END

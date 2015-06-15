@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_TWOLEVEL_HINTS.
 //!
@@ -48,3 +50,5 @@
 @property (nonatomic, readonly) uint32_t nhints;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKLoadCommandString.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SUB_FRAMEWORK.
 //!
@@ -52,3 +54,5 @@
 @property (nonatomic, readonly) MKLoadCommandString *umbrella;
 
 @end
+
+NS_ASSUME_NONNULL_END

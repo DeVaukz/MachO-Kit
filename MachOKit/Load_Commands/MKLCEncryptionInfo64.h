@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLCEncryptionInfo.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_ENCRYPTION_INFO_64.
 //!
@@ -38,3 +40,5 @@
 //
 @interface MKLCEncryptionInfo64 : MKLCEncryptionInfo
 @end
+
+NS_ASSUME_NONNULL_END

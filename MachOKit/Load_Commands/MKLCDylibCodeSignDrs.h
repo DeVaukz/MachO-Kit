@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKLinkEditDataLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_DYLIB_CODE_SIGN_DRS.
 //
 @interface MKLCDylibCodeSignDrs : MKLinkEditDataLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

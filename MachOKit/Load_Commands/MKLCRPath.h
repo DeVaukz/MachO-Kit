@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKLoadCommandString.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_RPATH.
 //!
@@ -46,3 +48,5 @@
 @property (nonatomic, readonly) MKLoadCommandString *path;
 
 @end
+
+NS_ASSUME_NONNULL_END

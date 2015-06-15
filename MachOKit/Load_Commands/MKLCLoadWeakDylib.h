@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKDylibLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_LOAD_WEAK_DYLIB.
 //!
@@ -39,3 +41,5 @@
 //
 @interface MKLCLoadWeakDylib : MKDylibLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

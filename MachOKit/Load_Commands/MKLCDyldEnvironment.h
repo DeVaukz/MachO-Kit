@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKDylinkerLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_DYLD_ENVIRONMENT.
 //!
@@ -38,3 +40,5 @@
 //
 @interface MKLCDyldEnvironment : MKDylinkerLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

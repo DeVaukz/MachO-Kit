@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKDylinkerLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_ID_DYLINKER.
 //
 @interface MKLCIDDylinker : MKDylinkerLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

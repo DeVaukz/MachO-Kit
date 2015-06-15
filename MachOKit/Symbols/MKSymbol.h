@@ -33,6 +33,8 @@
 @class MKCString;
 @class MKMachOImage;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKSymbol class is the base parser for entries in the \c __LINKEDIT
 //! symbol table.  All symbols share a common structure, and are hence the
@@ -96,7 +98,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The entry in the string table referenced by this symbol.  May be \c nil.
-@property (nonatomic, readonly) MKCString *name;
+@property (nonatomic, readonly, nullable) MKCString *name;
 
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -119,3 +121,5 @@
 @property (nonatomic, readonly) uint64_t value;
 
 @end
+
+NS_ASSUME_NONNULL_END

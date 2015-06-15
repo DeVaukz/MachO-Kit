@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKCString parses a NULL terminated string.  Strings
 //! in a Mach-O image are identified by their offset from another node
@@ -44,6 +46,8 @@
     NSString *_string;
 }
 
-@property (nonatomic, readonly) NSString *string;
+@property (nonatomic, readonly, nullable) NSString *string;
 
 @end
+
+NS_ASSUME_NONNULL_END

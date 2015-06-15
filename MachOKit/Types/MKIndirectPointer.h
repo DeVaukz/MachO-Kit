@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKIndirectPointer : MKOffsetNode {
 @package
@@ -39,3 +41,5 @@
 @property (nonatomic, readonly) mk_vm_address_t target;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -28,6 +28,8 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKVersion parses the packed binary version information
 //! found in certain load commands.
@@ -44,3 +46,5 @@
 @property (nonatomic, readonly) uint8_t patch;
 
 @end
+
+NS_ASSUME_NONNULL_END

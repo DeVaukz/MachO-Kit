@@ -32,6 +32,8 @@
 
 @class MKSymbol;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKIndirectSymbol class parses an entry in the indirect symbol
 //! table.  An inidrect symbol is simply an index into the symbol table
@@ -46,6 +48,8 @@
 //! An index into the symbol table to the symbol this entry is referring to.
 @property (nonatomic, readonly) uint32_t index;
 //! The symbol referenced by this entry.
-@property (nonatomic, readonly) MKSymbol *target;
+@property (nonatomic, readonly, nullable) MKSymbol *target;
 
 @end
+
+NS_ASSUME_NONNULL_END

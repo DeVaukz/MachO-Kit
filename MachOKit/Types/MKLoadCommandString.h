@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKLoadCommandString parses a string which trails
 //! the main structure of a struct  \c load_command.  Each string in a load
@@ -46,6 +48,8 @@
 //! The offset of the first byte of the string from this node's parent.
 @property (nonatomic, readonly) uint32_t offset;
 //! A string representation of the bytes within this node.  May be \c nil.
-@property (nonatomic, readonly) NSString *string;
+@property (nonatomic, readonly, nullable) NSString *string;
 
 @end
+
+NS_ASSUME_NONNULL_END

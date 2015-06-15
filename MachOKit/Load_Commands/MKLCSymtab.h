@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SYMTAB.
 //!
@@ -54,3 +56,5 @@
 @property (nonatomic, readonly) uint32_t strsize;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_DYSYMTAB.
 //
@@ -83,3 +85,5 @@
 @property (nonatomic, readonly) uint32_t nlocrel;
 
 @end
+
+NS_ASSUME_NONNULL_END

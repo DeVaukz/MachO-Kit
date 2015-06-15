@@ -31,15 +31,19 @@
 #import <MachOKit/MKSection.h>
 #import <MachOKit/MKIndirectPointer.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKIndirectPointersSection : MKSection {
 @package
-    NSArray *_pointers;
+    NSArray<MKIndirectPointer*> *_pointers;
     uint32_t _indirectSymbolIndex;
 }
 
-@property (nonatomic, readonly) NSArray /*MKIndirectPointer*/ *pointers;
+@property (nonatomic, readonly) NSArray<MKIndirectPointer*> *pointers;
 
 @property (nonatomic, readonly) uint32_t indirectSymbolIndex;
 
 @end
+
+NS_ASSUME_NONNULL_END

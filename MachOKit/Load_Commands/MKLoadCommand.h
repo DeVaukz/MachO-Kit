@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! An instance of \c MKLoadCommand parses a single load command a Mach-O
 //! image.
@@ -69,7 +71,7 @@
 //! Creates an instantiates the appropriate subclass of \ref MKLoadCommand
 //! for parsing the load command at the provided \a offset from the
 //! parent \ref MachOImage.
-+ (instancetype)loadCommandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
++ (nullable instancetype)loadCommandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  About This Load Command
@@ -100,3 +102,5 @@
 @property (nonatomic, readonly) uint32_t cmdSize;
 
 @end
+
+NS_ASSUME_NONNULL_END

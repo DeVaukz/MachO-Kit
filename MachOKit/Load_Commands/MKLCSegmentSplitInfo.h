@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKLinkEditDataLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SEGMENT_SPLIT_INFO.
 //!
 @interface MKLCSegmentSplitInfo : MKLinkEditDataLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

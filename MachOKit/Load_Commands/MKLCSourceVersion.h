@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKSourceVersion.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SOURCE_VERSION.
 //!
@@ -45,3 +47,5 @@
 @property (nonatomic, readonly) MKSourceVersion *version;
 
 @end
+
+NS_ASSUME_NONNULL_END

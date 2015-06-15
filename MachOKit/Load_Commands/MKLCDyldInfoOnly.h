@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKLCDyldInfo.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_DYLD_INFO_ONLY.
 //
 @interface MKLCDyldInfoOnly : MKLCDyldInfo
 @end
+
+NS_ASSUME_NONNULL_END

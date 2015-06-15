@@ -31,12 +31,16 @@
 #import <MachOKit/MKSection.h>
 #import <MachOKit/MKCString.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface MKCStringSection : MKSection {
 @package
-    NSArray *_strings;
+    NSArray<MKCString*> *_strings;
 }
 
-@property (nonatomic, readonly) NSArray /*MKCString*/ *strings;
+@property (nonatomic, readonly) NSArray<MKCString*> *strings;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -32,6 +32,8 @@
 #import <MachOKit/MKLoadCommandString.h>
 #import <MachOKit/MKDylibVersion.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKDylibLoadCommand class is the common parent class for all
 //! specialization of \ref MKLoadCommand which reference a dynamically
@@ -67,3 +69,5 @@
 @property (nonatomic, readonly) MKDylibVersion *compatibility_version;
 
 @end
+
+NS_ASSUME_NONNULL_END

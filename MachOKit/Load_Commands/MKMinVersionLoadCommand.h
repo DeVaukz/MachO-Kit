@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKVersion.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKMinVersionLoadCommand class is the common parent class for all
 //! specialization of \ref MKLoadCommand which contains the min OS version on
@@ -48,3 +50,5 @@
 @property (nonatomic, readonly) MKVersion *sdk;
 
 @end
+
+NS_ASSUME_NONNULL_END

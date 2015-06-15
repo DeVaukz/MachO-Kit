@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKLinkEditDataLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_DATA_IN_CODE.
 //
 @interface MKLCDataInCode : MKLinkEditDataLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

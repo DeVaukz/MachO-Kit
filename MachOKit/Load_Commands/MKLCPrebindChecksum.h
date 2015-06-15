@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_PREBIND_CKSUM.
 //!
@@ -47,7 +49,9 @@
     uint32_t _cksum;
 }
 
-//! The check sum or zero.
+//! The checksum or zero.
 @property (nonatomic, readonly) uint32_t cksum;
 
 @end
+
+NS_ASSUME_NONNULL_END

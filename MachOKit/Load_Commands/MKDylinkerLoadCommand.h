@@ -31,6 +31,8 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKLoadCommandString.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKDylinkerLoadCommand class is the common parent class for all
 //! specialization of \ref MKLoadCommand which reference a dynamic linker.
@@ -44,3 +46,5 @@
 @property (nonatomic, readonly) MKLoadCommandString *name;
 
 @end
+
+NS_ASSUME_NONNULL_END

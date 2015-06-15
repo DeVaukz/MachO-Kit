@@ -30,8 +30,12 @@
 
 #import <MachOKit/MKDylibLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_LOAD_UPWARD_DYLIB.
 //
 @interface MKLCLoadUpwardDylib : MKDylibLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

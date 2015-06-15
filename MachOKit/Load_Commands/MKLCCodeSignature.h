@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLinkEditDataLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_CODE_SIGNATURE.
 //!
@@ -38,3 +40,5 @@
 //
 @interface MKLCCodeSignature : MKLinkEditDataLoadCommand
 @end
+
+NS_ASSUME_NONNULL_END

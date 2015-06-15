@@ -34,6 +34,8 @@
 
 @class MKMachOImage;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! @name       Segment Flags
 //! @relates    MKSegment
@@ -70,7 +72,7 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
     //
     NSString *_name;
     id<MKLCSegment> _loadCommand;
-    NSSet *_sections;
+    NSSet<__kindof MKSection*> *_sections;
     //
     mk_vm_address_t _vmAddress;
     mk_vm_size_t _vmSize;
@@ -90,12 +92,12 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 //! @name       Creating a Segment
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-+ (instancetype)segmentWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error;
++ (nullable instancetype)segmentWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error;
 
-- (instancetype)initWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error  NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //! The name of this segment, as specified in the load command.
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly, nullable) NSString *name;
 //! The load command identifying this segment.
 @property (nonatomic, readonly) id<MKLCSegment> loadCommand;
 
@@ -116,10 +118,12 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 
 //! A set of \ref MKSection instances, each representing a section within
 //! this segment.
-@property (nonatomic, readonly) NSSet /*MKSection*/ *sections;
+@property (nonatomic, readonly) NSSet<__kindof MKSection*> *sections;
 
 //! Returns the \ref MKSection from the \ref sections array that is identified
 //! by the provided load command.
-- (MKSection*)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand;
+- (nullable MKSection*)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand;
 
 @end
+
+NS_ASSUME_NONNULL_END

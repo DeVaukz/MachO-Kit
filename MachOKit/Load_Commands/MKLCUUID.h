@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_UUID.
 //!
@@ -45,3 +47,5 @@
 @property (nonatomic, readonly) NSUUID *uuid;
 
 @end
+
+NS_ASSUME_NONNULL_END

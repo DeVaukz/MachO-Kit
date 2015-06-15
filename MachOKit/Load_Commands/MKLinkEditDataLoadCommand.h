@@ -30,6 +30,8 @@
 
 #import <MachOKit/MKLoadCommand.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! The \c MKLinkEditDataLoadCommand class is the common parent class for all
 //! specialization of \ref MKLoadCommand which reference a blob of data in
@@ -47,3 +49,5 @@
 @property (nonatomic, readonly) uint32_t datasize;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -31,6 +31,10 @@
 #import <MachOKit/MKLoadCommand.h>
 #import <MachOKit/MKLCSegment.h>
 
+@class MKLCSection64;
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_SEGMENT64.
 //!
@@ -41,7 +45,7 @@
 //
 @interface MKLCSegment64 : MKLoadCommand <MKLCSegment> {
 @package
-    NSArray *_sections;
+    NSArray<MKLCSection64*> *_sections;
     NSString *_segname;
     uint64_t _vmaddr;
     uint64_t _vmsize;
@@ -55,7 +59,7 @@
 
 //! An array of \ref MKLCSection64 instances, each representing a section
 //! specified in this segment's load command.
-@property (nonatomic, readonly) NSArray /*MKLCSection64*/ *sections;
+@property (nonatomic, readonly) NSArray<MKLCSection64*> *sections;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Mach-O Struct Values
@@ -66,7 +70,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! Segment name.
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 //! The memory address of this segment.
 @property (nonatomic, readonly) uint64_t vmaddr;
 //! The memory size of this segment.
@@ -116,9 +120,9 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! The name of this section.
-@property (nonatomic, readonly) NSString *sectname;
+@property (nonatomic, readonly, nullable) NSString *sectname;
 //! The name of the segment this section goes in.
-@property (nonatomic, readonly) NSString *segname;
+@property (nonatomic, readonly, nullable) NSString *segname;
 //! Memory address of this section.
 @property (nonatomic, readonly) uint64_t addr;
 //! Size in bytes of this section.
@@ -141,3 +145,5 @@
 @property (nonatomic, readonly) uint32_t reserved3;
 
 @end
+
+NS_ASSUME_NONNULL_END

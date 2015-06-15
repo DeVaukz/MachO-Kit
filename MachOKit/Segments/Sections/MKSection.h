@@ -33,6 +33,8 @@
 
 @class MKSegment;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 //! @name       Section Types
 //! @relates    MKSection
@@ -143,11 +145,11 @@ typedef NS_OPTIONS(uint32_t, MKSectionAttributes) {
 
 + (Class)classForSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment;
 
-+ (instancetype)sectionWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error;
++ (nullable instancetype)sectionWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error;
 
-- (instancetype)initWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error  NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly, nullable) NSString *name;
 @property (nonatomic, readonly) id<MKLCSection> loadCommand;
 @property (nonatomic, readonly) uint32_t alignment;
 
@@ -160,3 +162,5 @@ typedef NS_OPTIONS(uint32_t, MKSectionAttributes) {
 @property (nonatomic, readonly) MKSectionAttributes attributes;
 
 @end
+
+NS_ASSUME_NONNULL_END
