@@ -34,11 +34,11 @@ _mk_load_command_type_dylinker_description(mk_load_command_ref load_command, cha
     char buffer[1024];
     _mk_load_command_type_dylib_copy_name(load_command, buffer, sizeof(buffer));
     
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tname = %s\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    buffer);
+                            mk_type_name(load_command.type), load_command.type,
+                            buffer);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

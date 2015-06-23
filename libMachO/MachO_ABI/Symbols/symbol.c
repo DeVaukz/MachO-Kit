@@ -128,7 +128,7 @@ uint8_t mk_symbol_get_sect(mk_symbol_ref symbol)
 
 //|++++++++++++++++++++++++++++++++++++|//
 int16_t mk_symbol_get_desc(mk_symbol_ref symbol)
-{ return mk_macho_get_byte_order(mk_symbol_get_macho(symbol))->swap16( symbol.symbol->nlist.nlist->n_desc ); }
+{ return (int16_t)mk_macho_get_byte_order(mk_symbol_get_macho(symbol))->swap16( (uint16_t)symbol.symbol->nlist.nlist->n_desc ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint64_t

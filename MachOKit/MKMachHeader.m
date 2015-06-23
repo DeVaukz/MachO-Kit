@@ -45,8 +45,8 @@
     { [self release]; return nil; }
     
     _magic = MKSwapLValue32(lc.magic, self.macho.dataModel);
-    _cputype = MKSwapLValue32(lc.cputype, self.macho.dataModel);
-    _cpusubtype = MKSwapLValue32(lc.cpusubtype, self.macho.dataModel);
+    _cputype = MKSwapLValue32s(lc.cputype, self.macho.dataModel);
+    _cpusubtype = MKSwapLValue32s(lc.cpusubtype, self.macho.dataModel);
     _filetype = MKSwapLValue32(lc.filetype, self.macho.dataModel);
     _ncmds = MKSwapLValue32(lc.ncmds, self.macho.dataModel);
     _sizeofcmds = MKSwapLValue32(lc.sizeofcmds, self.macho.dataModel);

@@ -43,8 +43,8 @@
     if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&slice length:sizeof(slice) requireFull:YES error:error] < sizeof(slice))
     { [self release]; return nil; }
     
-    _cputype = MKSwapLValue32(slice.cputype, self.dataModel);
-    _cpusubtype = MKSwapLValue32(slice.cpusubtype, self.dataModel);
+    _cputype = MKSwapLValue32s(slice.cputype, self.dataModel);
+    _cpusubtype = MKSwapLValue32s(slice.cpusubtype, self.dataModel);
     _offset = MKSwapLValue32(slice.offset, self.dataModel);
     _size = MKSwapLValue32(slice.size, self.dataModel);
     _align = 1 << MKSwapLValue32(slice.align, self.dataModel);

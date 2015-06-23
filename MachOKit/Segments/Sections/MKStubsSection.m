@@ -91,7 +91,7 @@
         [self release]; return nil;
     }
     
-    NSMutableArray *stubs = [[NSMutableArray alloc] init];
+    NSMutableArray<MKStub*> *stubs = [[NSMutableArray alloc] init];
     
     mk_vm_offset_t offset = 0;
     

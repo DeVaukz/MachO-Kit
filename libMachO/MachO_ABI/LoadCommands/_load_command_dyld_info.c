@@ -31,7 +31,7 @@
 size_t
 _mk_load_command_type_dyld_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \trebase_off = 0x%" PRIi32 "\n\
 \trebase_size = 0x%" PRIi32 "\n\
 \tbind_off = 0x%" PRIi32 "\n\
@@ -43,17 +43,17 @@ _mk_load_command_type_dyld_info_copy_description(mk_load_command_ref load_comman
 \texport_off = 0x%" PRIi32 "\n\
 \texport_size = 0x%" PRIi32 "\n\
 \n}",
-                    mk_type_name(load_command.type), load_command.type,
-                    _mk_load_command_type_dyld_info_get_rebase_off(load_command),
-                    _mk_load_command_type_dyld_info_get_rebase_size(load_command),
-                    _mk_load_command_type_dyld_info_get_bind_off(load_command),
-                    _mk_load_command_type_dyld_info_get_bind_size(load_command),
-                    _mk_load_command_type_dyld_info_get_weak_bind_off(load_command),
-                    _mk_load_command_type_dyld_info_get_weak_bind_size(load_command),
-                    _mk_load_command_type_dyld_info_get_lazy_bind_off(load_command),
-                    _mk_load_command_type_dyld_info_get_lazy_bind_size(load_command),
-                    _mk_load_command_type_dyld_info_get_export_off(load_command),
-                    _mk_load_command_type_dyld_info_get_export_size(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            _mk_load_command_type_dyld_info_get_rebase_off(load_command),
+                            _mk_load_command_type_dyld_info_get_rebase_size(load_command),
+                            _mk_load_command_type_dyld_info_get_bind_off(load_command),
+                            _mk_load_command_type_dyld_info_get_bind_size(load_command),
+                            _mk_load_command_type_dyld_info_get_weak_bind_off(load_command),
+                            _mk_load_command_type_dyld_info_get_weak_bind_size(load_command),
+                            _mk_load_command_type_dyld_info_get_lazy_bind_off(load_command),
+                            _mk_load_command_type_dyld_info_get_lazy_bind_size(load_command),
+                            _mk_load_command_type_dyld_info_get_export_off(load_command),
+                            _mk_load_command_type_dyld_info_get_export_size(load_command));
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

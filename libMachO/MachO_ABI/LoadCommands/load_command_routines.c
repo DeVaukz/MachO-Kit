@@ -31,13 +31,13 @@
 static size_t
 _mk_load_command_routines_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tinit_address = 0x%" PRIx32 "\n\
 \tinit_module = %" PRIi32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    mk_load_command_routines_get_init_address(load_command),
-                    mk_load_command_routines_get_init_module(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            mk_load_command_routines_get_init_address(load_command),
+                            mk_load_command_routines_get_init_module(load_command));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_routines_class = {

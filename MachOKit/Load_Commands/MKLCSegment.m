@@ -62,8 +62,8 @@
     _vmsize = MKSwapLValue32(lc.vmsize, self.macho.dataModel);
     _fileoff = MKSwapLValue32(lc.fileoff, self.macho.dataModel);
     _filesize = MKSwapLValue32(lc.filesize, self.macho.dataModel);
-    _maxprot = MKSwapLValue32(lc.maxprot, self.macho.dataModel);
-    _initprot = MKSwapLValue32(lc.initprot, self.macho.dataModel);
+    _maxprot = MKSwapLValue32s(lc.maxprot, self.macho.dataModel);
+    _initprot = MKSwapLValue32s(lc.initprot, self.macho.dataModel);
     _nsects = MKSwapLValue32(lc.nsects, self.macho.dataModel);
     _flags = MKSwapLValue32(lc.flags, self.macho.dataModel);
     
@@ -176,7 +176,7 @@
         [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(maxprot) description:@"Maximum VM Propection" offset:offsetof(struct segment_command, maxprot) size:sizeof(vm_prot_t)],
         [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(initprot) description:@"Initial VM Protection" offset:offsetof(struct segment_command, initprot) size:sizeof(vm_prot_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nsects) description:@"Number Of Sections" offset:offsetof(struct segment_command, nsects) size:sizeof(uint32_t)],
-        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct segment_command, flags) size:sizeof(uint32_t) flags:nil],
+        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct segment_command, flags) size:sizeof(uint32_t) flags:@{}],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sections) description:@"Sections"]
     ]];
 }
@@ -298,7 +298,7 @@
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(align) description:@"Alignment" offset:offsetof(struct section, align) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reloff) description:@"Relocations Offset" offset:offsetof(struct section, reloff) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nreloc) description:@"Number of Relocations" offset:offsetof(struct section, nreloc) size:sizeof(uint32_t)],
-        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct section, flags) size:sizeof(uint32_t) flags:nil],
+        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct section, flags) size:sizeof(uint32_t) flags:@{}],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved1) description:@"Reserved" offset:offsetof(struct section, reserved1) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved1) description:@"Reserved" offset:offsetof(struct section, reserved2) size:sizeof(uint32_t)]
     ]];

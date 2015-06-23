@@ -31,17 +31,17 @@
 static size_t
 _mk_load_command_symtab_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tsymoff = %" PRIu32 "\n\
 \tnsyms = %" PRIu32 "\n\
 \tstroff = %" PRIu32 "\n\
 \tstrsize = %" PRIu32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    mk_load_command_symtab_get_symoff(load_command),
-                    mk_load_command_symtab_get_nsyms(load_command),
-                    mk_load_command_symtab_get_stroff(load_command),
-                    mk_load_command_symtab_get_strsize(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            mk_load_command_symtab_get_symoff(load_command),
+                            mk_load_command_symtab_get_nsyms(load_command),
+                            mk_load_command_symtab_get_stroff(load_command),
+                            mk_load_command_symtab_get_strsize(load_command));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_symtab_class = {

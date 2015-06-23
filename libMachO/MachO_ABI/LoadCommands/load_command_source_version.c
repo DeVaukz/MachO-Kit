@@ -34,7 +34,7 @@ _mk_load_command_source_version_copy_description(mk_load_command_ref load_comman
     char version[256];
     mk_load_command_source_version_copy_version_string(load_command, version, sizeof(version));
     
-    return snprintf(output, output_len, "<%s %p> {\n\tSource Version: %s\n}",
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\tSource Version: %s\n}",
                     mk_type_name(load_command.type), load_command.type, version);
 }
 
@@ -97,5 +97,5 @@ mk_load_command_source_version_copy_version_string(mk_load_command_ref load_comm
     uint32_t components[5];
     mk_load_command_source_version_copy_components(load_command, components);
     
-    return snprintf(output, output_len, "%i.%i.%i.%i.%i", components[0], components[1], components[2], components[3], components[4]);
+    return (size_t)snprintf(output, output_len, "%i.%i.%i.%i.%i", components[0], components[1], components[2], components[3], components[4]);
 }

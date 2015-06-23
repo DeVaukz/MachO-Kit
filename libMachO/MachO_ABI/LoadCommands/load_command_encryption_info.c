@@ -30,15 +30,15 @@
 //|++++++++++++++++++++++++++++++++++++|//
 size_t _mk_load_command_encryption_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tcryptoff = 0x%" PRIi32 "\n\
 \tcryptsize = 0x%" PRIi32 "\n\
 \tcryptid = 0x%" PRIx32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    mk_load_command_encryption_info_get_cryptoff(load_command),
-                    mk_load_command_encryption_info_get_cryptsize(load_command),
-                    mk_load_command_encryption_info_get_cryptid(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            mk_load_command_encryption_info_get_cryptoff(load_command),
+                            mk_load_command_encryption_info_get_cryptsize(load_command),
+                            mk_load_command_encryption_info_get_cryptid(load_command));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_encryption_info_class = {

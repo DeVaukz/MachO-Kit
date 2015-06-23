@@ -31,13 +31,13 @@
 static size_t
 _mk_load_command_twolevel_hints_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \toffset: %" PRIu32 "\n\
 \tnhints: %" PRIu32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    mk_load_command_twolevel_hints_get_offset(load_command),
-                    mk_load_command_twolevel_hints_get_nhints(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            mk_load_command_twolevel_hints_get_offset(load_command),
+                            mk_load_command_twolevel_hints_get_nhints(load_command));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_twolevel_hints_class = {

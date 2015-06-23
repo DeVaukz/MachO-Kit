@@ -183,8 +183,8 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
     memory_object->host_address = context_address;
     memory_object->address = vm_address;
     memory_object->length = (vm_size_t)length;
-    memory_object->reserved1 = (intptr_t)mapping_address;
-    memory_object->reserved1 = (intptr_t)mapped_length;
+    memory_object->reserved1 = mapping_address;
+    memory_object->reserved1 = mapped_length;
     
     return MK_ESUCCESS;
 }

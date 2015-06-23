@@ -94,9 +94,9 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 { return self.parent.dataModel; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSArray*)warnings
+- (NSArray<NSError*> *)warnings
 { return objc_getAssociatedObject(self, AssociatedWarnings) ?: @[]; }
-- (void)setWarnings:(NSArray *)warnings
+- (void)setWarnings:(NSArray<NSError*> *)warnings
 { objc_setAssociatedObject(self, AssociatedWarnings, warnings, OBJC_ASSOCIATION_COPY); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -106,7 +106,7 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 @synthesize parent = _parent;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id)nearestAncestorOfType:(Class)cls
+- (nullable __kindof MKNode*)nearestAncestorOfType:(Class)cls
 {
     NSAssert([cls isSubclassOfClass:MKNode.class], @"cls must be an MKNode.");
     

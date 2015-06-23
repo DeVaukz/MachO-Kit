@@ -38,7 +38,7 @@ _mk_load_command_segment_copy_description(mk_load_command_ref load_command, char
     char buffer[17] = { 0 };
     mk_load_command_segment_copy_name(load_command, buffer);
     
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tsegname = %s\n\
 \tvmaddr = 0x%" PRIx32 "\n\
 \tvmsize = %" PRIu32 "\n\
@@ -48,14 +48,14 @@ _mk_load_command_segment_copy_description(mk_load_command_ref load_command, char
 \tinitprot = 0x%X\n\
 \tnsects = %" PRIu32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type, buffer,
-                    mk_load_command_segment_get_vmaddr(load_command),
-                    mk_load_command_segment_get_vmsize(load_command),
-                    mk_load_command_segment_get_fileoff(load_command),
-                    mk_load_command_segment_get_filesize(load_command),
-                    mk_load_command_segment_get_maxprot(load_command),
-                    mk_load_command_segment_get_initprot(load_command),
-                    mk_load_command_segment_get_nsects(load_command));
+                            mk_type_name(load_command.type), load_command.type, buffer,
+                            mk_load_command_segment_get_vmaddr(load_command),
+                            mk_load_command_segment_get_vmsize(load_command),
+                            mk_load_command_segment_get_fileoff(load_command),
+                            mk_load_command_segment_get_filesize(load_command),
+                            mk_load_command_segment_get_maxprot(load_command),
+                            mk_load_command_segment_get_initprot(load_command),
+                            mk_load_command_segment_get_nsects(load_command));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_segment_class = {
@@ -87,8 +87,8 @@ mk_load_command_segment_copy_native(mk_load_command_ref load_command, struct seg
     result->vmsize = byte_order->swap32( mach_segment_command->vmsize );
     result->fileoff = byte_order->swap32( mach_segment_command->fileoff );
     result->filesize = byte_order->swap32( mach_segment_command->filesize );
-    result->maxprot = byte_order->swap32( mach_segment_command->maxprot );
-    result->initprot = byte_order->swap32( mach_segment_command->initprot );
+    result->maxprot = (vm_prot_t)byte_order->swap32( (uint32_t)mach_segment_command->maxprot );
+    result->initprot = (vm_prot_t)byte_order->swap32( (uint32_t)mach_segment_command->initprot );
     result->nsects = byte_order->swap32( mach_segment_command->nsects );
     result->flags = byte_order->swap32( mach_segment_command->flags );
     
@@ -155,7 +155,7 @@ mk_load_command_segment_get_maxprot(mk_load_command_ref load_command)
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return INT_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return INT_MAX);
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
-    return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->maxprot );
+    return (vm_prot_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( (uint32_t)mach_segment_command->maxprot );
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -165,7 +165,7 @@ mk_load_command_segment_get_initprot(mk_load_command_ref load_command)
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return INT_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return INT_MAX);
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
-    return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->initprot );
+    return (vm_prot_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( (uint32_t)mach_segment_command->initprot );
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

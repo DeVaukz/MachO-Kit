@@ -169,7 +169,7 @@
         }
         
         // Slide the VM address
-        if ((err = mk_vm_address_apply_offset(_vmAddress, slide, &_vmAddress))) {
+        if ((err = mk_vm_address_apply_offset(_vmAddress, (mk_vm_offset_t)slide, &_vmAddress))) {
             MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _vmAddress, slide);
             [self release]; return nil;
         }

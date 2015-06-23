@@ -36,8 +36,8 @@ _mk_load_command_min_version_iphoneos_copy_description(mk_load_command_ref load_
     char sdk[256];
     mk_load_command_version_min_iphoneos_copy_sdk_string(load_command, sdk, sizeof(sdk));
     
-    return snprintf(output, output_len, "<%s %p> {\n\tVersion: %s\n\tSDK: %s\n}",
-                    mk_type_name(load_command.type), load_command.type, version, sdk);
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\tVersion: %s\n\tSDK: %s\n}",
+                            mk_type_name(load_command.type), load_command.type, version, sdk);
 }
 
 const struct _mk_load_command_vtable _mk_load_command_version_min_iphoneos_class = {
@@ -113,10 +113,10 @@ mk_load_command_version_min_iphoneos_copy_version_string(mk_load_command_ref loa
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_version_min_iphoneos_class, return 0);
     
-    return snprintf(output, output_len, "%i.%i.%i",
-                    mk_load_command_version_min_iphoneos_get_version_primary(load_command),
-                    mk_load_command_version_min_iphoneos_get_version_major(load_command),
-                    mk_load_command_version_min_iphoneos_get_version_minor(load_command));
+    return (size_t)snprintf(output, output_len, "%i.%i.%i",
+                            mk_load_command_version_min_iphoneos_get_version_primary(load_command),
+                            mk_load_command_version_min_iphoneos_get_version_major(load_command),
+                            mk_load_command_version_min_iphoneos_get_version_minor(load_command));
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -162,8 +162,8 @@ mk_load_command_version_min_iphoneos_copy_sdk_string(mk_load_command_ref load_co
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_version_min_iphoneos_class, return 0);
     
-    return snprintf(output, output_len, "%i.%i.%i",
-                    mk_load_command_version_min_iphoneos_get_sdk_primary(load_command),
-                    mk_load_command_version_min_iphoneos_get_sdk_major(load_command),
-                    mk_load_command_version_min_iphoneos_get_sdk_minor(load_command));
+    return (size_t)snprintf(output, output_len, "%i.%i.%i",
+                            mk_load_command_version_min_iphoneos_get_sdk_primary(load_command),
+                            mk_load_command_version_min_iphoneos_get_sdk_major(load_command),
+                            mk_load_command_version_min_iphoneos_get_sdk_minor(load_command));
 }

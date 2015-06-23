@@ -80,7 +80,7 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
     
     // Slide the vmAddress
     {
-        mk_vm_offset_t slide = mk_macho_get_slide(image);
+        mk_vm_offset_t slide = (mk_vm_offset_t)mk_macho_get_slide(image);
         
         if ((err = mk_vm_address_apply_offset(vm_address, slide, &vm_address))) {
             _mkl_error(mk_type_get_context(load_command.type), "Arithmetic error %s while applying slide (%" MK_VM_PRIiOFFSET ") to vm_address (%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, vm_address);

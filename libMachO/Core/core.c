@@ -261,7 +261,7 @@ __mk_type_equal(mk_type_ref self, mk_type_ref other)
 static size_t
 __mk_type_copy_description(mk_type_ref self, char* output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p>", mk_type_name(self), self);
+    return (size_t)snprintf(output, output_len, "<%s %p>", mk_type_name(self), self);
 }
 
 const struct _mk_type_vtable _mk_type_class = {

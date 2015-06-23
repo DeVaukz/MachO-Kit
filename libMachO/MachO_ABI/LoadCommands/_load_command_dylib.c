@@ -34,17 +34,17 @@ _mk_load_command_type_dylib_copy_description(mk_load_command_ref load_command, c
     char buffer[1024];
     _mk_load_command_type_dylib_copy_name(load_command, buffer, sizeof(buffer));
     
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tname = %s\n\
 \ttimestamp = %" PRIu32 "\n\
 \tcurrent_version = %" PRIu32 "\n\
 \tcompatibility_version = %" PRIu32 "\n\
 \n}",
-                    mk_type_name(load_command.type), load_command.type,
-                    buffer,
-                    _mk_load_command_type_dylib_get_timestamp(load_command),
-                    _mk_load_command_type_dylib_get_current_version(load_command),
-                    _mk_load_command_type_dylib_get_current_compatibility_version(load_command));
+                            mk_type_name(load_command.type), load_command.type,
+                            buffer,
+                            _mk_load_command_type_dylib_get_timestamp(load_command),
+                            _mk_load_command_type_dylib_get_current_version(load_command),
+                            _mk_load_command_type_dylib_get_current_compatibility_version(load_command));
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

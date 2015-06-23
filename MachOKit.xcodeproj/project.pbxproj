@@ -1490,12 +1490,12 @@
 			children = (
 				D000F4051AF5416B0004DAF6 /* Expecta.framework */,
 				D000F4071AF5416B0004DAF6 /* Expecta.framework */,
-				D046E572199B3A4C00371953 /* ExpectaTests.octest */,
+				D046E572199B3A4C00371953 /* ExpectaTests.xctest */,
 				D000F4091AF5416B0004DAF6 /* Expecta-iOSTests.xctest */,
 				D046E56E199B3A4C00371953 /* libExpecta.a */,
-				D046E570199B3A4C00371953 /* libExpecta-iOS.a */,
-				D046E576199B3A4C00371953 /* ExpectaTests-XCTest.xctest */,
-				D046E574199B3A4C00371953 /* Expecta-iOSTests.octest */,
+				D046E570199B3A4C00371953 /* libExpecta.a */,
+				D046E576199B3A4C00371953 /* libExpectaTests.xctest */,
+				D046E574199B3A4C00371953 /* libExpecta-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -2370,7 +2370,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D02FEB4C1890FF88004E88ED = {
@@ -2443,28 +2443,28 @@
 			remoteRef = D046E56D199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D046E570199B3A4C00371953 /* libExpecta-iOS.a */ = {
+		D046E570199B3A4C00371953 /* libExpecta.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = libExpecta.a;
 			remoteRef = D046E56F199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D046E572199B3A4C00371953 /* ExpectaTests.octest */ = {
+		D046E572199B3A4C00371953 /* ExpectaTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = ExpectaTests.xctest;
 			remoteRef = D046E571199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D046E574199B3A4C00371953 /* Expecta-iOSTests.octest */ = {
+		D046E574199B3A4C00371953 /* libExpecta-iOSTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = "libExpecta-iOSTests.xctest";
 			remoteRef = D046E573199B3A4C00371953 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		D046E576199B3A4C00371953 /* ExpectaTests-XCTest.xctest */ = {
+		D046E576199B3A4C00371953 /* libExpectaTests.xctest */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.cfbundle;
 			path = libExpectaTests.xctest;
@@ -2917,94 +2917,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		D010B37E1A747C4700AED697 /* Tests */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FCF1895C04E00E9D0CF /* Release.xcconfig */;
-			buildSettings = {
-				CURRENT_PROJECT_VERSION = 1.0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__TESTS__=1",
-					"NDEBUG=1",
-					"NS_BLOCK_ASSERTIONS=1",
-				);
-			};
-			name = Tests;
-		};
-		D010B37F1A747C4700AED697 /* Tests */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FDB1895C0BA00E9D0CF /* Mac-Framework.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_VERSION = A;
-				GCC_PREFIX_HEADER = "Resources/MachOKit-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__MACHOKIT__=1",
-					"__RELEASE__=1",
-					"NDEBUG=1",
-					"NS_BLOCK_ASSERTIONS=1",
-					"__FRAMEWORK__=1",
-				);
-				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
-				VALID_ARCHS = "x86_64 i386";
-			};
-			name = Tests;
-		};
-		D010B3801A747C4700AED697 /* Tests */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
-				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
-				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Tests;
-		};
-		D010B3811A747C4700AED697 /* Tests */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0E3FD9D199971A40097C0FF /* iOS-Framework.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__MACHOKIT__=1",
-					"__TESTS__=1",
-					"NDEBUG=1",
-					"NS_BLOCK_ASSERTIONS=1",
-				);
-				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Tests;
-		};
-		D010B3821A747C4700AED697 /* Tests */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = NO;
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = MachO;
-			};
-			name = Tests;
-		};
 		D02FEB5C1890FF88004E88ED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FCD1895C04E00E9D0CF /* Debug.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1.0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__DEBUG__=1",
-					"DEBUG=1",
-				);
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.devaukz.${PRODUCT_NAME:rfc1034identifier}";
 			};
 			name = Debug;
 		};
@@ -3013,11 +2934,10 @@
 			baseConfigurationReference = D0079FCF1895C04E00E9D0CF /* Release.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1.0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"__RELEASE__=1",
-					"NDEBUG=1",
-					"NS_BLOCK_ASSERTIONS=1",
-				);
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "net.devaukz.${PRODUCT_NAME:rfc1034identifier}";
 			};
 			name = Release;
 		};
@@ -3027,8 +2947,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3048,8 +2966,6 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -3100,8 +3016,6 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACHOKIT__=1",
 					"__DEBUG__=1",
@@ -3120,8 +3034,6 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACHOKIT__=1",
 					"__RELEASE__=1",
@@ -3163,7 +3075,6 @@
 			buildConfigurations = (
 				D02FEB5C1890FF88004E88ED /* Debug */,
 				D02FEB5D1890FF88004E88ED /* Release */,
-				D010B37E1A747C4700AED697 /* Tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3173,7 +3084,6 @@
 			buildConfigurations = (
 				D02FEB5F1890FF88004E88ED /* Debug */,
 				D02FEB601890FF88004E88ED /* Release */,
-				D010B37F1A747C4700AED697 /* Tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3183,7 +3093,6 @@
 			buildConfigurations = (
 				D02FEB621890FF88004E88ED /* Debug */,
 				D02FEB631890FF88004E88ED /* Release */,
-				D010B3801A747C4700AED697 /* Tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3193,7 +3102,6 @@
 			buildConfigurations = (
 				D046232D1A64F0B300537651 /* Debug */,
 				D046232E1A64F0B300537651 /* Release */,
-				D010B3811A747C4700AED697 /* Tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3203,7 +3111,6 @@
 			buildConfigurations = (
 				D0A3BB761A68EB9D00D663A0 /* Debug */,
 				D0A3BB771A68EB9D00D663A0 /* Release */,
-				D010B3821A747C4700AED697 /* Tests */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

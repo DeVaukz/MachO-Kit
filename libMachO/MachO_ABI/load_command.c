@@ -151,8 +151,8 @@ __mk_load_command_equal(mk_type_ref self, mk_type_ref other)
 static size_t
 __mk_load_command_copy_description(mk_type_ref self, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p; size = %llu>", mk_type_name(self),
-                    self, mk_load_command_size((mk_load_command_t*)self));
+    return (size_t)snprintf(output, output_len, "<%s %p; size = %llu>", mk_type_name(self),
+                            self, mk_load_command_size((mk_load_command_t*)self));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_class = {

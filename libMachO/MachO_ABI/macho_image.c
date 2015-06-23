@@ -57,6 +57,12 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     if (name == NULL) return MK_EINVAL;
     if (memory_map.memory_map == NULL) return MK_EINVAL;
     
+    // TODO - Support negative slides.
+    if (slide < 0) {
+        _mkl_error(ctx, "Negative slide is not currently supported: %s", image->name);
+        return MK_EINVAL;
+    }
+    
     mk_error_t err;
     
     image->context = ctx;
@@ -160,11 +166,11 @@ mk_vm_address_t mk_macho_get_address(mk_macho_ref image)
 
 //|++++++++++++++++++++++++++++++++++++|//
 cpu_type_t mk_macho_get_cpu_type(mk_macho_ref image)
-{ return mk_macho_get_byte_order(image)->swap32( image.macho->header->cputype ); }
+{ return (cpu_type_t)mk_macho_get_byte_order(image)->swap32( (uint32_t)image.macho->header->cputype ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 cpu_subtype_t mk_macho_get_cpu_subtype(mk_macho_ref image)
-{ return mk_macho_get_byte_order(image)->swap32( image.macho->header->cpusubtype ); }
+{ return (cpu_subtype_t)mk_macho_get_byte_order(image)->swap32( (uint32_t)image.macho->header->cpusubtype ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 uint32_t mk_macho_get_filetype(mk_macho_ref image)

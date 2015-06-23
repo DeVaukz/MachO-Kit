@@ -51,7 +51,7 @@ struct mk_memory_object_vtable {
 
 //! The member function table for the \c memory_object type.  Contains
 //! implementations of all the methods in \c struct mk_memory_object_vtable.
-const struct mk_memory_object_vtable _mk_memory_object_class;
+_mk_internal_extern const struct mk_memory_object_vtable _mk_memory_object_class;
 
 
 //! @} MEMORY_OBJECT !//

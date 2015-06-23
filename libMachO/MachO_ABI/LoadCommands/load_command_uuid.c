@@ -35,7 +35,7 @@ _mk_load_command_uuid_copy_description(mk_load_command_ref load_command, char *o
     char uuid_pretty_print[sizeof(mach_uuid_command->uuid) * 2 + 4 + 1];
     mk_load_command_uuid_copy_prety_uuid(load_command, true, uuid_pretty_print, sizeof(uuid_pretty_print));
     
-    return snprintf(output, output_len, "<%s %p>: %s", mk_type_name(load_command.type), load_command.type, uuid_pretty_print);
+    return (size_t)snprintf(output, output_len, "<%s %p>: %s", mk_type_name(load_command.type), load_command.type, uuid_pretty_print);
 }
 
 const struct _mk_load_command_vtable _mk_load_command_uuid_class = {

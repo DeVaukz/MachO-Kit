@@ -34,8 +34,8 @@ _mk_load_command_rpath_copy_description(mk_load_command_ref load_command, char *
     char buffer[1024];
     mk_load_command_rpath_copy_path(load_command, buffer, sizeof(buffer));
     
-    return snprintf(output, output_len, "<%s %p> {\n\tclient = %s\n}",
-                    mk_type_name(load_command.type), load_command.type, buffer);
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\tclient = %s\n}",
+                            mk_type_name(load_command.type), load_command.type, buffer);
 }
 
 const struct _mk_load_command_vtable _mk_load_command_rpath_class = {

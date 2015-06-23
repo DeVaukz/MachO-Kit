@@ -90,7 +90,7 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *par
         result->n_un.n_strx = MKSwapLValue32(entry.n_un.n_strx, image.dataModel);
         result->n_type = entry.n_type;
         result->n_sect = entry.n_sect;
-        result->n_desc = MKSwapLValue16(entry.n_desc, image.dataModel);
+        result->n_desc = (uint16_t)MKSwapLValue16s(entry.n_desc, image.dataModel);
         result->n_value = (uint64_t)MKSwapLValue32(entry.n_value, image.dataModel);
     }
     else

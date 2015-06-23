@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
     uint32_t _strx;
     uint8_t _type;
     uint8_t _sect;
-    int16_t _desc;
+    uint16_t _desc;
     uint64_t _value;
 }
 
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 //! The \c -canInstantiateWithNList:parent: is used to rank each subclass'
 //! ability to parse the symbol.
-+ (Class)classForSymbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
++ (nullable Class)classForSymbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Subclassing MKSymbol
@@ -89,7 +89,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Instantiates and returns the appropriate parser for the symbol at
 //! \a offset from the \a parent symbol table.
-+ (instancetype)symbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
++ (nullable instancetype)symbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -117,7 +117,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! of which is discussed in <mach-o/nlist.h>.
 @property (nonatomic, readonly) uint8_t type;
 @property (nonatomic, readonly) uint8_t sect;
-@property (nonatomic, readonly) int16_t desc;
+@property (nonatomic, readonly) uint16_t desc;
 @property (nonatomic, readonly) uint64_t value;
 
 @end

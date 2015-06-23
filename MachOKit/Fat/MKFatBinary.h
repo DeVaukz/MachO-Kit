@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Initializes the receiver with the provided \a memoryMap.  The FAT header
 //! is expected to reside at address \c 0 in the provided memory map.
-- (instancetype)initWithMemoryMap:(MKMemoryMap*)memoryMap error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithMemoryMap:(MKMemoryMap*)memoryMap error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //! An array of \ref MKFatArch instances, each represeting an architecture
 //! present in this fat binary.
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       fat_header Values
 //!
 //! @brief      These values are extracted directly from the fat_header
-//!             structure without modification or cleanup.
+//!             structure without any modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! FAT_MAGIC

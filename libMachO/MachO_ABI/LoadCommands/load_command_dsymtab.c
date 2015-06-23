@@ -31,7 +31,7 @@
 static size_t
 _mk_load_command_dsymtab_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    return snprintf(output, output_len, "<%s %p> {\n\
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tlocalsym = %" PRIu32 "\n\
 \tnlocalsym = %" PRIu32 "\n\
 \textdefsym = %" PRIu32 "\n\
@@ -51,26 +51,26 @@ _mk_load_command_dsymtab_copy_description(mk_load_command_ref load_command, char
 \tlocreloff = %" PRIu32 "\n\
 \tnlocrel = %" PRIu32 "\n\
 }",
-                    mk_type_name(load_command.type), load_command.type,
-                    mk_load_command_dysymtab_get_ilocalsym(load_command),
-                    mk_load_command_dysymtab_get_nlocalsym(load_command),
-                    mk_load_command_dysymtab_get_iextdefsym(load_command),
-                    mk_load_command_dysymtab_get_nextdefsym(load_command),
-                    mk_load_command_dysymtab_get_iundefsym(load_command),
-                    mk_load_command_dysymtab_get_nundefsym(load_command),
-                    mk_load_command_dysymtab_get_tocoff(load_command),
-                    mk_load_command_dysymtab_get_ntoc(load_command),
-                    mk_load_command_dysymtab_get_modtaboff(load_command),
-                    mk_load_command_dysymtab_get_nmodtab(load_command),
-                    mk_load_command_dysymtab_get_extrefsymoff(load_command),
-                    mk_load_command_dysymtab_get_nextrefsyms(load_command),
-                    mk_load_command_dysymtab_get_indirectsymoff(load_command),
-                    mk_load_command_dysymtab_get_nindirectsyms(load_command),
-                    mk_load_command_dysymtab_get_extreloff(load_command),
-                    mk_load_command_dysymtab_get_nextrel(load_command),
-                    mk_load_command_dysymtab_get_locreloff(load_command),
-                    mk_load_command_dysymtab_get_nlocrel(load_command)
-                    );
+                            mk_type_name(load_command.type), load_command.type,
+                            mk_load_command_dysymtab_get_ilocalsym(load_command),
+                            mk_load_command_dysymtab_get_nlocalsym(load_command),
+                            mk_load_command_dysymtab_get_iextdefsym(load_command),
+                            mk_load_command_dysymtab_get_nextdefsym(load_command),
+                            mk_load_command_dysymtab_get_iundefsym(load_command),
+                            mk_load_command_dysymtab_get_nundefsym(load_command),
+                            mk_load_command_dysymtab_get_tocoff(load_command),
+                            mk_load_command_dysymtab_get_ntoc(load_command),
+                            mk_load_command_dysymtab_get_modtaboff(load_command),
+                            mk_load_command_dysymtab_get_nmodtab(load_command),
+                            mk_load_command_dysymtab_get_extrefsymoff(load_command),
+                            mk_load_command_dysymtab_get_nextrefsyms(load_command),
+                            mk_load_command_dysymtab_get_indirectsymoff(load_command),
+                            mk_load_command_dysymtab_get_nindirectsyms(load_command),
+                            mk_load_command_dysymtab_get_extreloff(load_command),
+                            mk_load_command_dysymtab_get_nextrel(load_command),
+                            mk_load_command_dysymtab_get_locreloff(load_command),
+                            mk_load_command_dysymtab_get_nlocrel(load_command)
+                            );
 }
 
 const struct _mk_load_command_vtable _mk_load_command_dysymtab_class = {

@@ -43,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Segments and Sections
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+//! The segments referenced by any \c LC_SEGMENT or \c LC_SEGMENT64 present
+//! in the Mach-O image.
 @property (nonatomic, readonly) NSSet<MKSegment*> *segments;
 
 - (NSArray*)segmentsWithName:(NSString*)name;

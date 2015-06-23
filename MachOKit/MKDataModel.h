@@ -37,6 +37,13 @@ NS_ASSUME_NONNULL_BEGIN
 #define MKSwapLValue64(LVALUE, DATA_MODEL) \
     (LVALUE = DATA_MODEL.byteOrder->swap64( LVALUE ))
 
+#define MKSwapLValue16s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int16_t)DATA_MODEL.byteOrder->swap16( (uint16_t)LVALUE ))
+#define MKSwapLValue32s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int32_t)DATA_MODEL.byteOrder->swap32( (uint32_t)LVALUE ))
+#define MKSwapLValue64s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int32_t)DATA_MODEL.byteOrder->swap64( (uint32_t)LVALUE ))
+
 
 
 //----------------------------------------------------------------------------//
