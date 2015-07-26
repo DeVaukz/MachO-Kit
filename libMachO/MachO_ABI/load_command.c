@@ -386,7 +386,7 @@ mk_load_command_get_range(mk_load_command_ref load_command)
 mk_vm_address_t
 mk_load_command_get_address(mk_load_command_ref load_command)
 {
-    return mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)load_command.load_command->mach_load_command, mk_load_command_size(load_command), NULL);
+    return mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)load_command.load_command->mach_load_command, (vm_size_t)mk_load_command_size(load_command), NULL);
 }
 
 //----------------------------------------------------------------------------//

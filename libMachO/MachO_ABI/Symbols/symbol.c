@@ -68,7 +68,7 @@ mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_mach_nlist nlist,
         nlist_size = sizeof(struct nlist);
     
     nlist_address = mk_memory_object_unmap_address(mobj, 0, (vm_address_t)nlist.any, nlist_size, NULL);
-    if (nlist_size == MK_VM_ADDRESS_INVALID) {
+    if (nlist_address == MK_VM_ADDRESS_INVALID) {
         _mkl_error(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
         return MK_EINVAL;
     }
@@ -106,7 +106,7 @@ mk_symbol_get_range(mk_symbol_ref symbol)
     else
         size = sizeof(struct nlist);
     
-    mk_vm_address_t host_addr = mk_memory_object_unmap_address(mobj, 0, (vm_address_t)symbol.symbol->nlist.any, size, NULL);
+    mk_vm_address_t host_addr = mk_memory_object_unmap_address(mobj, 0, (vm_address_t)symbol.symbol->nlist.any, (vm_size_t)size, NULL);
     return mk_vm_range_make(host_addr, size);
 }
 
