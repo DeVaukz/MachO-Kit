@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachHeader.h
+//! @file       MKDSCHeader.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -33,35 +33,47 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! The \c MKMachHeader parses the structure at the beginning of a Mach-O
-//! binary.
+//! The \c MKDSCHeader parses the structure at the beginning of a the dyld
+//! shared cache.
 //
-@interface MKMachHeader : MKOffsetNode {
+@interface MKDSCHeader : MKOffsetNode {
 @package
-    uint32_t _magic;
-    cpu_type_t _cputype;
-    cpu_subtype_t _cpusubtype;
-    uint32_t _filetype;
-    uint32_t _ncmds;
-    uint32_t _sizeofcmds;
-    uint32_t _flags;
+    NSString *_magic;
+    uint32_t _mappingOffset;
+    uint32_t _mappingCount;
+    uint32_t _imagesOffset;
+    uint32_t _imagesCount;
+    uint64_t _dyldBaseAddress;
+    uint64_t _codeSignatureOffset;
+    uint64_t _codeSignatureSize;
+    uint64_t _slideInfoOffset;
+    uint64_t _slideInfoSize;
+    uint64_t _localSymbolsOffset;
+    uint64_t _localSymbolsSize;
+    NSUUID *_uuid;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Mach-O Header Values
-//! @name       Mach-O Header Values
+#pragma mark -  Shared Cache Header Values
+//! @name       Shared Cache Header Values
 //!
-//! @brief      These values are lifted directly from the Mach-O header
-//!             without modification or cleanup.
+//! @brief      These values are lifted directly from the shared cache
+//!             header without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@property (nonatomic, readonly) uint32_t magic;
-@property (nonatomic, readonly) cpu_type_t cputype;
-@property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-@property (nonatomic, readonly) uint32_t filetype;
-@property (nonatomic, readonly) uint32_t ncmds;
-@property (nonatomic, readonly) uint32_t sizeofcmds;
-@property (nonatomic, readonly) uint32_t flags;
+@property (nonatomic, readonly) NSString *magic;
+@property (nonatomic, readonly) uint32_t mappingOffset;
+@property (nonatomic, readonly) uint32_t mappingCount;
+@property (nonatomic, readonly) uint32_t imagesOffset;
+@property (nonatomic, readonly) uint32_t imagesCount;
+@property (nonatomic, readonly) uint64_t dyldBaseAddress;
+@property (nonatomic, readonly) uint64_t codeSignatureOffset;
+@property (nonatomic, readonly) uint64_t codeSignatureSize;
+@property (nonatomic, readonly) uint64_t slideInfoOffset;
+@property (nonatomic, readonly) uint64_t slideInfoSize;
+@property (nonatomic, readonly) uint64_t localSymbolsOffset;
+@property (nonatomic, readonly) uint64_t localSymbolsSize;
+@property (nonatomic, readonly) NSUUID *uuid;
 
 @end
 

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBackedNode.h
+//! @file       MKSharedCache.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,63 +28,72 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNode.h>
+#import <MachOKit/MKBackedNode.h>
+
+@class MKDSCHeader;
+@class MKDSCMappingInfo;
+@class MKDSCImageInfo;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Node Address Types
-//! @relates    MKBackedNode
-//!
-typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
-    //! The address of this node with respect to its \ref memoryMap.
-    MKNodeContextAddress                = 0,
-    //! The address of this node, as it will appear when the image is
-    //! mapped into virtual memory.  This value includes any slide that
-    //! was applied to the image.
-    MKNodeVMAddress
+//! @name       Mach-O Image Options
+//! @relates    MKMachOImage
+//
+typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
+    MKSharedCacheFlagNone                   = 0x0
 };
 
 
 
 //----------------------------------------------------------------------------//
-//! \c MKBackedNode is a type of \ref MKNode which represents the contents
-//! in some range of memory.
+@interface MKSharedCache : MKBackedNode {
+@package
+    MKMemoryMap *_memoryMap;
+    id<MKDataModel> _dataModel;
+    NSUInteger _version;
+    cpu_type_t _cpuType;
+    cpu_subtype_t _cpuSubtype;
+    // Address //
+    mk_vm_address_t _contextAddress;
+    mk_vm_address_t _vmAddress;
+    mk_vm_slide_t _slide;
+    // Header + Descriptors //
+    MKDSCHeader *_header;
+    NSArray<MKDSCMappingInfo*> *_mappingInfos;
+    NSArray<MKDSCImageInfo*> *_imageInfos;
+}
+
+//! 
+- (nullable instancetype)initWithFlags:(MKSharedCacheFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)memoryMap error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Getting Shared Cache Metadata
+//! @name       Getting Shared Cache Metadata
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The slide value dervided from the shared cache.
+@property (nonatomic, readonly) mk_vm_slide_t slide;
 //!
-@interface MKBackedNode : MKNode
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Memory Layout
-//! @name       Memory Layout
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! The size of this node.  Includes the size of all child nodes.
-//! Subclasses must implement the getter for this property.
+@property (nonatomic, readonly) NSUInteger version;
 //!
-//! @note
-//! A value of \c 0 indicates the node size is unknown.  This value should only
-//! be returned by top-level nodes such as \ref MKMachO.
-@property (nonatomic, readonly) mk_vm_size_t nodeSize;
-
-//! Shortcut for calling the \ref -nodeAddress: method with the
-//! \ref MKNodeContextAddress address type.
-@property (nonatomic, readonly) mk_vm_address_t nodeContextAddress;
-
-//! Shortcut for calling the \ref -nodeAddress: method with the
-//! \ref MKNodeVMAddress address type.
-@property (nonatomic, readonly) mk_vm_address_t nodeVMAddress;
-
-//! Subclasses must implement this method.
-- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type;
+@property (nonatomic, readonly) cpu_type_t cpuType;
+//!
+@property (nonatomic, readonly) cpu_subtype_t cpuSubtype;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Accessing the Underlying Data
-//! @name       Accessing the Underlying Data
+#pragma mark -  Header and Descriptors
+//! @name       Header and Descriptors
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! An \c NSData instance containing the contents of memory represented by
-//! this node.
-@property (nonatomic, readonly) NSData *data;
+//!
+@property (nonatomic, readonly) MKDSCHeader *header;
+
+//!
+@property (nonatomic, readonly) NSArray<MKDSCMappingInfo*> *mappingInfos;
+
+//!
+@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
 
 @end
 

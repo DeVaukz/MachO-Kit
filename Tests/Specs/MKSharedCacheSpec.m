@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSFileManager+MKTest.h
+//|             MKSharedCacheSpec.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,24 +25,39 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
-
-//----------------------------------------------------------------------------//
-typedef NS_OPTIONS(NSUInteger, MKExecutableType) {
-    MKFrameworkTypeOSXPublicFramework           = 1<<0,
-    MKFrameworkTypeOSXPrivateFramework          = 1<<1,
-    MKFrameworkTypeiOSPublicFramework           = 1<<2,
-    MKFrameworkTypeiOSPrivateFramework          = 1<<3,
-    MKFrameworkTypeAllFrameworks                = 0x0F,
-};
-
-
-
-//----------------------------------------------------------------------------//
-@interface NSFileManager (MKTest)
-
-+ (NSArray*)allExecutableURLs:(MKExecutableType)type;
-
-+ (NSArray*)sharedCachesInDirectoryAtURL:(NSURL*)directoryURL;
-
-@end
+SpecBegin(MKSharedCache)
+{
+    const char* path = getenv("MK_SC_TEST_PATH");
+    if (path == NULL)
+        return;
+    
+    NSString *sharedCachesPath = [[NSString alloc] initWithCString:path encoding:NSUTF8StringEncoding];
+    NSURL *sharedCachesURL = [NSURL fileURLWithPath:sharedCachesPath];
+    if (sharedCachesURL == nil)
+        return;
+    
+    NSArray *sharedCaches = [NSFileManager sharedCachesInDirectoryAtURL:sharedCachesURL];
+    
+    for (NSURL *sharedCacheURL in sharedCaches)
+    describe([sharedCachesURL lastPathComponent], ^{
+        NSError *error = nil;
+        __block MKSharedCache *sharedCache = nil;
+        
+        MKMemoryMap *map = [MKMemoryMap memoryMapWithContentsOfFile:sharedCacheURL error:&error];
+        beforeAll(^{
+            expect(map).toNot.beNil();
+            expect(error).to.beNil();
+        });
+        if (map == nil) return;
+        
+        sharedCache = [[MKSharedCache alloc] initWithFlags:0 atAddress:0 inMapping:map error:&error];
+        beforeAll(^{
+            expect(sharedCache).toNot.beNil();
+            expect(error).to.beNil();
+        });
+        if (sharedCache == nil) return;
+        
+        NSLog(@"%@", sharedCache.debugDescription);
+    });
+}
+SpecEnd

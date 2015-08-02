@@ -84,7 +84,7 @@ mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     
     // For some reason we need to subtract the fileOffset of the __LINKEDIT
     // segment.
-    if ((err = mk_vm_address_substract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
+    if ((err = mk_vm_address_subtract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
         _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while subtracting __LINKEDIT fileOffset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), mk_segment_get_fileoff(link_edit), vm_address);
         return err;
     }
@@ -258,7 +258,7 @@ mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_
         return;
     if (mk_vm_address_add(symbol_table.symbol_table->range.location, sym_index * sym_size, &sym_addr))
         return;
-    if (mk_vm_address_substract(symbol_table.symbol_table->range.length, sym_index * sym_size, &map_length))
+    if (mk_vm_address_subtract(symbol_table.symbol_table->range.length, sym_index * sym_size, &map_length))
         return;
     addr = mk_memory_object_remap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), 0, sym_addr, map_length, NULL);
     if (addr == UINTPTR_MAX)

@@ -107,6 +107,9 @@ NS_ASSUME_NONNULL_BEGIN
 //! Returns the nearest ancestor node of type \a cls.
 - (nullable __kindof MKNode*)nearestAncestorOfType:(Class)cls;
 
+//! Returns the nearest ancestor node conforming to \a protocol.
+- (nullable __kindof MKNode*)nearestAncestorForProtocol:(Protocol*)protocol;
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Discovering Subclasses
 //! @name       Discovering Subclasses

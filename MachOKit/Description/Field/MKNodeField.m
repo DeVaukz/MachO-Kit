@@ -27,6 +27,7 @@
 
 #import "MKNodeField.h"
 #import "MKNode.h"
+#import "NSArray+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeField

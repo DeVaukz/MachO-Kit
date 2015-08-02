@@ -143,6 +143,23 @@ mk_vm_address_apply_offset(mk_vm_address_t addr, mk_vm_offset_t offset, mk_vm_ad
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
+mk_vm_address_apply_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_address_t *result)
+{
+    // Check for overflow
+    if (slide > 0 && MK_VM_SLIDE_MAX - (uint64_t)slide < addr)
+        return MK_EOVERFLOW;
+    // Check for underflow
+    else if (slide < 0 && (mk_vm_address_t)(slide * -1) > addr)
+        return MK_EUNDERFLOW;
+    
+    if (result != NULL)
+        *result = addr + (mk_vm_address_t)slide; // Cast does not matter here.
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
 mk_vm_address_add(mk_vm_address_t addr1, mk_vm_address_t addr2, mk_vm_address_t *result)
 {
     // Check for overflow
@@ -157,7 +174,7 @@ mk_vm_address_add(mk_vm_address_t addr1, mk_vm_address_t addr2, mk_vm_address_t 
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_vm_address_substract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result)
+mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result)
 {
     // Check for underflow
     if (right > left)
@@ -165,6 +182,21 @@ mk_vm_address_substract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_addre
     
     if (result)
         *result = left - right;
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_address_difference(mk_vm_address_t left, mk_vm_address_t right, mk_vm_slide_t *result)
+{
+    if (left & (mk_vm_address_t)1 << (sizeof(left) * 8 - 1))
+        return MK_EUNDERFLOW;
+    if (right & (mk_vm_address_t)1 << (sizeof(right) * 8 - 1))
+        return MK_EUNDERFLOW;
+    
+    if (result)
+        *result = (mk_vm_slide_t)(left - right);
     
     return MK_ESUCCESS;
 }

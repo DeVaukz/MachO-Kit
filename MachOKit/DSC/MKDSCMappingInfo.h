@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSFileManager+MKTest.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKDSCMappingInfo.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,24 +25,37 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
-//----------------------------------------------------------------------------//
-typedef NS_OPTIONS(NSUInteger, MKExecutableType) {
-    MKFrameworkTypeOSXPublicFramework           = 1<<0,
-    MKFrameworkTypeOSXPrivateFramework          = 1<<1,
-    MKFrameworkTypeiOSPublicFramework           = 1<<2,
-    MKFrameworkTypeiOSPrivateFramework          = 1<<3,
-    MKFrameworkTypeAllFrameworks                = 0x0F,
-};
+#import <MachOKit/MKOffsetNode.h>
 
-
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface NSFileManager (MKTest)
+@interface MKDSCMappingInfo : MKOffsetNode {
+@package
+    uint64_t _address;
+    uint64_t _size;
+    uint64_t _fileOffset;
+    vm_prot_t _maxProt;
+    vm_prot_t _initProt;
+}
 
-+ (NSArray*)allExecutableURLs:(MKExecutableType)type;
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Shared Cache Struct Values
+//! @name       Shared Cache Struct Values
+//!
+//! @brief      These values are lifted directly from the shared cache mapping
+//!             info structure without modification or cleanup.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-+ (NSArray*)sharedCachesInDirectoryAtURL:(NSURL*)directoryURL;
+@property (nonatomic, readonly) uint64_t address;
+@property (nonatomic, readonly) uint64_t size;
+@property (nonatomic, readonly) uint64_t fileOffset;
+@property (nonatomic, readonly) vm_prot_t maxProt;
+@property (nonatomic, readonly) vm_prot_t initProt;
 
 @end
+
+NS_ASSUME_NONNULL_END

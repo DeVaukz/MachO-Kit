@@ -63,7 +63,7 @@
             [self release]; return nil;
         }
         
-        if ((err = mk_vm_address_substract(_nodeContextAddress, linkeditSegment.fileOffset, &_nodeContextAddress))) {
+        if ((err = mk_vm_address_subtract(_nodeContextAddress, linkeditSegment.fileOffset, &_nodeContextAddress))) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while subtracting __LINKEDIT fileOffset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), linkeditSegment.fileOffset, _nodeContextAddress];
             [self release]; return nil;
         }

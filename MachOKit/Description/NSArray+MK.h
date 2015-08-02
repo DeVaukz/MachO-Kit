@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSFileManager+MKTest.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       NSArray+MK.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -28,21 +28,8 @@
 @import Foundation;
 
 //----------------------------------------------------------------------------//
-typedef NS_OPTIONS(NSUInteger, MKExecutableType) {
-    MKFrameworkTypeOSXPublicFramework           = 1<<0,
-    MKFrameworkTypeOSXPrivateFramework          = 1<<1,
-    MKFrameworkTypeiOSPublicFramework           = 1<<2,
-    MKFrameworkTypeiOSPrivateFramework          = 1<<3,
-    MKFrameworkTypeAllFrameworks                = 0x0F,
-};
+@interface NSArray (MK)
 
-
-
-//----------------------------------------------------------------------------//
-@interface NSFileManager (MKTest)
-
-+ (NSArray*)allExecutableURLs:(MKExecutableType)type;
-
-+ (NSArray*)sharedCachesInDirectoryAtURL:(NSURL*)directoryURL;
+- (NSString*)mk_debugDescription;
 
 @end

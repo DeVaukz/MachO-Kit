@@ -71,4 +71,13 @@
     return [retValue subarrayWithRange:NSMakeRange(0, 15)];
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)sharedCachesInDirectoryAtURL:(NSURL*)directoryURL
+{
+    NSArray *files = [NSFileManager.defaultManager contentsOfDirectoryAtURL:directoryURL includingPropertiesForKeys:@[] options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL];
+    return [files filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSURL *evaluatedObject, __unused NSDictionary<NSString *,id> * bindings) {
+        return [[evaluatedObject path] rangeOfString:@"dyld_shared_cache_"].location != NSNotFound;
+    }]];
+}
+
 @end

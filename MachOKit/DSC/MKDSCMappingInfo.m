@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMachHeader.m
+//|             MKDSCMappingInfo.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,12 +25,21 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMachHeader.h"
+#import "MKDSCMappingInfo.h"
 #import "NSError+MK.h"
 #import "MKMachO.h"
 
+struct dyld_cache_mapping_info
+{
+    uint64_t	address;
+    uint64_t	size;
+    uint64_t	fileOffset;
+    uint32_t	maxProt;
+    uint32_t	initProt;
+};
+
 //----------------------------------------------------------------------------//
-@implementation MKMachHeader
+@implementation MKDSCMappingInfo
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
@@ -40,32 +49,28 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    struct mach_header lc;
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc))
+    struct dyld_cache_mapping_info scmi;
+    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&scmi length:sizeof(scmi) requireFull:YES error:error] < sizeof(scmi))
     { [self release]; return nil; }
     
-    _magic = MKSwapLValue32(lc.magic, self.dataModel);
-    _cputype = MKSwapLValue32s(lc.cputype, self.dataModel);
-    _cpusubtype = MKSwapLValue32s(lc.cpusubtype, self.dataModel);
-    _filetype = MKSwapLValue32(lc.filetype, self.dataModel);
-    _ncmds = MKSwapLValue32(lc.ncmds, self.dataModel);
-    _sizeofcmds = MKSwapLValue32(lc.sizeofcmds, self.dataModel);
-    _flags = MKSwapLValue32(lc.flags, self.dataModel);
+    _address = MKSwapLValue64(scmi.address, self.dataModel);
+    _size = MKSwapLValue64(scmi.size, self.dataModel);
+    _fileOffset = MKSwapLValue64(scmi.fileOffset, self.dataModel);
+    _maxProt = (vm_prot_t)MKSwapLValue32(scmi.maxProt, self.dataModel);
+    _initProt = (vm_prot_t)MKSwapLValue32(scmi.initProt, self.dataModel);
     
     return self;
 }
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Mach-O Header Values
+#pragma mark -  Shared Cache Struct Values
 //----------------------------------------------------------------------------//
 
-@synthesize magic = _magic;
-@synthesize cputype = _cputype;
-@synthesize cpusubtype = _cpusubtype;
-@synthesize filetype = _filetype;
-@synthesize ncmds = _ncmds;
-@synthesize sizeofcmds = _sizeofcmds;
-@synthesize flags = _flags;
+@synthesize address = _address;
+@synthesize size = _size;
+@synthesize fileOffset = _fileOffset;
+@synthesize maxProt = _maxProt;
+@synthesize initProt = _initProt;
 
 //----------------------------------------------------------------------------//
 #pragma mark -  MKNode
@@ -73,19 +78,17 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mach_vm_size_t)nodeSize
-{ return sizeof(struct mach_header); }
+{ return sizeof(struct dyld_cache_mapping_info); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(magic) description:@"Magic Number" offset:offsetof(struct mach_header, magic) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cputype) description:@"CPU Type" offset:offsetof(struct mach_header, cputype) size:sizeof(cpu_type_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cpusubtype) description:@"CPU SubType" offset:offsetof(struct mach_header, cpusubtype) size:sizeof(cpu_subtype_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(filetype) description:@"File Type" offset:offsetof(struct mach_header, filetype) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ncmds) description:@"Number of Load Commands" offset:offsetof(struct mach_header, ncmds) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sizeofcmds) description:@"Size of Load Commands" offset:offsetof(struct mach_header, sizeofcmds) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct mach_header, flags) size:sizeof(uint32_t)]
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Mapping Address" offset:offsetof(struct dyld_cache_mapping_info, address) size:sizeof(uint64_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Mapping Size" offset:offsetof(struct dyld_cache_mapping_info, size) size:sizeof(uint64_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileOffset) description:@"File Offset" offset:offsetof(struct dyld_cache_mapping_info, fileOffset) size:sizeof(uint64_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(maxProt) description:@"Maximum Protection" offset:offsetof(struct dyld_cache_mapping_info, maxProt) size:sizeof(uint32_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(initProt) description:@"Initial Protection" offset:offsetof(struct dyld_cache_mapping_info, initProt) size:sizeof(uint32_t)]
     ]];
 }
 

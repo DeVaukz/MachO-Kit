@@ -118,6 +118,17 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
     return nil;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (nullable __kindof MKNode*)nearestAncestorForProtocol:(Protocol*)protocol
+{
+    for (MKNode *n = self; n != nil; n = n.parent) {
+        if ([n conformsToProtocol:protocol])
+            return n;
+    }
+    
+    return nil;
+}
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -   Subclasses
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

@@ -59,18 +59,24 @@
 //! \ref mk_vm_size_t type.
 #define MK_VM_SIZE_MAX UINT64_MAX
 //! The largest offset value that can be represented by the
-//! \ref mk_vm_off_t type.
-#define MK_VM_OFF_MAX INT64_MAX
+//! \ref mk_vm_offset_t type.
+#define MK_VM_OFF_MAX UINT64_MAX
 //! The smallest offset value that can be represented by the
-//! \ref mk_vm_off_t type.
-#define MK_VM_OFF_MIN INT64_MIN
+//! \ref mk_vm_offset_t type.
+#define MK_VM_OFF_MIN 0
+//! The largest offset value that can be represented by the
+//! \ref mk_vm_slide_t type.
+#define MK_VM_SLIDE_MAX INT64_MAX
+//! The smallest offset value that can be represented by the
+//! \ref mk_vm_slide_t type.
+#define MK_VM_SLIDE_MIN INT64_MIN
 
 //! An invalid address value.
 #define MK_VM_ADDRESS_INVALID MK_VM_ADDRESS_MAX
 //! An invalid size value.
 #define MK_VM_SIZE_INVALID MK_VM_SIZE_MAX
 //! An invalid offset value.
-#define MK_VM_OFFSET_INVALID INT64_MIN
+#define MK_VM_OFFSET_INVALID UINT64_MAX
 
 //! Print formatter for the \ref mk_vm_address_t type.
 #define MK_VM_PRIxADDR PRIx64
@@ -99,6 +105,9 @@
 
 //! Architecture-independent VM offset type.
 typedef uint64_t mk_vm_offset_t;
+
+//! Architecture-independent VM slide type.
+typedef int64_t mk_vm_slide_t;
 
 
 //----------------------------------------------------------------------------//
@@ -194,6 +203,13 @@ mk_vm_range_contains_range(mk_vm_range_t outer_range, mk_vm_range_t inner_range,
 _mk_export mk_error_t
 mk_vm_address_apply_offset(mk_vm_address_t addr, mk_vm_offset_t offset, mk_vm_address_t *result);
 
+//! Safely computes \a addr + \a slide and stores the result in \a result.
+//! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
+//! unmodified.  If there was an underflow, \ref MK_EUNDERFLOW is returned and
+//! \a result is unmodified.
+_mk_export mk_error_t
+mk_vm_address_apply_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_address_t *result);
+
 //! Safely computes \a addr1 + \a addr2 and stores the result in \a result.
 //! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
 //! unmodified.
@@ -204,7 +220,11 @@ mk_vm_address_add(mk_vm_address_t addr1, mk_vm_address_t addr2, mk_vm_address_t 
 //! If \a right > \a left, \ref MK_EUNDERFLOW is returned and \a result is
 //! unmodified.
 _mk_export mk_error_t
-mk_vm_address_substract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result);
+mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result);
+
+//! Safely computes \a left - \a right and stores the result in \a result.
+_mk_export mk_error_t
+mk_vm_address_difference(mk_vm_address_t left, mk_vm_address_t right, mk_vm_slide_t *result);
 
 //! Returns \ref MK_ESUCCESS if \a length can safely be applied to \a addr
 //! without causing an overflow.
@@ -300,8 +320,11 @@ mk_type_copy_description(mk_type_ref mk, char* output, size_t output_len);
 #include "context.h"
 #include "data_model.h"
 #include "memory_map.h"
-#include "memory_map_task.h"
 #include "memory_map_self.h"
+
+#if !TARGET_OS_IPHONE
+#include "memory_map_task.h"
+#endif
 
 
 //! @} CORE !//

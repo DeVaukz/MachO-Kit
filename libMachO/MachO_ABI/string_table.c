@@ -76,7 +76,7 @@ mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     
     // For some reason we need to subtract the fileOffset of the __LINKEDIT
     // segment.
-    if ((err = mk_vm_address_substract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
+    if ((err = mk_vm_address_subtract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
         _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while subtracting __LINKEDIT file offset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), mk_segment_get_fileoff(link_edit), vm_address);
         return err;
     }

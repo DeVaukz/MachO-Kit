@@ -45,6 +45,11 @@
 #import <MachOKit/MKFatBinary.h>
 #import <MachOKit/MKFatArch.h>
 
+#import <MachOKit/MKSharedCache.h>
+#import <MachOKit/MKDSCHeader.h>
+#import <MachOKit/MKDSCMappingInfo.h>
+#import <MachOKit/MKDSCImageInfo.h>
+
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachO+Segments.h>
 #import <MachOKit/MKMachO+Symbols.h>
