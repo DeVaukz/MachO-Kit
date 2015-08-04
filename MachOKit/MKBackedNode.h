@@ -40,8 +40,8 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
     //! The address of this node with respect to its \ref memoryMap.
     MKNodeContextAddress                = 0,
     //! The address of this node, as it will appear when the image is
-    //! mapped into virtual memory.  This value includes any slide that
-    //! was applied to the image.
+    //! mapped into virtual memory.  This value does not include any slide
+    //! that was applied to the image.
     MKNodeVMAddress
 };
 

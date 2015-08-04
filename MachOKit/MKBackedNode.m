@@ -42,39 +42,6 @@
     return [super initWithParent:parent error:error];
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)debugDescription
-{
-    NSMutableString *retValue;
-    
-    retValue = [NSMutableString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR "; size = %" MK_VM_PRIiSIZE ">",
-                    self.class, self, self.nodeContextAddress, self.nodeSize];
-    
-    MKNodeDescription *layout = [self layout];
-    NSArray *fields = layout.allFields;
-    if (fields.count) {
-        [retValue appendString:@" {\n"];
-        if (self.warnings.count)
-        {
-            [retValue appendFormat:@"\twarnings = {\n"];
-            for (NSError *warning in self.warnings) {
-                if (warning.userInfo[NSUnderlyingErrorKey])
-                    [retValue appendFormat:@"\t\t%@: %@ - %@\n", warning.mk_property, warning.localizedDescription, [warning.userInfo[NSUnderlyingErrorKey] localizedDescription]];
-                else
-                    [retValue appendFormat:@"\t\t%@: %@\n", warning.mk_property, warning.localizedDescription];
-            }
-            [retValue appendFormat:@"\t}\n"];
-        }
-        
-        for (MKNodeField *field in fields) {
-            [retValue appendFormat:@"\t%@ = %@\n", field.name, [[field formattedDescriptionForNode:self] stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"]];
-        }
-        [retValue appendString:@"}"];
-    }
-    
-    return retValue;
-}
-
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Memory Layout
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -104,5 +71,13 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSData*)data
 { return [self.memoryMap dataAtOffset:0 fromAddress:self.nodeContextAddress length:self.nodeSize requireFull:YES error:NULL]; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return [NSString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self, self.nodeContextAddress]; }
 
 @end

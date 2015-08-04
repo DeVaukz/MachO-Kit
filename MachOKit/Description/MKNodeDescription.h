@@ -32,6 +32,8 @@
 #import <MachOKit/MKPrimativeNodeField.h>
 #import <MachOKit/MKFlagsNodeField.h>
 
+@class MKNode;
+
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
@@ -49,6 +51,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSArray<MKNodeField*> *fields;
 @property (nonatomic, readonly) NSArray<MKNodeField*> *allFields;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Obtaining a Description
+//! @name       Obtaining a Description
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! Returns a complete description of the node, containing all fields and their
+//! values.  If \a traversalDepth is > 1, invokes \c -recursiveDescription: on
+//! fields of class \ref MKNode, passing a value of \c traversalDepth-1 as the
+//! argument.
+- (NSString*)textualDescriptionForNode:(MKNode*)node traversalDepth:(NSUInteger)traversalDepth;
 
 @end
 

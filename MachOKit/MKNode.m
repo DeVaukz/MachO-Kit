@@ -26,6 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNode.h"
+#import "NSError+MK.h"
+#import "MKBackedNode.h"
 
 #import <objc/runtime.h>
 
@@ -217,5 +219,13 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
     [subclasses release];
     return self;
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)debugDescription
+{ return [self.layout textualDescriptionForNode:self traversalDepth:NSUIntegerMax]; }
 
 @end

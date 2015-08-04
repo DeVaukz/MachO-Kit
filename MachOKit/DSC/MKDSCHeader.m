@@ -115,7 +115,7 @@ struct dyld_cache_header
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mach_vm_size_t)nodeSize
+- (mk_vm_size_t)nodeSize
 { return sizeof(struct dyld_cache_header); }
 
 //|++++++++++++++++++++++++++++++++++++|//

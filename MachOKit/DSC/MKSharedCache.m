@@ -29,6 +29,7 @@
 #import "NSError+MK.h"
 #import "MKDSCHeader.h"
 #import "MKDSCMappingInfo.h"
+#import "MKDSCMapping.h"
 #import "MKDSCImageInfo.h"
 
 #include <objc/runtime.h>
@@ -38,10 +39,11 @@
 @implementation MKSharedCache
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (nullable instancetype)initWithFlags:(__unused MKSharedCacheFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
+- (nullable instancetype)initWithFlags:(MKSharedCacheFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
 {
     NSParameterAssert(mapping);
     
+    mk_error_t err;
     NSError *localError = nil;
     mk_vm_address_t sharedRegionBase;
     
@@ -135,6 +137,22 @@
         [self release]; return nil;
     }
     
+    // Handle flags
+    {
+        // If neither the MKSharedCacheFromSourceFile or MKSharedCacheFromVM
+        // were specified, attempt to detect whether we are parsing a
+        // dyld_shared_cache_[arch] from disk.  The best heuristic is a
+        // contextAddress of 0.
+        if (!(flags & MKSharedCacheFromSourceFile) && !(flags & MKSharedCacheFromVM)) {
+            if (contextAddress == 0)
+                flags |= MKSharedCacheFromSourceFile;
+            else
+                flags |= MKSharedCacheFromVM;
+        }
+        
+        _flags = flags;
+    }
+    
     // Parse mapping descriptors
     {
         uint32_t mappingDescriptorCount = _header.mappingCount;
@@ -181,6 +199,8 @@
         [self release]; return nil;
     }
     
+    mk_vm_address_t loadAddress = _mappingInfos[0].address;
+    
     // Compute the slide
     //
     // dyld assumes an existing shared cache has been slide if the mapping
@@ -190,20 +210,45 @@
     {
         // Shared cache slide is the delta of the current context-relative
         // address of the first region, and the preferred address of the
-        // first region.  dyld determines the preferred load address by peeking
-        // at the shared cache dile on disk.  We don't have that luxury.
-        // Instead we use the hard coded values from <mach/shared_region.h>.
+        // first region.  dyld determines the preferred load address of the
+        // first region by peeking at the shared cache file on disk.
+        // We don't have that luxury.  Instead we use the hard coded values
+        // from <mach/shared_region.h>.
         //
         // TODO - Provide an option to manually specify the slide.
-        mk_error_t e = mk_vm_address_difference(_mappingInfos[0].address, sharedRegionBase, &_slide);
-        if (e != MK_ESUCCESS) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:e description:@"Could not compute shared cache slide (" MK_VM_PRIxADDR " - " MK_VM_PRIxADDR ").", _mappingInfos[0].address, sharedRegionBase];
+        err = mk_vm_address_difference(loadAddress, sharedRegionBase, &_slide);
+        if (err != MK_ESUCCESS) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not compute shared cache slide (" MK_VM_PRIxADDR " - " MK_VM_PRIxADDR ").", loadAddress, sharedRegionBase];
             [self release]; return nil;
         }
     }
     
-    // vmAddress is the address of the first region
-    _vmAddress = _mappingInfos[0].address;
+    // vmAddress is the un-slid address of the first region
+    if ((err = mk_vm_address_apply_slide(loadAddress, -1 * _slide, &_vmAddress))) {
+        MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, loadAddress, _slide);
+        [self release]; return nil;
+    }
+    
+    // Load mappings
+    {
+        NSMutableArray<MKDSCMapping*> *mappings = [[NSMutableArray alloc] initWithCapacity:3];
+        
+        for (MKDSCMappingInfo *descriptor in _mappingInfos)
+        {
+            NSError *localError = nil;
+            
+            MKDSCMapping *mapping = [[MKDSCMapping alloc] initWithDescriptor:descriptor error:&localError];
+            if (mapping == nil) {
+                MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to create MKDSCMapping for descriptor %@", descriptor);
+                continue;
+            }
+            
+            [mappings addObject:mapping];
+        }
+        
+        _mappings = [mappings copy];
+        [mappings release];
+    }
     
     // Parse image Infos
     {
@@ -273,17 +318,23 @@
 #pragma mark - Getting Shared Cache Metadata
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)isSourceFile
+{ return !!(_flags & MKSharedCacheFromSourceFile); }
+
+@synthesize slide = _slide;
+
 @synthesize version = _version;
 @synthesize cpuType = _cpuType;
 @synthesize cpuSubtype = _cpuSubtype;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Header and Descriptors
+#pragma mark - Header and Mappings
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize header = _header;
 @synthesize mappingInfos = _mappingInfos;
-@synthesize imageInfos = _imageInfos;
+@synthesize mappings = _mappings;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - MKNode
@@ -317,6 +368,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(slide) description:@"Slide"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Shared Cache Header"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappingInfos) description:@"Mapping Descriptors"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappings) description:@"Mappings"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(imageInfos) description:@"Image Descriptors"],
     ]];
 }

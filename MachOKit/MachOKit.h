@@ -48,6 +48,7 @@
 #import <MachOKit/MKSharedCache.h>
 #import <MachOKit/MKDSCHeader.h>
 #import <MachOKit/MKDSCMappingInfo.h>
+#import <MachOKit/MKDSCMapping.h>
 #import <MachOKit/MKDSCImageInfo.h>
 
 #import <MachOKit/MKMachO.h>

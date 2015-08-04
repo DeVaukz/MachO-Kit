@@ -28,20 +28,29 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKNode+SharedCache.h>
 #import <MachOKit/MKBackedNode.h>
 
 @class MKDSCHeader;
 @class MKDSCMappingInfo;
+@class MKDSCMapping;
 @class MKDSCImageInfo;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Mach-O Image Options
-//! @relates    MKMachOImage
+//! @name       Shared Cache Options
+//! @relates    MKSharedCacheFlags
 //
 typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
-    MKSharedCacheFlagNone                   = 0x0
+    //! The mapped shared cache is from a \c dyld_shared_cache_[arch] file
+    //! on disk.  This option is mutually excludive with
+    //! \ref MKSharedCacheFromVM.
+    MKSharedCacheFromSourceFile                 = 0x1,
+    //! The mapped shared cache is from process memory or a memory dump,
+    //! and has been loaded by dyld.  This option is mutually exclusive wtih
+    //! \ref MKSharedCacheFromSourceFile.
+    MKSharedCacheFromVM                         = 0x2,
 };
 
 
@@ -51,6 +60,7 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
 @package
     MKMemoryMap *_memoryMap;
     id<MKDataModel> _dataModel;
+    MKSharedCacheFlags _flags;
     NSUInteger _version;
     cpu_type_t _cpuType;
     cpu_subtype_t _cpuSubtype;
@@ -58,9 +68,12 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
     mk_vm_address_t _contextAddress;
     mk_vm_address_t _vmAddress;
     mk_vm_slide_t _slide;
-    // Header + Descriptors //
+    // Header //
     MKDSCHeader *_header;
+    // Mappings //
     NSArray<MKDSCMappingInfo*> *_mappingInfos;
+    NSArray<MKDSCMapping*> *_mappings;
+    // Images //
     NSArray<MKDSCImageInfo*> *_imageInfos;
 }
 
@@ -72,8 +85,12 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
 //! @name       Getting Shared Cache Metadata
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The slide value dervided from the shared cache.
+//! Returns \c YES if the Shared Cache was initialized with a
+//! \c dyld_shared_cache_[arch] file from disk.
+@property (nonatomic, readonly) BOOL isSourceFile;
+//! The dervided slide value for the shared cache.
 @property (nonatomic, readonly) mk_vm_slide_t slide;
+
 //!
 @property (nonatomic, readonly) NSUInteger version;
 //!
@@ -82,8 +99,8 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
 @property (nonatomic, readonly) cpu_subtype_t cpuSubtype;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Header and Descriptors
-//! @name       Header and Descriptors
+#pragma mark -  Header and Mappings
+//! @name       Header and Mappings
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //!
@@ -93,7 +110,7 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
 @property (nonatomic, readonly) NSArray<MKDSCMappingInfo*> *mappingInfos;
 
 //!
-@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
+@property (nonatomic, readonly) NSArray<MKDSCMapping*> *mappings;
 
 @end
 

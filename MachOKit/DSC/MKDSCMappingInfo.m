@@ -27,7 +27,6 @@
 
 #import "MKDSCMappingInfo.h"
 #import "NSError+MK.h"
-#import "MKMachO.h"
 
 struct dyld_cache_mapping_info
 {

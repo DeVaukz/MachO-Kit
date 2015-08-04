@@ -26,6 +26,9 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeDescription.h"
+#import "NSError+MK.h"
+#import "MKNode.h"
+#import "MKBackedNode.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeDescription
@@ -73,6 +76,76 @@
     while (parent) {
         retValue = [parent.fields arrayByAddingObjectsFromArray:retValue];
         parent = parent.parent;
+    }
+    
+    return retValue;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Obtaining a Description
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)textualDescriptionForNode:(MKNode*)node traversalDepth:(NSUInteger)traversalDepth
+{
+    NSMutableString *retValue = [NSMutableString string];
+    
+    // HACK HACK - Special case for MKBackedNode
+    if ([node respondsToSelector:@selector(nodeContextAddress)] && [node respondsToSelector:@selector(nodeSize)])
+        retValue = [NSMutableString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR "; size = %" MK_VM_PRIiSIZE ">",
+                    node.class, self, [(MKBackedNode*)node nodeContextAddress], [(MKBackedNode*)node nodeSize]];
+    else
+        retValue = [NSMutableString stringWithFormat:@"<%@ %p>", node.class, self];
+    
+    NSArray *fields = self.allFields;
+    if (fields.count)
+    {
+        [retValue appendString:@" {\n"];
+        
+        __block NSString* (^describeValue)(id) = ^(id value) {
+            if ([value isKindOfClass:MKNode.class])
+                return [[value layout] textualDescriptionForNode:value traversalDepth:traversalDepth-1];
+            else if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
+                NSMutableString *collectionDescription = [NSMutableString string];
+                
+                [collectionDescription appendString:@"("];
+                for (id item in value) {
+                    [collectionDescription appendFormat:@"\n\t%@", [describeValue(item) stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"]];
+                }
+                [collectionDescription appendString:@"\n)"];
+                
+                return (NSString*)collectionDescription;
+            } else
+                return [value description];
+        };
+        
+        for (MKNodeField *field in self.fields)
+        {
+            NSString *fieldDescription = nil;
+            
+            // Only the base MKNodeField could describe a collection or a
+            // child MKNode.
+            if (traversalDepth && [field class] == [MKNodeField class])
+                fieldDescription = describeValue([field.valueRecipe valueForNode:node]);
+            else
+                fieldDescription = [field formattedDescriptionForNode:node];
+            
+            [retValue appendFormat:@"\t%@ = %@\n", field.name, [fieldDescription stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"]];
+        }
+        
+        if (node.warnings.count)
+        {
+            [retValue appendFormat:@"\twarnings = {\n"];
+            for (NSError *warning in node.warnings) {
+                if (warning.userInfo[NSUnderlyingErrorKey])
+                    [retValue appendFormat:@"\t\t%@: %@ - %@\n", warning.mk_property, warning.localizedDescription, [warning.userInfo[NSUnderlyingErrorKey] localizedDescription]];
+                else
+                    [retValue appendFormat:@"\t\t%@: %@\n", warning.mk_property, warning.localizedDescription];
+            }
+            [retValue appendFormat:@"\t}\n"];
+        }
+        
+        [retValue appendString:@"}"];
     }
     
     return retValue;

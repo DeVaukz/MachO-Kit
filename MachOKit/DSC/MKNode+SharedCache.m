@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSArray+MK.m
+//|             MKNode+SharedCache.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,27 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSArray+MK.h"
-#import "MKNode.h"
+#import "MKNode+SharedCache.h"
+#import "MKSharedCache.h"
 
 //----------------------------------------------------------------------------//
-@implementation NSArray (MK)
+@implementation MKNode (SharedCache)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)mk_debugDescription
-{
-    NSMutableString *retValue = [NSMutableString string];
-    
-    [retValue appendString:@"("];
-    for (NSObject *obj in self) {
-        if ([obj isKindOfClass:MKNode.class])
-            [retValue appendString:obj.debugDescription];
-        else
-            [retValue appendString:obj.description];
-    }
-    [retValue appendString:@"\("];
-    
-    return retValue;
-}
+- (MKSharedCache*)sharedCache
+{ return [self nearestAncestorOfType:MKSharedCache.class]; }
 
 @end
