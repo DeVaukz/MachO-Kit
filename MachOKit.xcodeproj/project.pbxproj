@@ -815,6 +815,10 @@
 		D0BA9D8D1A95778E0080F445 /* string_table_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BA9D8C1A95778E0080F445 /* string_table_internal.h */; };
 		D0BA9D8E1A95778E0080F445 /* string_table_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BA9D8C1A95778E0080F445 /* string_table_internal.h */; };
 		D0BA9D8F1A95778E0080F445 /* string_table_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BA9D8C1A95778E0080F445 /* string_table_internal.h */; };
+		D0BC78A11B71AD6F00467975 /* MKSharedCache+Images.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BC789F1B71AD6F00467975 /* MKSharedCache+Images.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0BC78A21B71AD6F00467975 /* MKSharedCache+Images.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BC789F1B71AD6F00467975 /* MKSharedCache+Images.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0BC78A31B71AD6F00467975 /* MKSharedCache+Images.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BC78A01B71AD6F00467975 /* MKSharedCache+Images.m */; };
+		D0BC78A41B71AD6F00467975 /* MKSharedCache+Images.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BC78A01B71AD6F00467975 /* MKSharedCache+Images.m */; };
 		D0BC7C161A2D975D0011517D /* MKBackedNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0BC7C141A2D975D0011517D /* MKBackedNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0BC7C171A2D975D0011517D /* MKBackedNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BC7C151A2D975D0011517D /* MKBackedNode.m */; };
 		D0BD11021B6C854E009AEB8F /* MKSharedCacheSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BD11011B6C854E009AEB8F /* MKSharedCacheSpec.m */; };
@@ -1284,6 +1288,8 @@
 		D0A9EAB11A8FD70C00280D38 /* section_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = section_internal.h; sourceTree = "<group>"; };
 		D0B383531B65840C0088CFCC /* libMachO.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachO.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0BA9D8C1A95778E0080F445 /* string_table_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = string_table_internal.h; path = libMachO/MachO_ABI/string_table_internal.h; sourceTree = SOURCE_ROOT; };
+		D0BC789F1B71AD6F00467975 /* MKSharedCache+Images.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKSharedCache+Images.h"; sourceTree = "<group>"; };
+		D0BC78A01B71AD6F00467975 /* MKSharedCache+Images.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKSharedCache+Images.m"; sourceTree = "<group>"; };
 		D0BC7C141A2D975D0011517D /* MKBackedNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKBackedNode.h; sourceTree = "<group>"; };
 		D0BC7C151A2D975D0011517D /* MKBackedNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKBackedNode.m; sourceTree = "<group>"; };
 		D0BD11011B6C854E009AEB8F /* MKSharedCacheSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSharedCacheSpec.m; sourceTree = "<group>"; };
@@ -1642,6 +1648,8 @@
 				D0BD11161B6DE152009AEB8F /* MKNode+SharedCache.m */,
 				D03CD7FF1B68831500F52FBB /* MKSharedCache.h */,
 				D03CD8001B68831500F52FBB /* MKSharedCache.m */,
+				D0BC789F1B71AD6F00467975 /* MKSharedCache+Images.h */,
+				D0BC78A01B71AD6F00467975 /* MKSharedCache+Images.m */,
 				D0A1E90A1B69E4130061843F /* MKDSCHeader.h */,
 				D0A1E90B1B69E4130061843F /* MKDSCHeader.m */,
 				D0A1E91E1B69F3080061843F /* MKDSCMappingInfo.h */,
@@ -2073,6 +2081,7 @@
 				D030302C1A23BF3800288B3E /* MKLCSubClient.h in Headers */,
 				D03030481A23CE1700288B3E /* MKLCUUID.h in Headers */,
 				D09959EF1A6A5D65007134CE /* MKMachO+Segments.h in Headers */,
+				D0BC78A11B71AD6F00467975 /* MKSharedCache+Images.h in Headers */,
 				D0A1D8DC19E4EEB80095870C /* load_command_segment.h in Headers */,
 				D074B6DE1A88859B00B5E3E5 /* segment.h in Headers */,
 				D030303C1A23C64800288B3E /* MKLCLoadWeakDylib.h in Headers */,
@@ -2237,6 +2246,7 @@
 				D046236F1A64F30200537651 /* load_command_function_starts.h in Headers */,
 				D04624211A64F5EA00537651 /* MKStubsSection.h in Headers */,
 				D0C563FC1A944E2800443090 /* symbol.h in Headers */,
+				D0BC78A21B71AD6F00467975 /* MKSharedCache+Images.h in Headers */,
 				D046237E1A64F30200537651 /* load_command_source_version.h in Headers */,
 				D04623BB1A64F57D00537651 /* MKBackedNode.h in Headers */,
 				D04623831A64F30200537651 /* load_command_twolevel_hints.h in Headers */,
@@ -2911,6 +2921,7 @@
 				D0A1D8DF19E4EEB80095870C /* load_command_segment_split_info.c in Sources */,
 				D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */,
 				D0539BA91A23D28400D3A5F0 /* MKLCVersionMinMacOSX.m in Sources */,
+				D0BC78A31B71AD6F00467975 /* MKSharedCache+Images.m in Sources */,
 				D060FA7F1A1877B1002A010C /* _MKFileMemoryMap.m in Sources */,
 				D0A1D8C319E4EEB80095870C /* load_command_function_starts.c in Sources */,
 				D0672B481A535DFB00D44610 /* MKNode+MachO.m in Sources */,
@@ -3114,6 +3125,7 @@
 				D046242B1A64F5FB00537651 /* MKStringTable.m in Sources */,
 				D010B3891A747D0B00AED697 /* MKDylibVersion.m in Sources */,
 				D046241D1A64F5DE00537651 /* MKLCEncryptionInfo64.m in Sources */,
+				D0BC78A41B71AD6F00467975 /* MKSharedCache+Images.m in Sources */,
 				D04623931A64F31D00537651 /* load_command_load_dylib.c in Sources */,
 				D04623C41A64F58C00537651 /* MKNode+MachO.m in Sources */,
 				D04624051A64F5DE00537651 /* MKLCSubFramework.m in Sources */,
