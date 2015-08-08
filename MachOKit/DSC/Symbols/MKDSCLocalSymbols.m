@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCSymbols.m
+//|             MKDSCLocalSymbols.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,15 +25,17 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCSymbols.h"
+#import "MKDSCLocalSymbols.h"
 #import "NSError+MK.h"
+#import "MKNode+SharedCache.h"
 #import "MKSharedCache.h"
 #import "MKDSCHeader.h"
 #import "MKDSCSymbolsInfo.h"
+#import "MKDSCStringTable.h"
 #import "MKDSCSymbolsEntry.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCSymbols
+@implementation MKDSCLocalSymbols
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error
@@ -68,8 +70,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
-    NSAssert([parent isKindOfClass:MKSharedCache.class], @"");
-    MKSharedCache *sharedCache = (MKSharedCache*)parent;
+    MKSharedCache *sharedCache = parent.sharedCache;
+    NSAssert(sharedCache != nil, @"");
     
     mk_error_t err;
     mk_vm_address_t address;
@@ -96,6 +98,21 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize header = _header;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDSCStringTable*)stringTable
+{
+    if (_stringTable == nil)
+    @autoreleasepool {
+        NSError *e = nil;
+        
+        _stringTable = [[MKDSCStringTable alloc] initWithParent:self error:&e];
+        if (_stringTable == nil)
+            MK_PUSH_UNDERLYING_WARNING(stringTable, e, @"Could not load string table.");
+    }
+    
+    return _stringTable;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray<MKDSCSymbolsEntry*> *)entries
@@ -172,6 +189,7 @@
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"],
+        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entries) description:@"Entries"],
     ]];
 }

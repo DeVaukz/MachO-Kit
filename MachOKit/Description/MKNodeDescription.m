@@ -105,6 +105,17 @@
         __block NSString* (^describeValue)(id) = ^(id value) {
             if ([value isKindOfClass:MKNode.class])
                 return [[value layout] textualDescriptionForNode:value traversalDepth:traversalDepth-1];
+            else if ([value isKindOfClass:NSDictionary.class]) {
+                NSMutableString *collectionDescription = [NSMutableString string];
+                
+                [collectionDescription appendString:@"("];
+                for (id item in value) {
+                    [collectionDescription appendFormat:@"\n\t%@", [describeValue([value objectForKey:item]) stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"]];
+                }
+                [collectionDescription appendString:@"\n)"];
+                
+                return (NSString*)collectionDescription;
+            }
             else if ([value conformsToProtocol:@protocol(NSFastEnumeration)]) {
                 NSMutableString *collectionDescription = [NSMutableString string];
                 
@@ -120,7 +131,7 @@
         };
         
         for (MKNodeField *field in self.fields)
-        {
+        @autoreleasepool {
             NSString *fieldDescription = nil;
             
             // Only the base MKNodeField could describe a collection or a
@@ -136,7 +147,8 @@
         if (node.warnings.count)
         {
             [retValue appendFormat:@"\twarnings = {\n"];
-            for (NSError *warning in node.warnings) {
+            for (NSError *warning in node.warnings)
+            @autoreleasepool {
                 if (warning.userInfo[NSUnderlyingErrorKey])
                     [retValue appendFormat:@"\t\t%@: %@ - %@\n", warning.mk_property, warning.localizedDescription, [warning.userInfo[NSUnderlyingErrorKey] localizedDescription]];
                 else

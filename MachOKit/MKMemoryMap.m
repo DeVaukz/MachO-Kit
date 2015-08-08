@@ -58,16 +58,21 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length
+- (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error
 {
     __block mk_vm_size_t retValue = 0;
     
     [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, __unused NSError *e) {
+        MK_ERROR_OUT = e;
         retValue = l;
     }];
     
     return retValue;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length
+{ return [self mappingSizeAtOffset:offset fromAddress:contextAddress length:length error:NULL]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)hasMappingAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error

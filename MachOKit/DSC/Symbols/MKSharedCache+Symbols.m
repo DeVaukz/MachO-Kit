@@ -27,19 +27,19 @@
 
 #import "MKSharedCache+Symbols.h"
 #import "NSError+MK.h"
-#import "MKDSCSymbols.h"
+#import "MKDSCLocalSymbols.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKSharedCache (Symbols)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKDSCSymbols*)localSymbols
+- (MKDSCLocalSymbols*)localSymbols
 {
     if (_localSymbols == nil)
     @autoreleasepool {
         NSError *localError = nil;
         
-        _localSymbols = [[MKDSCSymbols alloc] initWithParent:self error:&localError];
+        _localSymbols = [[MKDSCLocalSymbols alloc] initWithParent:self error:&localError];
         if (_localSymbols == nil)
             MK_PUSH_UNDERLYING_WARNING(localSymbols, localError, @"Could not load local symbols.");
     }

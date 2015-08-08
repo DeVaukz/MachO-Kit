@@ -57,6 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length;
 
+- (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error;
+
 - (BOOL)hasMappingAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length;
 
 - (BOOL)hasMappingAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error;

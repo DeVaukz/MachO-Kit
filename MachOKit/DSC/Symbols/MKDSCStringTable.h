@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCSymbols.h
+//! @file       MKDSCStringTable.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -30,37 +30,27 @@
 
 #import <MachOKit/MKBackedNode.h>
 
-@class MKSharedCache;
-@class MKDSCSymbolsInfo;
-@class MKDSCSymbolsEntry;
+@class MKCString;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDSCSymbols : MKBackedNode {
+//! The \c MKDSCStringTable class parses the string table in the local symbols
+//! info region.
+//
+@interface MKDSCStringTable : MKBackedNode {
 @package
-    mk_vm_address_t _contextAddress;
-    mk_vm_address_t _vmAddress;
-    mk_vm_size_t _size;
-    // Header //
-    MKDSCSymbolsInfo *_header;
-    // Entries //
-    NSArray<MKDSCSymbolsEntry*> *_entries;
+    mk_vm_address_t _nodeOffset;
+    mk_vm_size_t _nodeSize;
+    NSDictionary<NSNumber*, MKCString*> *_strings;
 }
 
 //!
-- (nullable instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Header and Symbols
-//! @name       Header and Symbols
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! 
-@property (nonatomic, readonly) MKDSCSymbolsInfo *header;
-
-//!
-@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
+//! An \c NSDictionary mapping offsets from the start of this node node to
+//! string entries, represented by instances of \c MKCString.
+@property (nonatomic, readonly) NSDictionary<NSNumber*, MKCString*> *strings;
 
 @end
 

@@ -42,6 +42,8 @@
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
 
+#import <MachOKit/MKCString.h>
+
 #import <MachOKit/MKFatBinary.h>
 #import <MachOKit/MKFatArch.h>
 
@@ -52,8 +54,10 @@
 #import <MachOKit/MKDSCMapping.h>
 #import <MachOKit/MKDSCImageInfo.h>
 #import <MachOKit/MKSharedCache+Symbols.h>
-    #import <MachOKit/MKDSCSymbols.h>
+    #import <MachOKit/MKDSCLocalSymbols.h>
     #import <MachOKit/MKDSCSymbolsInfo.h>
+    #import <MachOKit/MKDSCStringTable.h>
+    #import <MachOKit/MKDSCSymbolsEntry.h>
 
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachO+Segments.h>

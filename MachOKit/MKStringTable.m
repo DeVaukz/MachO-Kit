@@ -60,7 +60,7 @@
         NSError *e = nil;
         MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&e];
         if (string == nil) {
-            MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(strings), e, @"Could not load CString at offset %" MK_VM_PRIiOFFSET ".", offset);
+            MK_PUSH_UNDERLYING_WARNING(strings, e, @"Could not load CString at offset %" MK_VM_PRIiOFFSET ".", offset);
             break;
         }
         

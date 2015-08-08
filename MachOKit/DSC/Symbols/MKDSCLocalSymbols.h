@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSharedCache+Symbols.h
+//! @file       MKDSCLocalSymbols.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,17 +28,43 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKSharedCache.h>
+#import <MachOKit/MKBackedNode.h>
 
-@class MKDSCLocalSymbols;
+@class MKSharedCache;
+@class MKDSCSymbolsInfo;
+@class MKDSCStringTable;
+@class MKDSCSymbolsEntry;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKSharedCache (Symbols)
+@interface MKDSCLocalSymbols : MKBackedNode {
+@package
+    mk_vm_address_t _contextAddress;
+    mk_vm_address_t _vmAddress;
+    mk_vm_size_t _size;
+    // Header //
+    MKDSCSymbolsInfo *_header;
+    MKDSCStringTable *_stringTable;
+    NSArray<MKDSCSymbolsEntry*> *_entries;
+}
 
 //!
-@property (nonatomic, readonly) MKDSCLocalSymbols *localSymbols;
+- (nullable instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Header and Symbols
+//! @name       Header and Symbols
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! 
+@property (nonatomic, readonly) MKDSCSymbolsInfo *header;
+
+//!
+@property (nonatomic, readonly) MKDSCStringTable *stringTable;
+
+//!
+@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
 
 @end
 
