@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCSymbolsInfo.h
+//! @file       MKDSCSymbolsEntry.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -33,30 +33,24 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDSCSymbolsInfo : MKOffsetNode {
+@interface MKDSCSymbolsEntry : MKOffsetNode {
 @package
-    uint32_t _nlistOffset;
+    uint32_t _dylibOffset;
+    uint32_t _nlistStartIndex;
     uint32_t _nlistCount;
-    uint32_t _stringsOffset;
-    uint32_t _stringsSize;
-    uint32_t _entriesOffset;
-    uint32_t _entriesCount;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Local Symbols Info Struct Values
-//! @name       Local Symbols Info Struct Values
+#pragma mark -  Local Symbols Entry Struct Values
+//! @name       Local Symbols Entry Struct Values
 //!
-//! @brief      These values are lifted directly from the shared cache symbols
-//!             info structure without modification or cleanup.
+//! @brief      These values are lifted directly from the shared cache symbol
+//!             entry structure without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@property (nonatomic, readonly) uint32_t nlistOffset;
+@property (nonatomic, readonly) uint32_t dylibOffset;
+@property (nonatomic, readonly) uint32_t nlistStartIndex;
 @property (nonatomic, readonly) uint32_t nlistCount;
-@property (nonatomic, readonly) uint32_t stringsOffset;
-@property (nonatomic, readonly) uint32_t stringsSize;
-@property (nonatomic, readonly) uint32_t entriesOffset;
-@property (nonatomic, readonly) uint32_t entriesCount;
 
 @end
 

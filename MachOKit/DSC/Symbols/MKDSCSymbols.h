@@ -32,6 +32,7 @@
 
 @class MKSharedCache;
 @class MKDSCSymbolsInfo;
+@class MKDSCSymbolsEntry;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,10 +44,23 @@ NS_ASSUME_NONNULL_BEGIN
     mk_vm_size_t _size;
     // Header //
     MKDSCSymbolsInfo *_header;
+    // Entries //
+    NSArray<MKDSCSymbolsEntry*> *_entries;
 }
 
 //!
 - (nullable instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Header and Symbols
+//! @name       Header and Symbols
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! 
+@property (nonatomic, readonly) MKDSCSymbolsInfo *header;
+
+//!
+@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
 
 @end
 

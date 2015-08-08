@@ -30,6 +30,7 @@
 #import "MKSharedCache.h"
 #import "MKDSCHeader.h"
 #import "MKDSCSymbolsInfo.h"
+#import "MKDSCSymbolsEntry.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCSymbols
@@ -51,7 +52,7 @@
     _size = [self.memoryMap mappingSizeAtOffset:0 fromAddress:contextAddress length:sharedCache.header.localSymbolsSize];
     // This is not an error...
     if (_size < sharedCache.header.localSymbolsSize) {
-        MK_PUSH_WARNING(nodeSize, MK_EINVALID_DATA, @"Mappable memory at address %" MK_VM_PRIxADDR " for %@ is less than expected size %" MK_VM_PRIxSIZE ".", contextAddress, NSStringFromClass(self.class), sharedCache.header.localSymbolsSize);
+        MK_PUSH_WARNING(nodeSize, MK_EINVALID_DATA, @"Mappable memory at address %" MK_VM_PRIxADDR " for %@ is less than the expected size %" MK_VM_PRIxSIZE ".", contextAddress, NSStringFromClass(self.class), sharedCache.header.localSymbolsSize);
     }
     
     // ...but it will be if we can't map the symbols info header.
@@ -84,9 +85,62 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_header dealloc];
+    [_entries release];
+    [_header release];
     
     [super dealloc];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize header = _header;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSArray<MKDSCSymbolsEntry*> *)entries
+{
+    if (_entries == nil)
+    @autoreleasepool {
+        NSUInteger count = self.header.entriesCount;
+        mk_vm_offset_t offset = self.header.entriesOffset;
+        mk_vm_size_t size = self.nodeSize;
+        mk_error_t err;
+        
+        NSMutableArray<MKDSCSymbolsEntry*> *entries = [[NSMutableArray alloc] initWithCapacity:count];
+        
+        for (NSUInteger i = 0; i < count; i++)
+        {
+            NSError *localError = nil;
+            
+            // Need to stop in this case.  Further memory might be mappable
+            // (i.e. the s.c. header had a small localSymbolsSize) but we risk
+            // creating an MKDSCSymbolsEntry with bogus data.
+            if (offset > size) {
+                MK_PUSH_WARNING(entries, MK_ENOT_FOUND, @"Symbol entry at offset %" MK_VM_PRIiOFFSET " is beyond size %" MK_VM_PRIiSIZE " of %@.", offset, size, NSStringFromClass(self.class));
+                break;
+            }
+            
+            MKDSCSymbolsEntry *entry = [[MKDSCSymbolsEntry alloc] initWithOffset:offset fromParent:self error:&localError];
+            
+            if (entry == nil) {
+                MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(entries), localError, @"Could not load entry at offset %" MK_VM_PRIiOFFSET ".", offset);
+                if (localError.code & MK_EMEMORY_ERROR) break;
+            }
+            
+            [entries addObject:entry];
+            
+            if ((err = mk_vm_address_apply_offset(offset, entry.nodeSize, &offset))) {
+                MK_PUSH_UNDERLYING_WARNING(localError, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"");
+                break;
+            }
+        }
+        
+        _entries = [entries copy];
+        [entries release];
+    }
+    
+    return _entries;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -117,7 +171,8 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entries) description:@"Entries"],
     ]];
 }
 

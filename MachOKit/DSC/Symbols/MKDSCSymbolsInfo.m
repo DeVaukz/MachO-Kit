@@ -64,7 +64,7 @@ struct dyld_cache_local_symbols_info
 }
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Shared Cache Struct Values
+#pragma mark -  Local Symbols Info Struct Values
 //----------------------------------------------------------------------------//
 
 @synthesize nlistOffset = _nlistOffset;
