@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSharedCache+Images.h
+//! @file       MKDSCSymbolsInfo.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,15 +28,35 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKSharedCache.h>
+#import <MachOKit/MKOffsetNode.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKSharedCache (Images)
+@interface MKDSCSymbolsInfo : MKOffsetNode {
+@package
+    uint32_t _nlistOffset;
+    uint32_t _nlistCount;
+    uint32_t _stringsOffset;
+    uint32_t _stringsSize;
+    uint32_t _entriesOffset;
+    uint32_t _entriesCount;
+}
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Shared Cache Struct Values
+//! @name       Shared Cache Struct Values
 //!
-@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
+//! @brief      These values are lifted directly from the shared cache symbols
+//!             info structure without modification or cleanup.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@property (nonatomic, readonly) uint32_t nlistOffset;
+@property (nonatomic, readonly) uint32_t nlistCount;
+@property (nonatomic, readonly) uint32_t stringsOffset;
+@property (nonatomic, readonly) uint32_t stringsSize;
+@property (nonatomic, readonly) uint32_t entriesOffset;
+@property (nonatomic, readonly) uint32_t entriesCount;
 
 @end
 

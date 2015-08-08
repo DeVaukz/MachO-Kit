@@ -51,6 +51,9 @@
 #import <MachOKit/MKDSCMappingInfo.h>
 #import <MachOKit/MKDSCMapping.h>
 #import <MachOKit/MKDSCImageInfo.h>
+#import <MachOKit/MKSharedCache+Symbols.h>
+    #import <MachOKit/MKDSCSymbols.h>
+    #import <MachOKit/MKDSCSymbolsInfo.h>
 
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachO+Segments.h>

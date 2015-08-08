@@ -58,6 +58,18 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length
+{
+    __block mk_vm_size_t retValue = 0;
+    
+    [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, __unused NSError *e) {
+        retValue = l;
+    }];
+    
+    return retValue;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)hasMappingAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error
 {
     __block BOOL retValue = NO;

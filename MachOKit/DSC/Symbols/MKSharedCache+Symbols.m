@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSharedCache+Images.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKSharedCache+Symbols.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,19 +25,26 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKSharedCache.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKSharedCache+Symbols.h"
+#import "NSError+MK.h"
+#import "MKDSCSymbols.h"
 
 //----------------------------------------------------------------------------//
-@interface MKSharedCache (Images)
+@implementation MKSharedCache (Symbols)
 
-//!
-@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDSCSymbols*)localSymbols
+{
+    if (_localSymbols == nil)
+    @autoreleasepool {
+        NSError *localError = nil;
+        
+        _localSymbols = [[MKDSCSymbols alloc] initWithParent:self error:&localError];
+        if (_localSymbols == nil)
+            MK_PUSH_UNDERLYING_WARNING(localSymbols, localError, @"Could not load local symbols.");
+    }
+    
+    return _localSymbols;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSharedCache+Images.h
+//! @file       MKSharedCache+Symbols.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -30,13 +30,15 @@
 
 #import <MachOKit/MKSharedCache.h>
 
+@class MKDSCSymbols;
+
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKSharedCache (Images)
+@interface MKSharedCache (Symbols)
 
 //!
-@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
+@property (nonatomic, readonly) MKDSCSymbols *localSymbols;
 
 @end
 

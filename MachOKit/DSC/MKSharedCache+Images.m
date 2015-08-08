@@ -45,31 +45,31 @@
         mach_vm_offset_t oldOffset;
         
         while (imageDescriptorCount--)
-            @autoreleasepool {
+        @autoreleasepool {
                 
-                NSError *imageDescriptorError = nil;
+            NSError *imageDescriptorError = nil;
                 
-                MKDSCImageInfo *idsc = [[MKDSCImageInfo alloc] initWithOffset:offset fromParent:self error:&imageDescriptorError];
-                if (idsc == nil) {
-                    // If we fail to instantiate an instance of the MKDSCMappingInfo
-                    // it means we've walked off the end of memory that can be
-                    // mapped by our MKMemoryMap.
-                    MK_PUSH_UNDERLYING_WARNING(mappingInfos, imageDescriptorError, @"Failed to instantiate image info at index %" PRIi32 "", imageDescriptorCount - imageDescriptorCount);
-                    break;
-                }
-                
-                oldOffset = offset;
-                offset += idsc.nodeSize;
-                
-                [imageDescriptors addObject:idsc];
-                
-                // dyld doesn't care how many mappings are present in the shared
-                // cache.  Neither do we, as long as there was not an overflow.
-                if (oldOffset > offset) {
-                    MK_PUSH_WARNING(mappingInfos, MK_EOVERFLOW, @"Adding size of image info at index %" PRIi32 " to offset into mapping infos triggered an overflow.", imageDescriptorCount - imageDescriptorCount);
-                    break;
-                }
+            MKDSCImageInfo *idsc = [[MKDSCImageInfo alloc] initWithOffset:offset fromParent:self error:&imageDescriptorError];
+            if (idsc == nil) {
+                // If we fail to instantiate an instance of the MKDSCMappingInfo
+                // it means we've walked off the end of memory that can be
+                // mapped by our MKMemoryMap.
+                MK_PUSH_UNDERLYING_WARNING(mappingInfos, imageDescriptorError, @"Failed to instantiate image info at index %" PRIi32 "", imageDescriptorCount - imageDescriptorCount);
+                break;
             }
+                
+            oldOffset = offset;
+            offset += idsc.nodeSize;
+                
+            [imageDescriptors addObject:idsc];
+                
+            // dyld doesn't care how many mappings are present in the shared
+            // cache.  Neither do we, as long as there was not an overflow.
+            if (oldOffset > offset) {
+                MK_PUSH_WARNING(mappingInfos, MK_EOVERFLOW, @"Adding size of image info at index %" PRIi32 " to offset into mapping infos triggered an overflow.", imageDescriptorCount - imageDescriptorCount);
+                break;
+            }
+        }
         
         _imageInfos = [imageDescriptors copy];
         [imageDescriptors release];

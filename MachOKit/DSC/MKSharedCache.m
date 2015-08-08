@@ -269,6 +269,20 @@
     return self;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    [_localSymbols release];
+    [_imageInfos release];
+    [_mappings release];
+    [_mappingInfos release];
+    [_header release];
+    [_dataModel release];
+    [_memoryMap release];
+    
+    [super dealloc];
+}
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - Retrieving the Initialization Context
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -331,6 +345,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappingInfos) description:@"Mapping Descriptors"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappings) description:@"Mappings"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(imageInfos) description:@"Image Descriptors"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(localSymbols) description:@"Local Symbols"],
     ]];
 }
 
