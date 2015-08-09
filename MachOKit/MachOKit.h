@@ -59,6 +59,7 @@
     #import <MachOKit/MKDSCSymbolTable.h>
     #import <MachOKit/MKDSCSymbol.h>
     #import <MachOKit/MKDSCStringTable.h>
+    #import <MachOKit/MKDSCEntriesTable.h>
     #import <MachOKit/MKDSCSymbolsEntry.h>
 
 #import <MachOKit/MKMachO.h>

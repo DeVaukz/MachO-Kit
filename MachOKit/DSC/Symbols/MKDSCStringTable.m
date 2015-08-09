@@ -39,19 +39,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
-    self = [super initWithParent:parent error:error];
+    self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
-    
-    NSParameterAssert(parent.memoryMap);
-    mk_error_t err;
-    
-    // Verify that calculating our context address will not overflow.
-    if ((err = mk_vm_address_apply_offset(parent.nodeContextAddress, offset, NULL))) {
-        MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, parent.nodeContextAddress, offset);
-        [self release]; return nil;
-    }
-    
-    _nodeOffset = offset;
     
     // A size of 0 is valid; but we don't need to do anything else.
     if (size == 0) {
@@ -72,22 +61,26 @@
     @autoreleasepool
     {
         NSMutableDictionary<NSNumber*, MKCString*> *strings = [[NSMutableDictionary alloc] init];
-        mk_vm_offset_t stringTableOffset = 0;
+        mk_vm_offset_t offset = 0;
         
-        while (stringTableOffset < _nodeSize)
+        while (offset < _nodeSize)
         {
+            mk_error_t err;
             NSError *e = nil;
-            MKCString *string = [[MKCString alloc] initWithOffset:stringTableOffset fromParent:self error:&e];
+            
+            MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&e];
             if (string == nil) {
                 MK_PUSH_UNDERLYING_WARNING(strings, e, @"Could not load CString at offset %" MK_VM_PRIiOFFSET ".", offset);
                 break;
             }
             
-            [strings setObject:string forKey:@(stringTableOffset)];
+            [strings setObject:string forKey:@(offset)];
             [string release];
             
-            // Safe.  All string nodes must be within the size of this node.
-            stringTableOffset += string.nodeSize;
+            if ((err = mk_vm_offset_add(offset, string.nodeSize, &offset))) {
+                MK_PUSH_UNDERLYING_WARNING(strings, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, string.nodeSize), @"Aborted string parsing after offset %" MK_VM_PRIiOFFSET ".", offset);
+                break;
+            }
         }
         
         _strings = [strings copy];
@@ -98,12 +91,15 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
+{ return [self initWithSize:0 offset:offset fromParent:parent error:error]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
 {
-    MKDSCLocalSymbols *localSymbolsRegion = (MKDSCLocalSymbols*)parent;
-    NSAssert([localSymbolsRegion isKindOfClass:MKDSCLocalSymbols.class], @"Parent must be an MKDSCLocalSymbols.");
+    [_strings release];
     
-    return [self initWithSize:localSymbolsRegion.header.stringsSize offset:localSymbolsRegion.header.stringsOffset fromParent:localSymbolsRegion error:error];
+    [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -111,25 +107,6 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize nodeSize = _nodeSize;
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
-{
-    mk_error_t err;
-    mk_vm_address_t retValue;
-    
-    MKNode *parent = self.parent;
-    mk_vm_address_t parentAddress = [(MKBackedNode*)parent nodeAddress:type];
-    
-    // If there is an error here, it should have been caught during
-    // initialization.
-    if ((err = mk_vm_address_apply_offset(parentAddress, _nodeOffset, &retValue))) {
-        NSString *reason = [NSString stringWithFormat:@"Arithmetic error %s while applying offset 0x%" MK_VM_PRIiOFFSET " of node %@ to address (type %lu) 0x%" MK_VM_PRIxADDR " of parent node %@.", mk_error_string(err), _nodeOffset, self, (unsigned long)type, parentAddress, parent];
-        @throw [NSException exceptionWithName:NSRangeException reason:reason userInfo:nil];
-    }
-    
-    return retValue;
-}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout

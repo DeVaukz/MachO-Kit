@@ -29,33 +29,31 @@
 #import "NSError+MK.h"
 #import "MKNode+SharedCache.h"
 #import "MKSharedCache.h"
-#import "MKDSCHeader.h"
 #import "MKDSCSymbolsInfo.h"
 #import "MKDSCSymbolTable.h"
 #import "MKDSCStringTable.h"
-#import "MKDSCSymbolsEntry.h"
+#import "MKDSCEntriesTable.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCLocalSymbols
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error
+- (nullable instancetype)initWithSize:(mk_vm_size_t)size atAddress:(mk_vm_address_t)contextAddress parent:(MKNode*)parent error:(NSError**)error 
 {
-    NSParameterAssert(sharedCache.header);
-    NSError *localError;
-    
-    self = [super initWithParent:sharedCache error:error];
+    self = [super initWithParent:parent error:error];
     if (self == nil) return nil;
+ 
+    NSError *localError;
     
     _contextAddress = contextAddress;
     
     // Don't need to correct for the slide.
-    _vmAddress = (sharedCache.isSourceFile == NO) ? _contextAddress : MK_VM_ADDRESS_INVALID;
+    _vmAddress = (self.sharedCache.isSourceFile == NO) ? _contextAddress : MK_VM_ADDRESS_INVALID;
     
-    _size = [self.memoryMap mappingSizeAtOffset:0 fromAddress:contextAddress length:sharedCache.header.localSymbolsSize];
+    _size = [self.memoryMap mappingSizeAtOffset:0 fromAddress:contextAddress length:size];
     // This is not an error...
-    if (_size < sharedCache.header.localSymbolsSize) {
-        MK_PUSH_WARNING(nodeSize, MK_EINVALID_DATA, @"Mappable memory at address %" MK_VM_PRIxADDR " for %@ is less than the expected size %" MK_VM_PRIxSIZE ".", contextAddress, NSStringFromClass(self.class), sharedCache.header.localSymbolsSize);
+    if (_size < size) {
+        MK_PUSH_WARNING(nodeSize, MK_EINVALID_DATA, @"Mappable memory at address %" MK_VM_PRIxADDR " for %@ is less than the expected size %" MK_VM_PRIxSIZE ".", contextAddress, NSStringFromClass(self.class), size);
     }
     
     // ...but it will be if we can't map the symbols info header.
@@ -70,25 +68,14 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
-{
-    MKSharedCache *sharedCache = parent.sharedCache;
-    NSAssert(sharedCache != nil, @"");
-    
-    mk_error_t err;
-    mk_vm_address_t address;
-    
-    if ((err = mk_vm_address_add(sharedCache.nodeContextAddress, sharedCache.header.localSymbolsOffset, &address))) {
-        MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, sharedCache.nodeContextAddress, sharedCache.header.slideInfoOffset);
-        [self release]; return nil;
-    }
-    
-    return [self initWithAddress:address inSharedCache:sharedCache error:error];
-}
+{ return [self initWithSize:0 atAddress:0 parent:parent error:error]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_entries release];
+    [_entriesTable release];
+    [_stringTable release];
+    [_symbolTable release];
     [_header release];
     
     [super dealloc];
@@ -122,7 +109,7 @@
     @autoreleasepool {
         NSError *e = nil;
         
-        _stringTable = [[MKDSCStringTable alloc] initWithParent:self error:&e];
+        _stringTable = [[MKDSCStringTable alloc] initWithSize:self.header.stringsSize offset:self.header.stringsOffset fromParent:self error:&e];
         if (_stringTable == nil)
             MK_PUSH_UNDERLYING_WARNING(stringTable, e, @"Could not load string table.");
     }
@@ -131,49 +118,18 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSArray<MKDSCSymbolsEntry*> *)entries
+- (MKDSCEntriesTable*)entriesTable
 {
-    if (_entries == nil)
+    if (_entriesTable == nil)
     @autoreleasepool {
-        NSUInteger count = self.header.entriesCount;
-        mk_vm_offset_t offset = self.header.entriesOffset;
-        mk_vm_size_t size = self.nodeSize;
-        mk_error_t err;
+        NSError *e = nil;
         
-        NSMutableArray<MKDSCSymbolsEntry*> *entries = [[NSMutableArray alloc] initWithCapacity:count];
-        
-        for (NSUInteger i = 0; i < count; i++)
-        {
-            NSError *localError = nil;
-            
-            // Need to stop in this case.  Further memory might be mappable
-            // (i.e. the s.c. header had a small localSymbolsSize) but we risk
-            // creating an MKDSCSymbolsEntry with bogus data.
-            if (offset > size) {
-                MK_PUSH_WARNING(entries, MK_ENOT_FOUND, @"Symbol entry at offset %" MK_VM_PRIiOFFSET " is beyond size %" MK_VM_PRIiSIZE " of %@.", offset, size, NSStringFromClass(self.class));
-                break;
-            }
-            
-            MKDSCSymbolsEntry *entry = [[MKDSCSymbolsEntry alloc] initWithOffset:offset fromParent:self error:&localError];
-            
-            if (entry == nil) {
-                MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(entries), localError, @"Could not load entry at offset %" MK_VM_PRIiOFFSET ".", offset);
-                if (localError.code & MK_EMEMORY_ERROR) break;
-            }
-            
-            [entries addObject:entry];
-            
-            if ((err = mk_vm_address_apply_offset(offset, entry.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(localError, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"");
-                break;
-            }
-        }
-        
-        _entries = [entries copy];
-        [entries release];
+        _entriesTable = [[MKDSCEntriesTable alloc] initWithCount:self.header.entriesCount atOffset:self.header.entriesOffset fromParent:self error:&e];
+        if (_entriesTable == nil)
+            MK_PUSH_UNDERLYING_WARNING(stringTable, e, @"Could not load entries table.");
     }
     
-    return _entries;
+    return _entriesTable;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -207,7 +163,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"],
         //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
         //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entries) description:@"Entries"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entriesTable) description:@"Entries Table"],
     ]];
 }
 

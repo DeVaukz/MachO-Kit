@@ -452,6 +452,10 @@
 		D08E5EC71B76FBD3009185FE /* MKDSCSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D08E5EC41B76FBD3009185FE /* MKDSCSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D08E5EC81B76FBD3009185FE /* MKDSCSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D08E5EC51B76FBD3009185FE /* MKDSCSymbol.m */; };
 		D08E5EC91B76FBD3009185FE /* MKDSCSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D08E5EC51B76FBD3009185FE /* MKDSCSymbol.m */; };
+		D08E5ECC1B771E1E009185FE /* MKDSCEntriesTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D08E5ECA1B771E1E009185FE /* MKDSCEntriesTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D08E5ECD1B771E1E009185FE /* MKDSCEntriesTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D08E5ECA1B771E1E009185FE /* MKDSCEntriesTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D08E5ECE1B771E1E009185FE /* MKDSCEntriesTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D08E5ECB1B771E1E009185FE /* MKDSCEntriesTable.m */; };
+		D08E5ECF1B771E1E009185FE /* MKDSCEntriesTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D08E5ECB1B771E1E009185FE /* MKDSCEntriesTable.m */; };
 		D097513A1B6B39EF00215281 /* MKDSCImageInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D09751381B6B39EF00215281 /* MKDSCImageInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D097513B1B6B39EF00215281 /* MKDSCImageInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D09751381B6B39EF00215281 /* MKDSCImageInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D097513C1B6B39EF00215281 /* MKDSCImageInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D09751391B6B39EF00215281 /* MKDSCImageInfo.m */; };
@@ -1201,6 +1205,8 @@
 		D08E5EB11B76D02D009185FE /* MKDSCSymbolTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCSymbolTable.m; sourceTree = "<group>"; };
 		D08E5EC41B76FBD3009185FE /* MKDSCSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCSymbol.h; sourceTree = "<group>"; };
 		D08E5EC51B76FBD3009185FE /* MKDSCSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCSymbol.m; sourceTree = "<group>"; };
+		D08E5ECA1B771E1E009185FE /* MKDSCEntriesTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCEntriesTable.h; sourceTree = "<group>"; };
+		D08E5ECB1B771E1E009185FE /* MKDSCEntriesTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCEntriesTable.m; sourceTree = "<group>"; };
 		D09751381B6B39EF00215281 /* MKDSCImageInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCImageInfo.h; sourceTree = "<group>"; };
 		D09751391B6B39EF00215281 /* MKDSCImageInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCImageInfo.m; sourceTree = "<group>"; };
 		D09959ED1A6A5D65007134CE /* MKMachO+Segments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMachO+Segments.h"; sourceTree = "<group>"; };
@@ -1910,6 +1916,8 @@
 				D08E5EC51B76FBD3009185FE /* MKDSCSymbol.m */,
 				D01B986D1B768ECC0035F464 /* MKDSCStringTable.h */,
 				D01B986E1B768ECC0035F464 /* MKDSCStringTable.m */,
+				D08E5ECA1B771E1E009185FE /* MKDSCEntriesTable.h */,
+				D08E5ECB1B771E1E009185FE /* MKDSCEntriesTable.m */,
 				D01B98581B75A19D0035F464 /* MKDSCSymbolsEntry.h */,
 				D01B98591B75A19D0035F464 /* MKDSCSymbolsEntry.m */,
 			);
@@ -2313,6 +2321,7 @@
 				D03030501A23CF3200288B3E /* MKLCCodeSignature.h in Headers */,
 				D0539BBC1A23D4F600D3A5F0 /* MKLCDataInCode.h in Headers */,
 				D0302FFF1A22DB1B00288B3E /* MKNodeDescription.h in Headers */,
+				D08E5ECC1B771E1E009185FE /* MKDSCEntriesTable.h in Headers */,
 				D0995A0F1A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */,
 				D0A9EAB21A8FD70C00280D38 /* section_internal.h in Headers */,
 				D0A1D8BE19E4EEB80095870C /* load_command_dylib_code_sign_drs.h in Headers */,
@@ -2433,6 +2442,7 @@
 				D04623F61A64F5BD00537651 /* MKLCDylibCodeSignDrs.h in Headers */,
 				D04623F21A64F5BD00537651 /* MKLCDyldEnvironment.h in Headers */,
 				D04624221A64F5EA00537651 /* MKCStringSection.h in Headers */,
+				D08E5ECD1B771E1E009185FE /* MKDSCEntriesTable.h in Headers */,
 				D01717991A99607700F234EF /* indirect_symbol_table.h in Headers */,
 				D04623DA1A64F5BD00537651 /* MKLCLoadDylib.h in Headers */,
 				D04623801A64F30200537651 /* load_command_sub_framework.h in Headers */,
@@ -3064,6 +3074,7 @@
 				D03030051A22F2D200288B3E /* MKLCSegment.m in Sources */,
 				D0C3B2E519F37B2800CAFE58 /* MKMachO.m in Sources */,
 				D0539BCD1A23DCD700D3A5F0 /* MKDylibLoadCommand.m in Sources */,
+				D08E5ECE1B771E1E009185FE /* MKDSCEntriesTable.m in Sources */,
 				D0A1D8E319E4EEB80095870C /* load_command_sub_client.c in Sources */,
 				D0BD11131B6DCB76009AEB8F /* MKDSCMapping.m in Sources */,
 				D03030151A22FCBD00288B3E /* MKLCIDDylib.m in Sources */,
@@ -3211,6 +3222,7 @@
 				D046241A1A64F5DE00537651 /* MKLCDataInCode.m in Sources */,
 				D04623B61A64F56A00537651 /* _MKFileMemoryMap.m in Sources */,
 				D046241B1A64F5DE00537651 /* MKLCSourceVersion.m in Sources */,
+				D08E5ECF1B771E1E009185FE /* MKDSCEntriesTable.m in Sources */,
 				D04623C61A64F58C00537651 /* MKMachHeader.m in Sources */,
 				D0848AE01A959E390076976F /* symbol_table.c in Sources */,
 				D04624021A64F5DE00537651 /* MKLCLoadDylinker.m in Sources */,

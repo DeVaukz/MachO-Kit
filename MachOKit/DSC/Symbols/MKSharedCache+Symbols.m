@@ -27,6 +27,8 @@
 
 #import "MKSharedCache+Symbols.h"
 #import "NSError+MK.h"
+#import "MKSharedCache.h"
+#import "MKDSCHeader.h"
 #import "MKDSCLocalSymbols.h"
 
 //----------------------------------------------------------------------------//
@@ -37,11 +39,18 @@
 {
     if (_localSymbols == nil)
     @autoreleasepool {
-        NSError *localError = nil;
+        NSError *e = nil;
+        mk_error_t err;
+        mk_vm_address_t address;
         
-        _localSymbols = [[MKDSCLocalSymbols alloc] initWithParent:self error:&localError];
+        if ((err = mk_vm_address_add(self.nodeContextAddress, self.header.localSymbolsOffset, &address))) {
+            MK_PUSH_UNDERLYING_WARNING(localSymbols, MK_MAKE_VM_ARITHMETIC_ERROR(err, self.nodeContextAddress, self.header.slideInfoOffset), @"");
+            return nil;
+        }
+        
+        _localSymbols = [[MKDSCLocalSymbols alloc] initWithSize:self.header.localSymbolsSize atAddress:address parent:self error:&e];
         if (_localSymbols == nil)
-            MK_PUSH_UNDERLYING_WARNING(localSymbols, localError, @"Could not load local symbols.");
+            MK_PUSH_UNDERLYING_WARNING(localSymbols, e, @"Could not load local symbols.");
     }
     
     return _localSymbols;

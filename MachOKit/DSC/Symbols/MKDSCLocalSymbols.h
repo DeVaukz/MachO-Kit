@@ -30,11 +30,10 @@
 
 #import <MachOKit/MKBackedNode.h>
 
-@class MKSharedCache;
 @class MKDSCSymbolsInfo;
 @class MKDSCSymbolTable;
 @class MKDSCStringTable;
-@class MKDSCSymbolsEntry;
+@class MKDSCEntriesTable;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -48,11 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
     MKDSCSymbolsInfo *_header;
     MKDSCSymbolTable *_symbolTable;
     MKDSCStringTable *_stringTable;
-    NSArray<MKDSCSymbolsEntry*> *_entries;
+    MKDSCEntriesTable *_entriesTable;
 }
 
 //!
-- (nullable instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithSize:(mk_vm_size_t)size atAddress:(mk_vm_address_t)contextAddress parent:(MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Header and Symbols
@@ -69,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) MKDSCStringTable *stringTable;
 
 //!
-@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
+@property (nonatomic, readonly) MKDSCEntriesTable *entriesTable;
 
 @end
 

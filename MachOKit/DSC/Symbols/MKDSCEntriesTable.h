@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCStringTable.h
+//! @file       MKDSCEntriesTable.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -30,26 +30,22 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
-@class MKCString;
+@class MKDSCSymbolsEntry;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! The \c MKDSCStringTable class parses the string table in the local symbols
-//! info region.
-//
-@interface MKDSCStringTable : MKOffsetNode {
+@interface MKDSCEntriesTable : MKOffsetNode {
 @package
     mk_vm_size_t _nodeSize;
-    NSDictionary<NSNumber*, MKCString*> *_strings;
+    NSArray<MKDSCSymbolsEntry*> *_entries;
 }
 
 //!
-- (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithCount:(uint32_t)count atOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! An \c NSDictionary mapping offsets from the start of this node to
-//! string entries, represented by instances of \c MKCString.
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKCString*> *strings;
+//!
+@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
 
 @end
 

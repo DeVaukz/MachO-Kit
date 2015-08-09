@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCSymbolTable.m
+//|             MKDSCEntriesTable.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,14 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCSymbolTable.h"
+#import "MKDSCEntriesTable.h"
 #import "NSError+MK.h"
-#import "MKDSCSymbol.h"
+#import "MKDSCSymbolsEntry.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCSymbolTable
+@implementation MKDSCEntriesTable
 
-@synthesize symbols = _symbols;
+@synthesize entries = _entries;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithCount:(uint32_t)count atOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
@@ -42,17 +42,17 @@
     
     // A count of 0 is valid; but we don't need to do anything else.
     if (count == 0) {
-        // If we return early, 'symbols' must be initialized in order to
+        // If we return early, 'entries' must be initialized in order to
         // fufill our non-null promise for the property.
-        _symbols = [[NSArray array] retain];
+        _entries = [[NSArray array] retain];
         
         return self;
     }
     
-    // Load Symbols
+    // Load Entries
     @autoreleasepool
     {
-        NSMutableArray<MKDSCSymbol*> *symbols = [[NSMutableArray alloc] initWithCapacity:count];
+        NSMutableArray<MKDSCSymbolsEntry*> *entries = [[NSMutableArray alloc] initWithCapacity:count];
         mk_vm_offset_t offset = 0;
         
         for (uint32_t i = 0; i < count; i++)
@@ -60,23 +60,23 @@
             mk_error_t err;
             NSError *e = nil;
             
-            MKDSCSymbol *symbol = [[MKDSCSymbol alloc] initWithOffset:offset fromParent:self error:&e];
-            if (symbol == nil) {
-                MK_PUSH_UNDERLYING_WARNING(symbols, e, @"Could not load symbol at offset %" MK_VM_PRIiOFFSET ".", offset);
+            MKDSCSymbolsEntry *entry = [[MKDSCSymbolsEntry alloc] initWithOffset:offset fromParent:self error:&e];
+            if (entry == nil) {
+                MK_PUSH_UNDERLYING_WARNING(symbols, e, @"Could not load entry at offset %" MK_VM_PRIiOFFSET ".", offset);
                 break;
             }
             
-            [symbols addObject:symbol];
-            [symbol release];
+            [entries addObject:entry];
+            [entry release];
             
-            if ((err = mk_vm_offset_add(offset, symbol.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(symbols, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, symbol.nodeSize), @"Aborted symbol parsing after index " PRIi32 ".", i);
+            if ((err = mk_vm_offset_add(offset, entry.nodeSize, &offset))) {
+                MK_PUSH_UNDERLYING_WARNING(symbols, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"Aborted entry parsing after index " PRIi32 ".", i);
                 break;
             }
         }
         
-        _symbols = [symbols copy];
-        [symbols release];
+        _entries = [entries copy];
+        [entries release];
         
         _nodeSize = offset;
     }
@@ -91,7 +91,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_symbols release];
+    [_entries release];
     
     [super dealloc];
 }
@@ -106,7 +106,7 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbols) description:@"Symbols"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entries) description:@"Entries"]
     ]];
 }
 
