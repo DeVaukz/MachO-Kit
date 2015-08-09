@@ -211,6 +211,20 @@ mk_vm_address_check_length(mk_vm_address_t addr, mk_vm_size_t length)
         return MK_ESUCCESS;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_offset_add(mk_vm_offset_t offset, mk_vm_size_t size, mk_vm_offset_t *result)
+{
+    // Check for overflow
+    if (MK_VM_OFF_MAX - size < offset)
+        return MK_EOVERFLOW;
+    
+    if (result)
+        *result = offset + size;
+    
+    return MK_ESUCCESS;
+}
+
 //---------------------------------------------------------------------------//
 #pragma mark -  Byte Order
 //---------------------------------------------------------------------------//

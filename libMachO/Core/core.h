@@ -231,6 +231,12 @@ mk_vm_address_difference(mk_vm_address_t left, mk_vm_address_t right, mk_vm_slid
 _mk_export mk_error_t
 mk_vm_address_check_length(mk_vm_address_t addr, mk_vm_size_t length);
 
+//! Safely computes \a offset + \a size and stores the result in \a result.
+//! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
+//! unmodified.
+_mk_export mk_error_t
+mk_vm_offset_add(mk_vm_offset_t offset, mk_vm_size_t size, mk_vm_offset_t *result);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Byte Order

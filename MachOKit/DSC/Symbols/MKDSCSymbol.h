@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSymbol.h
+//! @file       MKDSCSymbol.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -31,64 +31,19 @@
 #import <MachOKit/MKOffsetNode.h>
 
 @class MKCString;
-@class MKMachOImage;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! The \c MKSymbol class is the base parser for entries in the \c __LINKEDIT
-//! symbol table.  All symbols share a common structure, and are hence the
-//! same size.  The value of the \c type field determines the type of the
-//! symbol, and the meaning of the remaining fields.
-//
-@interface MKSymbol : MKOffsetNode {
+@interface MKDSCSymbol : MKOffsetNode {
 @package
-    MKCString *_name;
     uint32_t _strx;
     uint8_t _type;
     uint8_t _sect;
     uint16_t _desc;
     uint64_t _value;
+    MKCString *_name;
 }
-
-//! Searches the subclasses of \ref MKSymbol for a class that can parse
-//! the symbol at \a offset from the \a parent symbol table.
-//!
-//! The \c -canInstantiateWithNList:parent: is used to rank each subclass'
-//! ability to parse the symbol.
-+ (nullable Class)classForSymbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Subclassing MKSymbol
-//! @name       Subclassing MKSymbol
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! This method is called on each subclass of \ref MKSymbol to locate an
-//! appropriate parser for a symbol.
-//!
-//! Return a non-zero value if the receiving class can parse the symbol
-//! described by \a nlist.  The subclass of \c MKSymbol returning the largest
-//! value is instantiated to parse the symbol.
-//!
-//! @param  nlist
-//!         The values in this structure have already been byte swapped and
-//!         the \c n_value field has been converted to a \uint64_t if
-//!         necessary.
-//! @param  parent
-//!         The \ref MKSymbolTable in which \c nlist resides.
-//! @return
-//! A score ranking the receiving class' ability to parse the symbol described
-//! by \c nlist.
-+ (uint32_t)canInstantiateWithNList:(struct nlist_64)nlist parent:(MKBackedNode*)parent;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Creating a Symbol
-//! @name       Creating a Symbol
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! Instantiates and returns the appropriate parser for the symbol at
-//! \a offset from the \a parent symbol table.
-+ (nullable instancetype)symbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Acessing Symbol Metadata
@@ -106,8 +61,8 @@ NS_ASSUME_NONNULL_BEGIN
 //!             without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! An offset into the \c __LINKEDIT string table, or zero if the symbol has
-//! a null, "", name.  The string at this offset, if any, is assigned to the
+//! An offset into the string table, or zero if the symbol has a null or ""
+//! name.  The string at this offset, if any, is assigned to the
 //! \ref name property of this symbol.
 @property (nonatomic, readonly) uint32_t strx;
 //! Type information for the symbol.  This is actually a bitfield the format

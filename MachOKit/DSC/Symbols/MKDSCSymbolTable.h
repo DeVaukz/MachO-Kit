@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCLocalSymbols.h
+//! @file       MKDSCSymbolTable.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,48 +28,24 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKBackedNode.h>
+#import <MachOKit/MKOffsetNode.h>
 
-@class MKSharedCache;
-@class MKDSCSymbolsInfo;
-@class MKDSCSymbolTable;
-@class MKDSCStringTable;
-@class MKDSCSymbolsEntry;
+@class MKDSCSymbol;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDSCLocalSymbols : MKBackedNode {
+@interface MKDSCSymbolTable : MKOffsetNode {
 @package
-    mk_vm_address_t _contextAddress;
-    mk_vm_address_t _vmAddress;
-    mk_vm_size_t _size;
-    // Header //
-    MKDSCSymbolsInfo *_header;
-    MKDSCSymbolTable *_symbolTable;
-    MKDSCStringTable *_stringTable;
-    NSArray<MKDSCSymbolsEntry*> *_entries;
+    mk_vm_size_t _nodeSize;
+    NSArray<MKDSCSymbol*> *_symbols;
 }
 
 //!
-- (nullable instancetype)initWithAddress:(mk_vm_address_t)contextAddress inSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Header and Symbols
-//! @name       Header and Symbols
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! 
-@property (nonatomic, readonly) MKDSCSymbolsInfo *header;
+- (instancetype)initWithCount:(uint32_t)count atOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //!
-@property (nonatomic, readonly) MKDSCSymbolTable *symbolTable;
-
-//!
-@property (nonatomic, readonly) MKDSCStringTable *stringTable;
-
-//!
-@property (nonatomic, readonly) NSArray<MKDSCSymbolsEntry*> *entries;
+@property (nonatomic, readonly) NSArray<MKDSCSymbol*> *symbols;
 
 @end
 

@@ -31,6 +31,7 @@
 #import "MKSharedCache.h"
 #import "MKDSCHeader.h"
 #import "MKDSCSymbolsInfo.h"
+#import "MKDSCSymbolTable.h"
 #import "MKDSCStringTable.h"
 #import "MKDSCSymbolsEntry.h"
 
@@ -98,6 +99,21 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize header = _header;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDSCSymbolTable*)symbolTable
+{
+    if (_symbolTable == nil)
+    @autoreleasepool {
+        NSError *e = nil;
+            
+        _symbolTable = [[MKDSCSymbolTable alloc] initWithCount:self.header.nlistCount atOffset:self.header.nlistOffset fromParent:self error:&e];
+        if (_symbolTable == nil)
+            MK_PUSH_UNDERLYING_WARNING(symbolTable, e, @"Could not load symbol table.");
+    }
+    
+    return _symbolTable;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKDSCStringTable*)stringTable
@@ -189,6 +205,7 @@
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"],
+        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
         //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entries) description:@"Entries"],
     ]];

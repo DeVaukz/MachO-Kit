@@ -56,6 +56,8 @@
 #import <MachOKit/MKSharedCache+Symbols.h>
     #import <MachOKit/MKDSCLocalSymbols.h>
     #import <MachOKit/MKDSCSymbolsInfo.h>
+    #import <MachOKit/MKDSCSymbolTable.h>
+    #import <MachOKit/MKDSCSymbol.h>
     #import <MachOKit/MKDSCStringTable.h>
     #import <MachOKit/MKDSCSymbolsEntry.h>
 
