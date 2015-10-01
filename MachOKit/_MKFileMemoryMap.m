@@ -57,7 +57,7 @@
     
     // Compute the offset address.
     if ((err = mk_vm_address_apply_offset(contextAddress, offset, &offsetAddress))) {
-        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(err | MK_EMEMORY_ERROR) description:@"Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(err), offset, contextAddress];
+        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)(err | MK_EMEMORY_ERROR) description:@"Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(err), offset, contextAddress];
         handler(0, 0, error);
         return;
     }
@@ -67,7 +67,7 @@
     // contextAddress must be within [0, fileLength)
     if (offsetAddress >= fileLength || (requireFull && (MK_VM_SIZE_MAX - length < offsetAddress || offsetAddress + length >= fileLength)))
     {
-        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIxSIZE ") is not within %@", offsetAddress, length, self];
+        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIxSIZE ") is not within %@", offsetAddress, length, self];
         handler(0, 0, error);
         return;
     }

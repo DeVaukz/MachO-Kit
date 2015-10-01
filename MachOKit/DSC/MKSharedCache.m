@@ -33,7 +33,16 @@
 #import "MKDSCImageInfo.h"
 
 #include <objc/runtime.h>
+
+#if __has_include(<mach/shared_region.h>)
 #include <mach/shared_region.h>
+#else
+// shared_region.h is not available on iOS.
+#define SHARED_REGION_BASE_I386			0x90000000ULL
+#define SHARED_REGION_BASE_X86_64		0x00007FFF70000000ULL
+#define SHARED_REGION_BASE_ARM64		0x180000000ULL
+#define SHARED_REGION_BASE_ARM			0x20000000ULL
+#endif
 
 //----------------------------------------------------------------------------//
 @implementation MKSharedCache
