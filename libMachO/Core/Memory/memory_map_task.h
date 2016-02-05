@@ -35,6 +35,7 @@
 
 #ifndef _memory_map_task_h
 #define _memory_map_task_h
+#if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
 
 //! @addtogroup MEMORY_MAP_TASK
 //! @{
@@ -72,4 +73,5 @@ mk_memory_map_task_free(mk_memory_map_task_t *task_map);
 
 //! @} MEMORY_MAP_TASK !//
 
+#endif
 #endif /* _memory_map_task_h */

@@ -38,7 +38,7 @@
 + (instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error
 { return [[[_MKFileMemoryMap alloc] initWithURL:fileURL error:error] autorelease]; }
 
-#if (TARGET_OS_MAC && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !(TARGET_OS_IOS || TARGET_OS_SIMULATOR)
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error
 { return [[[_MKTaskMemoryMap alloc] initWithTask:task error:error] autorelease]; }

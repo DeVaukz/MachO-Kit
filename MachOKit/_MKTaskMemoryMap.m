@@ -28,6 +28,8 @@
 #import "_MKTaskMemoryMap.h"
 #import "NSError+MK.h"
 
+#if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
+
 //----------------------------------------------------------------------------//
 @implementation _MKTaskMemoryMap
 
@@ -223,3 +225,5 @@
 }
 
 @end
+
+#endif

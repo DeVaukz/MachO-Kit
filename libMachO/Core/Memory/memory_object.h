@@ -57,8 +57,8 @@ typedef struct mk_memory_object_s {
     // requested length.
     vm_size_t length;
     // Implementation specific.
-    uintptr_t reserved1;
-    uintptr_t reserved2;
+    uint64_t reserved1;
+    uint64_t reserved2;
 } mk_memory_object_t;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

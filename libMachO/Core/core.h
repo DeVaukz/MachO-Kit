@@ -327,10 +327,7 @@ mk_type_copy_description(mk_type_ref mk, char* output, size_t output_len);
 #include "data_model.h"
 #include "memory_map.h"
 #include "memory_map_self.h"
-
-#if !TARGET_OS_IPHONE
 #include "memory_map_task.h"
-#endif
 
 
 //! @} CORE !//

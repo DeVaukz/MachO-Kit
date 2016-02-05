@@ -27,6 +27,8 @@
 
 #include "core_internal.h"
 
+#if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Classes
 //----------------------------------------------------------------------------//
@@ -239,3 +241,5 @@ mk_memory_map_task_free(mk_memory_map_task_t *task_map)
     
     return MK_ESUCCESS;
 }
+
+#endif

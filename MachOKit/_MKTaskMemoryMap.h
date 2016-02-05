@@ -29,6 +29,8 @@
 #include <mach/mach.h>
 @import Foundation;
 
+#if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
+
 #import <MachOKit/MKMemoryMap.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -44,3 +46,5 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif
