@@ -33,7 +33,7 @@
 //----------------------------------------------------------------------------//
 @implementation MKDSCMapping
 
-@synthesize mappingInfo = _mappingInfo;
+@synthesize mappingInfo = _descriptor;
 @synthesize vmAddress = _vmAddress;
 @synthesize vmSize = _vmSize;
 @synthesize fileOffset = _fileOffset;

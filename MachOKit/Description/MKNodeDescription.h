@@ -32,8 +32,6 @@
 #import <MachOKit/MKPrimativeNodeField.h>
 #import <MachOKit/MKFlagsNodeField.h>
 
-@class MKNode;
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//

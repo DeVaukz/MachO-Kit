@@ -35,7 +35,7 @@ _mk_load_command_source_version_copy_description(mk_load_command_ref load_comman
     mk_load_command_source_version_copy_version_string(load_command, version, sizeof(version));
     
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\tSource Version: %s\n}",
-                    mk_type_name(load_command.type), load_command.type, version);
+                            mk_type_name(load_command.type), load_command.type, version);
 }
 
 const struct _mk_load_command_vtable _mk_load_command_source_version_class = {

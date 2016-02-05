@@ -69,7 +69,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @relates    MKError
 //
 
-//! The domain for all errors originating rom Mach-O Kit.
+//! The domain for all errors originating from Mach-O Kit.
 extern NSString * const MKErrorDomain;
 
 //----------------------------------------------------------------------------//
