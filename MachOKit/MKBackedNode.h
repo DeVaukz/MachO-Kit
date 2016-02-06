@@ -38,10 +38,18 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
     //! The address of this node with respect to its \ref memoryMap.
+    //!
+    //! @details
+    //! For a memory map reading process memory, the context address matches
+    //! the node's VM address plus any slide.
+    //!
+    //! For a memory map reading a file on disk, the context address *usually* 
+    //! matches the offset of the node in the file.
     MKNodeContextAddress                = 0,
-    //! The address of this node, as it will appear when the image is
-    //! mapped into virtual memory.  This value does not include any slide
-    //! that was applied to the image.
+    //! The address of this node when the image is mapped into virtual memory.
+    //!
+    //! @details
+    //! This value does not include any slide that is applied to the image.
     MKNodeVMAddress
 };
 

@@ -92,7 +92,7 @@
     
     // HACK HACK - Special case for MKBackedNode
     if ([node respondsToSelector:@selector(nodeContextAddress)] && [node respondsToSelector:@selector(nodeSize)])
-        retValue = [NSMutableString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR "; size = %" MK_VM_PRIiSIZE ">",
+        retValue = [NSMutableString stringWithFormat:@"<%@ %p; contextAddress = 0x%" MK_VM_PRIxADDR "; size = %" MK_VM_PRIiSIZE ">",
                     node.class, self, [(MKBackedNode*)node nodeContextAddress], [(MKBackedNode*)node nodeSize]];
     else
         retValue = [NSMutableString stringWithFormat:@"<%@ %p>", node.class, self];
