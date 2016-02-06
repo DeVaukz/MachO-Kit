@@ -11,6 +11,18 @@
 		D000F40B1AF543A40004DAF6 /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C617021A4772ED00BF4F5A /* base.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D005C1AB1A70CA9E001D9B7B /* OtoolUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D005C1AA1A70CA9E001D9B7B /* OtoolUtil.m */; };
 		D0079FE41895D1AE00E9D0CF /* macho.h in Headers */ = {isa = PBXBuildFile; fileRef = D0079FE31895D16E00E9D0CF /* macho.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA18F1C61CB29002B0696 /* load_command_version_min_tvos.c in Sources */ = {isa = PBXBuildFile; fileRef = D00EA18D1C61CB29002B0696 /* load_command_version_min_tvos.c */; };
+		D00EA1901C61CB29002B0696 /* load_command_version_min_tvos.c in Sources */ = {isa = PBXBuildFile; fileRef = D00EA18D1C61CB29002B0696 /* load_command_version_min_tvos.c */; };
+		D00EA1911C61CB29002B0696 /* load_command_version_min_tvos.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA18E1C61CB29002B0696 /* load_command_version_min_tvos.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1921C61CB29002B0696 /* load_command_version_min_tvos.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA18E1C61CB29002B0696 /* load_command_version_min_tvos.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1A31C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */ = {isa = PBXBuildFile; fileRef = D00EA1A11C61CD51002B0696 /* load_command_version_min_watchos.c */; };
+		D00EA1A41C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */ = {isa = PBXBuildFile; fileRef = D00EA1A11C61CD51002B0696 /* load_command_version_min_watchos.c */; };
+		D00EA1A51C61CD51002B0696 /* load_command_version_min_watchos.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA1A21C61CD51002B0696 /* load_command_version_min_watchos.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1A61C61CD51002B0696 /* load_command_version_min_watchos.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA1A21C61CD51002B0696 /* load_command_version_min_watchos.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1A91C61CEF2002B0696 /* MKLCVersionMinTVOS.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA1A71C61CEF2002B0696 /* MKLCVersionMinTVOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1AA1C61CEF2002B0696 /* MKLCVersionMinTVOS.m in Sources */ = {isa = PBXBuildFile; fileRef = D00EA1A81C61CEF2002B0696 /* MKLCVersionMinTVOS.m */; };
+		D00EA1AD1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h in Headers */ = {isa = PBXBuildFile; fileRef = D00EA1AB1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00EA1AE1C61CF5B002B0696 /* MKLCVersionMinWatchOS.m in Sources */ = {isa = PBXBuildFile; fileRef = D00EA1AC1C61CF5B002B0696 /* MKLCVersionMinWatchOS.m */; };
 		D010B3701A74466700AED697 /* MKPrimativeNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B36E1A74466700AED697 /* MKPrimativeNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3731A74466700AED697 /* MKPrimativeNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */; };
 		D010B3781A744B7800AED697 /* MKHexNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B3761A744B7800AED697 /* MKHexNumberFormatter.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -599,6 +611,14 @@
 		D0079FDF1895CC0100E9D0CF /* MachOKit-Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MachOKit-Tests-Info.plist"; sourceTree = "<group>"; };
 		D0079FE11895D15900E9D0CF /* macho.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = macho.c; sourceTree = "<group>"; };
 		D0079FE31895D16E00E9D0CF /* macho.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macho.h; sourceTree = "<group>"; };
+		D00EA18D1C61CB29002B0696 /* load_command_version_min_tvos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_command_version_min_tvos.c; sourceTree = "<group>"; };
+		D00EA18E1C61CB29002B0696 /* load_command_version_min_tvos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load_command_version_min_tvos.h; sourceTree = "<group>"; };
+		D00EA1A11C61CD51002B0696 /* load_command_version_min_watchos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_command_version_min_watchos.c; sourceTree = "<group>"; };
+		D00EA1A21C61CD51002B0696 /* load_command_version_min_watchos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load_command_version_min_watchos.h; sourceTree = "<group>"; };
+		D00EA1A71C61CEF2002B0696 /* MKLCVersionMinTVOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCVersionMinTVOS.h; sourceTree = "<group>"; };
+		D00EA1A81C61CEF2002B0696 /* MKLCVersionMinTVOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCVersionMinTVOS.m; sourceTree = "<group>"; };
+		D00EA1AB1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCVersionMinWatchOS.h; sourceTree = "<group>"; };
+		D00EA1AC1C61CF5B002B0696 /* MKLCVersionMinWatchOS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCVersionMinWatchOS.m; sourceTree = "<group>"; };
 		D010B36E1A74466700AED697 /* MKPrimativeNodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPrimativeNodeField.h; sourceTree = "<group>"; };
 		D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKPrimativeNodeField.m; sourceTree = "<group>"; };
 		D010B3761A744B7800AED697 /* MKHexNumberFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKHexNumberFormatter.h; sourceTree = "<group>"; };
@@ -1264,6 +1284,10 @@
 				D0A1D8A519E4EEB80095870C /* load_command_version_min_iphoneos.c */,
 				D0A1D8A819E4EEB80095870C /* load_command_version_min_macosx.h */,
 				D0A1D8A719E4EEB80095870C /* load_command_version_min_macosx.c */,
+				D00EA18E1C61CB29002B0696 /* load_command_version_min_tvos.h */,
+				D00EA18D1C61CB29002B0696 /* load_command_version_min_tvos.c */,
+				D00EA1A21C61CD51002B0696 /* load_command_version_min_watchos.h */,
+				D00EA1A11C61CD51002B0696 /* load_command_version_min_watchos.c */,
 			);
 			name = "Load Commands";
 			path = LoadCommands;
@@ -1632,6 +1656,10 @@
 				D0539BC31A23D62A00D3A5F0 /* MKLCDylibCodeSignDrs.m */,
 				D0539BC61A23D69D00D3A5F0 /* MKLCEncryptionInfo64.h */,
 				D0539BC71A23D69D00D3A5F0 /* MKLCEncryptionInfo64.m */,
+				D00EA1A71C61CEF2002B0696 /* MKLCVersionMinTVOS.h */,
+				D00EA1A81C61CEF2002B0696 /* MKLCVersionMinTVOS.m */,
+				D00EA1AB1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h */,
+				D00EA1AC1C61CF5B002B0696 /* MKLCVersionMinWatchOS.m */,
 			);
 			name = "Load Commands";
 			path = Load_Commands;
@@ -1731,6 +1759,7 @@
 				D0A1D8D019E4EEB80095870C /* load_command_main.h in Headers */,
 				D0A1D83F19E4EE170095870C /* context.h in Headers */,
 				D0A1D8E019E4EEB80095870C /* load_command_segment_split_info.h in Headers */,
+				D00EA1AD1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h in Headers */,
 				D0539BB01A23D36B00D3A5F0 /* MKLCFunctionStarts.h in Headers */,
 				D030302C1A23BF3800288B3E /* MKLCSubClient.h in Headers */,
 				D03030481A23CE1700288B3E /* MKLCUUID.h in Headers */,
@@ -1817,6 +1846,7 @@
 				D0672B2D1A4FD69600D44610 /* MKIndirectPointersSection.h in Headers */,
 				D0539BCC1A23DCD700D3A5F0 /* MKDylibLoadCommand.h in Headers */,
 				D0539BE81A24199C00D3A5F0 /* MKSourceVersion.h in Headers */,
+				D00EA1A91C61CEF2002B0696 /* MKLCVersionMinTVOS.h in Headers */,
 				D0C564121A94517100443090 /* string_table.h in Headers */,
 				D0F3BEFE1A970BBB00A92334 /* macho_image.h in Headers */,
 				D0079FE41895D1AE00E9D0CF /* macho.h in Headers */,
@@ -1824,6 +1854,7 @@
 				D0C563FB1A944E2800443090 /* symbol.h in Headers */,
 				D09959F71A6A5F14007134CE /* MKMachO+Symbols.h in Headers */,
 				D0672B231A4FCF1100D44610 /* MKSection.h in Headers */,
+				D00EA1A51C61CD51002B0696 /* load_command_version_min_watchos.h in Headers */,
 				D0A1D8E219E4EEB80095870C /* load_command_source_version.h in Headers */,
 				D03030281A23BA1100288B3E /* MKLCSubFramework.h in Headers */,
 				D0A1D8C819E4EEB80095870C /* load_command_id_dylinker.h in Headers */,
@@ -1876,6 +1907,7 @@
 				D0C7C7831A5A44A400B41355 /* data_model_internal.h in Headers */,
 				D01717981A99607700F234EF /* indirect_symbol_table.h in Headers */,
 				D0E3FD361A59D6B3007B2771 /* memory_map_internal.h in Headers */,
+				D00EA1911C61CB29002B0696 /* load_command_version_min_tvos.h in Headers */,
 				D09959FF1A6B45C3007134CE /* MKIndirectSymbolTable.h in Headers */,
 				D0672B2F1A4FD69600D44610 /* MKStubsSection.h in Headers */,
 				D0CAF8E119E638B700C833F0 /* MachOKit.h in Headers */,
@@ -1926,6 +1958,7 @@
 				D01717CD1A99B30400F234EF /* macho_image_internal.h in Headers */,
 				D08B77A91A89D1E100E61338 /* segment_internal.h in Headers */,
 				D0A3BBB81A68ECBF00D663A0 /* load_command_id_dylinker.h in Headers */,
+				D00EA1921C61CB29002B0696 /* load_command_version_min_tvos.h in Headers */,
 				D0A3BBD21A68ECBF00D663A0 /* load_command_source_version.h in Headers */,
 				D074B6E01A88859B00B5E3E5 /* segment.h in Headers */,
 				D0A3BBC41A68ECBF00D663A0 /* load_command_reexport_dylib.h in Headers */,
@@ -1961,6 +1994,7 @@
 				D0A3BBB61A68ECBF00D663A0 /* load_command_id_dylib.h in Headers */,
 				D0A3BBBE1A68ECBF00D663A0 /* load_command_load_weak_dylib.h in Headers */,
 				D0A3BB931A68ECAA00D663A0 /* data_model_internal.h in Headers */,
+				D00EA1A61C61CD51002B0696 /* load_command_version_min_watchos.h in Headers */,
 				D0A3BBA61A68ECBF00D663A0 /* load_command_dsymtab.h in Headers */,
 				D0A3BBA01A68ECBF00D663A0 /* _load_command_linkedit.h in Headers */,
 				D0590CD31A74286F00CF9FD0 /* load_command_load_upward_dylib.h in Headers */,
@@ -2251,6 +2285,7 @@
 				D0590CCE1A74286F00CF9FD0 /* load_command_load_upward_dylib.c in Sources */,
 				D0672B341A51FD1900D44610 /* MKStringTable.m in Sources */,
 				D07727781A55E14600A517D3 /* MKSymbol.m in Sources */,
+				D00EA18F1C61CB29002B0696 /* load_command_version_min_tvos.c in Sources */,
 				D0C3B2DD19F37ACF00CAFE58 /* MKLoadCommand.m in Sources */,
 				D0539BE11A2411B800D3A5F0 /* MKLinkEditDataLoadCommand.m in Sources */,
 				D0A1D8BD19E4EEB80095870C /* load_command_dylib_code_sign_drs.c in Sources */,
@@ -2300,6 +2335,7 @@
 				D0672B481A535DFB00D44610 /* MKNode+MachO.m in Sources */,
 				D038B70D1A1021AA008621AE /* NSError+MK.m in Sources */,
 				D0BD11191B6DE152009AEB8F /* MKNode+SharedCache.m in Sources */,
+				D00EA1AE1C61CF5B002B0696 /* MKLCVersionMinWatchOS.m in Sources */,
 				D010B3901A7492FB00AED697 /* MKFlagsNodeField.m in Sources */,
 				D03030251A23B96900288B3E /* MKLCRoutines.m in Sources */,
 				D01DF2C71A2EE4F100CB1510 /* _MKTaskMemoryMap.m in Sources */,
@@ -2342,6 +2378,7 @@
 				D0A1D8E319E4EEB80095870C /* load_command_sub_client.c in Sources */,
 				D0BD11131B6DCB76009AEB8F /* MKDSCMapping.m in Sources */,
 				D05AD6FD1C08261C00D832C7 /* core.c in Sources */,
+				D00EA1AA1C61CEF2002B0696 /* MKLCVersionMinTVOS.m in Sources */,
 				D03030151A22FCBD00288B3E /* MKLCIDDylib.m in Sources */,
 				D03030611A23D15100288B3E /* MKLCDyldInfo.m in Sources */,
 				D0672B1F1A4FBC0300D44610 /* MKSegment.m in Sources */,
@@ -2349,6 +2386,7 @@
 				D0A1D8B119E4EEB80095870C /* load_command_code_signature.c in Sources */,
 				D0A1D85819E4EE580095870C /* macho_image.c in Sources */,
 				D03CD8031B68831500F52FBB /* MKSharedCache.m in Sources */,
+				D00EA1A31C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */,
 				D0C3B2F119F463EA00CAFE58 /* MKNode.m in Sources */,
 				D0539BA51A23D1F900D3A5F0 /* MKLCDyldInfoOnly.m in Sources */,
 			);
@@ -2378,6 +2416,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D0A3BBA71A68ECBF00D663A0 /* load_command_dsymtab.c in Sources */,
+				D00EA1A41C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */,
 				D0A3BBBF1A68ECBF00D663A0 /* load_command_load_weak_dylib.c in Sources */,
 				D0A3BBC91A68ECBF00D663A0 /* load_command_routines_64.c in Sources */,
 				D0A3BBBD1A68ECBF00D663A0 /* load_command_load_dylinker.c in Sources */,
@@ -2425,6 +2464,7 @@
 				D0A3BBDF1A68ECBF00D663A0 /* load_command_uuid.c in Sources */,
 				D0A3BB801A68EC8600D663A0 /* memory_map_self.c in Sources */,
 				D0A3BBAD1A68ECBF00D663A0 /* load_command_dyld_info_only.c in Sources */,
+				D00EA1901C61CB29002B0696 /* load_command_version_min_tvos.c in Sources */,
 				D0A3BBD71A68ECBF00D663A0 /* load_command_sub_framework.c in Sources */,
 				D0A3BBAB1A68ECBF00D663A0 /* load_command_dyld_info.c in Sources */,
 				D0A3BBDB1A68ECBF00D663A0 /* load_command_symtab.c in Sources */,

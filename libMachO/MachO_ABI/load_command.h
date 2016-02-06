@@ -105,6 +105,8 @@ _mk_export intptr_t mk_load_command_type;
 #include "load_command_source_version.h"
 #include "load_command_dylib_code_sign_drs.h"
 #include "load_command_encryption_info_64.h"
+#include "load_command_version_min_tvos.h"
+#include "load_command_version_min_watchos.h"
 
 
 //----------------------------------------------------------------------------//

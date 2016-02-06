@@ -106,6 +106,8 @@
     #import <MachOKit/MKLCSourceVersion.h>
     #import <MachOKit/MKLCDylibCodeSignDrs.h>
     #import <MachOKit/MKLCEncryptionInfo64.h>
+    #import <MachOKit/MKLCVersionMinTVOS.h>
+    #import <MachOKit/MKLCVersionMinWatchOS.h>
 
 #import <MachOKit/MKSegment.h>
 #import <MachOKit/MKSection.h>
