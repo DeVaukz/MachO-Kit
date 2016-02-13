@@ -28,14 +28,7 @@
 #import "MKDSCMappingInfo.h"
 #import "NSError+MK.h"
 
-struct dyld_cache_mapping_info
-{
-    uint64_t	address;
-    uint64_t	size;
-    uint64_t	fileOffset;
-    uint32_t	maxProt;
-    uint32_t	initProt;
-};
+#include "dyld_cache_format.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCMappingInfo

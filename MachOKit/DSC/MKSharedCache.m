@@ -32,6 +32,7 @@
 #import "MKDSCMapping.h"
 #import "MKDSCImageInfo.h"
 
+#include "dyld_cache_format.h"
 #include <objc/runtime.h>
 
 #if __has_include(<mach/shared_region.h>)
