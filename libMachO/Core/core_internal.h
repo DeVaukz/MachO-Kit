@@ -105,17 +105,25 @@ typedef struct _mk_runtime_base_s {
 //! @name       Runtime
 //----------------------------------------------------------------------------//
 
+#if __LP64__
 // TODO - Find a better way to handle the bridging or remove it altogether.
 extern const uintptr_t objc_debug_isa_class_mask __attribute__((weak_import));
+#endif
 
 //! Helper macro for invoking a method on a bridged MachOKit type provided to
 //! a polymorphic libMachO function.
 #if __MACHOKIT__
+    #if __LP64__
     #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING) \
         if (objc_debug_isa_class_mask && ((struct _mk_type_vtable*)((uintptr_t)INSTANCE.TYPE->vtable & objc_debug_isa_class_mask))->metaclass != NULL) \
             return ((CAST)objc_msgSend)(INSTANCE.TYPE, sel_getUid(SELECTOR_STRING)); \
         if ( ((struct _mk_type_vtable*)INSTANCE.TYPE->vtable)->metaclass != NULL ) \
             return ((CAST)objc_msgSend)(INSTANCE.TYPE, sel_getUid(SELECTOR_STRING));
+    #else
+    #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING) \
+        if ( ((struct _mk_type_vtable*)INSTANCE.TYPE->vtable)->metaclass != NULL ) \
+            return ((CAST)objc_msgSend)(INSTANCE.TYPE, sel_getUid(SELECTOR_STRING));
+    #endif
 #else
     #define MK_OBJC_BRIDGED_INVOKE(INSTANCE, TYPE, CAST, SELECTOR_STRING)
 #endif
