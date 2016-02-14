@@ -61,10 +61,20 @@ NS_ASSUME_NONNULL_BEGIN
 #define MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(CODE, ADDRESS, OFFSET) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while applying %s (%" MK_VM_PRIiOFFSET ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), #OFFSET, OFFSET, #ADDRESS, ADDRESS]
 
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! adding \a RHS_ADDRESS to \a LHS_ADDRESS.
+#define MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIxADDR ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
+
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! applying \a SLIDE to \a ADDRESS.
 #define MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(CODE, ADDRESS, SLIDE) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while applying slide (%" MK_VM_PRIiSLIDE ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), SLIDE, #ADDRESS, ADDRESS]
+
+//! Creates an \c NSError describing the arithmetic error that ocurred while
+//! removing \a SLIDE from \a ADDRESS.
+#define MK_MAKE_VM_ADDRESS_REMOVE_SLIDE_ARITHMETIC_ERROR(CODE, ADDRESS, SLIDE) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while subtracting slide (%" MK_VM_PRIiSLIDE ") from %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), SLIDE, #ADDRESS, ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! subtracting \a RHS_ADDRESS from \a LHS_ADDRESS.

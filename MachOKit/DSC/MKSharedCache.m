@@ -38,7 +38,7 @@
 #if __has_include(<mach/shared_region.h>)
 #include <mach/shared_region.h>
 #else
-// shared_region.h is not available on iOS.
+// shared_region.h is not available on embedded.
 #define SHARED_REGION_BASE_I386			0x90000000ULL
 #define SHARED_REGION_BASE_X86_64		0x00007FFF70000000ULL
 #define SHARED_REGION_BASE_ARM64		0x180000000ULL
@@ -49,7 +49,7 @@
 @implementation MKSharedCache
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (nullable instancetype)initWithFlags:(MKSharedCacheFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
+- (instancetype)initWithFlags:(MKSharedCacheFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
 {
     NSParameterAssert(mapping);
     
@@ -181,7 +181,7 @@
                 // If we fail to instantiate an instance of the MKDSCMappingInfo
                 // it means we've walked off the end of memory that can be
                 // mapped by our MKMemoryMap.
-                MK_PUSH_UNDERLYING_WARNING(mappingInfos, mappingDescriptorError, @"Failed to instantiate mapping info at index %" PRIi32 "", _header.mappingCount - mappingDescriptorCount);
+                MK_PUSH_UNDERLYING_WARNING(mappingInfos, mappingDescriptorError, @"Failed to load mapping info at index %" PRIi32 ".", _header.mappingCount - mappingDescriptorCount);
                 break;
             }
             
@@ -193,7 +193,7 @@
             // dyld doesn't care how many mappings are present in the shared
             // cache.  Neither do we, as long as there was not an overflow.
             if (oldOffset > offset) {
-                MK_PUSH_WARNING(mappingInfos, MK_EOVERFLOW, @"Adding size of mapping info at index %" PRIi32 " to offset into mapping infos triggered an overflow.", _header.mappingCount - mappingDescriptorCount);
+                MK_PUSH_WARNING(mappingInfos, MK_EOVERFLOW, @"Encountered an overflow while advancing the parser to the mapping info following index %" PRIu32 ".", _header.mappingCount - mappingDescriptorCount);
                 break;
             }
         }
@@ -205,7 +205,7 @@
     // We need at least one mapping to be present to compute the slide and
     // vmAddress.
     if (_mappingInfos.count < 1) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL underlyingError:localError description:@"Shared cache requires at least one mapping to be present."];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL underlyingError:localError description:@"A valid shared cache requires at least one mapping to be present."];
         [self release]; return nil;
     }
     
@@ -214,7 +214,7 @@
     _vmAddress = _mappingInfos[0].address;
     // ...which should match the shared region base from <mach/shared_region.h>
     if (_vmAddress != sharedRegionBase) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"VM Address of the first region (" MK_VM_PRIxADDR ") does not match the expected shared region base (" MK_VM_PRIxADDR ").", _vmAddress, sharedRegionBase];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"VM address of the first mapping (%" MK_VM_PRIxADDR ") does not match the expected shared region base (%" MK_VM_PRIxADDR ").", _vmAddress, sharedRegionBase];
         [self release]; return nil;
     }
     
@@ -225,14 +225,14 @@
     // a slide info struct.
     if ((_flags & MKSharedCacheFromVM) && _header.slideInfoOffset != 0)
     {
-        // Shared cache slide is the delta of the current context-relative
-        // address of the first region, and the address as pecified by that
+        // Shared cache slide is the delta of the context-relative address
+        // of the first region, and the address as specified by that
         // region's mapping info.
         //
         // TODO - Provide an option to manually specify the slide.
         err = mk_vm_address_difference(contextAddress, _vmAddress, &_slide);
         if (err != MK_ESUCCESS) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not compute shared cache slide (" MK_VM_PRIxADDR " - " MK_VM_PRIxADDR ").", contextAddress, _vmAddress];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err underlyingError:MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, contextAddress, _vmAddress) description:@"Could not compute shared cache slide."];
             [self release]; return nil;
         }
     }
@@ -243,11 +243,11 @@
         
         for (MKDSCMappingInfo *descriptor in _mappingInfos)
         {
-            NSError *localError = nil;
+            NSError *e = nil;
             
-            MKDSCMapping *mapping = [[MKDSCMapping alloc] initWithDescriptor:descriptor error:&localError];
+            MKDSCMapping *mapping = [[MKDSCMapping alloc] initWithDescriptor:descriptor error:&e];
             if (mapping == nil) {
-                MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to create MKDSCMapping for descriptor %@", descriptor);
+                MK_PUSH_UNDERLYING_WARNING(mappings, e, @"Failed to load MKDSCMapping for descriptor %@.", descriptor);
                 continue;
             }
             

@@ -45,8 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark -  Shared Cache Struct Values
 //! @name       Shared Cache Struct Values
 //!
-//! @brief      These values are lifted directly from the shared cache mapping
-//!             info structure without modification or cleanup.
+//! @brief      These values are lifted directly from the shared cache image
+//!             descriptor structure without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @property (nonatomic, readonly) uint64_t address;

@@ -32,6 +32,7 @@
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCMapping
+
 @synthesize vmAddress = _vmAddress;
 @synthesize vmSize = _vmSize;
 @synthesize fileOffset = _fileOffset;
@@ -57,12 +58,12 @@
     mk_vm_slide_t slide = sharedCache.slide;
     
     if ((err = mk_vm_address_apply_slide(vmAddress, slide, &_contextAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while applying slide (%" MK_VM_PRIiSLIDE ") to address (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, _contextAddress];
+        MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _contextAddress, slide);
         [self release]; return nil;
     }
     
     if ((err = mk_vm_address_subtract(_contextAddress, fileOffset, &_contextAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while subtracting the file offset (%" MK_VM_PRIiOFFSET ") from the slid vm address (0x%" MK_VM_PRIiOFFSET ")", mk_error_string(err), fileOffset, _contextAddress];
+        MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, _contextAddress, fileOffset);
         [self release]; return nil;
     }
     
@@ -83,7 +84,7 @@
     
     // Make sure the region data is actually available
     if ([sharedCache.memoryMap hasMappingAtOffset:0 fromAddress:_contextAddress length:_vmSize] == NO) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Region data does not exist in memory map for %@", sharedCache];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Complete mapping does not exist at context-relative address %" MK_VM_PRIxADDR ".", _contextAddress];
         [self release]; return nil;
     }
     

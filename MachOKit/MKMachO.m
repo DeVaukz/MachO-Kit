@@ -47,10 +47,9 @@
     self = [super initWithParent:nil error:error];
     if (self == nil) return nil;
     
-    // <TODO> Remove this eventually
+    // TODO - Remove this eventually
     _context.user_data = (void*)self;
     _context.logger = (mk_logger_c)method_getImplementation(class_getInstanceMethod(self.class, @selector(_logMessageAtLevel:inFile:line:function:message:)));
-    // </TODO> Remove this eventually
     
     _mapping = [mapping retain];
     _contextAddress = contextAddress;

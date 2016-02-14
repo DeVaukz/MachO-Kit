@@ -49,7 +49,7 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
     //! \ref MKSharedCacheFromVM.
     MKSharedCacheFromSourceFile                 = 0x1,
     //! The mapped shared cache is from process memory or a memory dump,
-    //! and has been loaded by dyld.  This option is mutually exclusive wtih
+    //! and has been loaded by dyld.  This option is mutually exclusive with
     //! \ref MKSharedCacheFromSourceFile.
     MKSharedCacheFromVM                         = 0x2,
 };
