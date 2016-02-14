@@ -57,14 +57,30 @@
     _dyldBaseAddress = MKSwapLValue64(sch.dyldBaseAddress, self.dataModel);
     _codeSignatureOffset = MKSwapLValue64(sch.codeSignatureOffset, self.dataModel);
     _codeSignatureSize = MKSwapLValue64(sch.codeSignatureSize, self.dataModel);
-    _slideInfoOffset = MKSwapLValue64(sch.slideInfoOffset, self.dataModel);
-    _slideInfoSize = MKSwapLValue64(sch.slideInfoSize, self.dataModel);
-    _localSymbolsOffset = MKSwapLValue64(sch.localSymbolsOffset, self.dataModel);
-    _localSymbolsSize = MKSwapLValue64(sch.localSymbolsSize, self.dataModel);
     
-    _uuid = [[NSUUID alloc] initWithUUIDBytes:sch.uuid];
-    if (_uuid == nil)
-        MK_PUSH_WARNING(uuid, MK_EINVALID_DATA, @"Could not create an NSUUID with data.");
+    // The slideInfo* fields are only present if the header size is >= 0x48.
+    // Dyld actually checks for this so presumably caches without it exist.
+#define HAS_SLIDE_INFO (_mappingOffset >= offsetof(struct dyld_cache_header, slideInfoSize) + sizeof(sch.slideInfoSize))
+    if (HAS_SLIDE_INFO) {
+        _slideInfoOffset = MKSwapLValue64(sch.slideInfoOffset, self.dataModel);
+        _slideInfoSize = MKSwapLValue64(sch.slideInfoSize, self.dataModel);
+    }
+    
+    // The localSymbols* fields are only present if the header size is >= 0x58.
+#define HAS_LOCAL_SYMBOLS (_mappingOffset >= offsetof(struct dyld_cache_header, localSymbolsSize) + sizeof(sch.localSymbolsSize))
+    if (HAS_LOCAL_SYMBOLS) {
+        _localSymbolsOffset = MKSwapLValue64(sch.localSymbolsOffset, self.dataModel);
+        _localSymbolsSize = MKSwapLValue64(sch.localSymbolsSize, self.dataModel);
+    }
+    
+    // The uuid field is only present if the header size is >= 0x68.  Dyld
+    // actually checks for this so presumably caches without it exist.
+#define HAS_UUID (_mappingOffset >= offsetof(struct dyld_cache_header, uuid) + sizeof(sch.uuid))
+    if (HAS_UUID) {
+        _uuid = [[NSUUID alloc] initWithUUIDBytes:sch.uuid];
+        if (_uuid == nil)
+            MK_PUSH_WARNING(uuid, MK_EINVALID_DATA, @"Could not create an NSUUID with data.");
+    }
     
     return self;
 }
@@ -101,13 +117,14 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return sizeof(struct dyld_cache_header); }
+{ return MIN(sizeof(struct dyld_cache_header), _mappingOffset); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     __unused struct dyld_cache_header sch;
     
+    NSArray *fields = @[
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(magic) description:@"Magic String" offset:offsetof(struct dyld_cache_header, magic) size:sizeof(sch.magic)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mappingOffset) description:@"Mapping Offset" offset:offsetof(struct dyld_cache_header, mappingOffset) size:sizeof(sch.mappingOffset) format:MKNodeFieldFormatOffset],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mappingCount) description:@"Number of Mappings" offset:offsetof(struct dyld_cache_header, mappingCount) size:sizeof(sch.mappingCount)],
@@ -116,11 +133,25 @@
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(dyldBaseAddress) description:@"Dyld Base Address" offset:offsetof(struct dyld_cache_header, dyldBaseAddress) size:sizeof(sch.dyldBaseAddress) format:MKNodeFieldFormatAddress],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(codeSignatureOffset) description:@"Code Signature Offset" offset:offsetof(struct dyld_cache_header, codeSignatureOffset) size:sizeof(sch.codeSignatureOffset) format:MKNodeFieldFormatOffset],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(codeSignatureSize) description:@"Code Signature Size" offset:offsetof(struct dyld_cache_header, codeSignatureSize) size:sizeof(sch.codeSignatureSize) format:MKNodeFieldFormatSize]
+    ];
+    
+    if (HAS_SLIDE_INFO) {
+        fields = [fields arrayByAddingObjectsFromArray:@[
             [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(slideInfoOffset) description:@"Slide Info Offset" offset:offsetof(struct dyld_cache_header, slideInfoOffset) size:sizeof(sch.slideInfoOffset) format:MKNodeFieldFormatOffset],
             [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(slideInfoSize) description:@"Slide Info Size" offset:offsetof(struct dyld_cache_header, slideInfoSize) size:sizeof(sch.slideInfoSize) format:MKNodeFieldFormatSize]
+        ]];
+    }
+    
+    if (HAS_LOCAL_SYMBOLS) {
+        fields = [fields arrayByAddingObjectsFromArray:@[
             [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(localSymbolsOffset) description:@"Local Symbols Offset" offset:offsetof(struct dyld_cache_header, localSymbolsOffset) size:sizeof(sch.localSymbolsOffset) format:MKNodeFieldFormatOffset],
             [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(localSymbolsSize) description:@"Local Symbols Size" offset:offsetof(struct dyld_cache_header, localSymbolsSize) size:sizeof(sch.localSymbolsSize) format:MKNodeFieldFormatSize]
+        ]];
+    }
+    
+    if (HAS_UUID) {
         fields = [fields arrayByAddingObject:[MKPrimativeNodeField fieldWithName:MK_PROPERTY(uuid) keyPath:@"uuid.UUIDString" description:@"UUID" offset:offsetof(struct dyld_cache_header, uuid) size:sizeof(sch.uuid)]];
+    }
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
 }

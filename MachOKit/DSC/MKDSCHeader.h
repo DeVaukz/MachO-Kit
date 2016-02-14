@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) uint64_t slideInfoSize;
 @property (nonatomic, readonly) uint64_t localSymbolsOffset;
 @property (nonatomic, readonly) uint64_t localSymbolsSize;
-@property (nonatomic, readonly) NSUUID *uuid;
+@property (nonatomic, readonly, nullable) NSUUID *uuid;
 
 @end
 
