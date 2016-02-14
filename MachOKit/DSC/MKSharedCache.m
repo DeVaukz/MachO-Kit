@@ -202,41 +202,39 @@
         [mappingDescriptors release];
     }
     
-    // We need at least the first mapping to be present to compute the slide
-    // and vmAddress.
+    // We need at least one mapping to be present to compute the slide and
+    // vmAddress.
     if (_mappingInfos.count < 1) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL underlyingError:localError description:@"Shared cache requires at least one mapping to be present."];
         [self release]; return nil;
     }
     
-    mk_vm_address_t loadAddress = _mappingInfos[0].address;
+    // vmAddress for the shared region is the same as the address of the
+    // first mapping...
+    _vmAddress = _mappingInfos[0].address;
+    // ...which should match the shared region base from <mach/shared_region.h>
+    if (_vmAddress != sharedRegionBase) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"VM Address of the first region (" MK_VM_PRIxADDR ") does not match the expected shared region base (" MK_VM_PRIxADDR ").", _vmAddress, sharedRegionBase];
+        [self release]; return nil;
+    }
     
     // Compute the slide
     //
-    // dyld assumes an existing shared cache has been slide if the mapping
-    // offset is >= than 72 (but it always is? sizeof(dyld_cache_header)
-    // == 104?) and there is a slide info struct.
-    if (_header.mappingOffset >= 0x48 && _header.slideInfoOffset != 0)
+    // dyld assumes an existing shared cache has been slide if the header
+    // contains the slideInfoOffset and slideInfoSize fields, and if there is
+    // a slide info struct.
+    if ((_flags & MKSharedCacheFromVM) && _header.slideInfoOffset != 0)
     {
         // Shared cache slide is the delta of the current context-relative
-        // address of the first region, and the preferred address of the
-        // first region.  dyld determines the preferred load address of the
-        // first region by peeking at the shared cache file on disk.
-        // We don't have that luxury.  Instead we use the hard coded values
-        // from <mach/shared_region.h>.
+        // address of the first region, and the address as pecified by that
+        // region's mapping info.
         //
         // TODO - Provide an option to manually specify the slide.
-        err = mk_vm_address_difference(loadAddress, sharedRegionBase, &_slide);
+        err = mk_vm_address_difference(contextAddress, _vmAddress, &_slide);
         if (err != MK_ESUCCESS) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not compute shared cache slide (" MK_VM_PRIxADDR " - " MK_VM_PRIxADDR ").", loadAddress, sharedRegionBase];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not compute shared cache slide (" MK_VM_PRIxADDR " - " MK_VM_PRIxADDR ").", contextAddress, _vmAddress];
             [self release]; return nil;
         }
-    }
-    
-    // vmAddress is the un-slid address of the first region
-    if ((err = mk_vm_address_apply_slide(loadAddress, -1 * _slide, &_vmAddress))) {
-        MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, loadAddress, _slide);
-        [self release]; return nil;
     }
     
     // Load mappings

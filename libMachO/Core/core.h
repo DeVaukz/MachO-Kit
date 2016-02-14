@@ -88,6 +88,8 @@
 #define MK_VM_PRIxOFFSET PRIx64
 #define MK_VM_PRIiOFFSET PRIi64
 #define MK_VM_PRIuOFFSET PRIu64
+//! Print formatters for the \ref mk_vm_slide_t type.
+#define MK_VM_PRIiSLIDE PRIi64
 
 //! Architecture-independent VM address type.
 #if MK_HAVE_MACH_VM
@@ -209,6 +211,13 @@ mk_vm_address_apply_offset(mk_vm_address_t addr, mk_vm_offset_t offset, mk_vm_ad
 //! \a result is unmodified.
 _mk_export mk_error_t
 mk_vm_address_apply_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_address_t *result);
+
+//! Safely computes \a addr - \a slide and stores the result in \a result.
+//! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
+//! unmodified.  If there was an underflow, \ref MK_EUNDERFLOW is returned and
+//! \a result is unmodified.
+_mk_export mk_error_t
+mk_vm_address_remove_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_address_t *result);
 
 //! Safely computes \a addr1 + \a addr2 and stores the result in \a result.
 //! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is

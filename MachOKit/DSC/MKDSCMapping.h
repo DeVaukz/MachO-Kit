@@ -30,6 +30,7 @@
 
 #import <MachOKit/MKBackedNode.h>
 
+@class MKSharedCache;
 @class MKDSCMappingInfo;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -38,7 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKDSCMapping : MKBackedNode {
 @package
     mk_vm_address_t _contextAddress;
-    MKDSCMappingInfo *_descriptor;
     //
     mk_vm_address_t _vmAddress;
     mk_vm_size_t _vmSize;
@@ -47,10 +47,9 @@ NS_ASSUME_NONNULL_BEGIN
     vm_prot_t _initialProtection;
 }
 
-- (nullable instancetype)initWithDescriptor:(MKDSCMappingInfo*)descriptor error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithSharedCache:(MKSharedCache*)sharedCache vmAddress:(mk_vm_address_t)vmAddress vmSize:(mk_vm_size_t)vmSize fileOffset:(mk_vm_offset_t)fileOffset initialProtection:(vm_prot_t)initialProtection maximumProtection:(vm_prot_t)aximumProtection error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! The mappingInfo identifying this region.
-@property (nonatomic, readonly) MKDSCMappingInfo *mappingInfo;
+- (nullable instancetype)initWithDescriptor:(MKDSCMappingInfo*)descriptor error:(NSError**)error;
 
 @property (nonatomic, readonly) mk_vm_address_t vmAddress;
 @property (nonatomic, readonly) mk_vm_size_t vmSize;

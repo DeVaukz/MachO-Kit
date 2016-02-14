@@ -32,8 +32,6 @@
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCMapping
-
-@synthesize mappingInfo = _descriptor;
 @synthesize vmAddress = _vmAddress;
 @synthesize vmSize = _vmSize;
 @synthesize fileOffset = _fileOffset;
@@ -41,45 +39,31 @@
 @synthesize initialProtection = _initialProtection;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithDescriptor:(MKDSCMappingInfo*)descriptor error:(NSError**)error
+- (instancetype)initWithSharedCache:(MKSharedCache*)sharedCache vmAddress:(mk_vm_address_t)vmAddress vmSize:(mk_vm_size_t)vmSize fileOffset:(mk_vm_offset_t)fileOffset initialProtection:(vm_prot_t)initialProtection maximumProtection:(vm_prot_t)aximumProtection error:(NSError**)error
 {
-    NSParameterAssert(descriptor);
     mk_error_t err;
-    
-    MKSharedCache *sharedCache = descriptor.sharedCache;
     NSParameterAssert(sharedCache);
     
     self = [super initWithParent:sharedCache error:error];
     if (self == nil) return nil;
     
-    _descriptor = [descriptor retain];
+    _vmAddress = vmAddress;
+    _vmSize = vmSize;
+    _fileOffset = fileOffset;
+    _maximumProtection = aximumProtection;
+    _initialProtection = initialProtection;
     
-    _vmAddress = descriptor.address;
-    _vmSize = descriptor.size;
-    _fileOffset = descriptor.fileOffset;
-    _maximumProtection = descriptor.maxProt;
-    _initialProtection = descriptor.initProt;
+    // contextAddress := vmAddress + slide - fileOffset
+    mk_vm_slide_t slide = sharedCache.slide;
     
-    if (sharedCache.isSourceFile)
-    {
-        if ((err = mk_vm_address_apply_offset(sharedCache.nodeContextAddress, _fileOffset, &_contextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, sharedCache.nodeContextAddress, _fileOffset);
-            [self release]; return nil;
-        }
-    }
-    else
-    {
-        _contextAddress = _vmAddress;
+    if ((err = mk_vm_address_apply_slide(vmAddress, slide, &_contextAddress))) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while applying slide (%" MK_VM_PRIiSLIDE ") to address (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, _contextAddress];
+        [self release]; return nil;
     }
     
-    // Verify that applying the slide would not trigger an arithmetic error.
-    {
-        mk_vm_slide_t slide = sharedCache.slide;
-        
-        if ((err = mk_vm_address_apply_slide(_vmAddress, slide, NULL))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _vmAddress, slide);
-            [self release]; return nil;
-        }
+    if ((err = mk_vm_address_subtract(_contextAddress, fileOffset, &_contextAddress))) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while subtracting the file offset (%" MK_VM_PRIiOFFSET ") from the slid vm address (0x%" MK_VM_PRIiOFFSET ")", mk_error_string(err), fileOffset, _contextAddress];
+        [self release]; return nil;
     }
     
     // dyld will refuse to load the shared cache if a region's fileOffset + size
@@ -107,17 +91,19 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithDescriptor:(MKDSCMappingInfo*)descriptor error:(NSError**)error
+{
+    NSParameterAssert(descriptor);
+    MKSharedCache *sharedCache = descriptor.sharedCache;
+    
+    return [self initWithSharedCache:sharedCache vmAddress:descriptor.address vmSize:descriptor.size fileOffset:descriptor.fileOffset initialProtection:descriptor.initProt maximumProtection:descriptor.maxProt error:error];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
     NSAssert([parent isKindOfClass:MKDSCMappingInfo.class], @"");
     return [self initWithDescriptor:(id)parent error:error];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_descriptor release];
-    [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
