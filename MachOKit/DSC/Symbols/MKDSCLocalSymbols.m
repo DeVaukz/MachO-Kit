@@ -57,7 +57,7 @@
     mk_vm_address_t sharedCacheAddress = sharedCache.nodeContextAddress;
     
     if ((err = mk_vm_address_apply_offset(sharedCacheAddress, localSymbolsOffset, &_contextAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithemtic error %s applying offset " MK_VM_PRIxOFFSET " to parent node %@", localSymbolsOffset, sharedCache];
+        MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, sharedCacheAddress, localSymbolsOffset);
         [self release]; return nil;
     }
 
@@ -174,8 +174,8 @@
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Header"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
-        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
-        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(entriesTable) description:@"Entries Table"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(entriesTable) description:@"Entries Table"],
     ]];
 }
 

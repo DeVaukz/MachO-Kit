@@ -54,6 +54,12 @@
 #import <MachOKit/MKSharedCache+Images.h>
     #import <MachOKit/MKDSCImagesInfo.h>
     #import <MachOKit/MKDSCImage.h>
+#import <MachOKit/MKSharedCache+Slide.h>
+    #import <MachOKit/MKDSCSlideInfo.h>
+    #import <MachOKit/MKDSCSlideInfoHeader.h>
+    #import <MachOKit/MKDSCSlideInfoBitmap.h>
+    #import <MachOKit/MKDSCSlideInfoPage.h>
+    #import <MachOKit/MKDSCSlidPointer.h>
 #import <MachOKit/MKSharedCache+Symbols.h>
     #import <MachOKit/MKDSCLocalSymbols.h>
     #import <MachOKit/MKDSCLocalSymbolsHeader.h>

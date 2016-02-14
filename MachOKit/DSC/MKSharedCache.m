@@ -281,6 +281,7 @@
 - (void)dealloc
 {
     [_localSymbols release];
+    [_slideInfo release];
     [_imagesInfo release];
     [_mappings release];
     [_mappingInfos release];
@@ -353,6 +354,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappingInfos) description:@"Mapping Descriptors"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(mappings) description:@"Mappings"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(imageInfos) description:@"Image Descriptors"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(slideInfo) description:@"Slide Info"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(localSymbols) description:@"Local Symbols"],
     ]];
 }
