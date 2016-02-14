@@ -48,11 +48,12 @@
 #import <MachOKit/MKFatArch.h>
 
 #import <MachOKit/MKSharedCache.h>
-#import <MachOKit/MKSharedCache+Images.h>
 #import <MachOKit/MKDSCHeader.h>
 #import <MachOKit/MKDSCMappingInfo.h>
 #import <MachOKit/MKDSCMapping.h>
-#import <MachOKit/MKDSCImageInfo.h>
+#import <MachOKit/MKSharedCache+Images.h>
+    #import <MachOKit/MKDSCImagesInfo.h>
+    #import <MachOKit/MKDSCImage.h>
 #import <MachOKit/MKSharedCache+Symbols.h>
     #import <MachOKit/MKDSCLocalSymbols.h>
     #import <MachOKit/MKDSCSymbolsInfo.h>

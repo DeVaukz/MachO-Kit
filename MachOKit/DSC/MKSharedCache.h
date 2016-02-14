@@ -34,7 +34,7 @@
 @class MKDSCHeader;
 @class MKDSCMappingInfo;
 @class MKDSCMapping;
-@class MKDSCImageInfo;
+@class MKDSCImagesInfo;
 @class MKDSCLocalSymbols;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -75,7 +75,7 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
     NSArray<MKDSCMappingInfo*> *_mappingInfos;
     NSArray<MKDSCMapping*> *_mappings;
     // Images //
-    NSArray<MKDSCImageInfo*> *_imageInfos;
+    MKDSCImagesInfo *_imagesInfo;
     // Symbols //
     MKDSCLocalSymbols *_localSymbols;
 }

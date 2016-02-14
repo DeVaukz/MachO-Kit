@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCImageInfo.h
+//! @file       MKDSCImage.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -33,7 +33,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDSCImageInfo : MKOffsetNode {
+@interface MKDSCImage : MKOffsetNode {
 @package
     uint64_t _address;
     uint64_t _modTime;

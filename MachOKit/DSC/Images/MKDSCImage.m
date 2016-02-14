@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCImageInfo.m
+//|             MKDSCImage.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,21 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCImageInfo.h"
+#import "MKDSCImage.h"
 #import "NSError+MK.h"
 #import "MKMachO.h"
 
-struct dyld_cache_image_info
-{
-    uint64_t	address;
-    uint64_t	modTime;
-    uint64_t	inode;
-    uint32_t	pathFileOffset;
-    uint32_t	pad;
-};
+#include "dyld_cache_format.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCImageInfo
+@implementation MKDSCImage
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
@@ -82,10 +75,10 @@ struct dyld_cache_image_info
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Image Start Address" offset:offsetof(struct dyld_cache_image_info, address) size:sizeof(uint64_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Image Start Address" offset:offsetof(struct dyld_cache_image_info, address) size:sizeof(uint64_t) format:MKNodeFieldFormatAddress],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(modTime) description:@"Modification Time" offset:offsetof(struct dyld_cache_image_info, modTime) size:sizeof(uint64_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(inode) description:@"iNode" offset:offsetof(struct dyld_cache_image_info, inode) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(pathFileOffset) description:@"Image Path Offset" offset:offsetof(struct dyld_cache_image_info, pathFileOffset) size:sizeof(uint32_t)]
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(pathFileOffset) description:@"Image Path Offset" offset:offsetof(struct dyld_cache_image_info, pathFileOffset) size:sizeof(uint32_t) format:MKNodeFieldFormatOffset]
     ]];
 }
 

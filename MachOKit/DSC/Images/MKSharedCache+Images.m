@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKSharedCache+Images.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKSharedCache+Images.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,19 +25,25 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKSharedCache.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKSharedCache+Images.h"
+#import "NSError+MK.h"
+#import "MKDSCImagesInfo.h"
 
 //----------------------------------------------------------------------------//
-@interface MKSharedCache (Images)
+@implementation MKSharedCache (Images)
 
-//!
-@property (nonatomic, readonly) NSArray<MKDSCImageInfo*> *imageInfos;
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDSCImagesInfo*)imagesInfo
+{
+    if (_imagesInfo == nil) {
+        NSError *e = nil;
+        
+        _imagesInfo = [[MKDSCImagesInfo alloc] initWithSharedCache:self error:&e];
+        if (_imagesInfo == nil)
+            MK_PUSH_UNDERLYING_WARNING(imagesInfo, e, @"Failed to load images info.");
+    }
+    
+    return _imagesInfo;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

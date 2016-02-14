@@ -30,7 +30,7 @@
 #import "MKDSCHeader.h"
 #import "MKDSCMappingInfo.h"
 #import "MKDSCMapping.h"
-#import "MKDSCImageInfo.h"
+#import "MKDSCImagesInfo.h"
 
 #include "dyld_cache_format.h"
 #include <objc/runtime.h>
@@ -281,7 +281,7 @@
 - (void)dealloc
 {
     [_localSymbols release];
-    [_imageInfos release];
+    [_imagesInfo release];
     [_mappings release];
     [_mappingInfos release];
     [_header release];
