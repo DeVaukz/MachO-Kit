@@ -218,7 +218,7 @@ extern const uint32_t _mk_load_command_classes_count;
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(cmd) description:@"Command" offset:offsetof(struct load_command, cmd) size:sizeof(uint32_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cmd) description:@"Command" offset:offsetof(struct load_command, cmd) size:sizeof(uint32_t) format:MKNodeFieldFormatHexCompact],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cmdSize) description:@"Command Size" offset:offsetof(struct load_command, cmdsize) size:sizeof(uint32_t)]
     ]];
 }

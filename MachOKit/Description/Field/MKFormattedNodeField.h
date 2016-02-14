@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKPrimativeNodeField.h
+//! @file       MKFormattedNodeField.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,27 +28,45 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKFormattedNodeField.h>
+#import <MachOKit/MKNodeField.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKPrimativeNodeField : MKFormattedNodeField {
+//! @name       Node Field Format
+//! @relates    MKFormattedNodeField
+//!
+typedef NS_ENUM(NSUInteger, MKNodeFieldFormat) {
+    //! Format the value of this field as a decimal number.
+    MKNodeFieldFormatDecimal        = 0,
+    //! Format the value of this field as a hexadecimal number.
+    MKNodeFieldFormatHex,
+    //! Format the value of this field as a hexadecimal number, without any
+    //! leading zeros.
+    MKNodeFieldFormatHexCompact,
+    //! Alias for formatting addresses.
+    MKNodeFieldFormatAddress        = MKNodeFieldFormatHex,
+    //! Alias for formatting sizes
+    MKNodeFieldFormatSize           = MKNodeFieldFormatDecimal,
+    //! Alias for formatting offsets
+    MKNodeFieldFormatOffset         = MKNodeFieldFormatHexCompact
+};
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKFormattedNodeField : MKNodeField {
 @package
-    id<MKNodeFieldRecipe> _offsetRecipe;
-    id<MKNodeFieldRecipe> _sizeRecipe;
+    NSFormatter *_valueFormatter;
 }
 
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format;
++ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description format:(MKNodeFieldFormat)format;
++ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description format:(MKNodeFieldFormat)format;
 
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(nullable NSFormatter*)valueFormatter;
 
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> offsetRecipe;
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> sizeRecipe;
-
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(nullable NSFormatter*)valueFormatter offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe;
+//! The formatter used to format the value of this field.
+@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
 
 @end
 

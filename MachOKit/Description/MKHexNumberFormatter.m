@@ -43,13 +43,31 @@
 #pragma mark -  NSFormatter
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-- (NSString*)stringForObjectValue:(id)anObject
+- (NSString*)stringForObjectValue:(NSNumber*)anObject
 {
     if ([anObject isKindOfClass:NSNumber.class] == NO)
-        return nil;
+        return @"<Not a number>";
     
-    uint64_t value = [anObject unsignedLongLongValue];
-    return [NSString stringWithFormat:@"0x%0*llx", (int)_digits, value];
+    if (_digits == SIZE_T_MAX) {
+        const char *objcType = [anObject objCType];
+        
+        switch (*objcType) {
+            case 'c':
+            case 'C':
+                return [NSString stringWithFormat:@"0x%0*hhx", 2, [anObject unsignedCharValue]];
+            case 's':
+            case 'S':
+                return [NSString stringWithFormat:@"0x%0*hx", 2, [anObject unsignedShortValue]];
+            case 'i':
+            case 'I':
+                return [NSString stringWithFormat:@"0x%0*x", 2, [anObject unsignedIntValue]];
+            default:
+                return [NSString stringWithFormat:@"0x%0*llx", 2, [anObject unsignedLongLongValue]];
+        }
+    } else if (_digits == 0)
+        return [NSString stringWithFormat:@"0x%llx", [anObject unsignedLongLongValue]];
+    else
+        return [NSString stringWithFormat:@"0x%0*llx", (int)_digits, [anObject unsignedLongLongValue]];
 }
 
 @end

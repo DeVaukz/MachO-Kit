@@ -38,6 +38,13 @@ NS_ASSUME_NONNULL_BEGIN
     size_t _digits;
 }
 
+//! Returns a formatter that formats an input NSNumber in hexadecimal
+//! representation, padding the resulting string with up to \a digits
+//! preceeding zeros.
+//!
+//! @param  digits
+//!         Pass zero for no padding.  Pass SIZE_T_MAX for padding up to the
+//!         natural length of the underlying type of the NSNumber.
 + (instancetype)hexNumberFormatterWithDigits:(size_t)digits;
 
 //! The minimum number of digits to include in the formatted sitring.

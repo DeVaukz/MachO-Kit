@@ -41,6 +41,8 @@
 		D01717CD1A99B30400F234EF /* macho_image_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D01717CA1A99B30400F234EF /* macho_image_internal.h */; };
 		D01B985A1B75A19D0035F464 /* MKDSCSymbolsEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = D01B98581B75A19D0035F464 /* MKDSCSymbolsEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D01B985C1B75A19D0035F464 /* MKDSCSymbolsEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = D01B98591B75A19D0035F464 /* MKDSCSymbolsEntry.m */; };
+		D017314E1C66A909007CB0A1 /* MKFormattedNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D017314C1C66A909007CB0A1 /* MKFormattedNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D017314F1C66A909007CB0A1 /* MKFormattedNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D017314D1C66A909007CB0A1 /* MKFormattedNodeField.m */; };
 		D01B986F1B768ECC0035F464 /* MKDSCStringTable.h in Headers */ = {isa = PBXBuildFile; fileRef = D01B986D1B768ECC0035F464 /* MKDSCStringTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D01B98711B768ECC0035F464 /* MKDSCStringTable.m in Sources */ = {isa = PBXBuildFile; fileRef = D01B986E1B768ECC0035F464 /* MKDSCStringTable.m */; };
 		D01B98761B7690050035F464 /* MKCString.h in Headers */ = {isa = PBXBuildFile; fileRef = D01B98741B7690050035F464 /* MKCString.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -635,6 +637,8 @@
 		D01717CA1A99B30400F234EF /* macho_image_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macho_image_internal.h; sourceTree = "<group>"; };
 		D01B98581B75A19D0035F464 /* MKDSCSymbolsEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCSymbolsEntry.h; sourceTree = "<group>"; };
 		D01B98591B75A19D0035F464 /* MKDSCSymbolsEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCSymbolsEntry.m; sourceTree = "<group>"; };
+		D017314C1C66A909007CB0A1 /* MKFormattedNodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKFormattedNodeField.h; sourceTree = "<group>"; };
+		D017314D1C66A909007CB0A1 /* MKFormattedNodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFormattedNodeField.m; sourceTree = "<group>"; };
 		D01B986D1B768ECC0035F464 /* MKDSCStringTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCStringTable.h; sourceTree = "<group>"; };
 		D01B986E1B768ECC0035F464 /* MKDSCStringTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCStringTable.m; sourceTree = "<group>"; };
 		D01B98741B7690050035F464 /* MKCString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKCString.h; sourceTree = "<group>"; };
@@ -1090,6 +1094,8 @@
 			children = (
 				D08C4BFB1A35271600866B93 /* MKNodeField.h */,
 				D08C4BFC1A35271600866B93 /* MKNodeField.m */,
+				D017314C1C66A909007CB0A1 /* MKFormattedNodeField.h */,
+				D017314D1C66A909007CB0A1 /* MKFormattedNodeField.m */,
 				D010B36E1A74466700AED697 /* MKPrimativeNodeField.h */,
 				D010B36F1A74466700AED697 /* MKPrimativeNodeField.m */,
 				D010B38B1A7492FB00AED697 /* MKFlagsNodeField.h */,
@@ -1924,6 +1930,7 @@
 				D0539BBC1A23D4F600D3A5F0 /* MKLCDataInCode.h in Headers */,
 				D0302FFF1A22DB1B00288B3E /* MKNodeDescription.h in Headers */,
 				D08E5ECC1B771E1E009185FE /* MKDSCEntriesTable.h in Headers */,
+				D017314E1C66A909007CB0A1 /* MKFormattedNodeField.h in Headers */,
 				D0995A0F1A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */,
 				D0A9EAB21A8FD70C00280D38 /* section_internal.h in Headers */,
 				D0A1D8BE19E4EEB80095870C /* load_command_dylib_code_sign_drs.h in Headers */,
@@ -2357,6 +2364,7 @@
 				D0539BE51A24175700D3A5F0 /* MKMinVersionLoadCommand.m in Sources */,
 				D0A1D85D19E4EE840095870C /* _mach_lcstr.c in Sources */,
 				D03030491A23CE1700288B3E /* MKLCUUID.m in Sources */,
+				D017314F1C66A909007CB0A1 /* MKFormattedNodeField.m in Sources */,
 				D03030551A23CFA100288B3E /* MKLCSegmentSplitInfo.m in Sources */,
 				D0539BAD1A23D2E700D3A5F0 /* MKLCVersionMiniPhoneOS.m in Sources */,
 				D0A1D8ED19E4EEB80095870C /* load_command_uuid.c in Sources */,

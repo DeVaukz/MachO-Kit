@@ -31,44 +31,55 @@
 //----------------------------------------------------------------------------//
 @implementation MKPrimativeNodeField
 
-@synthesize valueFormatter = _valueFormatter;
 @synthesize offsetRecipe = _offsetRecipe;
 @synthesize sizeRecipe = _sizeRecipe;
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
++ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format
 {
-    id<MKNodeFieldRecipe> valueRecipe = [[[_MKNodeFieldOperationReadKey alloc] initWithKey:keyPath] autorelease];
-    id<MKNodeFieldRecipe> offsetRecipe = [[[_MKNodeFieldOperationConstant alloc] initWithValue:@(size)] autorelease];
-    id<MKNodeFieldRecipe> sizeRecipe = [[[_MKNodeFieldOperationConstant alloc] initWithValue:@(offset)] autorelease];
-    return [[[MKPrimativeNodeField alloc] initWithName:name description:description value:valueRecipe formatter:nil offset:offsetRecipe size:sizeRecipe] autorelease];
+    id<MKNodeFieldRecipe> valueRecipe = [[_MKNodeFieldOperationReadKey alloc] initWithKey:keyPath];
+    id<MKNodeFieldRecipe> offsetRecipe = [[_MKNodeFieldOperationConstant alloc] initWithValue:@(size)];
+    id<MKNodeFieldRecipe> sizeRecipe = [[_MKNodeFieldOperationConstant alloc] initWithValue:@(offset)];
+    
+    NSFormatter *formatter = nil;
+    switch (format) {
+        case MKNodeFieldFormatHex:
+            formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(size*2)];
+            break;
+        case MKNodeFieldFormatHexCompact:
+            formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:0];
+            break;
+        default:
+            break;
+    }
+    
+    MKPrimativeNodeField *field = [[MKPrimativeNodeField alloc] initWithName:name description:description value:valueRecipe formatter:formatter offset:offsetRecipe size:sizeRecipe];
+    
+    [valueRecipe release];
+    [offsetRecipe release];
+    [sizeRecipe release];
+    
+    return field;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format
+{ return [self fieldWithName:property keyPath:property description:description offset:offset size:size format:format]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
+{ return [self fieldWithName:name keyPath:keyPath description:description offset:offset size:size format:MKNodeFieldFormatDecimal]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)fieldWithProperty:(NSString*)property description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
 { return [self fieldWithName:property keyPath:property description:description offset:offset size:size]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)hexFormattedFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
-{
-    id<MKNodeFieldRecipe> valueRecipe = [[[_MKNodeFieldOperationReadKey alloc] initWithKey:keyPath] autorelease];
-    id<MKNodeFieldRecipe> offsetRecipe = [[[_MKNodeFieldOperationConstant alloc] initWithValue:@(size)] autorelease];
-    id<MKNodeFieldRecipe> sizeRecipe = [[[_MKNodeFieldOperationConstant alloc] initWithValue:@(offset)] autorelease];
-    NSFormatter *formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(size*2)];
-    return [[[MKPrimativeNodeField alloc] initWithName:name description:description value:valueRecipe formatter:formatter offset:offsetRecipe size:sizeRecipe] autorelease];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)hexFormattedFieldWithProperty:(NSString*)property description:(NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
-{ return [self hexFormattedFieldWithName:property keyPath:property description:description offset:offset size:size]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(NSFormatter*)valueFormatter offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe
 {
-    self = [super initWithName:name description:description value:valueRecipe];
+    self = [super initWithName:name description:description value:valueRecipe formatter:valueFormatter];
     if (self == nil) return nil;
     
-    _valueFormatter = [valueFormatter retain];
     _offsetRecipe = [offsetRecipe retain];
     _sizeRecipe = [sizeReceipe retain];
     
@@ -78,20 +89,9 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_valueFormatter release];
     [_offsetRecipe release];
     [_sizeRecipe release];
     [super dealloc];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)formattedDescriptionForNode:(MKNode*)node
-{
-    id value = [_valueRecipe valueForNode:node];
-    if (_valueFormatter)
-        return [_valueFormatter stringForObjectValue:value];
-    else
-        return [value description];
 }
 
 @end

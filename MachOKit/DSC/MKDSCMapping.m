@@ -147,11 +147,11 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fileOffset) description:@"File offset"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(vmAddress) description:@"VM Address"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(vmSize) description:@"VM Size"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(maximumProtection) description:@"Maximum VM Protection"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(initialProtection) description:@"Initial VM Protection"]
+        [MKFormattedNodeField fieldWithProperty:MK_PROPERTY(fileOffset) description:@"File offset" format:MKNodeFieldFormatOffset],
+        [MKFormattedNodeField fieldWithProperty:MK_PROPERTY(vmAddress) description:@"VM Address" format:MKNodeFieldFormatAddress],
+        [MKFormattedNodeField fieldWithProperty:MK_PROPERTY(vmSize) description:@"VM Size" format:MKNodeFieldFormatSize],
+        [MKFormattedNodeField fieldWithProperty:MK_PROPERTY(maximumProtection) description:@"Maximum VM Protection" format:MKNodeFieldFormatHexCompact],
+        [MKFormattedNodeField fieldWithProperty:MK_PROPERTY(initialProtection) description:@"Initial VM Protection" format:MKNodeFieldFormatHexCompact]
     ]];
 }
 

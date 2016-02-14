@@ -169,12 +169,12 @@
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(segname) description:@"Segment Name" offset:offsetof(struct segment_command_64, segname) size:16],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(vmaddr) description:@"VM Address" offset:offsetof(struct segment_command_64, vmaddr) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(vmsize) description:@"VM Size" offset:offsetof(struct segment_command_64, vmsize) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileoff) description:@"File Offset" offset:offsetof(struct segment_command_64, fileoff) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(filesize) description:@"File Size " offset:offsetof(struct segment_command_64, filesize) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(maxprot) description:@"Maximum VM Propection" offset:offsetof(struct segment_command_64, maxprot) size:sizeof(vm_prot_t)],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(initprot) description:@"Initial VM Protection" offset:offsetof(struct segment_command_64, initprot) size:sizeof(vm_prot_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(vmaddr) description:@"VM Address" offset:offsetof(struct segment_command_64, vmaddr) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(vmsize) description:@"VM Size" offset:offsetof(struct segment_command_64, vmsize) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileoff) description:@"File Offset" offset:offsetof(struct segment_command_64, fileoff) size:sizeof(uint64_t) format:MKNodeFieldFormatDecimal],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(filesize) description:@"File Size " offset:offsetof(struct segment_command_64, filesize) size:sizeof(uint64_t) format:MKNodeFieldFormatDecimal],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(maxprot) description:@"Maximum VM Propection" offset:offsetof(struct segment_command_64, maxprot) size:sizeof(vm_prot_t) format:MKNodeFieldFormatHex],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(initprot) description:@"Initial VM Protection" offset:offsetof(struct segment_command_64, initprot) size:sizeof(vm_prot_t) format:MKNodeFieldFormatHex],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nsects) description:@"Number Of Sections" offset:offsetof(struct segment_command_64, nsects) size:sizeof(uint32_t)],
         [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct segment_command_64, flags) size:sizeof(uint32_t) flags:@{}],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sections) description:@"Sections"]
@@ -294,9 +294,9 @@
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sectname) description:@"Section Name" offset:offsetof(struct section_64, sectname) size:16],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(segname) description:@"Segment Name" offset:offsetof(struct section_64, segname) size:16],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(addr) description:@"Address" offset:offsetof(struct section_64, addr) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField hexFormattedFieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(struct section_64, size) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Offset" offset:offsetof(struct section_64, offset) size:sizeof(uint32_t)],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(addr) description:@"Address" offset:offsetof(struct section_64, addr) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(struct section_64, size) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Offset" offset:offsetof(struct section_64, offset) size:sizeof(uint32_t) format:MKNodeFieldFormatDecimal],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(align) description:@"Alignment" offset:offsetof(struct section_64, align) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reloff) description:@"Relocations Offset" offset:offsetof(struct section_64, reloff) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nreloc) description:@"Number of Relocations" offset:offsetof(struct section_64, nreloc) size:sizeof(uint32_t)],

@@ -76,11 +76,11 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Mapping Address" offset:offsetof(struct dyld_cache_mapping_info, address) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Mapping Size" offset:offsetof(struct dyld_cache_mapping_info, size) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileOffset) description:@"File Offset" offset:offsetof(struct dyld_cache_mapping_info, fileOffset) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(maxProt) description:@"Maximum Protection" offset:offsetof(struct dyld_cache_mapping_info, maxProt) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(initProt) description:@"Initial Protection" offset:offsetof(struct dyld_cache_mapping_info, initProt) size:sizeof(uint32_t)]
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Mapping Address" offset:offsetof(struct dyld_cache_mapping_info, address) size:sizeof(uint64_t) format:MKNodeFieldFormatAddress],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Mapping Size" offset:offsetof(struct dyld_cache_mapping_info, size) size:sizeof(uint64_t) format:MKNodeFieldFormatSize],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileOffset) description:@"File Offset" offset:offsetof(struct dyld_cache_mapping_info, fileOffset) size:sizeof(uint64_t) format:MKNodeFieldFormatOffset],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(maxProt) description:@"Maximum Protection" offset:offsetof(struct dyld_cache_mapping_info, maxProt) size:sizeof(uint32_t) format:MKNodeFieldFormatHexCompact],
+        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(initProt) description:@"Initial Protection" offset:offsetof(struct dyld_cache_mapping_info, initProt) size:sizeof(uint32_t) format:MKNodeFieldFormatHexCompact]
     ]];
 }
 
