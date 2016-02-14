@@ -29,6 +29,8 @@
 #import "NSError+MK.h"
 #import "MKDSCLocalSymbols.h"
 #import "MKDSCStringTable.h"
+#import "MKDSCDylibInfos.h"
+#import "MKDSCDylibSymbolInfo.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCSymbol
@@ -106,6 +108,28 @@ static bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNo
         break;
     }
     
+    // Lookup the dylib that this symbol belongs to.
+    {
+        MKDSCDylibInfos *entries = localSymbolsRegion.entriesTable;
+        
+        if (entries == nil) {
+            MK_PUSH_WARNING(dylib, MK_ENOT_FOUND, @"Local Symbols region %@ does not have a dylib infos table.", localSymbolsRegion);
+            return nil;
+        }
+        
+        uint32_t index = self.index;
+        
+        for (MKDSCDylibSymbolInfo *dylib in entries.entries) {
+            if (index >= dylib.nlistStartIndex && index < dylib.nlistStartIndex + dylib.nlistCount) {
+                _dylib = [dylib retain];
+                break;
+            }
+        }
+        
+        if (_dylib == nil)
+            MK_PUSH_WARNING(dylib, MK_ENOT_FOUND, @"Dylib infos does not have an entry for symbol at index %" PRIu32 "", index);
+    }
+    
     return self;
 }
 
@@ -113,6 +137,7 @@ static bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNo
 - (void)dealloc
 {
     [_name release];
+    [_dylib release];
     
     [super dealloc];
 }
@@ -121,7 +146,14 @@ static bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNo
 #pragma mark - Acessing Symbol Metadata
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+@synthesize dylib = _dylib;
 @synthesize name = _name;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (uint32_t)index
+{
+    return (uint32_t)(_nodeOffset / self.nodeSize);
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - nlist Values
@@ -145,6 +177,7 @@ static bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNo
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(dylib) description:@"Dylib"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Symbol Name"],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(strx) description:@"String Table Index" offset:offsetof(struct nlist, n_un.n_strx) size:sizeof(uint32_t)],
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(type) description:@"Type" offset:offsetof(struct nlist, n_type) size:sizeof(uint8_t)],

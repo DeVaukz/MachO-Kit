@@ -31,6 +31,7 @@
 #import <MachOKit/MKOffsetNode.h>
 
 @class MKCString;
+@class MKDSCDylibSymbolInfo;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,12 +44,19 @@ NS_ASSUME_NONNULL_BEGIN
     uint16_t _desc;
     uint64_t _value;
     MKCString *_name;
+    MKDSCDylibSymbolInfo *_dylib;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Acessing Symbol Metadata
 //! @name       Acessing Symbol Metadata
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The index of this stmbol in the symbol table.
+@property (nonatomic, readonly) uint32_t index;
+
+//!
+@property (nonatomic, readonly, nullable) MKDSCDylibSymbolInfo *dylib;
 
 //! The entry in the string table referenced by this symbol.  May be \c nil.
 @property (nonatomic, readonly, nullable) MKCString *name;

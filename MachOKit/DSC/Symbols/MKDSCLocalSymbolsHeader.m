@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCSymbolsInfo.m
+//|             MKDSCLocalSymbolsHeader.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,21 +25,13 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCSymbolsInfo.h"
+#import "MKDSCLocalSymbolsHeader.h"
 #import "NSError+MK.h"
 
-struct dyld_cache_local_symbols_info
-{
-    uint32_t	nlistOffset;		// offset into this chunk of nlist entries
-    uint32_t	nlistCount;			// count of nlist entries
-    uint32_t	stringsOffset;		// offset into this chunk of string pool
-    uint32_t	stringsSize;		// byte count of string pool
-    uint32_t	entriesOffset;		// offset into this chunk of array of dyld_cache_local_symbols_entry
-    uint32_t	entriesCount;		// number of elements in dyld_cache_local_symbols_entry array
-};
+#include "dyld_cache_format.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCSymbolsInfo
+@implementation MKDSCLocalSymbolsHeader
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
@@ -63,9 +55,9 @@ struct dyld_cache_local_symbols_info
     return self;
 }
 
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Local Symbols Info Struct Values
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize nlistOffset = _nlistOffset;
 @synthesize nlistCount = _nlistCount;
@@ -74,9 +66,9 @@ struct dyld_cache_local_symbols_info
 @synthesize entriesOffset = _entriesOffset;
 @synthesize entriesCount = _entriesCount;
 
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mach_vm_size_t)nodeSize

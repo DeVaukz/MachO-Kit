@@ -41,7 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray<MKDSCSymbol*> *_symbols;
 }
 
-//!
 - (instancetype)initWithCount:(uint32_t)count atOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //!

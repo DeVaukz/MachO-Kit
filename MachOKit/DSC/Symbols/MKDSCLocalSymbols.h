@@ -30,28 +30,29 @@
 
 #import <MachOKit/MKBackedNode.h>
 
-@class MKDSCSymbolsInfo;
+@class MKSharedCache;
+@class MKDSCLocalSymbolsHeader;
 @class MKDSCSymbolTable;
 @class MKDSCStringTable;
-@class MKDSCEntriesTable;
+@class MKDSCDylibInfos;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKDSCLocalSymbols : MKBackedNode {
 @package
+    MKMemoryMap *_memoryMap;
     mk_vm_address_t _contextAddress;
     mk_vm_address_t _vmAddress;
     mk_vm_size_t _size;
     // Header //
-    MKDSCSymbolsInfo *_header;
+    MKDSCLocalSymbolsHeader *_header;
     MKDSCSymbolTable *_symbolTable;
     MKDSCStringTable *_stringTable;
-    MKDSCEntriesTable *_entriesTable;
+    MKDSCDylibInfos *_entriesTable;
 }
 
-//!
-- (nullable instancetype)initWithSize:(mk_vm_size_t)size atAddress:(mk_vm_address_t)contextAddress parent:(MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithSharedCache:(MKSharedCache*)sharedCache error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Header and Symbols
@@ -59,16 +60,16 @@ NS_ASSUME_NONNULL_BEGIN
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! 
-@property (nonatomic, readonly) MKDSCSymbolsInfo *header;
+@property (nonatomic, readonly) MKDSCLocalSymbolsHeader *header;
 
 //!
-@property (nonatomic, readonly) MKDSCSymbolTable *symbolTable;
+@property (nonatomic, readonly, nullable) MKDSCSymbolTable *symbolTable;
 
 //!
-@property (nonatomic, readonly) MKDSCStringTable *stringTable;
+@property (nonatomic, readonly, nullable) MKDSCStringTable *stringTable;
 
 //!
-@property (nonatomic, readonly) MKDSCEntriesTable *entriesTable;
+@property (nonatomic, readonly, nullable) MKDSCDylibInfos *entriesTable;
 
 @end
 

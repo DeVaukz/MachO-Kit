@@ -29,7 +29,7 @@
 #import "NSError+MK.h"
 #import "MKCString.h"
 #import "MKDSCLocalSymbols.h"
-#import "MKDSCSymbolsInfo.h"
+#import "MKDSCLocalSymbolsHeader.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCStringTable
@@ -45,7 +45,7 @@
     // A size of 0 is valid; but we don't need to do anything else.
     if (size == 0) {
         // If we return early, 'strings' must be initialized in order to
-        // fufill our non-null promise for the property.
+        // fufill the non-null promise for the property.
         _strings = [[NSDictionary dictionary] retain];
         
         return self;
@@ -92,7 +92,37 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{ return [self initWithSize:0 offset:offset fromParent:parent error:error]; }
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    mk_vm_offset_t stringsOffset = symbolsInfo.stringsOffset;
+    mk_vm_size_t stringsSize = symbolsInfo.stringsSize;
+    
+    // Verify that offset is in range of the strings table.
+    if (offset < stringsOffset || offset > stringsOffset + stringsSize) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"Offset (%" MK_VM_PRIiOFFSET ") not in range of the string table.", offset];
+        [self release]; return nil;
+    }
+    
+    return [self initWithSize:stringsSize offset:stringsOffset fromParent:symbols error:error];
+
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    return [self initWithOffset:symbolsInfo.stringsOffset fromParent:symbols error:error];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc

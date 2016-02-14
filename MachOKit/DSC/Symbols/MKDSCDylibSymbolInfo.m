@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCSymbolsEntry.m
+//|             MKDSCDylibSymbolInfo.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,18 +25,13 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCSymbolsEntry.h"
+#import "MKDSCDylibSymbolInfo.h"
 #import "NSError+MK.h"
 
-struct dyld_cache_local_symbols_entry
-{
-    uint32_t	dylibOffset;		// offset in cache file of start of dylib
-    uint32_t	nlistStartIndex;	// start index of locals for this dylib
-    uint32_t	nlistCount;			// number of local symbols for this dylib
-};
+#include "dyld_cache_format.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCSymbolsEntry
+@implementation MKDSCDylibSymbolInfo
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
@@ -57,17 +52,17 @@ struct dyld_cache_local_symbols_entry
     return self;
 }
 
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Local Symbols Entry Struct Values
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize dylibOffset = _dylibOffset;
 @synthesize nlistStartIndex = _nlistStartIndex;
 @synthesize nlistCount = _nlistCount;
 
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
-//----------------------------------------------------------------------------//
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mach_vm_size_t)nodeSize

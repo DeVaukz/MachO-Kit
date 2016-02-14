@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDSCSymbolsInfo.h
+//! @file       MKDSCDylibInfos.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -30,33 +30,22 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+@class MKDSCDylibSymbolInfo;
+
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDSCSymbolsInfo : MKOffsetNode {
+@interface MKDSCDylibInfos : MKOffsetNode {
 @package
-    uint32_t _nlistOffset;
-    uint32_t _nlistCount;
-    uint32_t _stringsOffset;
-    uint32_t _stringsSize;
-    uint32_t _entriesOffset;
-    uint32_t _entriesCount;
+    mk_vm_size_t _nodeSize;
+    NSArray<MKDSCDylibSymbolInfo*> *_entries;
 }
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Local Symbols Info Struct Values
-//! @name       Local Symbols Info Struct Values
 //!
-//! @brief      These values are lifted directly from the shared cache symbols
-//!             info structure without modification or cleanup.
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+- (instancetype)initWithCount:(uint32_t)count atOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-@property (nonatomic, readonly) uint32_t nlistOffset;
-@property (nonatomic, readonly) uint32_t nlistCount;
-@property (nonatomic, readonly) uint32_t stringsOffset;
-@property (nonatomic, readonly) uint32_t stringsSize;
-@property (nonatomic, readonly) uint32_t entriesOffset;
-@property (nonatomic, readonly) uint32_t entriesCount;
+//!
+@property (nonatomic, readonly) NSArray<MKDSCDylibSymbolInfo*> *entries;
 
 @end
 

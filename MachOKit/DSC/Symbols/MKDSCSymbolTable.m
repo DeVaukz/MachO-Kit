@@ -28,6 +28,8 @@
 #import "MKDSCSymbolTable.h"
 #import "NSError+MK.h"
 #import "MKDSCSymbol.h"
+#import "MKDSCLocalSymbols.h"
+#import "MKDSCLocalSymbolsHeader.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDSCSymbolTable
@@ -86,7 +88,38 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{ return [self initWithCount:0 atOffset:offset fromParent:parent error:error]; }
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    mk_vm_offset_t symbolsOffset = symbolsInfo.nlistOffset;
+    uint32_t symbolsCount = symbolsInfo.nlistOffset;
+    unsigned int symbolSize = symbols.dataModel.pointerSize == 8 ? sizeof(struct nlist_64) : sizeof(struct nlist);
+    
+    // Verify that offset is in range of the symbols table.
+    if (offset < symbolsOffset || offset > symbolsOffset + symbolsCount * symbolSize) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"Offset (%" MK_VM_PRIiOFFSET ") not in range of the symbols table %@.", offset, symbols];
+        [self release]; return nil;
+    }
+    
+    return [self initWithCount:symbolsCount atOffset:symbolsOffset fromParent:symbols error:error];
+    
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    return [self initWithOffset:symbolsInfo.nlistOffset fromParent:symbols error:error];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc

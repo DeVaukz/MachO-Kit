@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDSCEntriesTable.m
+//|             MKDSCDylibInfos.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,12 +25,16 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDSCEntriesTable.h"
+#import "MKDSCDylibInfos.h"
 #import "NSError+MK.h"
-#import "MKDSCSymbolsEntry.h"
+#import "MKDSCLocalSymbols.h"
+#import "MKDSCLocalSymbolsHeader.h"
+#import "MKDSCDylibSymbolInfo.h"
+
+#include "dyld_cache_format.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDSCEntriesTable
+@implementation MKDSCDylibInfos
 
 @synthesize entries = _entries;
 
@@ -52,7 +56,7 @@
     // Load Entries
     @autoreleasepool
     {
-        NSMutableArray<MKDSCSymbolsEntry*> *entries = [[NSMutableArray alloc] initWithCapacity:count];
+        NSMutableArray<MKDSCDylibSymbolInfo*> *entries = [[NSMutableArray alloc] initWithCapacity:count];
         mk_vm_offset_t offset = 0;
         
         for (uint32_t i = 0; i < count; i++)
@@ -60,9 +64,9 @@
             mk_error_t err;
             NSError *e = nil;
             
-            MKDSCSymbolsEntry *entry = [[MKDSCSymbolsEntry alloc] initWithOffset:offset fromParent:self error:&e];
+            MKDSCDylibSymbolInfo *entry = [[MKDSCDylibSymbolInfo alloc] initWithOffset:offset fromParent:self error:&e];
             if (entry == nil) {
-                MK_PUSH_UNDERLYING_WARNING(symbols, e, @"Could not load entry at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_UNDERLYING_WARNING(entries, e, @"Could not load entry at offset %" MK_VM_PRIiOFFSET ".", offset);
                 break;
             }
             
@@ -70,7 +74,7 @@
             [entry release];
             
             if ((err = mk_vm_offset_add(offset, entry.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(symbols, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"Aborted entry parsing after index " PRIi32 ".", i);
+                MK_PUSH_UNDERLYING_WARNING(entries, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"Aborted entry parsing after index " PRIi32 ".", i);
                 break;
             }
         }
@@ -86,7 +90,37 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{ return [self initWithCount:0 atOffset:offset fromParent:parent error:error]; }
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    mk_vm_offset_t entiresOffset = symbolsInfo.stringsOffset;
+    uint32_t entriesCount = symbolsInfo.entriesCount;
+    
+    // Verify that offset is in range of the entries table.
+    if (offset < entiresOffset || offset > entiresOffset + entriesCount * sizeof(struct dyld_cache_local_symbols_entry)) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"Offset (%" MK_VM_PRIiOFFSET ") not in range of the entries table for %@.", offset, symbols];
+        [self release]; return nil;
+    }
+    
+    return [self initWithCount:entriesCount atOffset:entiresOffset fromParent:symbols error:error];
+    
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
+{
+    MKDSCLocalSymbols *symbols = [parent nearestAncestorOfType:MKDSCLocalSymbols.class];
+    NSParameterAssert(symbols);
+    
+    MKDSCLocalSymbolsHeader *symbolsInfo = symbols.header;
+    NSParameterAssert(symbolsInfo);
+    
+    return [self initWithOffset:symbolsInfo.entriesOffset fromParent:symbols error:error];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc

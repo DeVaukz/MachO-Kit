@@ -56,12 +56,12 @@
     #import <MachOKit/MKDSCImage.h>
 #import <MachOKit/MKSharedCache+Symbols.h>
     #import <MachOKit/MKDSCLocalSymbols.h>
-    #import <MachOKit/MKDSCSymbolsInfo.h>
+    #import <MachOKit/MKDSCLocalSymbolsHeader.h>
     #import <MachOKit/MKDSCSymbolTable.h>
     #import <MachOKit/MKDSCSymbol.h>
     #import <MachOKit/MKDSCStringTable.h>
-    #import <MachOKit/MKDSCEntriesTable.h>
-    #import <MachOKit/MKDSCSymbolsEntry.h>
+    #import <MachOKit/MKDSCDylibInfos.h>
+    #import <MachOKit/MKDSCDylibSymbolInfo.h>
 
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachO+Segments.h>

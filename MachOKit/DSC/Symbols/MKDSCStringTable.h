@@ -44,7 +44,6 @@ NS_ASSUME_NONNULL_BEGIN
     NSDictionary<NSNumber*, MKCString*> *_strings;
 }
 
-//!
 - (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //! An \c NSDictionary mapping offsets from the start of this node to
