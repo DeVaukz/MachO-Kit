@@ -222,4 +222,5 @@ extern const uint32_t _mk_load_command_classes_count;
         [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cmdSize) description:@"Command Size" offset:offsetof(struct load_command, cmdsize) size:sizeof(uint32_t)]
     ]];
 }
+
 @end

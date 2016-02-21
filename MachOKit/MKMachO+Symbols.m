@@ -28,8 +28,6 @@
 #import "MKMachO+Symbols.h"
 #import "NSError+MK.h"
 
-#import "MKLoadCommand.h"
-#import "MKLCSymtab.h"
 #import "MKStringTable.h"
 #import "MKSymbolTable.h"
 #import "MKIndirectSymbolTable.h"
@@ -46,11 +44,11 @@
 {
     if (_stringTable == nil)
     {
-        NSError *localError = nil;
+        NSError *e = nil;
         
-        _stringTable = [[MKStringTable alloc] initWithImage:self error:&localError];
+        _stringTable = [[MKStringTable alloc] initWithParent:self error:&e];
         if (_stringTable == nil)
-            MK_PUSH_UNDERLYING_WARNING(stringTable, localError, @"Failed to load string table.");
+            MK_PUSH_UNDERLYING_WARNING(stringTable, e, @"Failed to load string table.");
     }
     
     return _stringTable;
@@ -61,11 +59,11 @@
 {
     if (_symbolTable == nil)
     {
-        NSError *localError = nil;
+        NSError *e = nil;
         
-        _symbolTable = [[MKSymbolTable alloc] initWithImage:self error:&localError];
+        _symbolTable = [[MKSymbolTable alloc] initWithParent:self error:&e];
         if (_symbolTable == nil)
-            MK_PUSH_UNDERLYING_WARNING(symbolTable, localError, @"Failed to load symbol table.");
+            MK_PUSH_UNDERLYING_WARNING(symbolTable, e, @"Failed to load symbol table.");
     }
     
     return _symbolTable;
@@ -76,11 +74,11 @@
 {
     if (_indirectSymbolTable == nil)
     {
-        NSError *localError = nil;
+        NSError *e = nil;
         
-        _indirectSymbolTable = [[MKIndirectSymbolTable alloc] initWithImage:self error:&localError];
+        _indirectSymbolTable = [[MKIndirectSymbolTable alloc] initWithParent:self error:&e];
         if (_indirectSymbolTable == nil)
-            MK_PUSH_UNDERLYING_WARNING(symbolTable, localError, @"Failed to load indirect symbol table.");
+            MK_PUSH_UNDERLYING_WARNING(symbolTable, e, @"Failed to load indirect symbol table.");
     }
     
     return _indirectSymbolTable;

@@ -39,7 +39,7 @@
 @implementation MKMachOImage
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithName:(const char*)name slide:(intptr_t)slide flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
+- (instancetype)initWithName:(const char*)name flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error
 {
     NSParameterAssert(mapping);
     NSError *localError = nil;
@@ -53,7 +53,6 @@
     
     _mapping = [mapping retain];
     _contextAddress = contextAddress;
-    _slide = slide;
     _flags = flags;
     
     // Convert the name to an NSString
@@ -77,7 +76,7 @@
             _header = [[MKMachHeader64 alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         default:
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Mach-O magic: 0x%" PRIx32 " in: %s", magic, name];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Mach-O magic: 0x%" PRIx32 ".", magic];
             [self release]; return nil;
     }
     
@@ -92,7 +91,7 @@
         case MH_DYLIB:
             break;
         default:
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unsupported file type: %" PRIx32 "", _header.filetype];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unsupported file type: %" PRIx32 ".", _header.filetype];
             [self release]; return nil;
     }
     
@@ -112,48 +111,49 @@
         mach_vm_offset_t oldOffset;
         
         while (loadCommandCount--) {
+        while (loadCommandCount--)
         @autoreleasepool {
                 
-            NSError *loadCommandError = nil;
+            NSError *e = nil;
                 
             // It is safe to pass the mach_vm_offset_t offset as the offset
             // parameter because the offset can not grow beyond the header size,
             // which is capped at UINT32_MAX.  Any uint32_t can be acurately
             // represented by an mk_vm_offset_t.
                 
-            MKLoadCommand *lc = [MKLoadCommand loadCommandAtOffset:offset fromParent:self error:&loadCommandError];
+            MKLoadCommand *lc = [MKLoadCommand loadCommandAtOffset:offset fromParent:self error:&e];
             if (lc == nil) {
                 // If we fail to instantiate an instance of the MKLoadCommand it
                 // means we've walked off the end of memory that can be mapped by
                 // our MKMemoryMap.
-                MK_PUSH_UNDERLYING_WARNING(loadCommands, loadCommandError, @"Failed to instantiate load command at index %" PRIi32 "", _header.ncmds - loadCommandCount);
+                MK_PUSH_UNDERLYING_WARNING(loadCommands, e, @"Failed to instantiate load command at index %" PRIi32 ".", _header.ncmds - loadCommandCount);
                 break;
             }
                 
             oldOffset = offset;
             offset += lc.cmdSize;
-                
+            
             [loadCommands addObject:lc];
-                
+            
             // The kernel will refuse to load a MachO image if it detects that the
             // kernel's offset into the load commands (when parsing the load
             // commands) has exceeded the total mach header size (mach_header_size
             // + mach_header->sizeofcmds).  However, we don't care as long as there
             // was not an overflow.
             if (oldOffset > offset) {
-                MK_PUSH_WARNING(loadCommands, MK_EOVERFLOW, @"Adding size of load command at index %" PRIi32 " to offset into load commands triggered an overflow.", _header.ncmds - loadCommandCount);
+                MK_PUSH_WARNING(loadCommands, MK_EOVERFLOW, @"Encountered an overflow while advancing the parser to the load command following index %" PRIu32 ".", _header.ncmds - loadCommandCount);
                 break;
             }
             // We will add a warning however.
             if (offset > _header.nodeSize + (mach_vm_size_t)loadCommandLength)
-                MK_PUSH_WARNING(loadCommands, MK_EINVALID_DATA, @"Part of load command at index %" PRIi32 " is beyond sizeofcmds for this image.  This is invalid.", _header.ncmds - loadCommandCount);
-        }}
+                MK_PUSH_WARNING(loadCommands, MK_EINVALID_DATA, @"Part of load command at index %" PRIi32 " is beyond sizeofcmds.  This is invalid.", _header.ncmds - loadCommandCount);
+        }
         
         _loadCommands = [loadCommands copy];
         [loadCommands release];
     }
     
-    // Determine the file and VM address of this image
+    // Determine the VM address and slide of this image
     {
         mk_error_t err;
         
@@ -161,16 +161,20 @@
         for (id<MKLCSegment> segmentLC in segmentLoadCommands) {
             // The VM address of the image is defined as the vmaddr of the
             // *last* segment load command with a 0 fileoff and non-zero
-            // filesize.  That's right, if another segment is later found
-            // that satisfies this criteria, it will be used instead.
+            // filesize.
             if (segmentLC.mk_fileoff == 0 && segmentLC.mk_filesize != 0)
                 _vmAddress = segmentLC.mk_vmaddr;
         }
         
-        // Slide the VM address
-        if ((err = mk_vm_address_apply_offset(_vmAddress, (mk_vm_offset_t)slide, &_vmAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _vmAddress, slide);
-            [self release]; return nil;
+        // Only need to compute the slide if this image is loaded from
+        // memory.
+        if (self.isFromMemory) {
+            // The slide can now be computed by subtracting the preferred load
+            // address of the image from the address it was actually loaded at.
+            if ((err = mk_vm_address_difference(contextAddress, _vmAddress, &_slide))) {
+                MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, contextAddress, _vmAddress);
+                [self release]; return nil;
+            }
         }
     }
     
@@ -185,7 +189,7 @@
     MKMemoryMap *mapping = parent.memoryMap;
     NSParameterAssert(mapping);
     
-    self = [self initWithName:NULL slide:0 flags:0 atAddress:0 inMapping:mapping error:error];
+    self = [self initWithName:NULL flags:0 atAddress:0 inMapping:mapping error:error];
     if (!self) return nil;
     
     objc_storeWeak(&_parent, parent);
@@ -219,7 +223,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)isFromMemoryDump
+- (BOOL)isFromMemory
 {
     return !!(_flags & MKMachOImageWasProcessedByDYLD);
 }

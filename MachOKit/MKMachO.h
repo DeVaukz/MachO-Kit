@@ -65,9 +65,8 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     NSString *_name;
     // Address //
     mk_vm_address_t _contextAddress;
-    mk_vm_address_t _fileAddress;
     mk_vm_address_t _vmAddress;
-    intptr_t _slide;
+    mk_vm_slide_t _slide;
     // Header //
     MKMachHeader *_header;
     NSArray<MKLoadCommand*> *_loadCommands;
@@ -79,14 +78,14 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     MKIndirectSymbolTable *_indirectSymbolTable;
 }
 
-- (nullable instancetype)initWithName:(nullable const char*)name slide:(intptr_t)slide flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithName:(nullable const char*)name flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Retrieving the Initialization Context
 //! @name       Retrieving the Initialization Context
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The context that this Mach-O image was initialized with.
+//! The libMachO context.
 @property (nonatomic, readonly) mk_context_t *context;
 //! The flags that this Mach-O image was initialized with.
 @property (nonatomic, readonly) MKMachOImageFlags flags;
@@ -98,14 +97,15 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 
 //! The name that this Mach-O image was initialized with.
 @property (nonatomic, readonly, nullable) NSString *name;
-//! The slide value that this Mach-O image was initialized with.
-@property (nonatomic, readonly) intptr_t slide;
+
+//! The slide value that this Mach-O image.
+@property (nonatomic, readonly) mk_vm_slide_t slide;
 
 //! Indicates whether this Mach-O image is from dyld's shared cache.
 @property (nonatomic, readonly) BOOL isFromSharedCache;
 
 //! Indicates whether this Mach-O image is from a memory dump (or live memory).
-@property (nonatomic, readonly) BOOL isFromMemoryDump;
+@property (nonatomic, readonly) BOOL isFromMemory;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Header and Load Commands
@@ -118,7 +118,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 //! load commands from this Mach-O image.  Load commands are ordered as they
 //! appear in the Mach-O header.  The count of the returned array may be less
 //! than the value of ncmds in the \ref header, if the Mach-O is malformed
-//! and trailing load commands could not be accessed.
+//! and trailing load commands could not be read.
 @property (nonatomic, readonly) NSArray<__kindof MKLoadCommand*> *loadCommands;
 
 //! Filters the \ref loadCommands array to those of the specified \a type

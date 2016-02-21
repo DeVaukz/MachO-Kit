@@ -27,6 +27,7 @@
 
 #import "MKStringTable.h"
 #import "NSError+MK.h"
+#import "MKNode+MachO.h"
 #import "MKMachO.h"
 #import "MKMachO+Segments.h"
 #import "MKLCSymtab.h"
@@ -80,7 +81,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 {
-    NSAssert([image isKindOfClass:MKMachOImage.class], @"The parent of this node must be an MKMachOImage.");
+    NSParameterAssert(image);
     
     // Find LC_SYMTAB
     MKLCSymtab *symtabLoadCommand = nil;
@@ -102,12 +103,13 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
-{ return [self initWithImage:(id)parent error:error]; }
+{ return [self initWithImage:parent.macho error:error]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
     [_strings release];
+    
     [super dealloc];
 }
 

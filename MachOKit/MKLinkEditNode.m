@@ -51,12 +51,11 @@
     if (self == nil) return nil;
     
     // Despite the image being our real parent node, all of our data should
-    // be within the __LINKEDIT segment.  Thus, we use the memory map of the
-    // __LINKEDIT segment for accessing the symbol table.
+    // be within the __LINKEDIT segment.
     _memoryMap = linkeditSegment.memoryMap;
     NSParameterAssert(_memoryMap);
     
-    if (image.isFromMemoryDump)
+    if (image.isFromMemory)
     {
         if ((err = mk_vm_address_add(linkeditSegment.vmAddress, offset, &_nodeContextAddress))) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding offset (%" MK_VM_PRIiOFFSET ") to __LINKEDIT vmAddress (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), offset, linkeditSegment.vmAddress];

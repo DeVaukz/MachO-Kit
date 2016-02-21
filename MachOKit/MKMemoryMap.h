@@ -71,7 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! Converts the address at (\a address + \a offset) into an address
 //! accessible from the current process and invokes the \a handler.
 //!
-//! This method is abstract must be implemented by subclasses.
+//! This method is abstract and must be implemented by subclasses.
 //!
 //! @param  offset
 //!         An offset to be added to \a address prior to conversion.

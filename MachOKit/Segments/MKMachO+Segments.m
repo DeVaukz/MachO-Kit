@@ -68,7 +68,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             
             MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&localError];
             if (segment == nil) {
-                MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to create MKSegment for load command %@", lc);
+                MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to load segment for load command %@", lc);
                 continue;
             }
             
@@ -116,7 +116,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)segmentsWithName:(NSString*)name
 {
-    // TODO - verify what DYLD would do with duplicate segments.
+    // TODO - Check what DYLD would do with duplicate segments.
     return [self._segments[MKAllSegments] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name MATCHES %@", name]];
 }
 

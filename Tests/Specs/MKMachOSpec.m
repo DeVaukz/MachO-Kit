@@ -53,7 +53,7 @@ SpecBegin(MKMachOImage)
             NSError *error = nil;
             MKMachOImage *macho;
             
-            macho = [[MKMachOImage alloc] initWithName:frameworkURL.lastPathComponent.UTF8String slide:0 flags:0 atAddress:otoolArchitecture.offset inMapping:map error:&error];
+            macho = [[MKMachOImage alloc] initWithName:frameworkURL.lastPathComponent.UTF8String flags:0 atAddress:otoolArchitecture.offset inMapping:map error:&error];
             it(@"should initialize", ^{
                 expect(macho).toNot.beNil();
                 expect(error).to.beNil();

@@ -99,10 +99,20 @@
     _initialProtection = [segmentLoadCommand initprot];
     _flags = [segmentLoadCommand flags];
     
-    if (image.isFromMemoryDump)
+    if (image.isFromMemory)
     {
         _nodeContextSize = _vmSize;
         _nodeContextAddress = _vmAddress;
+        
+        // Slide the node address.
+        {
+            mk_vm_slide_t slide = image.slide;
+            
+            if ((err = mk_vm_address_apply_slide(_nodeContextAddress, slide, &_nodeContextAddress))) {
+                MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                [self release]; return nil;
+            }
+        }
     }
     else
     {
@@ -112,16 +122,6 @@
         // which may not correspond to offset 0 in the context.
         if ((err = mk_vm_address_add(image.nodeContextAddress, _fileOffset, &_nodeContextAddress))) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding _fileOffset (%" MK_VM_PRIxADDR ") to image.nodeContextAddress (%" MK_VM_PRIxADDR ")", mk_error_string(err), _fileOffset, image.nodeContextAddress];
-            [self release]; return nil;
-        }
-    }
-    
-    // Slide the node address.
-    {
-        mk_vm_offset_t slide = (mk_vm_offset_t)image.slide;
-        
-        if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
             [self release]; return nil;
         }
     }
@@ -163,9 +163,9 @@
         }];
     }
     
-    // Make sure the node data is actually available
+    // Make sure the data is actually available
     if ([image.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_nodeContextSize] == NO) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Segment data does not exist in memory map for image %@", image];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Segment data does not exist in memory map."];
         [self release]; return nil;
     }
     
@@ -173,7 +173,7 @@
     {
         NSArray *sections = [segmentLoadCommand sections];
         if (sections.count != [segmentLoadCommand nsects]) {
-            MK_PUSH_WARNING(MK_PROPERTY(sections), MK_EINVALID_DATA, @"Segment load command lists %" PRIi32 " sections but only %" PRIuPTR " are avaiable.", [(MKLCSegment*)segmentLoadCommand nsects], sections.count);
+            MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Segment load command lists %" PRIi32 " sections but only %" PRIuPTR " are avaiable.", [(MKLCSegment*)segmentLoadCommand nsects], sections.count);
         }
         
         NSMutableSet *segmentSections = [[NSMutableSet alloc] init];
@@ -185,7 +185,7 @@
             if (section)
                 [segmentSections addObject:section];
             else
-                MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(sections), e, @"Failed to load section for %@", sectionLoadCommand);
+                MK_PUSH_UNDERLYING_WARNING(sections, e, @"Failed to load section for %@.", sectionLoadCommand);
         }
         
         _sections = [segmentSections copy];
@@ -211,6 +211,7 @@
     [_name release];
     [_loadCommand release];
     [_sections release];
+    
     [super dealloc];
 }
 

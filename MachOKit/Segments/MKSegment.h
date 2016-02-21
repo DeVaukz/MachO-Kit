@@ -43,10 +43,10 @@ NS_ASSUME_NONNULL_BEGIN
 //
 typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
     //! the file contents for this segment is for the high part of the VM
-    //! space, the low part is zero filled (for stacks in core files)
+    //! space, the low part is zero filled (for stacks in core files).
     MKSegmentHighVM                             = SG_HIGHVM,
     //! This segment is the VM that is allocated by a fixed VM library, for
-    //! overlap checking in the link editor
+    //! overlap checking in the link editor.
     MKSegmentFixedVM                            = SG_FVMLIB,
     //! this segment has nothing that was relocated in it and nothing
     //! relocated to it, that is it maybe safely replaced without relocation.

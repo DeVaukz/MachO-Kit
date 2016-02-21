@@ -114,10 +114,20 @@
     }
     
     // Determine the context address of this section.
-    if (segment.macho.isFromMemoryDump)
+    if (segment.macho.isFromMemory)
     {
         _nodeContextAddress = _vmAddress;
         _nodeContextSize = _size;
+        
+        // Slide the context address.
+        {
+            mk_vm_offset_t slide = (mk_vm_offset_t)segment.macho.slide;
+            
+            if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
+                MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                [self release]; return nil;
+            }
+        }
     }
     else if (sectionLoadCommand.flags & S_ZEROFILL)
     {
@@ -131,16 +141,6 @@
         
         if ((err = mk_vm_address_add(_nodeContextAddress, segment.nodeContextAddress, &_nodeContextAddress))) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding section offset (%" MK_VM_PRIxADDR ") to segment.nodeContextAddress (%" MK_VM_PRIxADDR ")", mk_error_string(err), _nodeContextAddress, segment.nodeContextAddress];
-            [self release]; return nil;
-        }
-    }
-    
-    // Slide the context address.
-    {
-        mk_vm_offset_t slide = (mk_vm_offset_t)segment.macho.slide;
-        
-        if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
             [self release]; return nil;
         }
     }
