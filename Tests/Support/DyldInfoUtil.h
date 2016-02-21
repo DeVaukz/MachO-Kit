@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
+//|             DyldInfoUtil.h
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,17 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
+@import Foundation;
 
 //----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+@interface DyldInfoUtil : NSObject
 
-//|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
-    
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
-        
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
-    
-    [stdOutHandle waitForDataInBackgroundAndNotify];
-    
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
+//! Parses \a input into an array of strings, each representing a single
+//! opcode. Strings are in the following format where \c XXXX is the offset
+//! from the start of the rebase commands.
+//!
+//!     0xXXXX OPOCDE_NAME([ARGS])
+//!
++ (NSArray*)parseRebaseCommands:(NSString*)input;
 
 @end

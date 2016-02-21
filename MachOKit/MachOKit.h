@@ -115,13 +115,23 @@
     #import <MachOKit/MKLCEncryptionInfo64.h>
     #import <MachOKit/MKLCVersionMinTVOS.h>
     #import <MachOKit/MKLCVersionMinWatchOS.h>
-
 #import <MachOKit/MKSegment.h>
 #import <MachOKit/MKSection.h>
     #import <MachOKit/MKStubsSection.h>
     #import <MachOKit/MKCStringSection.h>
     #import <MachOKit/MKIndirectPointersSection.h>
-
+#import <MachOKit/MKMachO+Rebase.h>
+    #import <MachOKit/MKRebaseInfo.h>
+    #import <MachOKit/MKRebaseCommand.h>
+    #import <MachOKit/MKRebaseDone.h>
+    #import <MachOKit/MKRebaseSetTypeImmediate.h>
+    #import <MachOKit/MKRebaseSetSegmentAndOffsetULEB.h>
+    #import <MachOKit/MKRebaseAddAddressULEB.h>
+    #import <MachOKit/MKRebaseAddAddressImmediateScaled.h>
+    #import <MachOKit/MKRebaseDoRebaseImmediateTimes.h>
+    #import <MachOKit/MKRebaseDoRebaseULEBTimes.h>
+    #import <MachOKit/MKRebaseDoRebaseAddAddressULEB.h>
+    #import <MachOKit/MKRebaseDoRebaseULEBTimesSkippingULEB.h>
 #import <MachOKit/MKStringTable.h>
 #import <MachOKit/MKSymbolTable.h>
     #import <MachOKit/MKSymbol.h>

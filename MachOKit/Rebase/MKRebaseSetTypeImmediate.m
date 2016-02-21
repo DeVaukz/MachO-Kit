@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
+//|             MKRebaseSetTypeImmediate.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,38 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
+#import "MKRebaseSetTypeImmediate.h"
+#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+@implementation MKRebaseSetTypeImmediate
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
-    
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
-        
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
-    
-    [stdOutHandle waitForDataInBackgroundAndNotify];
-    
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
++ (uint8_t)opcode
+{ return REBASE_OPCODE_SET_TYPE_IMM; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (uint8_t)type
+{ return _data & REBASE_IMMEDIATE_MASK; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)nodeSize
+{ return 1; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeDescription*)layout
+{
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(type) description:@"Type"]
+    ]];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return [NSString stringWithFormat:@"REBASE_OPCODE_SET_TYPE_IMM(%" PRIu8 ")", self.type]; }
 
 @end

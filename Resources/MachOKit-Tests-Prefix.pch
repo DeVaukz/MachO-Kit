@@ -16,5 +16,6 @@
     #import "NSTask+MKTests.h"
     #import "NSFileManager+MKTest.h"
     #import "OtoolUtil.h"
+    #import "DyldInfoUtil.h"
     #import "Binary.h"
 #endif

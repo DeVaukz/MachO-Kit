@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKRebaseDoRebaseULEBTimesSkippingULEB.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,44 +25,30 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKRebaseCommand.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+@interface MKRebaseDoRebaseULEBTimesSkippingULEB : MKRebaseCommand {
+@package
+    uint64_t _count;
+    uint64_t _skip;
+    size_t _size;
+}
 
-//|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
-    
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
-        
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
-    
-    [stdOutHandle waitForDataInBackgroundAndNotify];
-    
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
+//!
+@property (nonatomic, readonly) uint64_t count;
+
+//!
+@property (nonatomic, readonly) uint64_t skip;
+
+//!
+@property (nonatomic, readonly) uint64_t offset;
 
 @end
+
+NS_ASSUME_NONNULL_END

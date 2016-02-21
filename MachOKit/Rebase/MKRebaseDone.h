@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             Binary.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKRebaseDone.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,35 +25,15 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
-//----------------------------------------------------------------------------//
-@interface Architecture : NSObject
+#import <MachOKit/MKRebaseCommand.h>
 
-- (instancetype)initWithURL:(NSURL*)url offset:(uint32_t)offset name:(NSString*)name;
-
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) uint32_t offset;
-
-@property (nonatomic, readonly) NSDictionary *machHeader;
-@property (nonatomic, readonly) NSArray *loadCommands;
-@property (nonatomic, readonly) NSArray *rebaseCommands;
-
-@end
-
-
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface Binary : NSObject
-
-+ (instancetype)binaryAtURL:(NSURL*)url;
-
-- (instancetype)initWithURL:(NSURL*)url;
-
-@property (nonatomic, readonly) NSURL *url;
-
-@property (nonatomic, readonly) NSDictionary<NSString*, id> *fatHeader;
-@property (nonatomic, readonly) NSDictionary *fatHeader_verbose;
-@property (nonatomic, readonly) NSArray /*Architecture*/ *architectures;
-
+@interface MKRebaseDone : MKRebaseCommand
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
+//|             MKMachO+Rebase.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,31 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
+#import "MKMachO+Rebase.h"
+#import "NSError+MK.h"
+
+#import "MKRebaseInfo.h"
 
 //----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+@implementation MKMachOImage (Rebase)
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - Rebasing Information
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
-    
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
+- (MKRebaseInfo*)rebaseInfo
+{
+    if (_rebaseInfo == nil)
+    {
+        NSError *e = nil;
         
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
+        _rebaseInfo = [[MKRebaseInfo alloc] initWithParent:self error:&e];
+        if (_rebaseInfo == nil && e /* Only failed if we have an error */)
+            MK_PUSH_UNDERLYING_WARNING(rebaseInfo, e, @"Failed to load rebasing information.");
+    }
     
-    [stdOutHandle waitForDataInBackgroundAndNotify];
-    
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
+    return _rebaseInfo;
+}
 
 @end

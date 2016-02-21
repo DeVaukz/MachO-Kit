@@ -28,6 +28,7 @@
 @import Foundation;
 
 #define OTOOL_PATH  "/usr/bin/otool"
+#define XCRUN_PATH "/usr/bin/xcrun"
 #define SHELL_PATH  "/bin/sh"
 
 //----------------------------------------------------------------------------//

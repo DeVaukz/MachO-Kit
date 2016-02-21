@@ -85,6 +85,7 @@
 #define MK_VM_PRIiSIZE PRIi64
 #define MK_VM_PRIuSIZE PRIu64
 //! Print formatters for the \ref mk_vm_offset_t type.
+#define MK_VM_PRIXOFFSET PRIX64
 #define MK_VM_PRIxOFFSET PRIx64
 #define MK_VM_PRIiOFFSET PRIi64
 #define MK_VM_PRIuOFFSET PRIu64
@@ -139,6 +140,8 @@ typedef enum {
     MK_EUNAVAILABLE,
     //!
     MK_EOUT_OF_RANGE,
+    //!
+    MK_ESIZE,
     //! Adding the provided inputs would result in an overflow.
     MK_EOVERFLOW,
     //! Adding the provided inputs would result in an underflow.

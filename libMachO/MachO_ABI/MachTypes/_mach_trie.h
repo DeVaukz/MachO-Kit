@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             Binary.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       _mach_trie.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,35 +25,12 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#ifndef __mach_trie_h
+#define __mach_trie_h
 
-//----------------------------------------------------------------------------//
-@interface Architecture : NSObject
+//!
+_mk_internal_extern mk_error_t
+_mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end,
+                           uint64_t *output, size_t *output_len);
 
-- (instancetype)initWithURL:(NSURL*)url offset:(uint32_t)offset name:(NSString*)name;
-
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) uint32_t offset;
-
-@property (nonatomic, readonly) NSDictionary *machHeader;
-@property (nonatomic, readonly) NSArray *loadCommands;
-@property (nonatomic, readonly) NSArray *rebaseCommands;
-
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface Binary : NSObject
-
-+ (instancetype)binaryAtURL:(NSURL*)url;
-
-- (instancetype)initWithURL:(NSURL*)url;
-
-@property (nonatomic, readonly) NSURL *url;
-
-@property (nonatomic, readonly) NSDictionary<NSString*, id> *fatHeader;
-@property (nonatomic, readonly) NSDictionary *fatHeader_verbose;
-@property (nonatomic, readonly) NSArray /*Architecture*/ *architectures;
-
-@end
+#endif /* __mach_trie_h */

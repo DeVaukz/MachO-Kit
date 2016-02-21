@@ -30,6 +30,7 @@
 //----------------------------------------------------------------------------//
 @implementation Architecture
 
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithURL:(NSURL*)url offset:(uint32_t)offset name:(NSString*)name
 {
     self = [super init];
@@ -39,8 +40,9 @@
     _name = [name lowercaseString];
     _offset = offset;
     
-    NSArray* (^makeArgs)(NSArray*) = ^(NSArray *input) {
+    NSArray* (^makeArgs)(NSString*, NSArray*) = ^(NSString *tool, NSArray *input) {
         NSMutableArray *args = [NSMutableArray array];
+        [args addObject:tool];
         [args addObject:@"-arch"];
         [args addObject:_name];
         [args addObjectsFromArray:input];
@@ -49,15 +51,21 @@
     };
     
     // Mach Header
-    {
-        NSString *machHeader = [NSTask outputForLaunchedTaskWithLaunchPath:@OTOOL_PATH arguments:makeArgs(@[@"-h"])];
+    @autoreleasepool {
+        NSString *machHeader = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-h"])];
         _machHeader = [OtoolUtil parseMachHeader:machHeader];
     }
     
-    // Load COmmands
-    {
-        NSString *loadCommands = [NSTask outputForLaunchedTaskWithLaunchPath:@OTOOL_PATH arguments:makeArgs(@[@"-l"])];
+    // Load Commands
+    @autoreleasepool {
+        NSString *loadCommands = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-l"])];
         _loadCommands = [OtoolUtil parseLoadCommands:loadCommands];
+    }
+    
+    // Rebase Commands
+    @autoreleasepool {
+        NSString *opcodes = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-opcodes"])];
+        _rebaseCommands = [DyldInfoUtil parseRebaseCommands:opcodes];
     }
     
     return self;

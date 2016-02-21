@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
+//|             MKRebaseDone.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,25 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
+#import "MKRebaseDone.h"
 
 //----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+@implementation MKRebaseDone
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
-    
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
-        
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
-    
-    [stdOutHandle waitForDataInBackgroundAndNotify];
-    
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
++ (uint8_t)opcode
+{ return REBASE_OPCODE_DONE; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)nodeSize
+{ return 1; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return @"REBASE_OPCODE_DONE()"; }
 
 @end

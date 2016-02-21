@@ -32,6 +32,7 @@
 #include "macho_abi.h"
 
 #include "_mach_lcstr.h"
+#include "_mach_trie.h"
 
 #include "macho_image_internal.h"
 #include "load_command_internal.h"

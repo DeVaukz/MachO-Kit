@@ -110,7 +110,6 @@
         mach_vm_offset_t offset = _header.nodeSize;
         mach_vm_offset_t oldOffset;
         
-        while (loadCommandCount--) {
         while (loadCommandCount--)
         @autoreleasepool {
                 

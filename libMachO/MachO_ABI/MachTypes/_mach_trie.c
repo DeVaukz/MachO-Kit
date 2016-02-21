@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             NSTask+MKTests.m
+//|             _mach_trie.c
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,31 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "NSTask+MKTests.h"
-
-//----------------------------------------------------------------------------//
-@implementation NSTask (MKTests)
+#include "macho_abi_internal.h"
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)outputForLaunchedTaskWithLaunchPath:(NSString*)path arguments:(NSArray*)arguments
-{ @autoreleasepool {
-    NSTask *task = [[NSTask alloc] init];
-    [task setLaunchPath:path];
-    [task setArguments:arguments];
+mk_error_t
+_mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end, uint64_t *output, size_t *output_len)
+{
+    uint64_t result = 0;
+    unsigned i = 0;
+    int		 bit = 0;
     
-    NSPipe *outPipe = [NSPipe pipe];
-    NSPipe *errPipe = [NSPipe pipe];
-    
-    [task setStandardOutput:outPipe];
-    [task setStandardInput:[NSPipe pipe]];
-    [task setStandardError:errPipe];
-    
-    NSMutableData *data = [[NSMutableData alloc] init];
-    
-    NSFileHandle *stdOutHandle = [outPipe fileHandleForReading];
-    stdOutHandle.readabilityHandler = ^(NSFileHandle *fileHandle) {
-        NSData *readData;
+    do {
+        if (&p[i] == end)
+            return MK_EOUT_OF_RANGE;
         
-        if ((readData = [fileHandle availableData]) && [readData length]) {
-            [data appendData: readData];
-        }
-    };
+        uint64_t slice = p[i] & 0x7f;
+        
+        if (bit > 63)
+            return MK_ESIZE;
+        
+        result |= (slice << bit);
+        bit += 7;
+    } while(p[i++] & 0x80);
     
-    [stdOutHandle waitForDataInBackgroundAndNotify];
+    if (output) *output = result;
+    if (output_len) *output_len = i;
     
-    [task launch];
-    [task waitUntilExit];
-    
-    stdOutHandle.readabilityHandler = nil;
-    
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-}}
-
-@end
+    return MK_ESUCCESS;
+}

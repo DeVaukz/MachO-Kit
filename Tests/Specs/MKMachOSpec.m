@@ -152,6 +152,35 @@ SpecBegin(MKMachOImage)
                     }
                 });
             });
+            
+            //----------------------------------------------------------------//
+            describe(@"rebase commands", ^{
+                NSArray *dyldInfoRebaseCommands = otoolArchitecture.rebaseCommands;
+                MKRebaseInfo *machoRebaseInfo = macho.rebaseInfo;
+                
+                if (machoRebaseInfo == nil)
+                    return; // TODO - Check if the image should have rebase info.
+                
+                NSArray *machoRebaseCommands = machoRebaseInfo.commands;
+                
+                it(@"should exist", ^{
+                    expect(machoRebaseCommands).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of rebase commands", ^{
+                    expect(machoRebaseCommands.count).to.equal(dyldInfoRebaseCommands.count);
+                });
+                
+                it(@"should be parsed correctly", ^{
+                    for (NSUInteger i=0; i<MIN(machoRebaseCommands.count, dyldInfoRebaseCommands.count); i++) {
+                        MKRebaseCommand *command = machoRebaseCommands[i];
+                        NSString *machoRebaseCommandDescription = [[NSString alloc] initWithFormat:@"0x%.4" MK_VM_PRIXOFFSET " %@", command.nodeOffset, command.description];
+                        
+                        expect(machoRebaseCommandDescription).to.equal(dyldInfoRebaseCommands[i]);
+                    }
+                });
+            });
+            
         });
         
         

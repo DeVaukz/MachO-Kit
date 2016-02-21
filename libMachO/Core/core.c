@@ -54,6 +54,8 @@ mk_error_string(mk_error_t error)
             return "UNAVAILABLE";
         case MK_EOUT_OF_RANGE:
             return "OUT OF RANGE";
+        case MK_ESIZE:
+            return "INSUFFICIENT SIZE";
         case MK_EOVERFLOW:
             return "OVERFLOW";
         case MK_EUNDERFLOW:

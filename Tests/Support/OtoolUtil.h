@@ -32,6 +32,6 @@
 
 + (NSDictionary*)parseMachHeader:(NSString*)input;
 + (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary*)parseFatHeader:(NSString*)input;
++ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
 
 @end

@@ -36,6 +36,7 @@
 @class MKMachOImage;
 @class MKMachHeader;
 @class MKLoadCommand;
+@class MKRebaseInfo;
 @class MKStringTable;
 @class MKSymbolTable;
 @class MKIndirectSymbolTable;
@@ -72,6 +73,8 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     NSArray<MKLoadCommand*> *_loadCommands;
     // Segments //
     NSDictionary *_segments;
+    // Rebase //
+    MKRebaseInfo *_rebaseInfo;
     // Symbols //
     MKStringTable *_stringTable;
     MKSymbolTable *_symbolTable;

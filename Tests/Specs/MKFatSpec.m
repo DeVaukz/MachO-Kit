@@ -63,7 +63,7 @@ SpecBegin(MKFat)
         });
         
         it(@"Should have the correct number of architectures", ^{
-            expect(binary.architectures.count).to.equal([executable.fatHeader[@"architecture"] count]);
+            expect(binary.architectures.count).to.equal([(NSDictionary*)executable.fatHeader[@"architecture"] count]);
         });
         
         for (MKFatArch *architecture in binary.architectures)
