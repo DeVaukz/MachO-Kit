@@ -39,7 +39,7 @@ extern const uint32_t _mk_load_command_classes_count;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
-{ static __weak NSSet *subclasses; return &subclasses; }
+{ static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID

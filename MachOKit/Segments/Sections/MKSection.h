@@ -149,6 +149,8 @@ typedef NS_OPTIONS(uint32_t, MKSectionAttributes) {
 
 - (nullable instancetype)initWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)initWithParent:(MKNode *)parent error:(NSError **)error NS_UNAVAILABLE;
+
 @property (nonatomic, readonly, nullable) NSString *name;
 @property (nonatomic, readonly) id<MKLCSection> loadCommand;
 @property (nonatomic, readonly) uint32_t alignment;

@@ -46,7 +46,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
-{ static __weak NSSet *subclasses; return &subclasses; }
+{ static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSegmentLoadCommand:(id<MKLCSegment>)segmentLoadCommand

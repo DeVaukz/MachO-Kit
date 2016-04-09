@@ -37,7 +37,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
-{ static __weak NSSet *subclasses; return &subclasses; }
+{ static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithNList:(struct nlist_64)nlist parent:(MKBackedNode*)parent
@@ -55,7 +55,7 @@
     if (!ReadNList(&entry, offset, parent, error))
     { return nil; }
     
-    return [self bestSubclassWithRanking:^uint32_t(Class cls) {
+    return [self bestSubclassWithRanking:^(Class cls) {
         return [cls canInstantiateWithNList:entry parent:parent];
     }];
 }

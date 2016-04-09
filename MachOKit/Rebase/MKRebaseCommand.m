@@ -35,7 +35,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
-{ static __weak NSSet *subclasses; return &subclasses; }
+{ static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
