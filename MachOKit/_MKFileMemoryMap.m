@@ -65,7 +65,7 @@
     mk_vm_size_t fileLength = (mach_vm_size_t)_fileData.length;
     
     // contextAddress must be within [0, fileLength)
-    if (offsetAddress >= fileLength || (requireFull && (MK_VM_SIZE_MAX - length < offsetAddress || offsetAddress + length >= fileLength)))
+    if (offsetAddress >= fileLength || (requireFull && (MK_VM_SIZE_MAX - length < offsetAddress || offsetAddress + length > fileLength)))
     {
         NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = %" MK_VM_PRIxSIZE ") is not within %@", offsetAddress, length, self];
         handler(0, 0, error);
