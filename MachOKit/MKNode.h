@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKNode : NSObject {
 @package
-    __weak MKNode *_parent;
+    /*__weak*/ MKNode *_parent;
 }
 
 //! Initializes the receiver with the provided \a parent node.  Subclasses
@@ -62,8 +62,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Retreiving The Layout
-//! @name       Retreiving The Layout
+#pragma mark -  Retreiving The Layout and Description
+//! @name       Retreiving The Layout and Description
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! Returns the layout of this node.
@@ -71,6 +71,12 @@ NS_ASSUME_NONNULL_BEGIN
 //! A layout describes the fields parsed from the range of the Mach-O file
 //! represented by this node.
 @property (nonatomic, readonly) MKNodeDescription *layout;
+
+//! A description that captures node specific information such as class and
+//! address & size (for backed nodes).  Used when forming error messages
+//! where knowng this information is important, even when the node class
+//! may have reimplemented -description.
+@property (nonatomic, readonly) NSString *nodeDescription;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Accessing Related Objects
@@ -108,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable __kindof MKNode*)nearestAncestorOfType:(Class)cls;
 
 //! Returns the nearest ancestor node conforming to \a protocol.
-- (nullable __kindof MKNode*)nearestAncestorForProtocol:(Protocol*)protocol;
+- (nullable __kindof MKNode*)nearestAncestorConformingToProtocol:(Protocol*)protocol;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Discovering Subclasses

@@ -36,11 +36,12 @@
 #import <MachOKit/NSError+MK.h>
 
 #import <MachOKit/MKMemoryMap.h>
-#import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNodeDescription.h>
+#import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNode.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKOptional.h>
 
 #import <MachOKit/MKCString.h>
 

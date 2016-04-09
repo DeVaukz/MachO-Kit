@@ -80,6 +80,7 @@
 
 //! Print formatter for the \ref mk_vm_address_t type.
 #define MK_VM_PRIxADDR PRIx64
+#define MK_VM_PRIXADDR PRIX64
 //! Print formatters for the \ref mk_vm_size_t type.
 #define MK_VM_PRIxSIZE PRIx64
 #define MK_VM_PRIiSIZE PRIi64
@@ -185,6 +186,14 @@ typedef struct {
 //! and \a length.
 _mk_export mk_vm_range_t
 mk_vm_range_make(mk_vm_address_t location, mk_vm_size_t length);
+
+//! Returns the address of the first byte in \a range.
+_mk_export mk_vm_address_t
+mk_vm_range_start(mk_vm_range_t range);
+
+//! Returns the address of the last byte in \a range.
+_mk_export mk_vm_address_t
+mk_vm_range_end(mk_vm_range_t range);
 
 //! Returns \ref MK_ESUCCESS if (\a address + \a offset) is within \a range.
 _mk_export mk_error_t

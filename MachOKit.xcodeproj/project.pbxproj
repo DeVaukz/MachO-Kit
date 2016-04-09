@@ -31,6 +31,8 @@
 		D010B3881A747D0B00AED697 /* MKDylibVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B3841A747D0B00AED697 /* MKDylibVersion.m */; };
 		D010B38D1A7492FB00AED697 /* MKFlagsNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D010B38B1A7492FB00AED697 /* MKFlagsNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D010B3901A7492FB00AED697 /* MKFlagsNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D010B38C1A7492FB00AED697 /* MKFlagsNodeField.m */; };
+		D010F6FE1CB868EF004025F5 /* MKOptional.h in Headers */ = {isa = PBXBuildFile; fileRef = D010F6FC1CB868EF004025F5 /* MKOptional.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D010F6FF1CB868EF004025F5 /* MKOptional.m in Sources */ = {isa = PBXBuildFile; fileRef = D010F6FD1CB868EF004025F5 /* MKOptional.m */; };
 		D01717951A99607700F234EF /* indirect_symbol_table.c in Sources */ = {isa = PBXBuildFile; fileRef = D01717931A99607700F234EF /* indirect_symbol_table.c */; };
 		D01717971A99607700F234EF /* indirect_symbol_table.c in Sources */ = {isa = PBXBuildFile; fileRef = D01717931A99607700F234EF /* indirect_symbol_table.c */; };
 		D01717981A99607700F234EF /* indirect_symbol_table.h in Headers */ = {isa = PBXBuildFile; fileRef = D01717941A99607700F234EF /* indirect_symbol_table.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -506,6 +508,10 @@
 		D0E040A41C75981500AA3DED /* MKRebaseDone.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E040A21C75981500AA3DED /* MKRebaseDone.m */; };
 		D0E040A71C759E7B00AA3DED /* MKRebaseSetTypeImmediate.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E040A51C759E7B00AA3DED /* MKRebaseSetTypeImmediate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E040A81C759E7B00AA3DED /* MKRebaseSetTypeImmediate.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E040A61C759E7B00AA3DED /* MKRebaseSetTypeImmediate.m */; };
+		D0E2D1FA1CA7904E00CC2DF8 /* MKMachO+Libraries.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E2D1F81CA7904E00CC2DF8 /* MKMachO+Libraries.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0E2D1FB1CA7904E00CC2DF8 /* MKMachO+Libraries.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E2D1F91CA7904E00CC2DF8 /* MKMachO+Libraries.m */; };
+		D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E2D1FC1CA7915100CC2DF8 /* MKDependentLibrary.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0E2D1FF1CA7915100CC2DF8 /* MKDependentLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E2D1FD1CA7915100CC2DF8 /* MKDependentLibrary.m */; };
 		D0E3FD2F1A58F608007B2771 /* data_model.c in Sources */ = {isa = PBXBuildFile; fileRef = D0E3FD2D1A58F608007B2771 /* data_model.c */; };
 		D0E3FD301A58F608007B2771 /* data_model.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E3FD2E1A58F608007B2771 /* data_model.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E3FD331A592E31007B2771 /* memory_map.c in Sources */ = {isa = PBXBuildFile; fileRef = D0E3FD311A592E31007B2771 /* memory_map.c */; };
@@ -674,6 +680,8 @@
 		D010B38B1A7492FB00AED697 /* MKFlagsNodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKFlagsNodeField.h; sourceTree = "<group>"; };
 		D010B38C1A7492FB00AED697 /* MKFlagsNodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFlagsNodeField.m; sourceTree = "<group>"; };
 		D010B39F1A758D2700AED697 /* ReadMe.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ReadMe.md; sourceTree = "<group>"; };
+		D010F6FC1CB868EF004025F5 /* MKOptional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKOptional.h; sourceTree = "<group>"; };
+		D010F6FD1CB868EF004025F5 /* MKOptional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKOptional.m; sourceTree = "<group>"; };
 		D01717931A99607700F234EF /* indirect_symbol_table.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = indirect_symbol_table.c; sourceTree = "<group>"; };
 		D01717941A99607700F234EF /* indirect_symbol_table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = indirect_symbol_table.h; sourceTree = "<group>"; };
 		D01717A61A9960A700F234EF /* indirect_symbol_table_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = indirect_symbol_table_internal.h; sourceTree = "<group>"; };
@@ -1035,6 +1043,10 @@
 		D0E040A21C75981500AA3DED /* MKRebaseDone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRebaseDone.m; sourceTree = "<group>"; };
 		D0E040A51C759E7B00AA3DED /* MKRebaseSetTypeImmediate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRebaseSetTypeImmediate.h; sourceTree = "<group>"; };
 		D0E040A61C759E7B00AA3DED /* MKRebaseSetTypeImmediate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRebaseSetTypeImmediate.m; sourceTree = "<group>"; };
+		D0E2D1F81CA7904E00CC2DF8 /* MKMachO+Libraries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMachO+Libraries.h"; sourceTree = "<group>"; };
+		D0E2D1F91CA7904E00CC2DF8 /* MKMachO+Libraries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMachO+Libraries.m"; sourceTree = "<group>"; };
+		D0E2D1FC1CA7915100CC2DF8 /* MKDependentLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDependentLibrary.h; sourceTree = "<group>"; };
+		D0E2D1FD1CA7915100CC2DF8 /* MKDependentLibrary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDependentLibrary.m; sourceTree = "<group>"; };
 		D0E2F92319949D0E00C38EC0 /* internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
 		D0E3FD2D1A58F608007B2771 /* data_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = data_model.c; sourceTree = "<group>"; };
 		D0E3FD2E1A58F608007B2771 /* data_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = data_model.h; sourceTree = "<group>"; };
@@ -1680,6 +1692,7 @@
 				D0539BEF1A254A5E00D3A5F0 /* MKMachHeader64.m */,
 				D03030011A22EBDE00288B3E /* Types */,
 				D0DC72EB19E83C7F004FCADB /* Load Commands */,
+				D0E2D1F71CA7901500CC2DF8 /* Libraries */,
 				D0672B1B1A4FBB3800D44610 /* Segments */,
 				D0995A051A6B7B3D007134CE /* MKLinkEditNode.h */,
 				D0995A061A6B7B3D007134CE /* MKLinkEditNode.m */,
@@ -1710,6 +1723,8 @@
 				D0BC7C151A2D975D0011517D /* MKBackedNode.m */,
 				D0672B3D1A52771500D44610 /* MKOffsetNode.h */,
 				D0672B3E1A52771500D44610 /* MKOffsetNode.m */,
+				D010F6FC1CB868EF004025F5 /* MKOptional.h */,
+				D010F6FD1CB868EF004025F5 /* MKOptional.m */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -1815,6 +1830,17 @@
 			);
 			name = "Load Commands";
 			path = Load_Commands;
+			sourceTree = "<group>";
+		};
+		D0E2D1F71CA7901500CC2DF8 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				D0E2D1F81CA7904E00CC2DF8 /* MKMachO+Libraries.h */,
+				D0E2D1F91CA7904E00CC2DF8 /* MKMachO+Libraries.m */,
+				D0E2D1FC1CA7915100CC2DF8 /* MKDependentLibrary.h */,
+				D0E2D1FD1CA7915100CC2DF8 /* MKDependentLibrary.m */,
+			);
+			path = Libraries;
 			sourceTree = "<group>";
 		};
 		D0E3FD2C1A58F58C007B2771 /* Data Model */ = {
@@ -1986,6 +2012,7 @@
 				D03030441A23CD9800288B3E /* MKLCRoutines64.h in Headers */,
 				D0A9EAAE1A8FD6FA00280D38 /* section.h in Headers */,
 				D0F3BEFA1A970BB100A92334 /* macho_abi.h in Headers */,
+				D010F6FE1CB868EF004025F5 /* MKOptional.h in Headers */,
 				D03030081A22F46200288B3E /* MKLCSymtab.h in Headers */,
 				D08B77A71A89D1E100E61338 /* segment_internal.h in Headers */,
 				D0E3FD341A592E31007B2771 /* memory_map.h in Headers */,
@@ -2048,6 +2075,7 @@
 				D01731711C6710B9007CB0A1 /* MKSharedCache+Slide.h in Headers */,
 				D0539BC41A23D62A00D3A5F0 /* MKLCDylibCodeSignDrs.h in Headers */,
 				D0A1D8EA19E4EEB80095870C /* load_command_symtab.h in Headers */,
+				D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */,
 				D0A1D84619E4EE320095870C /* logging_internal.h in Headers */,
 				D097ABCD1C70F8E0000F62C4 /* MKMachO+Segments.h in Headers */,
 				D090A2751C7821620025B096 /* MKRebaseAddAddressULEB.h in Headers */,
@@ -2056,6 +2084,7 @@
 				D0EA12FD1C76418300EEBAC6 /* MKRebaseSetSegmentAndOffsetULEB.h in Headers */,
 				D0848AE21A959E390076976F /* symbol_table.h in Headers */,
 				D0C3B2E419F37B2800CAFE58 /* MKMachO.h in Headers */,
+				D0E2D1FA1CA7904E00CC2DF8 /* MKMachO+Libraries.h in Headers */,
 				D0A1D8AC19E4EEB80095870C /* _load_command_dylib.h in Headers */,
 				D0A1D8E619E4EEB80095870C /* load_command_sub_framework.h in Headers */,
 				D0672B1E1A4FBC0300D44610 /* MKSegment.h in Headers */,
@@ -2247,7 +2276,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D02FEB4C1890FF88004E88ED = {
@@ -2413,6 +2442,7 @@
 				D0A1D8EB19E4EEB80095870C /* load_command_twolevel_hints.c in Sources */,
 				D0A1D8E719E4EEB80095870C /* load_command_sub_library.c in Sources */,
 				D03030291A23BA1100288B3E /* MKLCSubFramework.m in Sources */,
+				D0E2D1FB1CA7904E00CC2DF8 /* MKMachO+Libraries.m in Sources */,
 				D0539BED1A252C9500D3A5F0 /* MKMachHeader.m in Sources */,
 				D03030511A23CF3200288B3E /* MKLCCodeSignature.m in Sources */,
 				D074B6DB1A88859B00B5E3E5 /* segment.c in Sources */,
@@ -2453,6 +2483,7 @@
 				D03D19421C72F7C4006A2CEB /* MKRebaseInfo.m in Sources */,
 				D0539BC51A23D62A00D3A5F0 /* MKLCDylibCodeSignDrs.m in Sources */,
 				D0E3FD331A592E31007B2771 /* memory_map.c in Sources */,
+				D0E2D1FF1CA7915100CC2DF8 /* MKDependentLibrary.m in Sources */,
 				D0848ADF1A959E390076976F /* symbol_table.c in Sources */,
 				D0F2032219E3A86500533165 /* macho.c in Sources */,
 				D0BC78BE1B71CCB700467975 /* MKSharedCache+Symbols.m in Sources */,
@@ -2557,6 +2588,7 @@
 				D0A1D8D319E4EEB80095870C /* load_command_reexport_dylib.c in Sources */,
 				D010B37B1A744B7800AED697 /* MKHexNumberFormatter.m in Sources */,
 				D06625BA1A3D39C7005BE5E3 /* MKNodeFieldRecipe.m in Sources */,
+				D010F6FF1CB868EF004025F5 /* MKOptional.m in Sources */,
 				D03030191A231F6F00288B3E /* MKLoadCommandString.m in Sources */,
 				D03030051A22F2D200288B3E /* MKLCSegment.m in Sources */,
 				D0C3B2E519F37B2800CAFE58 /* MKMachO.m in Sources */,

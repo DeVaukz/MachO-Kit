@@ -164,7 +164,7 @@
     }
     
     // Make sure the data is actually available
-    if ([image.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_nodeContextSize] == NO) {
+    if ([self.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_nodeContextSize] == NO) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Segment data does not exist in memory map."];
         [self release]; return nil;
     }
@@ -192,8 +192,8 @@
         [segmentSections release];
     }
     
-    // TODO - Handle protected binaries.  Create a proxy MKMapping that performs
-    // the decryption.
+    // TODO - Handle protected binaries.  Create a proxy MKMemoryMap that
+    // performs the decryption.
     
     return self;
 }
@@ -275,6 +275,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"<%@(%@) %p>", NSStringFromClass(self.class), self.name, self]; }
+{ return self.name; }
 
 @end

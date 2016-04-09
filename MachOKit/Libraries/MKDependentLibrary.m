@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKLoadCommandString.m
+//|             MKLibrary.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,101 +25,107 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKLoadCommandString.h"
+#import "MKDependentLibrary.h"
 #import "NSError+MK.h"
+#import "MKNode+MachO.h"
+#import "MKMachO.h"
+#import "MKDylibLoadCommand.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKLoadCommandString
+@implementation MKDependentLibrary
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
+- (instancetype)initWithLoadCommand:(MKDylibLoadCommand*)loadCommand error:(NSError**)error;
 {
-    self = [super initWithOffset:offset fromParent:parent error:error];
+    NSParameterAssert(loadCommand);
+    NSAssert(loadCommand.macho, @"");
+    
+    self = [super initWithParent:loadCommand.macho error:error];
     if (self == nil) return nil;
-
-    if (self.nodeOffset < parent.nodeSize)
-    {
-        __block NSError *localError = nil;
-        _nodeSize = parent.nodeSize - self.nodeOffset;
-        
-        [self.memoryMap remapBytesAtOffset:self.nodeOffset fromAddress:parent.nodeContextAddress length:_nodeSize requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *error) {
-            if (length == 0 || error) {
-                localError = [NSError mk_errorWithDomain:MKErrorDomain code:error.code underlyingError:error description:@"Could not map memory for string."];
-                return;
-            }
-            
-            _nodeSize = strnlen((const char*)address, length);
-            _string = [[NSString alloc] initWithBytes:(const void*)address length:(NSUInteger)_nodeSize encoding:NSUTF8StringEncoding];
-            
-            if (_string == nil)
-                MK_PUSH_WARNING(string, localError.code, @"Could not form a string with data.");
-            
-            if (_nodeSize < length) {
-                // Account for the NULL byte.
-                _nodeSize = _nodeSize + 1;
-            } else {
-                MK_PUSH_WARNING(MK_PROPERTY(sring), MK_EINVALID_DATA, @"String not properly terminated.");
-            }
-        }];
-        
-        // Bail out on fatal error.
-        if (localError) {
-            MK_ERROR_OUT = localError;
-            [self release]; return nil;
-        }
-    }
-    else
-    {
-        // This is technically an invalid Mach-O but we'll try to parse it
-        // anyway (eventully).
-        // <http://reverse.put.as/2012/01/31/anti-debug-trick-1-abusing-mach-o-to-crash-gdb/>
-        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Implement this" userInfo:nil];
-    }
+    
+    _loadCommand = [loadCommand retain];
     
     return self;
 }
 
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
+{ return [self initWithLoadCommand:[parent nearestAncestorOfType:MKDylibLoadCommand.class] error:error]; }
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_string release];
+    [_loadCommand release];
+    
     [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Fields
+#pragma mark - Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize string = _string;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return _loadCommand.name.string; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint32_t)offset
-{
-    NSAssert((uint32_t)self.nodeOffset == self.nodeOffset, @"");
-    return (uint32_t)self.nodeOffset;
-}
+- (NSDate*)timestamp
+{ return _loadCommand.timestamp; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDylibVersion*)currentVersion
+{ return _loadCommand.current_version; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDylibVersion*)compatibilityVersion
+{ return _loadCommand.compatibility_version; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)required
+{ return _loadCommand.cmd != LC_LOAD_WEAK_DYLIB; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)weak
+{ return _loadCommand.cmd == LC_LOAD_WEAK_DYLIB; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)upward
+{ return _loadCommand.cmd == LC_LOAD_UPWARD_DYLIB; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)rexported
+{ return _loadCommand.cmd == LC_REEXPORT_DYLIB; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKBackedNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
+{ return [_loadCommand nodeAddress:type]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)nodeSize
+{ return [_loadCommand nodeSize]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize nodeSize = _nodeSize;
-
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(string) description:@"Value"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Name"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(timestamp) description:@"Timestamp"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(current_version) description:@"Current Version"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(compatibility_version) description:@"Compatibility Version"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(required) description:@"Required"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(weak) description:@"Weak"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(upward) description:@"Upward"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(rexported) description:@"Reexported"]
     ]];
 }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - NSObject
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return self.string; }
 
 @end

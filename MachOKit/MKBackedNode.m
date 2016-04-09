@@ -77,6 +77,15 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)nodeDescription
+{
+    if (self.nodeSize)
+        return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ">", NSStringFromClass(self.class), self.nodeContextAddress, self.nodeSize];
+    else
+        return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self.nodeContextAddress];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 { return [NSString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self, self.nodeContextAddress]; }
 

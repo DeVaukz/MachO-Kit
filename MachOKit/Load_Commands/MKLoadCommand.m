@@ -150,7 +150,7 @@ extern const uint32_t _mk_load_command_classes_count;
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
-    NSParameterAssert(parent.macho);
+    NSParameterAssert(parent.dataModel);
     
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
@@ -159,8 +159,8 @@ extern const uint32_t _mk_load_command_classes_count;
     if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc))
     { [self release]; return nil; }
     
-    _cmdId = MKSwapLValue32(lc.cmd, self.macho.dataModel);
-    _cmdSize = MKSwapLValue32(lc.cmdsize, self.macho.dataModel);
+    _cmdId = MKSwapLValue32(lc.cmd, self.dataModel);
+    _cmdSize = MKSwapLValue32(lc.cmdsize, self.dataModel);
     
     if (self.class != [MKLoadCommand classForCommandID:_cmdId]) {
         NSString *reason = [NSString stringWithFormat:@"Cannot initialize %@ with load command data for %@", NSStringFromClass(self.class), NSStringFromClass([MKLoadCommand classForCommandID:_cmdId])];

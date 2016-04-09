@@ -69,6 +69,10 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 - (MKNodeDescription*)layout
 { return [[MKNodeDescription new] autorelease]; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)nodeDescription
+{ return [NSString stringWithFormat:@"<%@>", NSStringFromClass(self.class)]; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -   Getting Related Objects
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -121,7 +125,7 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (nullable __kindof MKNode*)nearestAncestorForProtocol:(Protocol*)protocol
+- (nullable __kindof MKNode*)nearestAncestorConformingToProtocol:(Protocol*)protocol
 {
     for (MKNode *n = self; n != nil; n = n.parent) {
         if ([n conformsToProtocol:protocol])

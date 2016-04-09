@@ -82,6 +82,23 @@ mk_vm_range_make(mk_vm_address_t location, mk_vm_size_t length)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_vm_address_t
+mk_vm_range_start(mk_vm_range_t range)
+{
+    return range.location;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_vm_address_t
+mk_vm_range_end(mk_vm_range_t range)
+{
+    if (MK_VM_SIZE_MAX - range.length < range.location)
+        return MK_VM_SIZE_MAX;
+    
+    return range.location + range.length;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
 mk_vm_range_contains_address(mk_vm_range_t range, mk_vm_offset_t offset, mk_vm_address_t address)
 {
@@ -202,7 +219,7 @@ mk_vm_address_add(mk_vm_address_t addr1, mk_vm_address_t addr2, mk_vm_address_t 
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result)
+mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_offset_t *result)
 {
     // Check for underflow
     if (right > left)

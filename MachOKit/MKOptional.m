@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBackedNode.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKOptional.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,75 +25,67 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKNode.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKOptional.h"
 
 //----------------------------------------------------------------------------//
-//! @name       Node Address Types
-//! @relates    MKBackedNode
-//!
-typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
-    //! The address of this node with respect to its \ref memoryMap.
-    //!
-    //! @details
-    //! For a memory map reading process memory, the context address matches
-    //! the node's VM address plus any slide.
-    //!
-    //! For a memory map reading a file on disk, the context address *usually* 
-    //! matches the offset of the node in the file.
-    MKNodeContextAddress                = 0,
-    //! The address of this node when the image is mapped into virtual memory.
-    //!
-    //! @details
-    //! This value does not include any slide that is applied to the image.
-    MKNodeVMAddress
-};
+@implementation MKOptional
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optionalWithValue:(id)value
+{
+    MKOptional *optional = [self new];
+    optional->_value = [value retain];
+    
+    return [optional autorelease];
+}
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optionalWithError:(NSError*)error
+{
+    MKOptional *optional = [self new];
+    optional->_value = [error retain];
+    
+    return [optional autorelease];
+}
 
-//----------------------------------------------------------------------------//
-//! \c MKBackedNode is a type of \ref MKNode which represents the contents
-//! in some range of memory.
-//!
-@interface MKBackedNode : MKNode
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Memory Layout
-//! @name       Memory Layout
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! The size of this node.  Includes the size of all child nodes.
-//! Subclasses must implement the getter for this property.
-//!
-//! @note
-//! A value of \c 0 indicates the node size is unknown.  This value should only
-//! be returned by top-level nodes such as \ref MKMachO.
-@property (nonatomic, readonly) mk_vm_size_t nodeSize;
-
-//! Shortcut for calling the \ref -nodeAddress: method with the
-//! \ref MKNodeContextAddress address type.
-@property (nonatomic, readonly) mk_vm_address_t nodeContextAddress;
-
-//! Shortcut for calling the \ref -nodeAddress: method with the
-//! \ref MKNodeVMAddress address type.
-@property (nonatomic, readonly) mk_vm_address_t nodeVMAddress;
-
-//! Subclasses must implement this method.
-- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type;
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    [_value release];
+    
+    [super dealloc];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Accessing the Underlying Data
-//! @name       Accessing the Underlying Data
+#pragma mark -  Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! An \c NSData instance containing the contents of memory represented by
-//! this node.
-@property (nonatomic, readonly, nullable) NSData *data;
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)value
+{
+    if ([_value isKindOfClass:NSError.class] == NO)
+        return _value;
+    else
+        return nil;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSError*)error
+{
+    if ([_value isKindOfClass:NSError.class])
+        return _value;
+    else
+        return nil;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{
+    return [self.value description];
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

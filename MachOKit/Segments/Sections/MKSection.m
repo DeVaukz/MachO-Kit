@@ -232,6 +232,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"<%@(%@ %@) %p>", NSStringFromClass(self.class), self.loadCommand.segname, self.name, self]; }
+{ return [NSString stringWithFormat:@"%@ %@", self.loadCommand.segname, self.name]; }
 
 @end
