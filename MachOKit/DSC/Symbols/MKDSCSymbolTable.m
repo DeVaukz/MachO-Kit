@@ -72,7 +72,7 @@
             [symbol release];
             
             if ((err = mk_vm_offset_add(offset, symbol.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(symbols, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, symbol.nodeSize), @"Aborted symbol parsing after index " PRIi32 ".", i);
+                MK_PUSH_UNDERLYING_WARNING(symbols, MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, offset, symbol.nodeSize), @"Aborted symbol parsing after index " PRIi32 ".", i);
                 break;
             }
         }

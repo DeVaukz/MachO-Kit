@@ -232,7 +232,7 @@ mk_vm_address_add(mk_vm_address_t addr1, mk_vm_address_t addr2, mk_vm_address_t 
 //! If \a right > \a left, \ref MK_EUNDERFLOW is returned and \a result is
 //! unmodified.
 _mk_export mk_error_t
-mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_address_t *result);
+mk_vm_address_subtract(mk_vm_address_t left, mk_vm_address_t right, mk_vm_offset_t *result);
 
 //! Safely computes \a left - \a right and stores the result in \a result.
 _mk_export mk_error_t

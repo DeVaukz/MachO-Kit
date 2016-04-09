@@ -78,7 +78,7 @@
             [string release];
             
             if ((err = mk_vm_offset_add(offset, string.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(strings, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, string.nodeSize), @"Aborted string parsing after offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_UNDERLYING_WARNING(strings, MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, offset, string.nodeSize), @"Aborted string parsing after offset %" MK_VM_PRIiOFFSET ".", offset);
                 break;
             }
         }

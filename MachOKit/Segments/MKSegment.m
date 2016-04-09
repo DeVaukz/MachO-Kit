@@ -109,7 +109,7 @@
             mk_vm_slide_t slide = image.slide;
             
             if ((err = mk_vm_address_apply_slide(_nodeContextAddress, slide, &_nodeContextAddress))) {
-                MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
                 [self release]; return nil;
             }
         }
@@ -121,7 +121,7 @@
         // The _fileOffset of this segment is relative to the Mach-O header
         // which may not correspond to offset 0 in the context.
         if ((err = mk_vm_address_add(image.nodeContextAddress, _fileOffset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding _fileOffset (%" MK_VM_PRIxADDR ") to image.nodeContextAddress (%" MK_VM_PRIxADDR ")", mk_error_string(err), _fileOffset, image.nodeContextAddress];
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, image.nodeContextAddress, _fileOffset);
             [self release]; return nil;
         }
     }

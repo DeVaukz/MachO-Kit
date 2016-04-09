@@ -124,7 +124,7 @@
             mk_vm_offset_t slide = (mk_vm_offset_t)segment.macho.slide;
             
             if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
-                MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
                 [self release]; return nil;
             }
         }
@@ -140,7 +140,7 @@
         _nodeContextAddress = _fileOffset - segment.fileOffset;
         
         if ((err = mk_vm_address_add(_nodeContextAddress, segment.nodeContextAddress, &_nodeContextAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding section offset (%" MK_VM_PRIxADDR ") to segment.nodeContextAddress (%" MK_VM_PRIxADDR ")", mk_error_string(err), _nodeContextAddress, segment.nodeContextAddress];
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, _nodeContextAddress, segment.nodeContextAddress);
             [self release]; return nil;
         }
     }
@@ -155,7 +155,7 @@
     // Emit a warning if the segname of the section load command does not match
     // our parent segment.
     if ([[sectionLoadCommand segname] isEqualToString:segment.name] == NO) {
-        MK_PUSH_WARNING(MK_PROPERTY(name), MK_EINVALID_DATA, @"Segment name for section %@ does not match parent segment %@", sectionLoadCommand, segment);
+        MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Segment name for section %@ does not match parent segment %@", sectionLoadCommand, segment);
     }
     
     return self;
@@ -175,6 +175,7 @@
 {
     [_name release];
     [_loadCommand release];
+    
     [super dealloc];
 }
 

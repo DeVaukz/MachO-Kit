@@ -52,19 +52,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 
-/* Deprecated */
-#define MK_MAKE_VM_ARITHMETIC_ERROR \
-    MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR
-
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! applying \a OFFSET to \a ADDRESS.
 #define MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(CODE, ADDRESS, OFFSET) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while applying %s (%" MK_VM_PRIiOFFSET ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), #OFFSET, OFFSET, #ADDRESS, ADDRESS]
-
-//! Creates an \c NSError describing the arithmetic error that occurred while
-//! adding \a RHS_ADDRESS to \a LHS_ADDRESS.
-#define MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIxADDR ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! applying \a SLIDE to \a ADDRESS.
@@ -76,6 +67,11 @@ NS_ASSUME_NONNULL_BEGIN
 #define MK_MAKE_VM_ADDRESS_REMOVE_SLIDE_ARITHMETIC_ERROR(CODE, ADDRESS, SLIDE) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while subtracting slide (%" MK_VM_PRIiSLIDE ") from %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), SLIDE, #ADDRESS, ADDRESS]
 
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! adding \a RHS_ADDRESS to \a LHS_ADDRESS.
+#define MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIxADDR ") to %s (%" MK_VM_PRIxADDR ").", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
+
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! subtracting \a RHS_ADDRESS from \a LHS_ADDRESS.
 #define MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
@@ -86,6 +82,11 @@ NS_ASSUME_NONNULL_BEGIN
 //! provided \a ADDRESS.
 #define MK_MAKE_VM_LENGTH_CHECK_ERROR(CODE, ADDRESS, LENGTH) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Adding %s (%" MK_VM_PRIiSIZE ") to %s (%" MK_VM_PRIxADDR ") would trigger %s.", #LENGTH, LENGTH, #ADDRESS, ADDRESS, mk_error_string(CODE)];
+
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! adding \a RHS_SIZE to \a LHS_OFFSET.
+#define MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(CODE, LHS_OFFSET, RHS_SIZE) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIiSIZE ") to %s (%" MK_VM_PRIiOFFSET ").", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_OFFSET, LHS_OFFSET]
 
 //----------------------------------------------------------------------------//
 //! @name       Error Domains
@@ -120,6 +121,9 @@ extern NSString * const MKPropertyKey;
 //! Creates and initializes an NSError object for a given domain and code
 //! with a given description.
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code description:(nullable NSString*)description, ...;
+
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code description:(nullable NSString*)description reason:(nullable NSString*)reason, ...;
+
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property description:(nullable NSString*)description, ...;
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(nullable NSString*)description, ...;
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(nullable NSString*)description, ...;

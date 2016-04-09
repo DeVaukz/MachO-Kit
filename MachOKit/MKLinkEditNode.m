@@ -57,24 +57,20 @@
     
     if (image.isFromMemory)
     {
-        if ((err = mk_vm_address_add(linkeditSegment.vmAddress, offset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while adding offset (%" MK_VM_PRIiOFFSET ") to __LINKEDIT vmAddress (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), offset, linkeditSegment.vmAddress];
+        if ((err = mk_vm_address_apply_offset(linkeditSegment.vmAddress, offset, &_nodeContextAddress))) {
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, linkeditSegment.vmAddress, offset);
             [self release]; return nil;
         }
         
         if ((err = mk_vm_address_subtract(_nodeContextAddress, linkeditSegment.fileOffset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error %s while subtracting __LINKEDIT fileOffset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), linkeditSegment.fileOffset, _nodeContextAddress];
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, _nodeContextAddress, linkeditSegment.fileOffset);
             [self release]; return nil;
         }
         
         // Slide the context address.
-        {
-            mk_vm_offset_t slide = (mk_vm_offset_t)image.slide;
-            
-            if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
-                MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
-                [self release]; return nil;
-            }
+        if ((err = mk_vm_address_apply_slide(_nodeContextAddress, image.slide, &_nodeContextAddress))) {
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, image.slide);
+            [self release]; return nil;
         }
         
         _nodeVMAddress = _nodeContextAddress;
@@ -85,13 +81,13 @@
         
         // Context Address
         if ((err = mk_vm_address_apply_offset(image.nodeContextAddress, offset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, image.nodeContextAddress, offset);
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, image.nodeContextAddress, offset);
             [self release]; return nil;
         }
         
         // VM Address
         if ((err = mk_vm_address_apply_offset(image.nodeVMAddress, offset, &_nodeVMAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ARITHMETIC_ERROR(err, image.nodeContextAddress, offset);
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, image.nodeContextAddress, offset);
             [self release]; return nil;
         }
     }

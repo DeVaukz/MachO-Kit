@@ -74,7 +74,7 @@
             [entry release];
             
             if ((err = mk_vm_offset_add(offset, entry.nodeSize, &offset))) {
-                MK_PUSH_UNDERLYING_WARNING(entries, MK_MAKE_VM_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"Aborted entry parsing after index " PRIi32 ".", i);
+                MK_PUSH_UNDERLYING_WARNING(entries, MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, offset, entry.nodeSize), @"Aborted entry parsing after index " PRIi32 ".", i);
                 break;
             }
         }

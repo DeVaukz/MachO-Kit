@@ -49,6 +49,23 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code description:(nullable NSString*)description reason:(nullable NSString*)reason, ...
+{
+    va_list ap;
+    va_start(ap, reason);
+    CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
+    va_end(ap);
+    
+    NSError *ret = [NSError errorWithDomain:domain code:code userInfo:@{
+        NSLocalizedDescriptionKey: description,
+        NSLocalizedFailureReasonErrorKey: (NSString*)str
+    }];
+    
+    CFRelease(str);
+    return ret;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property description:(NSString*)description, ...
 {
     NSParameterAssert(property);
