@@ -29,6 +29,7 @@
 #define _internal_h
 
 #include <sys/param.h>
+#include <inttypes.h>
 
 #if __MACHOKIT__
 #include <objc/runtime.h>
