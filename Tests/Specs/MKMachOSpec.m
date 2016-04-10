@@ -154,14 +154,58 @@ SpecBegin(MKMachOImage)
             });
             
             //----------------------------------------------------------------//
+            describe(@"dylibs", ^{
+                NSArray<NSDictionary*> *dyldDependentLibraries = otoolArchitecture.dependentLibraries;
+                NSArray<MKOptional<MKDependentLibrary*>*> *machoDependentLibraries = macho.dependentLibraries;
+                
+                it(@"should exist", ^{
+                    expect(machoDependentLibraries).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of dependencies", ^{
+                    expect(machoDependentLibraries.count).to.equal(dyldDependentLibraries.count);
+                });
+                
+                //------------------------------------------------------------//
+                for (NSUInteger i=0; i<MIN(machoDependentLibraries.count, dyldDependentLibraries.count); i++)
+                describe([NSString stringWithFormat:@"%lu", (unsigned long)i], ^{
+                    MKDependentLibrary *library = machoDependentLibraries[i].value;
+                    
+                    it(@"should not be nil", ^{
+                        expect(library).toNot.beNil();
+                    });
+                    if (library == nil) return;
+                    
+                    it(@"should have the correct name", ^{
+                        expect(library.name).to.equal(dyldDependentLibraries[i][@"name"]);
+                    });
+                    
+                    it(@"should have the correct attributes", ^{
+                        NSString *expectedAttribute = dyldDependentLibraries[i][@"attributes"];
+                        BOOL expectedRequired = ![expectedAttribute isEqualToString:@"weak"];
+                        BOOL expectedWeak = [expectedAttribute isEqualToString:@"weak"];
+                        BOOL expectedUpward = [expectedAttribute isEqualToString:@"upward"];
+                        BOOL expectedReexport = [expectedAttribute isEqualToString:@"re-export"];
+                        
+                        expect(library.required).to.equal(expectedRequired);
+                        expect(library.weak).to.equal(expectedWeak);
+                        expect(library.upward).to.equal(expectedUpward);
+                        expect(library.rexported).to.equal(expectedReexport);
+                    });
+                });
+            });
+            
+            //----------------------------------------------------------------//
             describe(@"rebase commands", ^{
-                NSArray *dyldInfoRebaseCommands = otoolArchitecture.rebaseCommands;
+                NSArray<NSString*> *dyldInfoRebaseCommands = otoolArchitecture.rebaseCommands;
+                NSArray<NSDictionary*> *dyldInfoRebaseFixups = otoolArchitecture.fixupAddresses;
                 MKRebaseInfo *machoRebaseInfo = macho.rebaseInfo;
                 
                 if (machoRebaseInfo == nil)
                     return; // TODO - Check if the image should have rebase info.
                 
                 NSArray *machoRebaseCommands = machoRebaseInfo.commands;
+                NSArray *machoRebaseFixups = machoRebaseInfo.fixups;
                 
                 it(@"should exist", ^{
                     expect(machoRebaseCommands).toNot.beNil();
@@ -177,6 +221,20 @@ SpecBegin(MKMachOImage)
                         NSString *machoRebaseCommandDescription = [[NSString alloc] initWithFormat:@"0x%.4" MK_VM_PRIXOFFSET " %@", command.nodeOffset, command.description];
                         
                         expect(machoRebaseCommandDescription).to.equal(dyldInfoRebaseCommands[i]);
+                    }
+                });
+                
+                it(@"should result int the correct number of fixups", ^{
+                    expect(machoRebaseFixups.count).to.equal(dyldInfoRebaseFixups.count);
+                });
+                
+                it(@"should result in the correct fixups", ^{
+                    for (NSUInteger i=0; i<MIN(machoRebaseFixups.count, dyldInfoRebaseFixups.count); i++) {
+                        MKFixup *fixup = machoRebaseFixups[i];
+                        
+                        expect(fixup.segment.name).to.equal(dyldInfoRebaseFixups[i][@"segment"]);
+                        expect(fixup.section.name).to.equal(dyldInfoRebaseFixups[i][@"section"]);
+                        expect([NSString stringWithFormat:@"0x%.8" MK_VM_PRIXADDR "", fixup.address]).to.equal(dyldInfoRebaseFixups[i][@"address"]);
                     }
                 });
             });

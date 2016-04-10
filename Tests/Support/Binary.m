@@ -28,7 +28,9 @@
 #import "Binary.h"
 
 //----------------------------------------------------------------------------//
-@implementation Architecture
+@implementation Architecture {
+    NSArray* (^makeArgs)(NSString*, NSArray*);
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithURL:(NSURL*)url offset:(uint32_t)offset name:(NSString*)name
@@ -37,14 +39,14 @@
     
     NSParameterAssert(url);
     NSParameterAssert(name);
-    _name = [name lowercaseString];
+    _name = name = [name lowercaseString];
     _offset = offset;
     
-    NSArray* (^makeArgs)(NSString*, NSArray*) = ^(NSString *tool, NSArray *input) {
+    makeArgs = ^(NSString *tool, NSArray *input) {
         NSMutableArray *args = [NSMutableArray array];
         [args addObject:tool];
         [args addObject:@"-arch"];
-        [args addObject:_name];
+        [args addObject:name];
         [args addObjectsFromArray:input];
         [args addObject:url.path];
         return args;
@@ -62,13 +64,30 @@
         _loadCommands = [OtoolUtil parseLoadCommands:loadCommands];
     }
     
-    // Rebase Commands
+    // Libraries
+    @autoreleasepool {
+        NSString *loadCommands = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-dylibs"])];
+        _dependentLibraries = [DyldInfoUtil parseDylibs:loadCommands];
+    }
+    
+    // Rebase & bind Commands
     @autoreleasepool {
         NSString *opcodes = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-opcodes"])];
         _rebaseCommands = [DyldInfoUtil parseRebaseCommands:opcodes];
     }
     
     return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)fixupAddresses
+{
+    NSArray *fixupAddresses;
+    @autoreleasepool {
+        NSString *fixups = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-rebase"])];
+        fixupAddresses = [DyldInfoUtil parseFixups:fixups];
+    }
+    return fixupAddresses;
 }
 
 @end

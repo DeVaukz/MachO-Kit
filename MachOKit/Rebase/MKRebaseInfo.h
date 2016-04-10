@@ -31,11 +31,15 @@
 #import <MachOKit/MKLinkEditNode.h>
 
 @class MKRebaseCommand;
+@class MKFixup;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKRebaseInfo : MKLinkEditNode {
 @package
-    NSArray<id> *_opcodes;
+    NSArray<__kindof MKRebaseCommand*> *_commands;
+    NSArray<MKFixup*> *_fixups;
 }
 
 //! Initializes the receiver with the provided Mach-O image.
@@ -44,4 +48,9 @@
 //! An array of rebasing commands.
 @property (nonatomic, readonly) NSArray<__kindof MKRebaseCommand*> *commands;
 
+//! An array of pointers to be fixed-up during rebasing
+@property (nonatomic, readonly) NSArray<MKFixup*> *fixups;
+
 @end
+
+NS_ASSUME_NONNULL_END

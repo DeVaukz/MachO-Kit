@@ -43,13 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
     uint8_t _data;
 }
 
-//! Returns the subclass of \ref MKRebaseOpcode that is most suitable for
+//! Returns the subclass of \ref MKRebaseCommand that is most suitable for
 //! parsing the provided opcode.
 + (nullable Class)classForOpcode:(uint8_t)opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Subclassing MKRebaseOpcode
-//! @name       Subclassing MKRebaseOpcode
+#pragma mark -  Subclassing MKRebaseCommand
+//! @name       Subclassing MKRebaseCommand
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! This method is called on all \ref MKRebaseCommand subclasses when
@@ -60,15 +60,15 @@ NS_ASSUME_NONNULL_BEGIN
 //! command.  The subclass that returns the largest value will be instantiated
 //! with the command data.  \ref MKRebaseCommand subclasses in Mach-O Kit
 //! return \c 10 if they can parse the provided load command.  You can
-//! therefore substitute your own subclass by returning a larger value.
+//! substitute your own subclass by returning a larger value.
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Creating a Load Command
-//! @name       Creating a Load Command
+#pragma mark -  Creating a Rebase Command
+//! @name       Creating a Rebase Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Creates an instantiates the appropriate subclass of \ref MKRebaseOpcode
+//! Creates an instantiates the appropriate subclass of \ref MKRebaseCommand
 //! for parsing the opcode at the provided \a offset from the
 //! parent \ref MKRebaseInfo.
 + (nullable instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKRebaseInfo*)parent error:(NSError**)error;
@@ -78,9 +78,16 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       About This Rebase Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Returns the rebase command identifier that this class parses.
+//! Returns the rebase command opcode that this class parses.
 //! Subclasses must implement this method.
 + (uint8_t)opcode;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Performing Rebasing
+//! @name       Performing Rebasing
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Rebase Command Values

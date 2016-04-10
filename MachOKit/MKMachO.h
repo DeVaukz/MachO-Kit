@@ -28,6 +28,7 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOptional.h>
 #import <MachOKit/MKNode+MachO.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKMemoryMap.h>
@@ -36,6 +37,7 @@
 @class MKMachOImage;
 @class MKMachHeader;
 @class MKLoadCommand;
+@class MKDependentLibrary;
 @class MKRebaseInfo;
 @class MKStringTable;
 @class MKSymbolTable;
@@ -71,10 +73,12 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     // Header //
     MKMachHeader *_header;
     NSArray<MKLoadCommand*> *_loadCommands;
+    // Dependents //
+    NSArray<MKOptional<MKDependentLibrary*>*>  *_dependentLibraries;
     // Segments //
     NSDictionary *_segments;
     // Rebase //
-    MKRebaseInfo *_rebaseInfo;
+    MKOptional<MKRebaseInfo*> *_rebaseInfo;
     // Symbols //
     MKStringTable *_stringTable;
     MKSymbolTable *_symbolTable;

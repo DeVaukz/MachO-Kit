@@ -44,6 +44,12 @@ NS_ASSUME_NONNULL_BEGIN
 //! Create and return a new optional with the provided \a error.
 + (instancetype)optionalWithError:(NSError*)error;
 
+//! Initializes the receiver with the provided \a value.
+- (instancetype)initWithValue:(ObjectType)value;
+
+//! Initializes the receiver with the provided \a error.
+- (instancetype)initWithError:(NSError*)error;
+
 //!
 @property (readonly, nullable) ObjectType value;
 

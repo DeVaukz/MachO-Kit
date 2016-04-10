@@ -31,10 +31,41 @@
 @implementation DyldInfoUtil
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseDylibs:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        if ([line rangeOfString:@"/"].location == NSNotFound) {
+            if (result.count > 0) break;
+            else continue;
+        }
+        
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+            return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+        }]];
+        
+        if (components.count > 1)
+            [result addObject:@{
+                @"name": components[1],
+                @"attributes": components[0]
+            }];
+        else
+            [result addObject:@{
+                @"name": components[0]
+            }];
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseRebaseCommands:(NSString*)input
 {
     NSMutableArray *result = [NSMutableArray array];
-    NSMutableArray *lines = [[input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] mutableCopy];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
     for (NSString *line in lines) {
         if ([line rangeOfString:@"REBASE_"].location != NSNotFound)

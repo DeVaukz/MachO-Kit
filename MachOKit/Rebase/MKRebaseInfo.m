@@ -30,11 +30,13 @@
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKRebaseCommand.h"
+#import "MKFixup.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKRebaseInfo
 
 @synthesize commands = _commands;
+@synthesize fixups = _fixups;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithSize:(mk_vm_size_t)size offset:(mk_vm_offset_t)offset inImage:(MKMachOImage*)image error:(NSError**)error
@@ -50,8 +52,8 @@
     
     // A size of 0 is strange but valid.
     if (self.nodeSize == 0) {
-        // Still need to assign a value to the opcodes array.
-        _opcodes = [@[] retain];
+        // Still need to assign a value to the commands array.
+        _commands = [@[] retain];
         return self;
     }
     
@@ -84,6 +86,48 @@
         
         _commands = [commands copy];
         [commands release];
+    }
+    
+    // Determine the Fixup addresses
+    @autoreleasepool
+    {
+        NSMutableArray<MKFixup*> *fixups = [[NSMutableArray alloc] initWithCapacity:size/3];
+        
+        __block BOOL keepGoing = YES;
+        __block NSError *e = nil;
+        __block MKRebaseCommand *currentCommand = nil;
+        __block uint8_t type = UINT8_MAX;
+        __block unsigned segmentIndex = UINT_MAX;
+        __block mk_vm_offset_t offset = MK_VM_OFFSET_INVALID;
+        
+        void (^doRebase)(void) = ^{
+            MKFixup *fixup = [[MKFixup alloc] initWithType:type offset:offset segment:segmentIndex atCommand:currentCommand error:&e];
+            
+            if (fixup)
+                [fixups addObject:fixup];
+            else
+                keepGoing = NO;
+            
+            [fixup release];
+        };
+        
+        for (MKRebaseCommand *command in _commands) {
+            currentCommand = command;
+            keepGoing &= [command rebase:doRebase type:&type segment:&segmentIndex offset:&offset error:&e];
+            
+            if (keepGoing)
+                continue;
+            else if (e) {
+                MK_PUSH_UNDERLYING_WARNING(fixups, e, @"Rebasing failed at command: %@", currentCommand);
+                break;
+            } else {
+                MK_PUSH_WARNING(fixups, MK_EINVALID_DATA, @"Rebasing failed at command: %@", currentCommand);
+                break;
+            }
+        }
+        
+        _fixups = [fixups copy];
+        [fixups release];
     }
     
     return self;
@@ -127,6 +171,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_fixups release];
     [_commands release];
     
     [super dealloc];
@@ -140,7 +185,8 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(commands) description:@"Commands"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(commands) description:@"Commands"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fixups) description:@"Fixups"]
     ]];
 }
 

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachO+Segments.h
+//! @file       MKBackedNode+Pointer.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,32 +28,16 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKMachO.h>
-#import <MachOKit/MKOptional.h>
-
-@class MKSegment;
-@class MKSection;
+#import <MachOKit/MKBackedNode.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKMachOImage (Segments)
+@interface MKBackedNode (Pointer)
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Segments and Sections
-//! @name       Segments and Sections
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! The segments referenced by any \c LC_SEGMENT or \c LC_SEGMENT64 present
-//! in the Mach-O image.
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSegment*> *segments;
-
-- (NSArray*)segmentsWithName:(NSString*)name;
-
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSection*> *sections;
-
-- (NSArray*)sectionsWithName:(NSString*)sectName inSegment:(nullable MKSegment*)segment;
-- (NSArray*)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName;
+//! Returns the child node occupying \a address.  Subclasses should override
+//! this method.
+- (nullable __kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address;
 
 @end
 

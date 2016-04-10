@@ -43,6 +43,7 @@
 #import <MachOKit/MKOffsetNode.h>
 #import <MachOKit/MKOptional.h>
 
+#import <MachOKit/MKBackedNode+Pointer.h>
 #import <MachOKit/MKCString.h>
 
 #import <MachOKit/MKFatBinary.h>
@@ -116,6 +117,8 @@
     #import <MachOKit/MKLCEncryptionInfo64.h>
     #import <MachOKit/MKLCVersionMinTVOS.h>
     #import <MachOKit/MKLCVersionMinWatchOS.h>
+#import <MachOKit/MKMachO+Libraries.h>
+    #import <MachOKit/MKDependentLibrary.h>
 #import <MachOKit/MKSegment.h>
 #import <MachOKit/MKSection.h>
     #import <MachOKit/MKStubsSection.h>
@@ -123,6 +126,7 @@
     #import <MachOKit/MKIndirectPointersSection.h>
 #import <MachOKit/MKMachO+Rebase.h>
     #import <MachOKit/MKRebaseInfo.h>
+    #import <MachOKit/MKFixup.h>
     #import <MachOKit/MKRebaseCommand.h>
     #import <MachOKit/MKRebaseDone.h>
     #import <MachOKit/MKRebaseSetTypeImmediate.h>

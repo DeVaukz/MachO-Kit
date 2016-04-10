@@ -28,6 +28,7 @@
 #import "MKMachO+Segments.h"
 #import "NSError+MK.h"
 
+#import "MKBackedNode+Pointer.h"
 #import "MKLCSegment.h"
 #import "MKLCSegment64.h"
 #import "MKLCSymtab.h"
@@ -35,6 +36,7 @@
 #import "MKSection.h"
 
 _mk_internal NSString * const MKAllSegments = @"MKAllSegments";
+_mk_internal NSString * const MKIndexedSegments = @"MKIndexedSegments";
 _mk_internal NSString * const MKSegmentsByLoadCommand = @"MKSegmentsByLoadCommand";
 _mk_internal NSString * const MKAllSections = @"MKAllSections";
 _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
@@ -52,7 +54,9 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     if (_segments == nil)
     @autoreleasepool {
         NSMutableArray<MKSegment*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
+        NSMutableDictionary<NSNumber*, MKSegment*> *segmentsByIndex = [[NSMutableDictionary alloc] init];
         NSMapTable *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
+        NSInteger segmentIndex = -1;
         
         NSMutableArray<MKSection*> *sections = [[NSMutableArray alloc] init];
         NSMutableDictionary<NSNumber*, MKSection*> *sectionsByIndex = [[NSMutableDictionary alloc] init];
@@ -66,6 +70,8 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             if ([lc conformsToProtocol:@protocol(MKLCSegment)] == NO)
                 continue;
             
+            segmentIndex++;
+            
             MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&localError];
             if (segment == nil) {
                 MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to load segment for load command %@", lc);
@@ -73,6 +79,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             }
             
             [segments addObject:segment];
+            [segmentsByIndex setObject:segment forKey:@(segmentIndex)];
             [segmentsByLoadCommand setObject:segment forKey:lc];
             
             // Copy all sections from the segment into the sections dictionary
@@ -95,6 +102,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
         
         _segments = [@{
             MKAllSegments: segments,
+            MKIndexedSegments: segmentsByIndex,
             MKSegmentsByLoadCommand: segmentsByLoadCommand,
             MKAllSections: sections,
             MKIndexedSections: [NSDictionary dictionaryWithDictionary:sectionsByIndex]
@@ -110,8 +118,8 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSSet*)segments
-{ return [NSSet setWithArray:self._segments[MKAllSegments]]; }
+- (NSDictionary*)segments
+{ return self._segments[MKIndexedSegments]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)segmentsWithName:(NSString*)name
@@ -131,7 +139,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     NSMutableArray *sections = [NSMutableArray arrayWithCapacity:1];
     
     for (MKSection *section in self._segments[MKAllSections]) {
-        if (section.parent == segment && [section.name isEqualToString:sectName])
+        if ((segment == nil || section.parent == segment) && [section.name isEqualToString:sectName])
             [sections addObject:section];
     }
     
@@ -141,5 +149,22 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName
 { return [self sectionsWithName:sectName inSegment:[self segmentsWithName:segName].firstObject]; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
+{
+    for (MKSegment *segment in self.segments) {
+        mk_vm_range_t range = mk_vm_range_make(segment.nodeVMAddress, segment.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [segment childNodeAtVMAddress:address];
+        }
+    }
+    
+    return [super childNodeAtVMAddress:address];
+}
 
 @end

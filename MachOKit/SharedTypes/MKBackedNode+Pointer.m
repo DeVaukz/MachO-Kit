@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMachO+Rebase.m
+//|             MKBackedNode+Pointer.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,35 +25,19 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMachO+Rebase.h"
-#import "NSError+MK.h"
-
-#import "MKRebaseInfo.h"
+#import "MKBackedNode+Pointer.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKMachOImage (Rebase)
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Rebasing Information
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+@implementation MKBackedNode (Pointer)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional<MKRebaseInfo*>*)rebaseInfo
+- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
 {
-    if (_rebaseInfo == nil)
-    {
-        NSError *e = nil;
-        
-        MKRebaseInfo *rebaseInfo = [[MKRebaseInfo alloc] initWithParent:self error:&e];
-        if (rebaseInfo)
-            _rebaseInfo = [[MKOptional alloc] initWithValue:rebaseInfo];
-        else if (e /* Only failed if we have an error */)
-            _rebaseInfo = [[MKOptional alloc] initWithError:e];
-        else
-            _rebaseInfo = [MKOptional new];
-    }
-    
-    return _rebaseInfo;
+    mk_vm_range_t range = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
+    if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS)
+        return self;
+    else
+        return nil;
 }
 
 @end

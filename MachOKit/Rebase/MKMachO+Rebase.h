@@ -29,8 +29,11 @@
 @import Foundation;
 
 #import <MachOKit/MKMachO.h>
+#import <MachOKit/MKOptional.h>
 
 @class MKRebaseInfo;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKMachOImage (Rebase)
@@ -40,8 +43,10 @@
 //! @name       Rebasing Information
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The rebasing information, or nil if the images does not contain any
-//! rebasing information.
-@property (nonatomic, readonly, nullable) MKRebaseInfo *rebaseInfo;
+//! The rebasing information.  The returned optional may contain a \c nil
+//! value and a \c nil error if the images has no rebasing information.
+@property (nonatomic, readonly) MKOptional<MKRebaseInfo*> *rebaseInfo;
 
 @end
+
+NS_ASSUME_NONNULL_END

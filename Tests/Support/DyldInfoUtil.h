@@ -30,6 +30,14 @@
 //----------------------------------------------------------------------------//
 @interface DyldInfoUtil : NSObject
 
+//! Parses \a input into an array of dictionaries, each representing a single
+//! dependent library.  Each dictionary contains the following keys:
+//!
+//!     name: Name of the dependent library
+//!     attributes: Attributes of the dependent library
+//!
++ (NSArray*)parseDylibs:(NSString*)input;
+
 //! Parses \a input into an array of strings, each representing a single
 //! opcode. Strings are in the following format where \c XXXX is the offset
 //! from the start of the rebase commands.

@@ -27,6 +27,7 @@
 
 #import "MKSegment.h"
 #import "NSError+MK.h"
+#import "MKBackedNode+Pointer.h"
 #import "MKMachO.h"
 
 #import <objc/runtime.h>
@@ -230,6 +231,23 @@
     }
     
     return nil;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
+{
+    for (MKSection *section in self.sections) {
+        mk_vm_range_t range = mk_vm_range_make(section.nodeVMAddress, section.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [section childNodeAtVMAddress:address];
+        }
+    }
+    
+    return [super childNodeAtVMAddress:address];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

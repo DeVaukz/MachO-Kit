@@ -32,20 +32,30 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionalWithValue:(id)value
-{
-    MKOptional *optional = [self new];
-    optional->_value = [value retain];
-    
-    return [optional autorelease];
-}
+{ return [[[self alloc] initWithValue:value] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionalWithError:(NSError*)error
+{ return [[[self alloc] initWithError:error] autorelease]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithValue:(id)value
 {
-    MKOptional *optional = [self new];
-    optional->_value = [error retain];
+    self = [super init];
     
-    return [optional autorelease];
+    self->_value = [value retain];
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithError:(NSError*)error
+{
+    self = [super init];
+    
+    self->_value = [error retain];
+    
+    return self;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
