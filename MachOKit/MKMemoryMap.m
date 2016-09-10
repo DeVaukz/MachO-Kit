@@ -107,21 +107,21 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSData*)dataAtOffset:(mk_vm_offset_t)offset fromAddress:(mach_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error
+- (NSData*)dataAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error
 {
-    __block NSData *retValue;
-    __block NSError *localError;
+    __block NSData *retValue = nil;
+    __block NSError *localError = nil;
     
     [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:requireFull withHandler:^(vm_address_t address, vm_size_t length, NSError *error) {
         localError = error;
         if (error)
             return;
         
-        retValue = [NSData dataWithBytes:(void*)address length:length];
+        retValue = [[NSData alloc] initWithBytes:(void*)address length:length];
     }];
     
     MK_ERROR_OUT = localError;
-    return retValue;
+    return [retValue autorelease];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
