@@ -111,5 +111,14 @@
 #   define _mk_internal_extern extern
 #endif
 
+//! Inline the declaration
+#if defined(DOXYGEN)
+#   define _mk_inline
+#elif __GNUC__ || __has_attribute(always_inline)
+#   define _mk_inine inline __attribute__((__always_inline__))
+#else
+#   define _mk_inine inline
+#endif
+
 
 #endif /* _base_h */

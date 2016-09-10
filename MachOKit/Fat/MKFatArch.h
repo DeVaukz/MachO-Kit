@@ -45,6 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
     uint32_t _align;
 }
 
+//! The architecture of this slice.
+@property (nonatomic, readonly) mk_architecture_t architecture;
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  fat_arch Values
 //! @name       fat_arch Values
