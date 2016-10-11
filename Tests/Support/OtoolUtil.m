@@ -38,9 +38,6 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
 {
     NSMutableArray *lines = [[input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] mutableCopy];
     
-    // Remove path
-    [lines removeObjectAtIndex:0];
-    
     // Expect "Mach header"
     NSAssert([lines[0] isEqualToString:@"Mach header"], @"");
     [lines removeObjectAtIndex:0];
@@ -167,6 +164,10 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
     };
     
     while (lines.count) {
+        
+        // Workaround: otool -l in Xcode 8 dumps the Mach header before the load commands.
+        while ([lines[0] rangeOfString:@"Load command"].location == NSNotFound)
+            [lines removeObjectAtIndex:0];
         
         NSMutableDictionary *loadCommand = [NSMutableDictionary dictionary];
         parseLoadCommand(loadCommand);

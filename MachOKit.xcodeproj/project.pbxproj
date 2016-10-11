@@ -2824,15 +2824,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -2841,11 +2835,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MachOKit.framework/Versions/A/MachOKit";
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;

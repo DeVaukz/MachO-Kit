@@ -37,6 +37,7 @@
 
 @property (nonatomic, readonly) NSDictionary *machHeader;
 @property (nonatomic, readonly) NSArray *loadCommands;
+@property (nonatomic, readonly) NSArray *dependentLibraries;
 @property (nonatomic, readonly) NSArray *rebaseCommands;
 @property (nonatomic, readonly) NSArray *fixupAddresses;
 
