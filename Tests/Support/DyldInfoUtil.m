@@ -75,4 +75,30 @@
     return result;
 }
 
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseFixups:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count < 1 || [components[0] rangeOfString:@"__"].location != 0)
+            continue;
+        
+        components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+            return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+        }]];
+        
+        [result addObject:@{
+            @"segment": components[0],
+            @"section": components[1],
+            @"address": components[2],
+            @"type": [[components subarrayWithRange:NSMakeRange(3, components.count - 3)] componentsJoinedByString:@" "]
+        }];
+    }
+    
+    return result;
+}
 @end

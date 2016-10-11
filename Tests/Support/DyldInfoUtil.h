@@ -46,4 +46,14 @@
 //!
 + (NSArray*)parseRebaseCommands:(NSString*)input;
 
+//! Parses \a input into an array of dictionaries, each representing a single
+//! fixup.  Each dictionary contains the following keys:
+//!
+//!     segment: Name of the segment in which the fixup resides
+//!     section: Name of the section in which the fixup resides
+//!     address: vm address of the fixup location
+//!     type: fixup type
+//!
++ (NSArray*)parseFixups:(NSString*)input;
+
 @end

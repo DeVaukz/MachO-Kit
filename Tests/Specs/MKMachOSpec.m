@@ -199,7 +199,7 @@ SpecBegin(MKMachOImage)
             describe(@"rebase commands", ^{
                 NSArray<NSString*> *dyldInfoRebaseCommands = otoolArchitecture.rebaseCommands;
                 NSArray<NSDictionary*> *dyldInfoRebaseFixups = otoolArchitecture.fixupAddresses;
-                MKRebaseInfo *machoRebaseInfo = macho.rebaseInfo;
+                MKRebaseInfo *machoRebaseInfo = macho.rebaseInfo.value;
                 
                 if (machoRebaseInfo == nil)
                     return; // TODO - Check if the image should have rebase info.
