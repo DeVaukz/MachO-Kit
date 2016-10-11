@@ -287,7 +287,7 @@ public:
     //! Byte swap a 64-bit value
     uint64_t swap (uint64_t v) const { return swap64(v); }
     //! Byte swap an arbitrary length value.
-    uint8_t* swap (uint8_t *input, size_t length) const { return swap(input, length); }
+    uint8_t* swap (uint8_t *input, size_t length) const { return swap_any(input, length); }
 #endif
 } mk_byteorder_t;
 
