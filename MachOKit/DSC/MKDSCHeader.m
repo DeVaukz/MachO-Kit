@@ -82,6 +82,12 @@
             MK_PUSH_WARNING(uuid, MK_EINVALID_DATA, @"Could not create an NSUUID with data.");
     }
     
+    // The cacheType field is only present if the header size is >= 0x70.  This
+    // field first appeared in the OS X 10.11 dyld sources.
+#define HAS_CACHE_TYPE (_mappingOffset >= offsetof(struct dyld_cache_header, cacheType) + sizeof(sch.cacheType))
+    if (HAS_CACHE_TYPE)
+        _cacheType = MKSwapLValue64(sch.cacheType, self.dataModel);
+    
     return self;
 }
 
@@ -110,6 +116,7 @@
 @synthesize localSymbolsOffset = _localSymbolsOffset;
 @synthesize localSymbolsSize = _localSymbolsSize;
 @synthesize uuid = _uuid;
+@synthesize cacheType = _cacheType;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
@@ -151,6 +158,10 @@
     
     if (HAS_UUID) {
         fields = [fields arrayByAddingObject:[MKPrimativeNodeField fieldWithName:MK_PROPERTY(uuid) keyPath:@"uuid.UUIDString" description:@"UUID" offset:offsetof(struct dyld_cache_header, uuid) size:sizeof(sch.uuid)]];
+    }
+    
+    if (HAS_CACHE_TYPE) {
+        fields = [fields arrayByAddingObject:[MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cacheType) description:@"Cache Type" offset:offsetof(struct dyld_cache_header, cacheType) size:sizeof(sch.cacheType)]];
     }
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];

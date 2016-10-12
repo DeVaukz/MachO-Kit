@@ -51,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
     uint64_t _localSymbolsOffset;
     uint64_t _localSymbolsSize;
     NSUUID *_uuid;
+    uint64_t _cacheType;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -74,6 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) uint64_t localSymbolsOffset;
 @property (nonatomic, readonly) uint64_t localSymbolsSize;
 @property (nonatomic, readonly, nullable) NSUUID *uuid;
+@property (nonatomic, readonly) uint64_t cacheType;
 
 @end
 
