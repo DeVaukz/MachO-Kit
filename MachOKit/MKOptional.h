@@ -31,17 +31,17 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! A type that can represent either a wrapped value, or an error.
+//! A type that can represent either a value or an error.
 //!
 @interface MKOptional<ObjectType> : NSObject {
 @package
     id _value;
 }
 
-//! Create and return a new optional with the provided \a value.
+//! Creates and returns a new optional with the provided \a value.
 + (instancetype)optionalWithValue:(ObjectType)value;
 
-//! Create and return a new optional with the provided \a error.
+//! Creates and returns a new optional with the provided \a error.
 + (instancetype)optionalWithError:(NSError*)error;
 
 //! Initializes the receiver with the provided \a value.

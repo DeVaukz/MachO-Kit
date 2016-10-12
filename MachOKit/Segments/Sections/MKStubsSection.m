@@ -122,6 +122,7 @@
 - (void)dealloc
 {
     [_stubs release];
+    
     [super dealloc];
 }
 

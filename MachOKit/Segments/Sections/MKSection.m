@@ -138,6 +138,7 @@
     {
         // Safe.  File range check would have failed if this coul wrap around.
         _nodeContextAddress = _fileOffset - segment.fileOffset;
+        _nodeContextSize = _size;
         
         if ((err = mk_vm_address_add(_nodeContextAddress, segment.nodeContextAddress, &_nodeContextAddress))) {
             MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, _nodeContextAddress, segment.nodeContextAddress);

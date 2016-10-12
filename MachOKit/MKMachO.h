@@ -94,6 +94,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 
 //! The libMachO context.
 @property (nonatomic, readonly) mk_context_t *context;
+
 //! The flags that this Mach-O image was initialized with.
 @property (nonatomic, readonly) MKMachOImageFlags flags;
 
@@ -105,7 +106,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 //! The name that this Mach-O image was initialized with.
 @property (nonatomic, readonly, nullable) NSString *name;
 
-//! The slide value that this Mach-O image.
+//! The slide value for this Mach-O image.
 @property (nonatomic, readonly) mk_vm_slide_t slide;
 
 //! Indicates whether this Mach-O image is from dyld's shared cache.
@@ -115,11 +116,17 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 @property (nonatomic, readonly) BOOL isFromMemory;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Header and Load Commands
-//! @name       Header and Load Commands
+#pragma mark -  Header
+//! @name       Header
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+//! The header of this image.
 @property (nonatomic, readonly) MKMachHeader *header;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Load Commands
+//! @name       Load Commands
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! An array containing instances of \ref MKLoadCommand, each representing a
 //! load commands from this Mach-O image.  Load commands are ordered as they

@@ -68,6 +68,7 @@
 - (void)dealloc
 {
     [_target release];
+    
     [super dealloc];
 }
 

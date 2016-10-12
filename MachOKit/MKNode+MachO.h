@@ -29,8 +29,6 @@
 @import Foundation;
 
 #import <MachOKit/MKNode.h>
-#import <MachOKit/MKBackedNode.h>
-#import <MachOKit/MKOffsetNode.h>
 
 @class MKMachOImage;
 

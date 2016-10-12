@@ -67,7 +67,7 @@
         [pointers addObject:pointer];
         [pointer release];
         
-        // Safe.  All string nodes must be within the size of this node.
+        // Safe.  All pointers must be within the size of this node.
         offset += pointer.nodeSize;
     }
     
@@ -81,6 +81,7 @@
 - (void)dealloc
 {
     [_pointers release];
+    
     [super dealloc];
 }
 

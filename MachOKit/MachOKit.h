@@ -37,11 +37,11 @@
 
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKNodeDescription.h>
+#import <MachOKit/MKOptional.h>
 #import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNode.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
-#import <MachOKit/MKOptional.h>
 
 #import <MachOKit/MKBackedNode+Pointer.h>
 #import <MachOKit/MKCString.h>
