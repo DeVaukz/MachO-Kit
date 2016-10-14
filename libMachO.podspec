@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "libMachO"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "libMachO is a lightweight, C library for parsing in-memory Mach-O images."
 
   s.description      = <<-DESC
@@ -22,13 +22,18 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = '10.6'
   s.watchos.deployment_target = '1.0'
   s.tvos.deployment_target = '9.0'
-  s.requires_arc = true
   
   s.source_files = 'libMachO/**/*'
   s.resources = 'libMachO/**/*'
   s.public_header_files = 'libMachO/macho.h'
   s.header_mappings_dir = 'libMachO/'
+  
   s.xcconfig = { 
+    'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/libMachO/**"',
+    'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES'
+  }
+  
+  s.pod_target_xcconfig = { 
     'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/libMachO/**"',
     'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES'
   }
