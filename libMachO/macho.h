@@ -64,6 +64,7 @@
 #define MK_API_VERSION 1
 
 #include "core.h"
+#include "architecture.h"
 #include "macho_abi.h"
 
 #endif /* _macho_h */

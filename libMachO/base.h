@@ -120,5 +120,23 @@
 #   define _mk_inine inline
 #endif
 
+//----------------------------------------------------------------------------//
+#pragma mark -  Swift
+/// @name       Swift
+//----------------------------------------------------------------------------//
+
+#if __has_attribute(swift_private)
+#   define _mk_refined_for_swift __attribute__((__swift_private__))
+#else
+#   define _mk_refined_for_swift
+#endif
+
+//! Swift refinment
+#if __has_attribute(swift_name)
+#   define _mk_swift_name(_name) __attribute__((swift_name(#_name)))
+#else
+#   define _mk_swift_name(_name)
+#endif
+
 
 #endif /* _base_h */

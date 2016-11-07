@@ -36,6 +36,7 @@
 #define _macho_abi_h
 
 #include "core.h"
+#include "architecture.h"
 
 #include "macho_image.h"
 

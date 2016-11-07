@@ -35,6 +35,8 @@
 #ifndef _architecture_h
 #define _architecture_h
 
+#include "core.h"
+
 //! @addtogroup ARCHITECTURE
 //! @{
 //!
@@ -53,33 +55,43 @@ typedef struct mk_architecture_s {
 } mk_architecture_t;
 
 //! Unknown architecture
+_mk_swift_name(mk_architecture_s.unknown)
 static const mk_architecture_t mk_architecture_unknown = { 0, 0 };
 
 //! Architecture for i386 CPUs.
+_mk_swift_name(mk_architecture_s.i386)
 static const mk_architecture_t mk_architecture_i386 = { CPU_TYPE_I386, CPU_SUBTYPE_I386_ALL };
 
 //! Architecture for all x86_64 CPUs.
+_mk_swift_name(mk_architecture_s.x86_64)
 static const mk_architecture_t mk_architecture_x86_64 = { CPU_TYPE_X86_64, CPU_SUBTYPE_X86_64_ALL };
 
 //! Architecture for all x86_64 Haswell CPUs.
+_mk_swift_name(mk_architecture_s.x86_64h)
 static const mk_architecture_t mk_architecture_x86_64h = { CPU_TYPE_X86_64, CPU_SUBTYPE_X86_64_H };
 
 //! Architecture for generic ARM CPUs.
+_mk_swift_name(mk_architecture_s.arm)
 static const mk_architecture_t mk_architecture_arm = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_ALL };
 
 //! Architecture for ARMv7 CPUs.
+_mk_swift_name(mk_architecture_s.armv7)
 static const mk_architecture_t mk_architecture_armv7 = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7 };
 
 //! Architecture for ARMv7f CPUs.
+_mk_swift_name(mk_architecture_s.armv7f)
 static const mk_architecture_t mk_architecture_armv7f = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7F };
 
 //! Architecture for ARMv7s CPUs.
+_mk_swift_name(mk_architecture_s.armv7s)
 static const mk_architecture_t mk_architecture_armv7s = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7S };
 
 //! Architecture for ARMv7k CPUs.
+_mk_swift_name(mk_architecture_s.armv7k)
 static const mk_architecture_t mk_architecture_armv7k = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7K };
 
 //! Architecture for 64-bit ARM CPUs.
+_mk_swift_name(mk_architecture_s.arm64)
 static const mk_architecture_t mk_architecture_arm64 = { CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64_ALL };
 
 
@@ -89,6 +101,7 @@ static const mk_architecture_t mk_architecture_arm64 = { CPU_TYPE_ARM64, CPU_SUB
 //----------------------------------------------------------------------------//
 
 //!  Create a new architecture structure with the given CPU type and subtype.
+_mk_refined_for_swift
 _mk_inine mk_architecture_t
 mk_architecture_create(cpu_type_t type, cpu_subtype_t subtype)
 {
@@ -105,16 +118,19 @@ mk_architecture_create(cpu_type_t type, cpu_subtype_t subtype)
 //----------------------------------------------------------------------------//
 
 //! Returns the CPU type of the provided \a architecture.
+_mk_swift_name(getter:mk_architecture_s.cpuType(self:))
 _mk_inine cpu_type_t
 mk_architecture_get_cpu_type(mk_architecture_t architecture)
 { return architecture.cputype; }
 
 //! Returns the CPU subtype of the provided \a architecture.
+_mk_swift_name(getter:mk_architecture_s.cpuSubtype(self:))
 _mk_inine cpu_subtype_t
 mk_architecture_get_cpu_subtype(mk_architecture_t architecture)
 { return architecture.cpusubtype; }
 
 //! Returns true if the provided \a architecture uses a 64-bit ABI.
+_mk_swift_name(getter:mk_architecture_s.uses64bitABI(self:))
 _mk_inine bool
 mk_architecture_uses_64bit_abi(mk_architecture_t architecture)
 { return !!(architecture.cputype & CPU_ARCH_ABI64); }
@@ -126,6 +142,7 @@ mk_architecture_uses_64bit_abi(mk_architecture_t architecture)
 //----------------------------------------------------------------------------//
 
 //! Returns true if the provided architecturs are equal.
+_mk_swift_name(mk_architecture_s.equals(self:_:))
 _mk_inine bool
 mk_architecture_equal_to_architecture(mk_architecture_t architecture, mk_architecture_t other)
 { return (architecture.cputype == other.cputype && architecture.cpusubtype == other.cpusubtype); }
