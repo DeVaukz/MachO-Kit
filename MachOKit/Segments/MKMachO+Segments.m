@@ -155,16 +155,16 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKSegment *segment in self.segments) {
+    for (MKSegment *segment in self._segments[MKAllSegments]) {
         mk_vm_range_t range = mk_vm_range_make(segment.nodeVMAddress, segment.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [segment childNodeAtVMAddress:address];
+            return [segment childNodeOccupyingVMAddress:address targetClass:targetClass];
         }
     }
     
-    return [super childNodeAtVMAddress:address];
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 @end

@@ -31,13 +31,41 @@
 @implementation MKBackedNode (Pointer)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
     mk_vm_range_t range = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
-    if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS)
-        return self;
+    if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS && (targetClass == nil || [self isKindOfClass:targetClass]))
+        return [MKOptional optionalWithValue:self];
     else
-        return nil;
+        return [MKOptional optional];
+}
+
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+{
+    MKOptional<MKBackedNode*> *child = [self childNodeOccupyingVMAddress:address targetClass:nil];
+    
+    // Some nodes may 'create' the child node upon request.
+    if (child.value && child.value != self)
+        child = [child.value childNodeAtVMAddress:address targetClass:targetClass];
+    
+    if (child.value && (targetClass == nil || [child.value isKindOfClass:targetClass])) {
+        if (child.value.nodeVMAddress == address)
+            // Found a child node at address
+            return child;
+        else
+            // Did not find a child node at address
+            return [MKOptional optional];
+    } else
+        // There was an error finding (or creating) the child node at address.
+        return child;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address
+{
+    return [self childNodeAtVMAddress:address targetClass:nil];
 }
 
 @end

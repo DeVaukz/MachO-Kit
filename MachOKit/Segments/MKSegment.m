@@ -238,16 +238,16 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (__kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
     for (MKSection *section in self.sections) {
         mk_vm_range_t range = mk_vm_range_make(section.nodeVMAddress, section.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [section childNodeAtVMAddress:address];
+            return [section childNodeOccupyingVMAddress:address targetClass:targetClass];
         }
     }
     
-    return [super childNodeAtVMAddress:address];
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

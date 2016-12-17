@@ -48,12 +48,12 @@ NS_ASSUME_NONNULL_BEGIN
 //! in the Mach-O image.
 @property (nonatomic, readonly) NSDictionary<NSNumber*, MKSegment*> *segments;
 
-- (NSArray*)segmentsWithName:(NSString*)name;
+- (NSArray<__kindof MKSegment*> *)segmentsWithName:(NSString*)name;
 
 @property (nonatomic, readonly) NSDictionary<NSNumber*, MKSection*> *sections;
 
-- (NSArray*)sectionsWithName:(NSString*)sectName inSegment:(nullable MKSegment*)segment;
-- (NSArray*)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName;
+- (NSArray<__kindof MKSection*> *)sectionsWithName:(NSString*)sectName inSegment:(nullable MKSegment*)segment;
+- (NSArray<__kindof MKSection*> *)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName;
 
 @end
 

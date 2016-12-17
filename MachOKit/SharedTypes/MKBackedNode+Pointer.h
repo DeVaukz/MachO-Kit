@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKBackedNode.h>
+#import <MachOKit/MKOptional.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,7 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Returns the child node occupying \a address.  Subclasses should override
 //! this method.
-- (nullable __kindof MKBackedNode*)childNodeAtVMAddress:(mk_vm_address_t)address;
+- (MKOptional<__kindof MKBackedNode*> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(nullable Class)targetClass;
+
+//! Returns the child node at \a address, if it's class matches the
+//! \a targetClass.
+- (MKOptional<__kindof MKBackedNode*> *)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(nullable Class)targetClass;
+
+//! Returns the child node at \a address.
+- (MKOptional<__kindof MKBackedNode*> *)childNodeAtVMAddress:(mk_vm_address_t)address;
 
 @end
 

@@ -31,12 +31,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! A type that can represent either a value or an error.
+//! A type that can represent either none, a value, or an error.
 //!
 @interface MKOptional<ObjectType> : NSObject {
 @package
     id _value;
 }
+
+//! Creates and returns a new optional with no value.
++ (instancetype)optional;
 
 //! Creates and returns a new optional with the provided \a value.
 + (instancetype)optionalWithValue:(ObjectType)value;
@@ -44,11 +47,17 @@ NS_ASSUME_NONNULL_BEGIN
 //! Creates and returns a new optional with the provided \a error.
 + (instancetype)optionalWithError:(NSError*)error;
 
+//! Initializes the receiver with no value.
+- (instancetype)init;
+
 //! Initializes the receiver with the provided \a value.
 - (instancetype)initWithValue:(ObjectType)value;
 
 //! Initializes the receiver with the provided \a error.
 - (instancetype)initWithError:(NSError*)error;
+
+//!
+@property (readonly) BOOL none;
 
 //!
 @property (readonly, nullable) ObjectType value;

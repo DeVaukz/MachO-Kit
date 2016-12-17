@@ -65,7 +65,7 @@
     }
     
     // Try to find the section
-    _section = [_segment childNodeAtVMAddress:self.address];
+    _section = [_segment childNodeAtVMAddress:self.address].value;
     if ([_section isKindOfClass:MKSection.class])
         _section = [_section retain];
     else

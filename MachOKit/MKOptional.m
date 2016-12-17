@@ -31,12 +31,32 @@
 @implementation MKOptional
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optional
+{
+    static MKOptional *kOptionalNone = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        kOptionalNone = [self new];
+    });
+    
+    return kOptionalNone;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionalWithValue:(id)value
 { return [[[self alloc] initWithValue:value] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionalWithError:(NSError*)error
 { return [[[self alloc] initWithError:error] autorelease]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)init
+{
+    self = [super init];
+    
+    return self;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithValue:(id)value
@@ -71,6 +91,12 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)none
+{
+    return (_value == nil);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (id)value
 {
     if ([_value isKindOfClass:NSError.class] == NO)
@@ -91,6 +117,15 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)isEqual:(id)object
+{
+    if (self.none && [object isKindOfClass:MKOptional.class] && [object none])
+        return YES;
+    else
+        return [_value isEqual:object];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description

@@ -27,6 +27,7 @@
 
 #import "MKCStringSection.h"
 #import "NSError+MK.h"
+#import "MKBackedNode+Pointer.h"
 #import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
@@ -81,6 +82,23 @@
 {
     [_strings release];
     [super dealloc];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+{
+    for (MKCString *string in self.strings) {
+        mk_vm_range_t range = mk_vm_range_make(string.nodeVMAddress, string.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [string childNodeOccupyingVMAddress:address targetClass:targetClass];
+        }
+    }
+    
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
