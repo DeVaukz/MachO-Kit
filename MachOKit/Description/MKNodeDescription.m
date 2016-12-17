@@ -29,6 +29,7 @@
 #import "NSError+MK.h"
 #import "MKNode.h"
 #import "MKBackedNode.h"
+#import "MKPointer.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeDescription

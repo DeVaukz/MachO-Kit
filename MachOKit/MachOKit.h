@@ -44,6 +44,8 @@
 #import <MachOKit/MKOffsetNode.h>
 
 #import <MachOKit/MKBackedNode+Pointer.h>
+#import <MachOKit/MKPointer.h>
+#import <MachOKit/MKPointerNode.h>
 #import <MachOKit/MKCString.h>
 
 #import <MachOKit/MKFatBinary.h>
