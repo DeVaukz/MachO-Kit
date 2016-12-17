@@ -84,7 +84,7 @@
     {
         uint32_t sectionCount = self.nsects;
         
-        NSMutableArray<MKLCSection64*> *sections = [NSMutableArray arrayWithCapacity:sectionCount];
+        NSMutableArray<MKLCSection64*> *sections = [[NSMutableArray alloc] initWithCapacity:sectionCount];
         mach_vm_offset_t offset = sizeof(lc);
         mach_vm_offset_t oldOffset;
         
@@ -102,7 +102,7 @@
             //       not attempt to continue after a MKLCSection fails to load
             //       as this will break the ordering.
             
-            MKLCSection64 *sect = [[[MKLCSection64 alloc] initWithOffset:offset fromParent:self error:&sectionError] autorelease];
+            MKLCSection64 *sect = [[MKLCSection64 alloc] initWithOffset:offset fromParent:self error:&sectionError];
             if (sect == nil) {
                 // If we fail to instantiate an instance of the MKLCSection64 it
                 // means we've walked off the end of memory that can be mapped by
@@ -124,9 +124,11 @@
             }
             
             [sections addObject:sect];
+            [sect release];
         }}
         
         _sections = [sections copy];
+        [sections release];
     }
     
     return self;

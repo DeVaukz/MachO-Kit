@@ -95,14 +95,6 @@ NS_ASSUME_NONNULL_BEGIN
 //! specified in this segment's load command.
 @property (nonatomic, readonly) NSArray<MKLCSection*> *sections;
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Mach-O Struct Values
-//! @name       Mach-O Struct Values
-//!
-//! @brief      These values are extracted directly from the Mach-O load
-//!             command structure without modification or cleanup.
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
 //! Segment name.
 @property (nonatomic, readonly, nullable) NSString *segname;
 //! The memory address of this segment.
@@ -144,14 +136,6 @@ NS_ASSUME_NONNULL_BEGIN
     uint32_t _reserved2;
 }
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Mach-O Struct Values
-//! @name       Mach-O Struct Values
-//!
-//! @brief      These values are extracted directly from the Mach-O load
-//!             command structure without modification or cleanup.
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
 //! The name of this section.
 @property (nonatomic, readonly, nullable) NSString *sectname;
 //! The name of the segment this section goes in.
@@ -162,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) uint32_t size;
 //! File offset of this section.
 @property (nonatomic, readonly) uint32_t offset;
-//! Section alignment.
+//! Section alignment, in bytes.
 @property (nonatomic, readonly) uint32_t align;
 //! File offset of the relocation entries.
 @property (nonatomic, readonly) uint32_t reloff;

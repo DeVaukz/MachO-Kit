@@ -196,6 +196,28 @@
     return self;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    [_indirectSymbolTable release];
+    [_symbolTable release];
+    [_stringTable release];
+    
+    [_rebaseInfo release];
+    
+    [_segments release];
+    
+    [_dependentLibraries release];
+    
+    [_loadCommands release];
+    [_header release];
+    
+    [_name release];
+    [_dataModel release];
+    
+    [super dealloc];
+}
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - Retrieving the Initialization Context
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -276,8 +298,8 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(slide) description:@"Slide"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Mach-O Header"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(loadCommands) description:@"Load Commands"],
-        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
-        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
     ]];
 }
 

@@ -84,7 +84,7 @@
     {
         uint32_t sectionCount = self.nsects;
         
-        NSMutableArray<MKLCSection*> *sections = [NSMutableArray arrayWithCapacity:sectionCount];
+        NSMutableArray<MKLCSection*> *sections = [[NSMutableArray alloc] initWithCapacity:sectionCount];
         mach_vm_offset_t offset = sizeof(lc);
         mach_vm_offset_t oldOffset;
         
@@ -124,9 +124,11 @@
             }
                 
             [sections addObject:sect];
+            [sect release];
         }}
         
         _sections = [sections copy];
+        [sections release];
     }
     
     return self;
