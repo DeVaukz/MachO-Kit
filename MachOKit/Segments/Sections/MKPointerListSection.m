@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKCStringSection.m
+//|             MKPointerListSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,21 +25,23 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKCStringSection.h"
+#import "MKPointerListSection.h"
 #import "NSError+MK.h"
+#import "MKNodeDescription.h"
 #import "MKBackedNode+Pointer.h"
-#import "MKSegment.h"
+
+#include <objc/message.h>
 
 //----------------------------------------------------------------------------//
-@implementation MKCStringSection
+@implementation MKPointerListSection
 
-@synthesize strings = _strings;
+@synthesize elements = _pointerList;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
-    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_CSTRING_LITERALS)
+    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LITERAL_POINTERS)
         return 20;
     
     return 0;
@@ -51,29 +53,36 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
     
-    NSMutableArray<MKCString*> *strings = [[NSMutableArray alloc] init];
-    
-    mk_vm_offset_t offset = 0;
-    
-    // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
-    while ((mk_vm_size_t)offset < self.nodeSize)
+    // Load pointers
     {
-        NSError *e = nil;
-        MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&e];
-        if (string == nil) {
-            MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(strings), e, @"Could not load CString at offset %" MK_VM_PRIiOFFSET ".", offset);
-            break;
+        NSMutableArray<MKPointerNode*> *pointers = [[NSMutableArray alloc] init];
+        mk_vm_offset_t offset = 0;
+        
+        Class targetClass = nil;
+        // Hack Hack - The -classForGenericArgumentAtIndex: isn't defined in
+        //             SDK headers, which causes warnings.
+        if ([self.class respondsToSelector:sel_getUid("classForGenericArgumentAtIndex:")])
+            targetClass = ((Class(*)(id, SEL, NSUInteger))objc_msgSend)(self.class, sel_getUid("classForGenericArgumentAtIndex:"), 0);
+        
+        while (offset < self.nodeSize)
+        {
+            NSError *e = nil;
+            MKPointerNode *pointer = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:targetClass error:&e];
+            if (pointer == nil) {
+                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
+                break;
+            }
+            
+            [pointers addObject:pointer];
+            [pointer release];
+            
+            // Safe.  All pointer nodes must be within the size of this node.
+            offset += pointer.nodeSize;
         }
         
-        [strings addObject:string];
-        [string release];
-        
-        // Safe.  All string nodes must be within the size of this node.
-        offset += string.nodeSize;
+        _pointerList = [pointers copy];
+        [pointers release];
     }
-    
-    _strings = [strings copy];
-    [strings release];
     
     return self;
 }
@@ -81,7 +90,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_strings release];
+    [_pointerList release];
     
     [super dealloc];
 }
@@ -93,10 +102,10 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKCString *string in self.strings) {
-        mk_vm_range_t range = mk_vm_range_make(string.nodeVMAddress, string.nodeSize);
+    for (MKOffsetNode *element in self.elements) {
+        mk_vm_range_t range = mk_vm_range_make(element.nodeVMAddress, element.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [string childNodeOccupyingVMAddress:address targetClass:targetClass];
+            return [element childNodeOccupyingVMAddress:address targetClass:targetClass];
         }
     }
     
@@ -111,8 +120,7 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(strings) description:@"Strings"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(elements) description:@"Element List"]
     ]];
 }
-
 @end
