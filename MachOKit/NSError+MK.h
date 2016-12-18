@@ -88,6 +88,22 @@ NS_ASSUME_NONNULL_BEGIN
 #define MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(CODE, LHS_OFFSET, RHS_SIZE) \
     [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIiSIZE ") to %s (%" MK_VM_PRIiOFFSET ").", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_OFFSET, LHS_OFFSET]
 
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! adding \a RHS_SIZE to \a LHS_SIZE.
+#define MK_MAKE_VM_SIZE_ADD_ARITHMETIC_ERROR(CODE, LHS_SIZE, RHS_SIZE) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while adding %s (%" MK_VM_PRIiSIZE ") to %s (%" MK_VM_PRIiSIZE ").", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_SIZE, LHS_SIZE]
+
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! multiplying \a LHS_SIZE by \a RHS_MULTIPLIER.
+#define MK_MAKE_VM_SIZE_MULTIPLY_ARITHMETIC_ERROR(CODE, LHS_SIZE, RHS_MULTIPLIER) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while multiplying %s (%" MK_VM_PRIiSIZE ") by %s (%" PRIu64 ").", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER]
+
+//! Creates an \c NSError describing the arithmetic error that occurred while
+//! multiplying \a LHS_SIZE by \a RHS_MULTIPLIER and adding the result to
+//! \a BASE.
+#define MK_MAKE_VM_SIZE_ADD_WITH_MULTIPLY_ARITHMETIC_ERROR(CODE, BASE, LHS_SIZE, RHS_MULTIPLIER) \
+    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error %s while multiplying %s (%" MK_VM_PRIiSIZE ") by %s (%" PRIu64 ") and adding the result to %s (%" MK_VM_PRIiSIZE ").", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER, #BASE, BASE]
+
 //----------------------------------------------------------------------------//
 //! @name       Error Domains
 //! @relates    MKError

@@ -270,6 +270,53 @@ mk_vm_offset_add(mk_vm_offset_t offset, mk_vm_size_t size, mk_vm_offset_t *resul
     return MK_ESUCCESS;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_size_add(mk_vm_size_t left, mk_vm_size_t right, mk_vm_size_t *result)
+{
+    // Check for overflow
+    if (MK_VM_SIZE_MAX - right < left)
+        return MK_EOVERFLOW;
+    
+    if (result)
+        *result = left + right;
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_size_multiply(mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result)
+{
+    mk_vm_size_t temp = size * multiplier;
+    // TODO - There is probably a more efficient overflow check.
+    if (size != 0 && temp / size != multiplier)
+        return MK_EOVERFLOW;
+    
+    if (result)
+        *result = temp;
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_size_add_with_multiply(mk_vm_size_t base, mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result)
+{
+    mk_vm_size_t temp = size * multiplier;
+    // TODO - There is probably a more efficient overflow check.
+    if (size != 0 && temp / size != multiplier)
+        return MK_EOVERFLOW;
+    
+    if (MK_VM_SIZE_MAX - temp < base)
+        return MK_EOVERFLOW;
+    
+    if (result)
+        *result = base + temp;
+    
+    return MK_ESUCCESS;
+}
+
 //---------------------------------------------------------------------------//
 #pragma mark -  Byte Order
 //---------------------------------------------------------------------------//

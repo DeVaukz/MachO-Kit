@@ -258,6 +258,24 @@ mk_vm_address_check_length(mk_vm_address_t addr, mk_vm_size_t length);
 _mk_export mk_error_t
 mk_vm_offset_add(mk_vm_offset_t offset, mk_vm_size_t size, mk_vm_offset_t *result);
 
+//! Safely computes \a left + \a right and stores the result in \a result.
+//! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
+//! unmodified.
+_mk_export mk_error_t
+mk_vm_size_add(mk_vm_size_t left, mk_vm_size_t right, mk_vm_size_t *result);
+
+//! Safely computes \a size * \a multiplier and stores the result in \a result.
+//! If there was an overflow, \ref MK_EOVERFLOW is returned and \a result is
+//! unmodified.
+_mk_export mk_error_t
+mk_vm_size_multiply(mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result);
+
+//! Safely computes \a base + (\a size * \a multiplier) and stores the result in
+//! \a result.  If there was an overflow, \ref MK_EOVERFLOW is returned and
+//! \a result is unmodified.
+_mk_export mk_error_t
+mk_vm_size_add_with_multiply(mk_vm_size_t base, mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Byte Order
