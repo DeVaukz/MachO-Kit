@@ -53,12 +53,36 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intSize
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intAlignment
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longSize
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longAlignment
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerSize
 { return 4; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerAlignment
 { return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetSize
+{ return self.longSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.longAlignment; }
 
 @end
 
@@ -89,12 +113,65 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intSize
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intAlignment
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longSize
+{ return 8; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longAlignment
+{ return 8; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerSize
 { return 8; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerAlignment
 { return 8; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetSize
+{ return self.longSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.longAlignment; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKAARCH64DataModel
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)sharedDataModel
+{
+    static MKAARCH64DataModel *Shared = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Shared = [[MKAARCH64DataModel alloc] init];
+    });
+    return Shared;
+}
+
+/* The AARCH64 architecutre uses 32-bit ivar offsets.  See
+ * <https://github.com/apple/swift-clang/blob/stable/lib/CodeGen/CGObjCMac.cpp#L5467> */
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetSize
+{ return self.intSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.intAlignment; }
 
 @end
 
@@ -125,11 +202,35 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intSize
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)intAlignment
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longSize
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)longAlignment
+{ return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerSize
 { return 4; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)pointerAlignment
 { return 4; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetSize
+{ return self.longSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.longAlignment; }
 
 @end

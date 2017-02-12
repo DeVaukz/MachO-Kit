@@ -57,10 +57,30 @@ NS_ASSUME_NONNULL_BEGIN
 //! data model and the emdianess of the host process.
 @property (nonatomic, readonly) const mk_byteorder_t *byteOrder;
 
+//! The natural size of an int.
+@property (nonatomic, readonly) size_t intSize;
+//! The natural alignment of an int.
+@property (nonatomic, readonly) size_t intAlignment;
+
+//! The natural size of a long.
+@property (nonatomic, readonly) size_t longSize;
+//! The natural alignment of a long.
+@property (nonatomic, readonly) size_t longAlignment;
+
 //! The natural size of a pointer.
 @property (nonatomic, readonly) size_t pointerSize;
 //! The natural alignment of a pointer.
 @property (nonatomic, readonly) size_t pointerAlignment;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Objective-C Types
+//! @name       Objective-C Types
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The natural size of an Objective-C ivar offset (non-fragile ABI).
+@property (nonatomic, readonly) size_t objcIVarOffsetSize;
+//! The natural alignment of an Objective-C ivar offset (non-fragile ABI).
+@property (nonatomic, readonly) size_t objcIVarOffsetAlignment;
 
 @end
 
@@ -68,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! Concrete implementation of the \ref MKDataModel protocol for the ILP32
-//! data model used in Intel/32-bit Mach-O images.
+//! data model used in 32-bit Mach-O images.
 //!
 @interface MKILP32DataModel : NSObject <MKDataModel>
 
@@ -81,14 +101,28 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! Concrete implementation of the \ref MKDataModel protocol for the LP64
-//! data model used in Intel/64-bit Mach-O images.
+//! data model used in 64-bit Mach-O images.
 //!
 @interface MKLP64DataModel : NSObject <MKDataModel>
 
-//! Returns the shared \c MKILP32DataModel.
+//! Returns the shared \c MKLP64DataModel.
 + (instancetype)sharedDataModel;
 
 @end
+
+
+
+//----------------------------------------------------------------------------//
+//! Concrete implementation of the \ref MKDataModel protocol for the
+//! specialized data model used in 64-bit AARCH64 Mach-O images.
+//!
+@interface MKAARCH64DataModel : MKLP64DataModel
+
+//! Returns the shared \c MKAARCH64DataModel.
++ (instancetype)sharedDataModel;
+
+@end
+
 
 
 //----------------------------------------------------------------------------//

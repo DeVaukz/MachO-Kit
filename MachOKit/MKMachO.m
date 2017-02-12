@@ -85,6 +85,17 @@
         [self release]; return nil;
     }
     
+    // Now that the header is loaded, further specialize the data model based
+    // on the architecutre if needed.
+    switch (self.header.cputype) {
+        case CPU_TYPE_ARM64:
+            [_dataModel release];
+            _dataModel = [[MKAARCH64DataModel sharedDataModel] retain];
+            break;
+        default:
+            break;
+    }
+    
     // Only support a subset of the MachO types at this time
     switch (_header.filetype) {
         case MH_EXECUTE:

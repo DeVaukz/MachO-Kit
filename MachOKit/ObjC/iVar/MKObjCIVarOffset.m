@@ -44,12 +44,12 @@
     id<MKDataModel> dataModel = self.dataModel;
     NSAssert(dataModel != nil, @"Parent node must have a data model.");
     
-    if (dataModel.pointerSize == 8)
+    if (dataModel.objcIVarOffsetSize == 8)
         _offset = [self.memoryMap readQuadWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&localError];
-    else if (dataModel.pointerSize == 4)
+    else if (dataModel.objcIVarOffsetSize == 4)
         _offset = [self.memoryMap readDoubleWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&localError];
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported objc ivar offset size." userInfo:nil];
     
     if (localError) {
         MK_ERROR_OUT = localError;
