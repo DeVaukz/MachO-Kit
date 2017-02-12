@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
+//|             MKObjCClassListSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,15 +25,29 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#import "MKObjCClassListSection.h"
+#import "NSError+MK.h"
+#import "MKSegment.h"
+#import "MKObjCClass.h"
 
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@implementation MKObjCClassListSection
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
+{
+    if ([segment.name rangeOfString:@SEG_DATA].location != 0)
+        return 0;
+    
+    if ([sectionLoadCommand.sectname isEqualToString:@"__objc_classlist"] == NO &&
+        [sectionLoadCommand.sectname isEqualToString:@"__objc_nlclslist"] == NO)
+        return 0;
+    
+    return 50;
+}
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//|++++++++++++++++++++++++++++++++++++|//
++ (Class)classForGenericArgumentAtIndex:(__unused NSUInteger)index
+{ return MKObjCClass.class; }
 
 @end

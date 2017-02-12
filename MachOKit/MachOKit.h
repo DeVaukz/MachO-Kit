@@ -123,8 +123,10 @@
     #import <MachOKit/MKDependentLibrary.h>
 #import <MachOKit/MKSegment.h>
 #import <MachOKit/MKSection.h>
-    #import <MachOKit/MKStubsSection.h>
     #import <MachOKit/MKCStringSection.h>
+    #import <MachOKit/MKPointerListSection.h>
+    #import <MachOKit/MKDataSection.h>
+    #import <MachOKit/MKStubsSection.h>
     #import <MachOKit/MKIndirectPointersSection.h>
 #import <MachOKit/MKMachO+Rebase.h>
     #import <MachOKit/MKRebaseInfo.h>
@@ -144,5 +146,32 @@
     #import <MachOKit/MKSymbol.h>
 #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>
+
+#import <MachOKit/MKObjCElementList.h>
+#import <MachOKit/MKObjCImageInfo.h>
+#import <MachOKit/MKObjCClass.h>
+#import <MachOKit/MKObjCClassData.h>
+#import <MachOKit/MKObjCProtocolList.h>
+#import <MachOKit/MKObjCProtocol.h>
+#import <MachOKit/MKObjCProtocolMethodTypesList.h>
+#import <MachOKit/MKObjCClassMethodList.h>
+#import <MachOKit/MKObjCClassMethod.h>
+#import <MachOKit/MKObjCClassPropertyList.h>
+#import <MachOKit/MKObjCClassProperty.h>
+#import <MachOKit/MKObjCClassIVarList.h>
+#import <MachOKit/MKObjCClassIVar.h>
+#import <MachOKit/MKObjCIVarOffset.h>
+#import <MachOKit/MKObjCCategory.h>
+    #import <MachOKit/MKObjCImageInfoSection.h>
+    #import <MachOKit/MKObjCSelectorReferencesSection.h>
+    #import <MachOKit/MKObjCSuperReferencesSection.h>
+    #import <MachOKit/MKObjCProtocolReferencesSection.h>
+    #import <MachOKit/MKObjCClassReferencesSection.h>
+    #import <MachOKit/MKObjCClassListSection.h>
+    #import <MachOKit/MKObjCCategoryListSection.h>
+    #import <MachOKit/MKObjCProtocolListSection.h>
+    #import <MachOKit/MKObjCIVarSection.h>
+    #import <MachOKit/MKObjCConstSection.h>
+    #import <MachOKit/MKObjCDataSection.h>
 
 #endif /* _MachOKit_H */

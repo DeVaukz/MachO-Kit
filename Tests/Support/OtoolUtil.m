@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "OtoolUtil.h"
+#import "NSArray+MKTests.h"
 
 typedef void (^ParserAction)(NSMutableDictionary*);
 typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
@@ -258,5 +259,314 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
     
     return result;
 }
+
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSDictionary*)parseObjCImageInfo:(NSString*)input
+{ @autoreleasepool {
+    NSMutableDictionary *result = [NSMutableDictionary new];
+    NSArray<NSString*> *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    // __objc_imageinfo
+    NSDictionary* (^parseImageInfo)(NSArray*) = ^(NSArray *lines) {
+        NSMutableDictionary *info = [NSMutableDictionary new];
+        
+        for (NSString *line in lines) {
+            NSArray *tokens = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            tokens = [tokens filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(id token, __unused id bindings) {
+                return (BOOL)([token length] > 0);
+            }]];
+            
+            if (tokens.count >= 2)
+                [info setObject:tokens[1] forKey:tokens[0]];
+        }
+        
+        return info;
+    };
+    
+    // __objc_classlist
+    // <Dict>
+    //      Pointer Address -> <Dict>
+    //          "isa" -> <Dict> (Meta class)
+    //              ...
+    //          ...
+    NSMutableDictionary* (^parseClassList)(NSArray*) = ^(NSArray *lines) {
+        NSMutableDictionary *classes = [NSMutableDictionary new];
+        
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-f]{16} 0x[0-f]+" options:0 error:NULL];
+        [lines mk_sliceWithTest:^(NSString *line) {
+            return (BOOL)([regex numberOfMatchesInString:line options:0 range:NSMakeRange(0, line.length)] > 0);
+        } andEnumerate:^(NSString *seperator, NSArray *lines) {
+            
+            NSString *pointerAddress = [[seperator componentsSeparatedByString:@" "] firstObject];
+            __block NSDictionary *class = nil;
+            __block NSDictionary *metaClass = nil;
+            
+            NSDictionary* (^parseClass)(NSArray*) = ^(NSArray *lines) {
+                NSMutableDictionary *classDict = [NSMutableDictionary new];
+                
+                [lines mk_sliceWithHeirarchyTest:^NSUInteger(NSString *line) {
+                    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                    line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"    "];
+                    NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
+                    return loc;
+                } andEnumerate:^(NSString *header, NSArray *children) {
+                    NSArray *headerComponents = [[header componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                    NSString *key = headerComponents.firstObject;
+                    id value = headerComponents.count > 1 ? headerComponents[1] : nil;
+                    
+                    id (^parseISA)(NSString*, NSArray*) = ^(NSString *headerValue, __unused NSArray *lines) {
+                        if (headerValue && metaClass)
+                            return (id)metaClass;
+                        else if (headerValue)
+                            return (id)headerValue;
+                        else
+                            return (id)@"0x0";
+                    };
+                    
+                    id (^parseData)(NSString*, NSArray*) = ^(__unused NSString *headerValue, NSArray *lines) {
+                        NSMutableDictionary *dataDict = [NSMutableDictionary new];
+                        
+                        [lines mk_sliceWithHeirarchyTest:^(NSString *line) {
+                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                            line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"        "];
+                            NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
+                            return loc;
+                        } andEnumerate:^(NSString *header, NSArray *children) {
+                            NSArray *headerComponents = [[header componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                            NSString *key = headerComponents.firstObject;
+                            id value = headerComponents.count > 1 ? headerComponents[1] : nil;
+                            
+                            id (^parseName)(NSString*, NSArray*) = ^(__unused NSString *headerValue, __unused NSArray *lines) {
+                                return headerComponents.lastObject;
+                            };
+                            
+                            id (^parseBaseMethods)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray *lines) {
+                                if (lines.count == 0)
+                                    return (id)headerValue;
+                                
+                                NSString *entsize, *count;
+                                NSMutableArray *methods = [NSMutableArray new];
+                                
+                                for (NSString *line in lines) {
+                                    NSArray *components = [[line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                                    if ([components.firstObject isEqualToString:@"entsize"])
+                                        entsize = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"count"])
+                                        count = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"name"])
+                                        [methods addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:components.lastObject, components.firstObject, nil]];
+                                    else if ([components.firstObject isEqualToString:@"types"])
+                                        [methods.lastObject setObject:components.lastObject forKey:components.firstObject];
+                                    // Ignore IMP for now
+                                }
+                                
+                                return (id)@{
+                                    @"entsize": entsize,
+                                    @"count": count,
+                                    @"elemets": methods
+                                };
+                            };
+                            
+                            id (^parseIVars)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray *lines) {
+                                if (lines.count == 0)
+                                    return (id)headerValue;
+                                
+                                NSString *entsize, *count;
+                                NSMutableArray *methods = [NSMutableArray new];
+                                
+                                for (NSString *line in lines) {
+                                    NSArray *components = [[line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                                    if ([components.firstObject isEqualToString:@"entsize"])
+                                        entsize = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"count"])
+                                        count = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"offset"])
+                                        [methods addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:components.lastObject, components.firstObject, nil]];
+                                    else if ([components.firstObject isEqualToString:@"name"] ||
+                                             [components.firstObject isEqualToString:@"type"] ||
+                                             [components.firstObject isEqualToString:@"alignment"] ||
+                                             [components.firstObject isEqualToString:@"size"])
+                                        [methods.lastObject setObject:components.lastObject forKey:components.firstObject];
+                                }
+                                
+                                return (id)@{
+                                    @"entsize": entsize,
+                                    @"count": count,
+                                    @"elemets": methods
+                                };
+                            };
+                            
+                            id (^parseProperties)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray *lines) {
+                                if (lines.count == 0)
+                                    return (id)headerValue;
+                                
+                                NSString *entsize, *count;
+                                NSMutableArray *elements = [NSMutableArray new];
+                                
+                                for (NSString *line in lines) {
+                                    NSArray *components = [[line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                                    if ([components.firstObject isEqualToString:@"entsize"])
+                                        entsize = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"count"])
+                                        count = components.lastObject;
+                                    else if ([components.firstObject isEqualToString:@"name"])
+                                        [elements addObject:[[NSMutableDictionary alloc] initWithObjectsAndKeys:components.lastObject, components.firstObject, nil]];
+                                    else if ([components.firstObject isEqualToString:@"attributes"])
+                                        [elements.lastObject setObject:components.lastObject forKey:components.firstObject];
+                                }
+                                
+                                return (id)@{
+                                    @"entsize": entsize,
+                                    @"count": count,
+                                    @"elemets": elements
+                                };
+                            };
+                            
+                            id (^parseProtocols)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray *lines) {
+                                if (lines.count == 0)
+                                    return (id)headerValue;
+                                
+                                __block NSString *count;
+                                NSMutableArray *elements = [NSMutableArray new];
+                                
+                                NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"list\\[[0-9]+\\]" options:0 error:NULL];
+                                [lines mk_sliceWithTest:^(NSString *obj) {
+                                    return (BOOL)([regex numberOfMatchesInString:obj options:0 range:NSMakeRange(0, obj.length)] > 0);
+                                } andEnumerate:^(id seperator, NSArray *lines) {
+                                    if (seperator == nil) {
+                                        NSArray *components = [[lines.lastObject componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                                        count = components.lastObject;
+                                    } else {
+                                        NSMutableDictionary *protoDict = [NSMutableDictionary new];
+                                        
+                                        [lines mk_sliceWithHeirarchyTest:^NSUInteger(NSString *line) {
+                                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                                            line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"        "];
+                                            NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
+                                            
+                                            if ([pointerAddress isEqualToString:@"000000000027c318"]) {
+                                                
+                                            }
+                                            
+                                            return loc;
+                                        } andEnumerate:^(NSString *header, NSArray *children) {
+                                            NSArray *headerComponents = [[header componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
+                                            NSString *key = headerComponents.firstObject;
+                                            id value = headerComponents.count > 1 ? headerComponents[1] : nil;
+                                            
+                                            id (^parseName)(NSString*, NSArray*) = ^(__unused NSString *headerValue, __unused NSArray *lines) {
+                                                return headerComponents.lastObject;
+                                            };
+                                            
+                                            NSDictionary *actions = @{
+                                                @"name": parseName,
+                                                @"instanceMethods": parseBaseMethods,
+                                                @"classMethods": parseBaseMethods,
+                                                /* @"optionalInstanceMethods": parseBaseMethods, - otool doesn't parse these */
+                                                @"optionalClassMethods": parseBaseMethods,
+                                                /* @"instanceProperties": parseProperties, - ... or these */
+                                            };
+                                            
+                                            for (NSString *action in actions) {
+                                                if ([key isEqualToString:action]) {
+                                                    id (^block)(NSString*, NSArray*) = actions[action];
+                                                    value = block(value, children);
+                                                }
+                                            }
+                                            
+                                            if (value)
+                                                [protoDict setObject:value forKey:key];
+                                        }];
+                                        
+                                        [elements insertObject:protoDict atIndex:0];
+                                    }
+                                }];
+                                
+                                return (id)@{
+                                    @"count": count,
+                                    @"elements": elements
+                                };
+                            };
+                            
+                            NSDictionary *actions = @{
+                                @"name": parseName,
+                                @"baseMethods": parseBaseMethods,
+                                @"ivars": parseIVars,
+                                @"baseProperties": parseProperties,
+                                @"baseProtocols": parseProtocols
+                            };
+                            
+                            for (NSString *action in actions) {
+                                if ([key isEqualToString:action]) {
+                                    id (^block)(NSString*, NSArray*) = actions[action];
+                                    value = block(value, children);
+                                }
+                            }
+                            
+                            if (value)
+                                [dataDict setObject:value forKey:key];
+                        }];
+                        
+                        return (NSDictionary*)dataDict;
+                    };
+                    
+                    NSDictionary *actions = @{
+                        @"isa": parseISA,
+                        @"data": parseData
+                    };
+                    
+                    for (NSString *action in actions) {
+                        if ([key isEqualToString:action]) {
+                            id (^block)(NSString*, NSArray*) = actions[action];
+                            value = block(value, children);
+                        }
+                    }
+                    
+                    if (value)
+                        [classDict setObject:value forKey:key];
+                }];
+                
+                return (NSDictionary*)classDict;
+            }; // parseClass
+            
+            [lines mk_sliceWithTest:^(NSString *line) {
+                return (BOOL)([line rangeOfString:@"Meta Class"].length > 0);
+            } andEnumerate:^(NSString *seperator, NSArray *slice) {
+                if ([seperator rangeOfString:@"Meta Class"].length > 0)
+                    metaClass = parseClass(slice);
+                else
+                    class = parseClass(slice);
+            }];
+            
+            [classes setObject:class forKey:pointerAddress];
+        }];
+        
+        return classes;
+    };
+    
+    NSDictionary *actions = @{
+        @"__objc_imageinfo": parseImageInfo,
+        @"__objc_classlist": parseClassList
+    };
+    
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"Contents of \\([A-Za-z_,]+\\) section" options:0 error:NULL];
+    [lines mk_sliceWithTest:^(NSString *line) {
+        return (BOOL)([regex numberOfMatchesInString:line options:0 range:NSMakeRange(0, line.length)] > 0);
+    } andEnumerate:^(NSString *seperator, NSArray *slice) {
+        for (NSString *key in actions) {
+            if (seperator == nil || [seperator rangeOfString:key].location == NSNotFound)
+                continue;
+            
+            @autoreleasepool {
+                NSDictionary* (^action)(NSArray*) = actions[key];
+                [result setObject:action(slice) forKey:key];
+            }
+            break;
+        }
+    }];
+    
+    return result;
+} }
 
 @end

@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKObjCCategoryListSection.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKPointerListSection.h>
+
+@class MKObjCCategory;
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKObjCCategoryListSection : MKPointerListSection<MKObjCCategory*>
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
-
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+#ifdef __swift__
++ (Class)classForGenericArgumentAtIndex:(NSUInteger)index;
+#endif
 
 @end
+
+NS_ASSUME_NONNULL_END

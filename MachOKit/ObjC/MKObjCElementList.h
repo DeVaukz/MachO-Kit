@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKObjCElementList.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,31 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOffsetNode.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKObjCElementList<Element> : MKOffsetNode {
+@package
+    mk_vm_size_t _nodeSize;
+    NSArray<Element> *_elements;
+    uint32_t _entsizeAndFlags;
+    uint32_t _count;
+}
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+@property (nonatomic, readonly) NSArray<Element> *elements;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//! Flags
+@property (nonatomic, readonly) uint32_t flags;
+//! The size of each entry in the list.
+@property (nonatomic, readonly) uint32_t entsize;
+//! The number of entries in the list.
+@property (nonatomic, readonly) uint32_t count;
 
 @end
+
+NS_ASSUME_NONNULL_END

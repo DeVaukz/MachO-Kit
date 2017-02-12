@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKObjCProtocolList.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,37 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKPointerNode.h>
+
+@class MKObjCProtocol;
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKObjCProtocolList : MKOffsetNode {
+@package
+    mk_vm_size_t _nodeSize;
+    NSArray *_elements;
+    uint64_t _count;
+}
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+@property (nonatomic, readonly) NSArray<MKPointerNode<MKObjCProtocol*>*> *elements;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  protocol_list_t Values
+//! @name       protocol_list_t Values
+//!
+//! @brief      These values are extracted directly from the protocol_list_t
+//!             structure without modification or cleanup.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The number of entries in the list.
+@property (nonatomic, readonly) uint64_t count;
 
 @end
+
+NS_ASSUME_NONNULL_END

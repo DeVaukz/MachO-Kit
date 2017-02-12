@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKPointerListSection.m
+//|             MKObjCImageInfoSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,24 +25,23 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKPointerListSection.h"
+#import "MKObjCImageInfoSection.h"
 #import "NSError+MK.h"
-#import "MKNodeDescription.h"
 #import "MKBackedNode+Pointer.h"
-
-#include <objc/message.h>
+#import "MKSegment.h"
+#import "MKObjCImageInfo.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKPointerListSection
+@implementation MKObjCImageInfoSection
 
-@synthesize elements = _pointerList;
+@synthesize imageInfo = _imageInfo;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
-#pragma unused (segment)
-    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LITERAL_POINTERS)
-        return 20;
+    if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
+        [sectionLoadCommand.sectname isEqualToString:@"__objc_imageinfo"])
+        return 50;
     
     return 0;
 }
@@ -52,37 +51,13 @@
 {
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
-    
-    // Load pointers
-    {
-        NSMutableArray<MKPointerNode*> *pointers = [[NSMutableArray alloc] init];
-        mk_vm_offset_t offset = 0;
-        
-        Class targetClass = nil;
-        // Hack Hack - The -classForGenericArgumentAtIndex: isn't defined in
-        //             SDK headers, which causes warnings.
-        if ([self.class respondsToSelector:sel_getUid("classForGenericArgumentAtIndex:")])
-            targetClass = ((Class(*)(id, SEL, NSUInteger))objc_msgSend)(self.class, sel_getUid("classForGenericArgumentAtIndex:"), 0);
-        
-        while (offset < self.nodeSize)
-        {
-            NSError *e = nil;
-            MKPointerNode *pointer = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:targetClass error:&e];
-            if (pointer == nil) {
-                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
-                break;
-            }
-            
-            [pointers addObject:pointer];
-            [pointer release];
-            
-            // Safe.  All pointer nodes must be within the size of this node.
-            offset += pointer.nodeSize;
-        }
-        
-        _pointerList = [pointers copy];
-        [pointers release];
-    }
+ 
+    NSError *e = nil;
+    MKObjCImageInfo *imageInfo = [[MKObjCImageInfo alloc] initWithOffset:0 fromParent:self error:&e];
+    if (imageInfo)
+        _imageInfo = [[MKOptional alloc] initWithValue:imageInfo];
+    else
+        _imageInfo = [[MKOptional alloc] initWithError:e];
     
     return self;
 }
@@ -90,7 +65,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_pointerList release];
+    [_imageInfo release];
     
     [super dealloc];
 }
@@ -102,10 +77,11 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKOffsetNode *element in self.elements) {
-        mk_vm_range_t range = mk_vm_range_make(element.nodeVMAddress, element.nodeSize);
+    MKObjCImageInfo *imageInfo = self.imageInfo.value;
+    if (imageInfo) {
+        mk_vm_range_t range = mk_vm_range_make(imageInfo.nodeVMAddress, imageInfo.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [element childNodeOccupyingVMAddress:address targetClass:targetClass];
+            return [imageInfo childNodeOccupyingVMAddress:address targetClass:targetClass];
         }
     }
     
@@ -120,7 +96,7 @@
 - (MKNodeDescription*)layout
 {
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(elements) description:@"Element List"]
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(imageInfo) description:@"Image Info"]
     ]];
 }
 

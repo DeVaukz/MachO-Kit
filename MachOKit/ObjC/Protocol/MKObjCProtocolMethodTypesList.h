@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKObjCProtocolMethodTypesList.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,26 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKPointerNode.h>
+#import <MachOKit/MKCString.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKObjCProtocolMethodTypesList : MKOffsetNode {
+@package
+    mk_vm_size_t _nodeSize;
+    NSArray *_elements;
+}
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset methodCount:(uint32_t)count fromParent:(MKBackedNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+@property (nonatomic, readonly) NSArray<MKPointerNode<MKCString*>*> *elements;
 
 @end
+
+NS_ASSUME_NONNULL_END

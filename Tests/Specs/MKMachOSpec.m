@@ -239,6 +239,311 @@ SpecBegin(MKMachOImage)
                 });
             });
             
+            //----------------------------------------------------------------//
+            describe(@"_objc", ^{
+                // Skip images that use legacy OBJC ABI.
+                // TODO - Better heuristic that does not skip 32-bit images
+                //        for embedded targets.
+                if (mk_architecture_uses_64bit_abi(macho.architecture) == false)
+                    return;
+                
+                NSDictionary *objcInfo = otoolArchitecture.objcInfo;
+                
+                describe(@"imageinfo", ^{
+                    NSDictionary *otoolImageInfo = objcInfo[@"__objc_imageinfo"];
+                    if (otoolImageInfo == nil)
+                        return;
+                    
+                    MKObjCImageInfoSection *section = [macho sectionsWithName:@"__objc_imageinfo" inSegment:nil].firstObject;
+                    it(@"should exist", ^{
+                        expect(section).toNot.beNil();
+                        expect(section).beInstanceOf(MKObjCImageInfoSection.class);
+                    });
+                    if ([section isKindOfClass:MKObjCImageInfoSection.class] == NO) return;
+                    
+                    MKObjCImageInfo *info = section.imageInfo.value;
+                    it(@"should contain the image info", ^{
+                        expect(info).toNot.beNil();
+                    });
+                    if (info == nil) return;
+                    
+                    MKNodeDescription *layout = info.layout;
+                    
+                    for (NSString *key in otoolImageInfo)
+                    {
+                        it([NSString stringWithFormat:@"%@ should have the correct value", key], ^{
+                            NSString *value = nil;
+                            for (MKNodeField *field in layout.fields) {
+                                if ([field.name isEqualToString:key]) {
+                                    value = [field formattedDescriptionForNode:info];
+                                    break;
+                                }
+                            }
+                            expect(value).to.equal(otoolImageInfo[key]);
+                        });
+                    }
+                });
+                
+                describe(@"classlist", ^{
+                    NSDictionary *otoolClassList = objcInfo[@"__objc_classlist"];
+                    if (otoolClassList == nil)
+                        return;
+                    
+                    MKObjCClassListSection *section = [macho sectionsWithName:@"__objc_classlist" inSegment:nil].firstObject;
+                    it(@"should exist", ^{
+                        expect(section).toNot.beNil();
+                        expect(section).beInstanceOf(MKObjCClassListSection.class);
+                    });
+                    if ([section isKindOfClass:MKObjCClassListSection.class] == NO) return;
+                    
+                    it(@"should contain the expected number of classes", ^{
+                        expect(section.elements.count).to.equal(otoolClassList.count);
+                    });
+                    
+                    for (MKPointerNode *ptr in section.elements)
+                    {
+                        describe([NSString stringWithFormat:@"%.16" MK_VM_PRIxADDR "", ptr.nodeVMAddress], ^{
+                            NSDictionary *otoolClass = otoolClassList[ [NSString stringWithFormat:@"%.16" MK_VM_PRIxADDR "", ptr.nodeVMAddress] ];
+                            MKObjCClass *cls = ptr.pointee.value;
+                            
+                            it(@"should be a valid entry", ^{
+                                expect(otoolClass).toNot.beNil();
+                            });
+                            it(@"should be a valid pointer", ^{
+                                expect(cls).toNot.beNil();
+                            });
+                            
+                            if (otoolClass == nil || cls == nil)
+                                return;
+                            
+                            void (^checkClass)(MKObjCClass*, NSDictionary*);
+                            __block void (^checkClassRecursive)(MKObjCClass*, NSDictionary*);
+                            checkClass = ^(MKObjCClass *cls, NSDictionary *otoolClass) {
+                                
+                                it(@"should have the correct isa", ^{
+                                    if ([otoolClass[@"isa"] isKindOfClass:NSDictionary.class]) {
+                                        MKObjCClass *metaClass = cls.metaClass.pointee.value;
+                                        expect(metaClass).toNot.beNil();
+                                        
+                                        if (metaClass)
+                                            describe(@"metaclass", ^{
+                                                checkClassRecursive(metaClass, otoolClass[@"isa"]);
+                                            });
+                                    } else if ([otoolClass[@"isa"] isKindOfClass:NSString.class]) {
+                                        expect([NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR "", cls.metaClass.address]).to.equal(otoolClass[@"isa"]);
+                                    } else {
+                                        // otool didn't parse the meta class
+                                    }
+                                });
+                                
+                                it(@"should have the correct superclass", ^{
+                                    expect([NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR "", cls.superClass.address]).to.equal(otoolClass[@"superclass"]);
+                                });
+                                
+                                it(@"should have the correct cache", ^{
+                                    expect([NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR "", cls.cache.address]).to.equal(otoolClass[@"cache"]);
+                                    expect(cls.mask).to.equal(0);
+                                    expect(cls.occupied).to.equal(0);
+                                });
+                                
+                                describe(@"data", ^{
+                                    MKObjCClassData *clsData = cls.classData.pointee.value;
+                                    NSDictionary *otoolClassData = otoolClass[@"data"];
+                                    
+                                    it(@"should exist", ^{
+                                        expect(clsData).toNot.beNil();
+                                    });
+                                    
+                                    it(@"should have the correct flags", ^{
+                                        expect([NSString stringWithFormat:@"0x%" PRIx32 "", clsData.flags]).to.equal(otoolClassData[@"flags"]);
+                                    });
+                                    
+                                    it(@"should have the correct instanceStart", ^{
+                                        expect([NSString stringWithFormat:@"%" PRIu32 "", clsData.instanceStart]).to.equal(otoolClassData[@"instanceStart"]);
+                                    });
+                                    
+                                    it(@"should have the correct instanceSize", ^{
+                                        expect([NSString stringWithFormat:@"%" PRIu32 "", clsData.instanceSize]).to.equal(otoolClassData[@"instanceSize"]);
+                                    });
+                                    
+                                    it(@"should have thecorrect ivarLayout", ^{
+                                        expect([NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR "", clsData.ivarLayout.address]).to.equal(otoolClassData[@"ivarLayout"]);
+                                    });
+                                    
+                                    it(@"should have the correct name", ^{
+                                        expect(clsData.name.pointee.value.string).to.equal(otoolClassData[@"name"]);
+                                    });
+                                    
+                                    void (^checkElementList)(NSString*, NSDictionary*, MKObjCElementList*, void (^)(NSDictionary*, id))
+                                    = ^(NSString *name, NSDictionary *otoolElementList, MKObjCElementList *elementList, void (^checker)(NSDictionary*, id)) {
+                                        describe(name, ^{
+                                            if ([otoolElementList isKindOfClass:NSDictionary.class]) {
+                                                it(@"should exist", ^{
+                                                    expect(elementList).toNot.beNil();
+                                                });
+                                            } else if (otoolElementList == nil) {
+                                                it(@"should not be present", ^{
+                                                    expect(elementList).to.beNil();
+                                                });
+                                                
+                                                return;
+                                            } else {
+                                                return;
+                                            }
+                                            
+                                            it(@"should have the correct entity size", ^{
+                                                expect([NSString stringWithFormat:@"%" PRIu32 "", elementList.entsize]).to.equal(otoolElementList[@"entsize"]);
+                                            });
+                                            
+                                            it(@"should have the correct count", ^{
+                                                expect([NSString stringWithFormat:@"%" PRIu32 "", elementList.count]).to.equal(otoolElementList[@"count"]);
+                                            });
+                                            
+                                            NSArray *otoolElements = otoolElementList[@"elements"];
+                                            
+                                            for (NSUInteger i = 0; i < MIN(elementList.elements.count, otoolElements.count); i++)
+                                            describe([NSString stringWithFormat:@"%lu", i], ^{
+                                                NSDictionary *otoolElement = otoolElements[i];
+                                                id element = elementList.elements[i];
+                                                
+                                                checker(otoolElement, element);
+                                            });
+                                        });
+                                    };
+                                    
+                                    checkElementList(@"baseMethods", otoolClassData[@"baseMethods"], clsData.methods.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassMethod *element) {
+                                        it(@"should have the correct name", ^{
+                                            expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                        });
+                                        
+                                        it(@"should have the correct type", ^{
+                                            expect(element.types.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                        });
+                                    });
+                                    
+                                    checkElementList(@"ivars", otoolClassData[@"ivars"], clsData.ivars.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassIVar *element) {
+                                        it(@"should have the correct name", ^{
+                                            expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                        });
+                                        
+                                        it(@"should have the correct type", ^{
+                                            expect(element.type.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                        });
+                                        
+                                        it(@"should have the correct offset", ^{
+                                            expect([NSString stringWithFormat:@"%" PRIu64 "", element.offset]).to.equal(otoolElement[@"offset"]);
+                                        });
+                                        
+                                        it(@"should have the correct size", ^{
+                                            expect([NSString stringWithFormat:@"%" PRIu32 "", element.size]).to.equal(otoolElement[@"offset"]);
+                                        });
+                                    });
+                                    
+                                    checkElementList(@"baseProperties", otoolClassData[@"baseProperties"], clsData.properties.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassProperty *element) {
+                                        it(@"should have the correct name", ^{
+                                            expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                        });
+                                        
+                                        it(@"should have the correct attributes", ^{
+                                            expect(element.attributes.pointee.value.string).to.equal(otoolElement[@"attributes"]);
+                                        });
+                                    });
+                                    
+                                    describe(@"baseProtocols", ^{
+                                        NSDictionary *otoolProtocolList = otoolClassData[@"baseProtocols"];
+                                        MKObjCProtocolList *clsProtocolList = clsData.protocols.pointee.value;
+                                        
+                                        if ([otoolProtocolList isKindOfClass:NSDictionary.class] == NO) {
+                                            it(@"should not be present", ^{
+                                                expect(clsProtocolList).to.beNil();
+                                            });
+                                            
+                                            return;
+                                        } else {
+                                            it(@"should exist", ^{
+                                                expect(clsProtocolList).toNot.beNil();
+                                            });
+                                        }
+                                        
+                                        it(@"should have the correct count", ^{
+                                            expect([NSString stringWithFormat:@"%" PRIu64 "", clsProtocolList.count]).to.equal(otoolProtocolList[@"count"]);
+                                        });
+                                        
+                                        NSArray *otoolProtocols = otoolProtocolList[@"elements"];
+                                        
+                                        for (NSUInteger i = 0; i < MIN(clsProtocolList.elements.count, otoolProtocols.count); i++)
+                                        describe([NSString stringWithFormat:@"%lu", i], ^{
+                                            NSDictionary *otoolProtocol = otoolProtocols[i];
+                                            MKObjCProtocol *protocol = clsProtocolList.elements[i].pointee.value;
+                                        
+                                            it(@"should have the correct name", ^{
+                                                expect(protocol.mangledName.pointee.value.string).to.equal(otoolProtocol[@"name"]);
+                                            });
+                                            
+                                            checkElementList(@"instanceMethods", otoolProtocol[@"instanceMethods"], protocol.instanceMethods.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassMethod *element) {
+                                                it(@"should have the correct name", ^{
+                                                    expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                                });
+                                                
+                                                it(@"should have the correct type", ^{
+                                                    expect(element.types.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                                });
+                                            });
+                                            
+                                            checkElementList(@"classMethods", otoolProtocol[@"classMethods"], protocol.classMethods.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassMethod *element) {
+                                                it(@"should have the correct name", ^{
+                                                    expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                                });
+                                                
+                                                it(@"should have the correct type", ^{
+                                                    expect(element.types.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                                });
+                                            });
+                                            
+                                            checkElementList(@"optionalInstanceMethods", otoolProtocol[@"optionalInstanceMethods"], protocol.optionalInstanceMethods.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassMethod *element) {
+                                                it(@"should have the correct name", ^{
+                                                    expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                                });
+                                                
+                                                it(@"should have the correct type", ^{
+                                                    expect(element.types.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                                });
+                                            });
+                                            
+                                            checkElementList(@"optionalClassMethods", otoolProtocol[@"optionalClassMethods"], protocol.optionalClassMethods.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassMethod *element) {
+                                                it(@"should have the correct name", ^{
+                                                    expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                                });
+                                                
+                                                it(@"should have the correct type", ^{
+                                                    expect(element.types.pointee.value.string).to.equal(otoolElement[@"type"]);
+                                                });
+                                            });
+                                            
+                                            checkElementList(@"instanceProperties", otoolProtocol[@"instanceProperties"], protocol.instanceProperties.pointee.value, ^(NSDictionary *otoolElement, MKObjCClassProperty *element) {
+                                                it(@"should have the correct name", ^{
+                                                    expect(element.name.pointee.value.string).to.equal(otoolElement[@"name"]);
+                                                });
+                                                
+                                                it(@"should have the correct attributes", ^{
+                                                    expect(element.attributes.pointee.value.string).to.equal(otoolElement[@"attributes"]);
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                                
+                            };
+                            checkClassRecursive = checkClass;
+                            
+                            describe(@"class", ^{
+                                checkClass(cls, otoolClass);
+                            });
+                        });
+                    }
+                });
+                
+            });
         });
         
         

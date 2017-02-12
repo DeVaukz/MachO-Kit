@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKPointerListSection.m
+//|             MKObjCIVarSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,24 +25,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKPointerListSection.h"
+#import "MKObjCIVarSection.h"
 #import "NSError+MK.h"
-#import "MKNodeDescription.h"
+#import "MKSegment.h"
 #import "MKBackedNode+Pointer.h"
 
-#include <objc/message.h>
-
 //----------------------------------------------------------------------------//
-@implementation MKPointerListSection
+@implementation MKObjCIVarSection
 
-@synthesize elements = _pointerList;
+@synthesize elements = _ivarOffsets;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
-#pragma unused (segment)
-    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LITERAL_POINTERS)
-        return 20;
+    if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
+        [sectionLoadCommand.sectname isEqualToString:@"__objc_ivar"])
+        return 50;
     
     return 0;
 }
@@ -55,33 +53,27 @@
     
     // Load pointers
     {
-        NSMutableArray<MKPointerNode*> *pointers = [[NSMutableArray alloc] init];
+        NSMutableArray<MKObjCIVarOffset*> *ivarOffsets = [[NSMutableArray alloc] init];
         mk_vm_offset_t offset = 0;
-        
-        Class targetClass = nil;
-        // Hack Hack - The -classForGenericArgumentAtIndex: isn't defined in
-        //             SDK headers, which causes warnings.
-        if ([self.class respondsToSelector:sel_getUid("classForGenericArgumentAtIndex:")])
-            targetClass = ((Class(*)(id, SEL, NSUInteger))objc_msgSend)(self.class, sel_getUid("classForGenericArgumentAtIndex:"), 0);
         
         while (offset < self.nodeSize)
         {
             NSError *e = nil;
-            MKPointerNode *pointer = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:targetClass error:&e];
-            if (pointer == nil) {
-                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
+            MKObjCIVarOffset *ivarOffset = [[MKObjCIVarOffset alloc] initWithOffset:offset fromParent:self error:&e];
+            if (ivarOffset == nil) {
+                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load ivar offset at offset %" MK_VM_PRIiOFFSET ".", offset);
                 break;
             }
             
-            [pointers addObject:pointer];
-            [pointer release];
+            [ivarOffsets addObject:ivarOffset];
+            [ivarOffset release];
             
             // Safe.  All pointer nodes must be within the size of this node.
-            offset += pointer.nodeSize;
+            offset += ivarOffset.nodeSize;
         }
         
-        _pointerList = [pointers copy];
-        [pointers release];
+        _ivarOffsets = [ivarOffsets copy];
+        [ivarOffsets release];
     }
     
     return self;
@@ -90,7 +82,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_pointerList release];
+    [_ivarOffsets release];
     
     [super dealloc];
 }

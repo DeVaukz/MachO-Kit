@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKObjCClassMethod.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,29 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKPointer.h>
+#import <MachOKit/MKCString.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKObjCClassMethod : MKOffsetNode {
+@package
+    MKPointer *_name;
+    MKPointer *_types;
+    mk_vm_address_t _implementation;
+}
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+@property (nonatomic, readonly) MKPointer<MKCString*> *name;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+@property (nonatomic, readonly) MKPointer<MKCString*> *types;
+
+@property (nonatomic, readonly) mk_vm_address_t implementation;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
+//|             NSArray+MKTests.h
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,12 +28,10 @@
 @import Foundation;
 
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface NSArray<ObjectType> (MKTests)
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+- (void)mk_sliceWithTest:(BOOL (^)(ObjectType obj))test andEnumerate:(void (^)(ObjectType __nullable seperator, NSArray<ObjectType> *slice))enumerator;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+- (void)mk_sliceWithHeirarchyTest:(NSUInteger (^)(ObjectType obj))test andEnumerate:(void (^)(ObjectType header, NSArray<ObjectType>* __nullable children))enumerator;
 
 @end

@@ -68,7 +68,7 @@
     //if (type & MKFrameworkTypeiOSPublicFramework) [retValue addObjectsFromArray:publiciOS];
     //if (type & MKFrameworkTypeiOSPrivateFramework) [retValue addObjectsFromArray:privateiOS];
     
-    return [retValue subarrayWithRange:NSMakeRange(0, 15)];
+    return [retValue subarrayWithRange:NSMakeRange(0, 5)];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
+//|             MKObjCProtocolReferencesSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,15 +25,21 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#import "MKObjCProtocolReferencesSection.h"
+#import "NSError+MK.h"
+#import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@implementation MKObjCProtocolReferencesSection
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
-
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
+{
+    if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
+        [sectionLoadCommand.sectname isEqualToString:@"__objc_protorefs"])
+        return 50;
+    
+    return 0;
+}
 
 @end

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
+//|             MKObjCClassIVarList.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,15 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#import "MKObjCClassIVarList.h"
+#import "MKObjCClassIVar.h"
 
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@implementation MKObjCClassIVarList
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
-
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//|++++++++++++++++++++++++++++++++++++|//
++ (Class)classForGenericArgumentAtIndex:(__unused NSUInteger)index
+{ return MKObjCClassIVar.class; }
 
 @end
