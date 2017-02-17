@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeField.m
+//|             MKNodeFieldOperationReturnConstant.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,59 +25,47 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeField.h"
+#import "MKNodeFieldOperationReturnConstant.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeField
-
-@synthesize name = _name;
-@synthesize description = _description;
-@synthesize valueRecipe = _valueRecipe;
-@synthesize dataRecipe = _dataRecipe;
-@synthesize valueFormatter = _valueFormatter;
+@implementation MKNodeFieldOperationReturnConstant
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
+- (instancetype)initWithConstant:(id)constant ofType:(NSString*)type
 {
     self = [super init];
     if (self == nil) return nil;
     
-    _name = [name copy];
-    _description = [description copy];
-    _valueRecipe = [valueRecipe retain];
-    _dataRecipe = [dataRecipe retain];
-    _valueFormatter = [valueFormatter retain];
-    _options = options;
+    _constant = [constant retain];
+    _type = [type copy];
     
     return self;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithConstant:(id)constant
+{ return [self initWithConstant:constant ofType:nil]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
-{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-init unavailable." userInfo:nil]; }
+{ return [self initWithConstant:nil]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_name release];
-    [_description release];
-    [_valueRecipe release];
-    [_dataRecipe release];
-    [_valueFormatter release];
+    [_constant release];
+    [_type release];
     
     [super dealloc];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)formattedDescriptionForNode:(MKNode*)node
-{
-    id value = [_valueRecipe valueForField:self ofNode:node];
-    
-    if (_valueFormatter)
-        return [_valueFormatter stringForObjectValue:value];
-    else
-        return [value description];
-}
+- (NSString*)typeOfField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
+{ return _type; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)valueForField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
+{ return _constant; }
 
 @end

@@ -28,24 +28,39 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldRecipe.h>
+#import <MachOKit/MKNodeFieldValueRecipe.h>
+#import <MachOKit/MKNodeFieldDataRecipe.h>
 
 @class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
+//! @name       Node Field Options
+//! @relates    MKFormattedNodeField
+//!
+typedef NS_ENUM(NSUInteger, MKNodeFieldOptions) {
+    MKNodeFieldOptionsNone                                      = 0,
+    //! Hint to display the contents of the collection as children of the
+    //! node, rather than as children of the field.
+    //! Only applicable to collections.
+    MKNodeFieldOptionDisplayCollectionContentsAsChildren        = (1U<<10),
+};
+
+
+
+//----------------------------------------------------------------------------//
 @interface MKNodeField : NSObject {
 @package
     NSString *_name;
     NSString *_description;
-    id<MKNodeFieldRecipe> _valueRecipe;
+    id<MKNodeFieldValueRecipe> _valueRecipe;
+    id<MKNodeFieldDataRecipe> _dataRecipe;
+    NSFormatter *_valueFormatter;
+    MKNodeFieldOptions _options;
 }
 
-+ (instancetype)nodeFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description;
-+ (instancetype)nodeFieldWithProperty:(NSString*)property description:(nullable NSString*)description;
-
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(nullable id<MKNodeFieldDataRecipe>)dataRecipe formatter:(nullable NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -54,8 +69,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSString *name;
 //! A short description of this field.
 @property (nonatomic, readonly, nullable) NSString *description;
-//! A sequence of steps to retreive the value for this field from a node.
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> valueRecipe;
+//! A sequence of steps to retrieve the value for this field from a node.
+@property (nonatomic, readonly) id<MKNodeFieldValueRecipe> valueRecipe;
+//! A sequence of steps to retreive the data for this field from a node.
+@property (nonatomic, readonly, nullable) id<MKNodeFieldDataRecipe> dataRecipe;
+//! The formatter used to format the value of this field.
+@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
+//! The field options.
+@property (nonatomic, readonly) MKNodeFieldOptions options;
 
 - (NSString*)formattedDescriptionForNode:(MKNode*)node;
 

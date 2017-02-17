@@ -27,6 +27,7 @@
 
 #import "MKHexNumberFormatter.h"
 
+//----------------------------------------------------------------------------//
 @implementation MKHexNumberFormatter
 
 @synthesize digits = _digits;
@@ -43,6 +44,7 @@
 #pragma mark -  NSFormatter
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)stringForObjectValue:(NSNumber*)anObject
 {
     if ([anObject isKindOfClass:NSNumber.class] == NO)

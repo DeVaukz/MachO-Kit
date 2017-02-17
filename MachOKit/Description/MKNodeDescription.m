@@ -47,7 +47,7 @@
     if (self == nil) return nil;
     
     _parent = [parent retain];
-    _fields = [fields retain];
+    _fields = [fields copy];
     
     return self;
 }
@@ -61,6 +61,7 @@
 {
     [_parent release];
     [_fields release];
+    
     [super dealloc];
 }
 
@@ -89,7 +90,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)textualDescriptionForNode:(MKNode*)node traversalDepth:(NSUInteger)traversalDepth
 {
-    NSMutableString *retValue = [NSMutableString string];
+    NSMutableString *retValue = nil;
     
     // HACK HACK - Special case for MKBackedNode
     if ([node respondsToSelector:@selector(nodeContextAddress)] && [node respondsToSelector:@selector(nodeSize)])
@@ -138,7 +139,7 @@
             // Only the base MKNodeField could describe a collection or a
             // child MKNode.
             if (traversalDepth && [field class] == [MKNodeField class])
-                fieldDescription = describeValue([field.valueRecipe valueForNode:node]);
+                fieldDescription = describeValue([field.valueRecipe valueForField:field ofNode:node]);
             else
                 fieldDescription = [field formattedDescriptionForNode:node];
             

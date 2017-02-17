@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldRecipe.h
+//! @file       MKNodeFieldOperationReadKeyPath.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,36 +28,21 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-@class MKNode;
+#import <MachOKit/MKNodeFieldValueRecipe.h>
+#import <MachOKit/MKNodeFieldDataRecipe.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@protocol MKNodeFieldRecipe <NSObject>
-- (nullable id)valueForNode:(MKNode*)input;
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface _MKNodeFieldOperationReadKey : NSObject <MKNodeFieldRecipe> {
+@interface MKNodeFieldOperationReadKeyPath : NSObject <MKNodeFieldValueRecipe> {
 @package
-    NSString *_key;
+    NSString *_type;
+    NSString *_keyPath;
 }
 
-- (instancetype)initWithKey:(nullable NSString*)key NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithKeyPath:(nullable NSString*)keyPath expectedType:(nullable NSString*)type NS_DESIGNATED_INITIALIZER;
 
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface _MKNodeFieldOperationConstant : NSObject <MKNodeFieldRecipe> {
-@package
-    id _value;
-}
-
-- (instancetype)initWithValue:(nullable id)value NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithKeyPath:(nullable NSString*)keyPath;
 
 @end
 

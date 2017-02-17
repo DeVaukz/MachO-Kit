@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFormattedNodeField.h
+//! @file       MKNodeFieldDataRecipe.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,45 +28,19 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeField.h>
+@class MKBackedNode;
+@class MKNodeField;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Node Field Format
-//! @relates    MKFormattedNodeField
-//!
-typedef NS_ENUM(NSUInteger, MKNodeFieldFormat) {
-    //! Format the value of this field as a decimal number.
-    MKNodeFieldFormatDecimal        = 0,
-    //! Format the value of this field as a hexadecimal number.
-    MKNodeFieldFormatHex,
-    //! Format the value of this field as a hexadecimal number, without any
-    //! leading zeros.
-    MKNodeFieldFormatHexCompact,
-    //! Alias for formatting addresses.
-    MKNodeFieldFormatAddress        = MKNodeFieldFormatHex,
-    //! Alias for formatting sizes
-    MKNodeFieldFormatSize           = MKNodeFieldFormatDecimal,
-    //! Alias for formatting offsets
-    MKNodeFieldFormatOffset         = MKNodeFieldFormatHexCompact
-};
+@protocol MKNodeFieldDataRecipe <NSObject>
 
+- (nullable NSNumber*)address:(NSUInteger)type ofField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
 
+- (nullable NSNumber*)sizeOfField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
 
-//----------------------------------------------------------------------------//
-@interface MKFormattedNodeField : MKNodeField {
-@package
-    NSFormatter *_valueFormatter;
-}
-
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description format:(MKNodeFieldFormat)format;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description format:(MKNodeFieldFormat)format;
-
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(nullable NSFormatter*)valueFormatter;
-
-//! The formatter used to format the value of this field.
-@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
+- (nullable NSData*)dataForField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
 
 @end
 

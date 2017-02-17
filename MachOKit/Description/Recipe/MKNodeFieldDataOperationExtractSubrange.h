@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKPrimativeNodeField.h
+//! @file       MKNodeFieldDataOperationExtractSubrange.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,27 +28,19 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKFormattedNodeField.h>
+#import <MachOKit/MKNodeFieldValueRecipe.h>
+#import <MachOKit/MKNodeFieldDataRecipe.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKPrimativeNodeField : MKFormattedNodeField {
+@interface MKNodeFieldDataOperationExtractSubrange : NSObject <MKNodeFieldDataRecipe> {
 @package
-    id<MKNodeFieldRecipe> _offsetRecipe;
-    id<MKNodeFieldRecipe> _sizeRecipe;
+    mk_vm_offset_t _offset;
+    mk_vm_size_t _size;
 }
 
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size format:(MKNodeFieldFormat)format;
-
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> offsetRecipe;
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> sizeRecipe;
-
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe formatter:(nullable NSFormatter*)valueFormatter offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe;
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size NS_DESIGNATED_INITIALIZER;
 
 @end
 

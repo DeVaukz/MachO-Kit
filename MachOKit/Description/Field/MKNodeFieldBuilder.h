@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeDescription.h
+//! @file       MKNodeFieldBuilder.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -29,38 +29,43 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeField.h>
-#import <MachOKit/MKNodeFieldBuilder.h>
-
-#import <MachOKit/MKNodeFieldDeprecated.h>
+#import <MachOKit/NSFormatter+MKNodeField.h>
+#import <MachOKit/MKNodeFieldOperationReturnConstant.h>
+#import <MachOKit/MKNodeFieldOperationReadKeyPath.h>
+#import <MachOKit/MKNodeFieldDataOperationExtractSubrange.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeDescription : NSObject {
+@interface MKNodeFieldBuilder : NSObject {
 @package
-    MKNodeDescription *_parent;
-    NSArray<MKNodeField*> *_fields;
+    NSString *_name;
+    NSString *_description;
+    id<MKNodeFieldValueRecipe> _valueRecipe;
+    id<MKNodeFieldDataRecipe> _dataRecipe;
+    NSString *_type;
+    NSFormatter *_formatter;
+    MKNodeFieldOptions _options;
 }
 
-+ (instancetype)nodeDescriptionWithParentDescription:(nullable MKNodeDescription*)parent fields:(nullable NSArray<MKNodeField*> *)fields;
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type;
 
-- (instancetype)initWithParentDescription:(nullable MKNodeDescription*)parent fields:(nullable NSArray<MKNodeField*> *)fields NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, strong, nullable) NSString *name;
 
-@property (nonatomic, readonly, nullable) MKNodeDescription* parent;
+@property (nonatomic, strong, nullable) NSString *description;
 
-@property (nonatomic, readonly) NSArray<MKNodeField*> *fields;
-@property (nonatomic, readonly) NSArray<MKNodeField*> *allFields;
+@property (nonatomic, strong, nullable) NSString *type;
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Obtaining a Description
-//! @name       Obtaining a Description
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+@property (nonatomic, strong, nullable) NSFormatter *formatter;
 
-//! Returns a complete description of the node, containing all fields and their
-//! values.  If \a traversalDepth is > 1, invokes \c -recursiveDescription: on
-//! fields of class \ref MKNode, passing a value of \c traversalDepth-1 as the
-//! argument.
-- (NSString*)textualDescriptionForNode:(MKNode*)node traversalDepth:(NSUInteger)traversalDepth;
+@property (nonatomic, readwrite) MKNodeFieldOptions options;
+
+@property (nonatomic, strong, nullable) id<MKNodeFieldValueRecipe> valueRecipe;
+
+@property (nonatomic, strong, nullable) id<MKNodeFieldDataRecipe> dataRecipe;
+
+- (MKNodeField*)build;
 
 @end
 

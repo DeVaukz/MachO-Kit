@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldRecipe.m
+//|             NSFormatter+MKNodeField.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,74 +25,45 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldRecipe.h"
-#import "MKNode.h"
+#import "NSFormatter+MKNodeField.h"
 
 //----------------------------------------------------------------------------//
-@implementation _MKNodeFieldOperationReadKey
+@implementation NSFormatter (MKNodeField)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithKey:(NSString*)key
++ (NSFormatter*)mk_decimalNumberFormatter
 {
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _key = [key copy];
-    
-    return self;
+    return nil;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithKey:nil]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
++ (NSFormatter*)mk_hexFormatter
 {
-    [_key release];
-    [super dealloc];
+    return [MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForNode:(MKNode*)input
++ (NSFormatter*)mk_hexCompactFormatter
 {
-    if (_key)
-        return [input valueForKeyPath:_key];
-    else
-        return nil;
-}
-
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@implementation _MKNodeFieldOperationConstant
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithValue:(id)value
-{
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _value = [value retain];
-    
-    return self;
+    return [MKHexNumberFormatter hexNumberFormatterWithDigits:0];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithValue:nil]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
++ (NSFormatter*)mk_AddressFormatter
 {
-    [_value release];
-    [super dealloc];
+    return [self mk_hexFormatter];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForNode:(__unused MKNode*)input
-{ return _value; }
++ (NSFormatter*)mk_SizeFormatter
+{
+    return nil;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_OffsetFormatter
+{
+    return [self mk_hexFormatter];
+}
 
 @end

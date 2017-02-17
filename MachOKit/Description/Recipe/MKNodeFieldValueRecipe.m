@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFlagsNodeField.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldValueRecipe.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,30 +25,15 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
+#import "MKNodeFieldOperationReturnConstant.h"
 
-#import <MachOKit/MKNodeField.h>
-
-NS_ASSUME_NONNULL_BEGIN
-
-//----------------------------------------------------------------------------//
-@interface MKFlagsNodeField : MKNodeField {
-@package
-    id<MKNodeFieldRecipe> _offsetRecipe;
-    id<MKNodeFieldRecipe> _sizeRecipe;
-    NSDictionary *_flags;
-}
-
-+ (instancetype)fieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
-+ (instancetype)fieldWithProperty:(NSString*)property description:(nullable NSString*)description offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size flags:(NSDictionary*)flags;
-
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> offsetRecipe;
-@property (nonatomic, readonly) id<MKNodeFieldRecipe> sizeRecipe;
-@property (nonatomic, readonly) NSDictionary *flags;
-
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldRecipe>)valueRecipe offset:(id<MKNodeFieldRecipe>)offsetRecipe size:(id<MKNodeFieldRecipe>)sizeReceipe flags:(NSDictionary*)flags;
-
-@end
-
-NS_ASSUME_NONNULL_END
+NSString * const MKFieldTypeByte = @"Byte";
+NSString * const MKFieldTypeWord = @"Word";
+NSString * const MKFieldTypeDoubleWord = @"Double Word";
+NSString * const MKFieldTypeQuadWord = @"Quad Word";
+NSString * const MKFieldTypePointer = @"Pointer";
+NSString * const MKFieldTypeBitfield = @"Bitfield";
+NSString * const MKFieldTypeAddress = @"Address";
+NSString * const MKFieldTypeSize = @"Size";
+NSString * const MKFieldTypeOffset = @"Offset";
+NSString * const MKFieldTypeCollection = @"Collection";
