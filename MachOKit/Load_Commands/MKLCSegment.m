@@ -102,7 +102,7 @@
             //       not attempt to continue after a MKLCSection fails to load
             //       as this will break the ordering.
             
-            MKLCSection *sect = [[[MKLCSection alloc] initWithOffset:offset fromParent:self error:&sectionError] autorelease];
+            MKLCSection *sect = [[MKLCSection alloc] initWithOffset:offset fromParent:self error:&sectionError];
             if (sect == nil) {
                 // If we fail to instantiate an instance of the MKLCSection64 it
                 // means we've walked off the end of memory that can be mapped

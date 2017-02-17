@@ -109,6 +109,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
         } retain];
         
         [segments release];
+        [segmentsByIndex release];
         [segmentsByLoadCommand release];
         [sections release];
         [sectionsByIndex release];
@@ -135,7 +136,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)sectionsWithName:(NSString*)sectName inSegment:(MKSegment*)segment
 {
-    // TODO - verify what DYLD would do with duplicate sections.
+    // TODO - Check what DYLD would do with duplicate sections.
     NSMutableArray *sections = [NSMutableArray arrayWithCapacity:1];
     
     for (MKSection *section in self._segments[MKAllSections]) {
