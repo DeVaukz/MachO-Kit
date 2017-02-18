@@ -137,6 +137,14 @@ mk_architecture_uses_64bit_abi(mk_architecture_t architecture)
 
 
 //----------------------------------------------------------------------------//
+#pragma mark -  Describing Architectures
+//! @name       Describing Architectures
+//----------------------------------------------------------------------------//
+
+_mk_export size_t
+mk_architecture_copy_description(mk_architecture_t architecture, char *output, size_t output_len);
+
+//----------------------------------------------------------------------------//
 #pragma mark -  Comparing Architectures
 //! @name       Comparing Architectures
 //----------------------------------------------------------------------------//
