@@ -36,13 +36,10 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKNodeFieldOperationReadKeyPath : NSObject <MKNodeFieldValueRecipe> {
 @package
-    NSString *_type;
     NSString *_keyPath;
 }
 
-- (instancetype)initWithKeyPath:(nullable NSString*)keyPath expectedType:(nullable NSString*)type NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)initWithKeyPath:(nullable NSString*)keyPath;
+- (instancetype)initWithKeyPath:(nullable NSString*)keyPath NS_DESIGNATED_INITIALIZER;
 
 @end
 

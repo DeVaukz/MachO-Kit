@@ -30,6 +30,7 @@
 
 #import <MachOKit/MKNodeFieldValueRecipe.h>
 #import <MachOKit/MKNodeFieldDataRecipe.h>
+#import <MachOKit/MKNodeFieldNumericType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -38,9 +39,12 @@ NS_ASSUME_NONNULL_BEGIN
 @package
     mk_vm_offset_t _offset;
     mk_vm_size_t _size;
+    id<MKNodeFieldNumericType> _type;
 }
 
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size NS_DESIGNATED_INITIALIZER;
+
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset type:(id<MKNodeFieldNumericType>)type NS_DESIGNATED_INITIALIZER;
 
 @end
 

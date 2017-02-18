@@ -1,10 +1,13 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldOperationReadKeyPath.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKInternal.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//!
+//! @brief
+//! The root include for MachOKit.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,42 +28,41 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldOperationReadKeyPath.h"
-#import "MKNode.h"
+#ifndef _MKInternal_h
+#define _MKInternal_h
+
+#include "internal.h"
+
+#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldOperationReadKeyPath
+#pragma mark -  Singleton
+/// @name       Singleton
+//----------------------------------------------------------------------------//
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithKeyPath:(NSString*)keyPath
-{
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _keyPath = [keyPath copy];
-    
-    return self;
+//! Helper macro to define -init and +sharedInstance methods for a singleton.
+#define MKMakeSingletonInitializer(TYPE) \
+static TYPE *s_ ## TYPE = nil; \
++ (instancetype)sharedInstance \
+{ \
+    if (self == TYPE.class) { \
+        if (s_ ## TYPE == nil) \
+            s_ ## TYPE = [TYPE new]; \
+        return s_ ## TYPE; \
+    } else { \
+        return nil; \
+    } \
+} \
+- (instancetype)init \
+{ \
+    if (s_ ## TYPE == nil || self.class != TYPE.class) { \
+        return [super init]; \
+    } \
+    \
+    [self release]; \
+    return [[TYPE sharedInstance] retain]; \
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithKeyPath:nil]; }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_keyPath release];
-    
-    [super dealloc];
-}
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForField:(__unused MKNodeField*)field ofNode:(MKNode*)input
-{
-    if (_keyPath)
-        return [input valueForKeyPath:_keyPath];
-    else
-        return nil;
-}
-
-@end
+#endif /* _MKInternal_h */

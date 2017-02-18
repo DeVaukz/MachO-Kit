@@ -34,28 +34,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Mach-O Kit Types
-//! @relates    MKNodeFieldValueRecipe
-//
-
-extern NSString * const MKFieldTypeByte;
-extern NSString * const MKFieldTypeWord;
-extern NSString * const MKFieldTypeDoubleWord;
-extern NSString * const MKFieldTypeQuadWord;
-extern NSString * const MKFieldTypePointer;
-extern NSString * const MKFieldTypeBitfield;
-extern NSString * const MKFieldTypeAddress;
-extern NSString * const MKFieldTypeSize;
-extern NSString * const MKFieldTypeOffset;
-extern NSString * const MKFieldTypeCollection;
-
-
-
-
-//----------------------------------------------------------------------------//
 @protocol MKNodeFieldValueRecipe <NSObject>
-
-- (nullable NSString*)typeOfField:(MKNodeField*)field ofNode:(MKNode*)input;
 
 - (nullable id)valueForField:(MKNodeField*)field ofNode:(MKNode*)input;
 

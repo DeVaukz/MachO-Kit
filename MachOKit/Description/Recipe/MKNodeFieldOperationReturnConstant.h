@@ -36,13 +36,10 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKNodeFieldOperationReturnConstant : NSObject <MKNodeFieldValueRecipe> {
 @package
-    NSString *_type;
     id _constant;
 }
 
-- (instancetype)initWithConstant:(nullable id)constant ofType:(nullable NSString*)type NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)initWithConstant:(nullable id)constant;
+- (instancetype)initWithConstant:(nullable id)constant NS_DESIGNATED_INITIALIZER;
 
 @end
 

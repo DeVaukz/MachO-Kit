@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldOperationReadKeyPath.m
+//|             MKNodeFieldTypeWord.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,42 +25,60 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldOperationReadKeyPath.h"
+#import "MKNodeFieldTypeWord.h"
+#import "MKInternal.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldOperationReadKeyPath
+@implementation MKNodeFieldTypeWord
+
+MKMakeSingletonInitializer(MKNodeFieldTypeWord)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithKeyPath:(NSString*)keyPath
+- (NSString*)name
+{ return @"Word"; }
+
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return nil; }
+
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldNumericTypeFlags)flagsForNode:(__unused MKNode*)input
+{ return 0; }
+
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)sizeForNode:(__unused MKNode*)input
+{ return 2; }
+
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)alignmentForNode:(__unused MKNode*)input
+{ return 2; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)validateValue:(id)value
 {
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _keyPath = [keyPath copy];
-    
-    return self;
+    return YES;
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithKeyPath:nil]; }
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldTypeUnsignedWord
+
+MKMakeSingletonInitializer(MKNodeFieldTypeUnsignedWord)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_keyPath release];
-    
-    [super dealloc];
-}
+- (NSString*)name
+{ return @"Unsigned Word"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForField:(__unused MKNodeField*)field ofNode:(MKNode*)input
-{
-    if (_keyPath)
-        return [input valueForKeyPath:_keyPath];
-    else
-        return nil;
-}
+- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input
+{ return MKNodeFieldNumericTypeUnsigned | [super flagsForNode:input]; }
 
 @end

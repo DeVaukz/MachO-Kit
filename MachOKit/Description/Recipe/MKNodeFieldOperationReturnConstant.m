@@ -32,20 +32,15 @@
 @implementation MKNodeFieldOperationReturnConstant
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithConstant:(id)constant ofType:(NSString*)type
+- (instancetype)initWithConstant:(id)constant
 {
     self = [super init];
     if (self == nil) return nil;
     
     _constant = [constant retain];
-    _type = [type copy];
     
     return self;
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithConstant:(id)constant
-{ return [self initWithConstant:constant ofType:nil]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
@@ -55,14 +50,9 @@
 - (void)dealloc
 {
     [_constant release];
-    [_type release];
     
     [super dealloc];
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)typeOfField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
-{ return _type; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (id)valueForField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input

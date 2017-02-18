@@ -33,21 +33,25 @@
 
 @synthesize name = _name;
 @synthesize description = _description;
+@synthesize type = _type;
 @synthesize valueRecipe = _valueRecipe;
 @synthesize dataRecipe = _dataRecipe;
 @synthesize valueFormatter = _valueFormatter;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
+- (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
 {
+    NSParameterAssert(valueRecipe);
+    
     self = [super init];
     if (self == nil) return nil;
     
     _name = [name copy];
     _description = [description copy];
+    _type = [type retain];
     _valueRecipe = [valueRecipe retain];
     _dataRecipe = [dataRecipe retain];
-    _valueFormatter = [valueFormatter retain];
+    _valueFormatter = [valueFormatter retain] ?: [_type.formatter retain];
     _options = options;
     
     return self;
@@ -62,6 +66,7 @@
 {
     [_name release];
     [_description release];
+    [_type release];
     [_valueRecipe release];
     [_dataRecipe release];
     [_valueFormatter release];

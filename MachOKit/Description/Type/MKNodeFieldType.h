@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldValueRecipe.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKNodeFieldType.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,15 +25,23 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldOperationReturnConstant.h"
+#include <MachOKit/macho.h>
+@import Foundation;
 
-NSString * const MKFieldTypeByte = @"Byte";
-NSString * const MKFieldTypeWord = @"Word";
-NSString * const MKFieldTypeDoubleWord = @"Double Word";
-NSString * const MKFieldTypeQuadWord = @"Quad Word";
-NSString * const MKFieldTypePointer = @"Pointer";
-NSString * const MKFieldTypeBitfield = @"Bitfield";
-NSString * const MKFieldTypeAddress = @"Address";
-NSString * const MKFieldTypeSize = @"Size";
-NSString * const MKFieldTypeOffset = @"Offset";
-NSString * const MKFieldTypeCollection = @"Collection";
+@class MKNode;
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@protocol MKNodeFieldType <NSObject>
+
+@property (nonatomic, readonly) NSString *name;
+
+@property (nonatomic, readonly, nullable) NSFormatter *formatter;
+
+//! Validate the provided value for conformance to the type.
+- (BOOL)validateValue:(id)value;
+
+@end
+
+NS_ASSUME_NONNULL_END

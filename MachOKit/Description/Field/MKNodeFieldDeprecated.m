@@ -37,7 +37,7 @@
 + (instancetype)nodeFieldWithName:(NSString*)name keyPath:(NSString*)keyPath description:(NSString*)description
 {
     id<MKNodeFieldValueRecipe> valueRecipe = [[[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:keyPath] autorelease];
-    return [[[MKNodeField alloc] initWithName:name description:description value:valueRecipe data:nil formatter:nil options:0] autorelease];
+    return [[[MKNodeField alloc] initWithName:name description:description type:nil value:valueRecipe data:nil formatter:nil options:0] autorelease];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -68,7 +68,7 @@
             break;
     }
     
-    MKFormattedNodeField *field = [[[MKFormattedNodeField alloc] initWithName:name description:description value:valueRecipe data:nil formatter:formatter options:0] autorelease];
+    MKFormattedNodeField *field = [[[MKFormattedNodeField alloc] initWithName:name description:description type:nil value:valueRecipe data:nil formatter:formatter options:0] autorelease];
     
     [valueRecipe release];
     
@@ -148,7 +148,7 @@
     id<MKNodeFieldValueRecipe> valueRecipe = [[[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:keyPath] autorelease];
     id<MKNodeFieldDataRecipe> dataRecipe = [[[MKNodeFieldDataOperationExtractSubrange alloc] initWithOffset:offset size:size] autorelease];
     
-    return [[[MKFlagsNodeField alloc] initWithName:name description:description value:valueRecipe data:dataRecipe formatter:[MKHexNumberFormatter hexNumberFormatterWithDigits:0] options:0] autorelease];
+    return [[[MKFlagsNodeField alloc] initWithName:name description:description type:nil value:valueRecipe data:dataRecipe formatter:[MKHexNumberFormatter hexNumberFormatterWithDigits:0] options:0] autorelease];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

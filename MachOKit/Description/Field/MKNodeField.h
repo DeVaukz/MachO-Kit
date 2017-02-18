@@ -28,6 +28,7 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKNodeFieldType.h>
 #import <MachOKit/MKNodeFieldValueRecipe.h>
 #import <MachOKit/MKNodeFieldDataRecipe.h>
 
@@ -39,12 +40,19 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Node Field Options
 //! @relates    MKFormattedNodeField
 //!
-typedef NS_ENUM(NSUInteger, MKNodeFieldOptions) {
-    MKNodeFieldOptionsNone                                      = 0,
-    //! Hint to display the contents of the collection as children of the
-    //! node, rather than as children of the field.
-    //! Only applicable to collections.
-    MKNodeFieldOptionDisplayCollectionContentsAsChildren        = (1U<<10),
+typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
+    MKNodeFieldOptionNone                                       = 0,
+    //! Hint to display the contents of the field alongside its parent.
+    //! Only applicable to node or collection (of node) type fields.
+    MKNodeFieldOptionMergeWithParent                            = (1U<<0),
+    //! Hint to display the field as a child of the node, rather than as a
+    //! detail of the node.
+    //! Only applicable to node type fields.
+    MKNodeFieldOptionDisplayAsChild                             = (1U<<5),
+    //! Hint to treat the field as a detail of the node, rather than as a
+    //! child of the node.
+    //! Only applicable to node type fields.
+    MKNodeFieldOptionDisplayAsDetail                            = (1U<<6),
 };
 
 
@@ -54,13 +62,14 @@ typedef NS_ENUM(NSUInteger, MKNodeFieldOptions) {
 @package
     NSString *_name;
     NSString *_description;
+    id<MKNodeFieldType> _type;
     id<MKNodeFieldValueRecipe> _valueRecipe;
     id<MKNodeFieldDataRecipe> _dataRecipe;
     NSFormatter *_valueFormatter;
     MKNodeFieldOptions _options;
 }
 
-- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(nullable id<MKNodeFieldDataRecipe>)dataRecipe formatter:(nullable NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options;
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description type:(nullable id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(nullable id<MKNodeFieldDataRecipe>)dataRecipe formatter:(nullable NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -69,6 +78,8 @@ typedef NS_ENUM(NSUInteger, MKNodeFieldOptions) {
 @property (nonatomic, readonly) NSString *name;
 //! A short description of this field.
 @property (nonatomic, readonly, nullable) NSString *description;
+//! The type of this field.
+@property (nonatomic, readonly, nullable) id<MKNodeFieldType> type;
 //! A sequence of steps to retrieve the value for this field from a node.
 @property (nonatomic, readonly) id<MKNodeFieldValueRecipe> valueRecipe;
 //! A sequence of steps to retreive the data for this field from a node.

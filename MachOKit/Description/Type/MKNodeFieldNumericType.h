@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldOperationReadKeyPath.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKNodeFieldNumericType.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,42 +25,35 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldOperationReadKeyPath.h"
-#import "MKNode.h"
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldType.h>
+@class MKNode;
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldOperationReadKeyPath
+//! @name       Node Field Numeric Type Flags
+//! @relates    MKNodeFieldNumericType
+//!
+typedef NS_OPTIONS(NSUInteger, MKNodeFieldNumericTypeFlags) {
+    MKNodeFieldNumericTypeNone          = 0,
+    //!
+    MKNodeFieldNumericTypeUnsigned      = (1U<<0)
+};
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithKeyPath:(NSString*)keyPath
-{
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _keyPath = [keyPath copy];
-    
-    return self;
-}
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithKeyPath:nil]; }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_keyPath release];
-    
-    [super dealloc];
-}
+//----------------------------------------------------------------------------//
+@protocol MKNodeFieldNumericType <MKNodeFieldType>
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForField:(__unused MKNodeField*)field ofNode:(MKNode*)input
-{
-    if (_keyPath)
-        return [input valueForKeyPath:_keyPath];
-    else
-        return nil;
-}
+- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input;
+
+- (size_t)sizeForNode:(MKNode*)input;
+
+- (size_t)alignmentForNode:(MKNode*)input;
 
 @end
+
+NS_ASSUME_NONNULL_END

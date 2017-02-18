@@ -44,8 +44,28 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset type:(id<MKNodeFieldNumericType>)type
+{
+    self = [super init];
+    if (self == nil) return nil;
+    
+    _offset = offset;
+    _type = [type retain];
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
 { return [self initWithOffset:0 size:0]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    [_type release];
+    
+    [super dealloc];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldDataRecipe
@@ -70,9 +90,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSNumber*)sizeOfField:(__unused MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    // TODO - Don't use MK_VM_SIZE_INVALID as a magic value.
-    if (_size == MK_VM_SIZE_INVALID)
-        return @(input.dataModel.pointerSize);
+    if (_type)
+        return @([_type sizeForNode:input]);
     else
         return @(_size);
 }

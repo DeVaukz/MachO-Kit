@@ -39,28 +39,16 @@
 @synthesize dataRecipe = _dataRecipe;
 
 //|++++++++++++++++++++++++++++++++++++|//
-static inline NSFormatter* FormatterForType(NSString* type)
-{
-    if ([type isEqualToString:MKFieldTypeAddress])
-        return [NSFormatter mk_AddressFormatter];
-    else if ([type isEqualToString:MKFieldTypeOffset])
-        return [NSFormatter mk_SizeFormatter];
-    else
-        return nil;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldType>)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
 {
     MKNodeFieldBuilder *builder = [self new];
     
-    id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName expectedType:type];
+    id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
     id<MKNodeFieldDataRecipe> dataRecipe = [[MKNodeFieldDataOperationExtractSubrange alloc] initWithOffset:offset size:size];
     
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
-    builder.formatter = FormatterForType(type);
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
     
@@ -71,16 +59,37 @@ static inline NSFormatter* FormatterForType(NSString* type)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldNumericType>)type offset:(mk_vm_offset_t)offset;
 {
+    NSParameterAssert(type);
+    
     MKNodeFieldBuilder *builder = [self new];
     
-    id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName expectedType:type];
+    id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
+    id<MKNodeFieldDataRecipe> dataRecipe = [[MKNodeFieldDataOperationExtractSubrange alloc] initWithOffset:offset type:type];
     
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
-    builder.formatter = FormatterForType(type);
+    builder.valueRecipe = valueRecipe;
+    builder.dataRecipe = dataRecipe;
+    
+    [valueRecipe release];
+    [dataRecipe release];
+    
+    return [builder autorelease];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldType>)type
+{
+    MKNodeFieldBuilder *builder = [self new];
+    
+    id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
+    
+    builder.name = propertyName;
+    builder.description = propertyName;
+    builder.type = type;
     builder.valueRecipe = valueRecipe;
     
     [valueRecipe release];
@@ -105,11 +114,12 @@ static inline NSFormatter* FormatterForType(NSString* type)
 - (MKNodeField*)build
 {
     return [[[MKNodeField alloc] initWithName:self.name
-                                 description:self.description
-                                       value:self.valueRecipe
-                                        data:self.dataRecipe
-                                   formatter:self.formatter
-                                     options:self.options] autorelease];
+                                  description:self.description
+                                         type:self.type
+                                        value:self.valueRecipe
+                                         data:self.dataRecipe
+                                    formatter:self.formatter
+                                      options:self.options] autorelease];
 }
 
 @end

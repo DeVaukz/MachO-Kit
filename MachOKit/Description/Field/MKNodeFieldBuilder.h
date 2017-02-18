@@ -29,10 +29,9 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeField.h>
+#import <MachOKit/MKFieldType.h>
 #import <MachOKit/NSFormatter+MKNodeField.h>
-#import <MachOKit/MKNodeFieldOperationReturnConstant.h>
-#import <MachOKit/MKNodeFieldOperationReadKeyPath.h>
-#import <MachOKit/MKNodeFieldDataOperationExtractSubrange.h>
+#import <MachOKit/MKNodeFieldRecipe.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,19 +42,20 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *_description;
     id<MKNodeFieldValueRecipe> _valueRecipe;
     id<MKNodeFieldDataRecipe> _dataRecipe;
-    NSString *_type;
+    id<MKNodeFieldType> _type;
     NSFormatter *_formatter;
     MKNodeFieldOptions _options;
 }
 
-+ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
-+ (instancetype)builderWithProperty:(NSString*)propertyName type:(NSString*)type;
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(nullable id<MKNodeFieldType>)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldNumericType>)type offset:(mk_vm_offset_t)offset;
++ (instancetype)builderWithProperty:(NSString*)propertyName type:(nullable id<MKNodeFieldType>)type;
 
 @property (nonatomic, strong, nullable) NSString *name;
 
 @property (nonatomic, strong, nullable) NSString *description;
 
-@property (nonatomic, strong, nullable) NSString *type;
+@property (nonatomic, strong, nullable) id<MKNodeFieldType> type;
 
 @property (nonatomic, strong, nullable) NSFormatter *formatter;
 

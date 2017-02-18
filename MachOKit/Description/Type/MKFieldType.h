@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldOperationReadKeyPath.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKFieldType.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,42 +25,11 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldOperationReadKeyPath.h"
-#import "MKNode.h"
+#import <MachOKit/MKNodeFieldType.h>
+#import <MachOKit/MKNodeFieldNumericType.h>
+#import <MachOKit/MKNodeFieldEnumerationType.h>
 
-//----------------------------------------------------------------------------//
-@implementation MKNodeFieldOperationReadKeyPath
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithKeyPath:(NSString*)keyPath
-{
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _keyPath = [keyPath copy];
-    
-    return self;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithKeyPath:nil]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_keyPath release];
-    
-    [super dealloc];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForField:(__unused MKNodeField*)field ofNode:(MKNode*)input
-{
-    if (_keyPath)
-        return [input valueForKeyPath:_keyPath];
-    else
-        return nil;
-}
-
-@end
+#import <MachOKit/MKNodeFieldTypeByte.h>
+#import <MachOKit/MKNodeFieldTypeWord.h>
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldTypeQuadWord.h>
