@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "NSError+MK.h"
+#import "MKInternal.h"
 
 NSString * const MKErrorDomain = @"MKErrorDomain";
 NSString * const MKPropertyKey = @"MKPropertyKey";
@@ -42,10 +43,16 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
     CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
     va_end(ap);
     
-    NSError *ret = [NSError errorWithDomain:domain code:code userInfo:[NSDictionary dictionaryWithObject:(NSString*)str forKey:NSLocalizedDescriptionKey]];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
+        (NSString*)str, NSLocalizedDescriptionKey,
+    nil];
     
+    NSError *error = [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    
+    [userInfo release];
     CFRelease(str);
-    return ret;
+    
+    return error;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -56,13 +63,17 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
     CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
     va_end(ap);
     
-    NSError *ret = [NSError errorWithDomain:domain code:code userInfo:@{
-        NSLocalizedDescriptionKey: description,
-        NSLocalizedFailureReasonErrorKey: (NSString*)str
-    }];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
+        description, NSLocalizedDescriptionKey,
+        (NSString*)str, NSLocalizedFailureReasonErrorKey,
+    nil];
     
+    NSError *error = [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    
+    [userInfo release];
     CFRelease(str);
-    return ret;
+    
+    return error;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -75,45 +86,65 @@ NSString * const MKPropertyKey = @"MKPropertyKey";
     CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
     va_end(ap);
     
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-    userInfo[MKPropertyKey] = property;
-    userInfo[NSLocalizedDescriptionKey] = (NSString*)str;
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
+        (NSString*)str, NSLocalizedDescriptionKey,
+        property, MKPropertyKey,
+    nil];
+    
+    NSError *error = [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    
+    [userInfo release];
     CFRelease(str);
     
-    return [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    return error;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
 {
+    NSParameterAssert(underlyingError);
+    
     va_list ap;
     va_start(ap, description);
     CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
     va_end(ap);
     
-    NSError *ret = [NSError errorWithDomain:domain code:code userInfo:[NSDictionary dictionaryWithObjectsAndKeys:(NSString*)str, NSLocalizedDescriptionKey, underlyingError, NSUnderlyingErrorKey, nil]];
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
+        (NSString*)str, NSLocalizedDescriptionKey,
+        underlyingError, NSUnderlyingErrorKey,
+    nil];
     
+    NSError *error = [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    
+    [userInfo release];
     CFRelease(str);
-    return ret;
+    
+    return error;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)mk_errorWithDomain:(NSString*)domain code:(NSInteger)code property:(NSString*)property underlyingError:(NSError*)underlyingError description:(NSString*)description, ...
 {
     NSParameterAssert(property);
+    NSParameterAssert(underlyingError);
     
     va_list ap;
     va_start(ap, description);
     CFStringRef str = CFStringCreateWithFormatAndArguments(NULL, NULL, (CFStringRef)description, ap);
     va_end(ap);
     
-    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-    userInfo[MKPropertyKey] = property;
-    userInfo[NSUnderlyingErrorKey] = underlyingError;
-    userInfo[NSLocalizedDescriptionKey] = (NSString*)str;
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:
+        (NSString*)str, NSLocalizedDescriptionKey,
+        underlyingError, NSUnderlyingErrorKey,
+        property, MKPropertyKey,
+    nil];
+    
+    NSError *error = [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    
+    [userInfo release];
     CFRelease(str);
     
-    return [NSError errorWithDomain:domain code:code userInfo:userInfo];
+    return error;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

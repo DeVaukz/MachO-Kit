@@ -58,6 +58,7 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 {
     self.delegate = nil;
     objc_storeWeak(&_parent, nil);
+    
     [super dealloc];
 }
 
@@ -180,8 +181,12 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
         }
         
         retValue = [subclasses copy];
+        
+        free(classes);
         [subclasses release];
-        if (cache) objc_storeWeak(cache, retValue);
+        
+        if (cache)
+            objc_storeWeak(cache, retValue);
         
         // We autorelease the returned set in order to force our cached
         // subclasses to be flushed when the autorelease pool next drains.
