@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldCPUType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,13 +25,16 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+@end
+
+NS_ASSUME_NONNULL_END

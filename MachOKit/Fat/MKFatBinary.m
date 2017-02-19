@@ -79,6 +79,7 @@
             }
             
             [architectures addObject:arch];
+            [arch release];
             
             // Safe.  Architecture node size is constant.
             offset += arch.nodeSize;
@@ -94,6 +95,15 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError **)error
 { return [self initWithMemoryMap:parent.memoryMap error:error]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    [_architectures release];
+    [_memoryMap release];
+    
+    [super dealloc];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - MKNode
@@ -125,11 +135,42 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *magic = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(magic)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        offset:offsetof(struct fat_header, magic)
+    ];
+    magic.description = @"FAT Magic";
+    magic.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nfat_arch = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nfat_arch)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        offset:offsetof(struct fat_header, nfat_arch)
+    ];
+    nfat_arch.description = @"Number of Architectures";
+    nfat_arch.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *architectures = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(architectures)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFatArch.class]]
+    ];
+    architectures.description = @"Architectures";
+    architectures.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(magic) description:@"Magic"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(nfat_arch) description:@"Number of Architectures"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(architectures) description:@"Architectures"]
+        magic.build,
+        nfat_arch.build,
+        architectures.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return @"Fat Binary"; }
 
 @end

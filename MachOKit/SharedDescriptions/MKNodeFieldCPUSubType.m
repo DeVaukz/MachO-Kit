@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldCPUSubType.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,13 +25,44 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
+#import "MKNodeFieldCPUSubType.h"
+#import "MKInternal.h"
+#import "MKNode.h"
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+#include <mach-o/fat.h>
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubType
+
+static NSDictionary *s_CPUSubTypes = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubType)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (s_CPUSubTypes != nil)
+        return;
+    
+    s_CPUSubTypes = @{
+        @(CPU_SUBTYPE_MULTIPLE): @"CPU_SUBTYPE_MULTIPLE",
+        @(CPU_SUBTYPE_LITTLE_ENDIAN): @"CPU_SUBTYPE_LITTLE_ENDIAN",
+        @(CPU_SUBTYPE_BIG_ENDIAN): @"CPU_SUBTYPE_BIG_ENDIAN"
+    };
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldCPUSubType*)cpuSubTypeForCPUType:(cpu_type_t)cpuType
+{
+    return [MKNodeFieldCPUSubType sharedInstance];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"cpu_subtype_t"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSDictionary*)elements
+{ return s_CPUSubTypes; }
+
+@end

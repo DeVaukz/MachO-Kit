@@ -43,6 +43,9 @@
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
 
+#import <MachOKit/MKNodeFieldCPUType.h>
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+
 #import <MachOKit/MKBackedNode+Pointer.h>
 #import <MachOKit/MKPointer.h>
 #import <MachOKit/MKPointerNode.h>

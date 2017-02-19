@@ -26,7 +26,9 @@
 //----------------------------------------------------------------------------//
 
 #import "MKFatArch.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
+#import "MKNodeFieldCPUType.h"
+#import "MKNodeFieldCPUSubType.h"
 
 #include <mach-o/fat.h>
 
@@ -81,13 +83,66 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *cpuType = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cputype)
+        type:MKNodeFieldCPUType.sharedInstance
+        offset:offsetof(struct fat_arch, cputype)
+    ];
+    cpuType.description = @"CPU Type";
+    cpuType.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cpuSubType = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cpusubtype)
+        type:[MKNodeFieldCPUSubType cpuSubTypeForCPUType:self.cputype]
+        offset:offsetof(struct fat_arch, cpusubtype)
+    ];
+    cpuSubType.description = @"CPU SubType";
+    cpuSubType.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        offset:offsetof(struct fat_arch, offset)
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(size)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        offset:offsetof(struct fat_arch, size)
+    ];
+    size.description = @"Size";
+    size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *alignment = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(align)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        offset:offsetof(struct fat_arch, align)
+    ];
+    alignment.description = @"Alignment";
+    alignment.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(cputype) description:@"CPU Type"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(cpusubtype) description:@"CPU Subtype"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(size) description:@"Size"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(align) description:@"Alignment"]
+        cpuType.build,
+        cpuSubType.build,
+        offset.build,
+        size.build,
+        alignment.build
     ]];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{
+    char description[50];
+    size_t descriptionLen = mk_architecture_copy_description(self.architecture, description, sizeof(description));
+    
+    return [[[NSString alloc] initWithBytes:(void*)description length:descriptionLen encoding:NSASCIIStringEncoding] autorelease];
 }
 
 @end
