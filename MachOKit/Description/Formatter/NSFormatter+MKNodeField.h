@@ -27,6 +27,8 @@
 
 @import Foundation;
 
+#import <MachOKit/MKFormatterChain.h>
+#import <MachOKit/MKObjectFormatter.h>
 #import <MachOKit/MKHexNumberFormatter.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -37,6 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (__kindof NSFormatter*)mk_decimalNumberFormatter;
 
 + (__kindof NSFormatter*)mk_hexFormatter;
++ (__kindof NSFormatter*)mk_uppercaseHexFormatter;
 
 + (__kindof NSFormatter*)mk_hexCompactFormatter;
 

@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKHexNumberFormatter.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKObjectFormatter.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,41 +25,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKObjectFormatter.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKHexNumberFormatter formats the textual representation
-//! of NSNumber objects in hexadecimal notation.
-//
-@interface MKHexNumberFormatter : NSFormatter {
-@package
-    size_t _digits;
-    BOOL _uppercase;
-    BOOL _omitPrefix;
+@implementation MKObjectFormatter
+
+MKMakeSingletonInitializer(MKObjectFormatter)
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSFormatter
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)stringForObjectValue:(id)anObject
+{
+    return [anObject description];
 }
 
-//! Returns a formatter that formats an input NSNumber in hexadecimal
-//! representation, padding the resulting string with up to \a digits
-//! preceeding zeros.
-//!
-//! @param  digits
-//!         Pass zero for no padding.  Pass SIZE_T_MAX for padding up to the
-//!         natural length of the underlying type of the NSNumber.
-+ (instancetype)hexNumberFormatterWithDigits:(size_t)digits uppercase:(BOOL)uppercase;
-
-+ (instancetype)hexNumberFormatterWithDigits:(size_t)digits;
-
-//! The minimum number of digits to include in the formatted sitring.
-@property (nonatomic, readwrite) size_t digits;
-
-//!
-@property (nonatomic, readwrite) BOOL uppercase;
-
-//! Do not include the standard hexadecimal prefix (0x) in the output.
-@property (nonatomic, readwrite) BOOL omitPrefix;
-
 @end
-
-NS_ASSUME_NONNULL_END

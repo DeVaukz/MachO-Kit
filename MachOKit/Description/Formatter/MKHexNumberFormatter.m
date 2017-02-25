@@ -31,13 +31,22 @@
 @implementation MKHexNumberFormatter
 
 @synthesize digits = _digits;
+@synthesize uppercase = _uppercase;
+@synthesize omitPrefix = _omitPrefix;
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)hexNumberFormatterWithDigits:(size_t)digits uppercase:(BOOL)uppercase
+{
+    MKHexNumberFormatter *retValue = [[[self alloc] init] autorelease];
+    retValue.digits = digits;
+    retValue.uppercase = uppercase;
+    return retValue;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)hexNumberFormatterWithDigits:(size_t)digits
 {
-    MKHexNumberFormatter *retValue = [[[self alloc] init] autorelease];
-    retValue.digits = digits;
-    return retValue;
+    return [self hexNumberFormatterWithDigits:digits uppercase:NO];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -47,8 +56,23 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)stringForObjectValue:(NSNumber*)anObject
 {
+    if (anObject == nil)
+        return nil;
     if ([anObject isKindOfClass:NSNumber.class] == NO)
         return @"<Not a number>";
+
+#define MAKE_FORMAT_STRING(MODIFIERS, LOWERCASE, UPPERCASE) ({ \
+    BOOL uppercase = self.uppercase; \
+    BOOL prefix = !self.omitPrefix; \
+    NSString * format; \
+    \
+    if (uppercase && prefix) format = @("0x" MODIFIERS UPPERCASE); \
+    else if (uppercase && !prefix) format = @(MODIFIERS UPPERCASE); \
+    else if (!uppercase && prefix) format = @("0x" MODIFIERS LOWERCASE); \
+    else /*if (!uppercase && !prefix)*/ format = @(MODIFIERS LOWERCASE); \
+    \
+    format; \
+})
     
     if (_digits == SIZE_T_MAX) {
         const char *objcType = [anObject objCType];
@@ -56,20 +80,22 @@
         switch (*objcType) {
             case 'c':
             case 'C':
-                return [NSString stringWithFormat:@"0x%0*hhx", 2, [anObject unsignedCharValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*hh", "x", "X"), 2, [anObject unsignedCharValue]];
             case 's':
             case 'S':
-                return [NSString stringWithFormat:@"0x%0*hx", 2, [anObject unsignedShortValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*h", "x", "X"), 2, [anObject unsignedShortValue]];
             case 'i':
             case 'I':
-                return [NSString stringWithFormat:@"0x%0*x", 2, [anObject unsignedIntValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*", "x", "X"), 2, [anObject unsignedIntValue]];
             default:
-                return [NSString stringWithFormat:@"0x%0*llx", 2, [anObject unsignedLongLongValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*ll", "x", "X"), 2, [anObject unsignedLongLongValue]];
         }
     } else if (_digits == 0)
-        return [NSString stringWithFormat:@"0x%llx", [anObject unsignedLongLongValue]];
+        return [NSString stringWithFormat:MAKE_FORMAT_STRING("%ll", "x", "X"), [anObject unsignedLongLongValue]];
     else
-        return [NSString stringWithFormat:@"0x%0*llx", (int)_digits, [anObject unsignedLongLongValue]];
+        return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*ll", "x", "X"), (int)_digits, [anObject unsignedLongLongValue]];
+
+#undef MAKE_FORMAT_STRING
 }
 
 @end

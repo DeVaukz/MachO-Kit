@@ -43,6 +43,12 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHexFormatter
+{
+    return [MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX uppercase:YES];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_hexCompactFormatter
 {
     return [MKHexNumberFormatter hexNumberFormatterWithDigits:0];

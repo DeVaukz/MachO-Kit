@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKHexNumberFormatter.h
+//! @file       MKFormatterChain.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -30,35 +30,19 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKHexNumberFormatter formats the textual representation
-//! of NSNumber objects in hexadecimal notation.
-//
-@interface MKHexNumberFormatter : NSFormatter {
+@interface MKFormatterChain : NSFormatter {
 @package
-    size_t _digits;
-    BOOL _uppercase;
-    BOOL _omitPrefix;
+    NSArray *_formatters;
 }
 
-//! Returns a formatter that formats an input NSNumber in hexadecimal
-//! representation, padding the resulting string with up to \a digits
-//! preceeding zeros.
-//!
-//! @param  digits
-//!         Pass zero for no padding.  Pass SIZE_T_MAX for padding up to the
-//!         natural length of the underlying type of the NSNumber.
-+ (instancetype)hexNumberFormatterWithDigits:(size_t)digits uppercase:(BOOL)uppercase;
++ (instancetype)formatterChainWithFormatters:(nullable NSArray<NSFormatter*> *)formatters;
 
-+ (instancetype)hexNumberFormatterWithDigits:(size_t)digits;
++ (instancetype)formatterChainWithFormatter:(NSFormatter*)first, ... NS_REQUIRES_NIL_TERMINATION;
 
-//! The minimum number of digits to include in the formatted sitring.
-@property (nonatomic, readwrite) size_t digits;
++ (instancetype)formatterChainWithLastFormatter:(NSFormatter*)last, ... NS_REQUIRES_NIL_TERMINATION;
 
-//!
-@property (nonatomic, readwrite) BOOL uppercase;
-
-//! Do not include the standard hexadecimal prefix (0x) in the output.
-@property (nonatomic, readwrite) BOOL omitPrefix;
+//! 
+@property (nonatomic, copy, nullable) NSArray<NSFormatter*> *formatters;
 
 @end
 
