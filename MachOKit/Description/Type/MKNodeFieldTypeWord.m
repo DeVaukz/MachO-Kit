@@ -38,21 +38,17 @@ MKMakeSingletonInitializer(MKNodeFieldTypeWord)
 - (NSString*)name
 { return @"Word"; }
 
-
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
-{ return nil; }
-
+{ return NSFormatter.mk_decimalNumberFormatter; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeFieldNumericTypeFlags)flagsForNode:(__unused MKNode*)input
 { return 0; }
 
-
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)sizeForNode:(__unused MKNode*)input
 { return 2; }
-
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)alignmentForNode:(__unused MKNode*)input

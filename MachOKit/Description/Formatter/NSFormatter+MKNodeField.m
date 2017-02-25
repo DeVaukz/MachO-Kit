@@ -33,7 +33,14 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_decimalNumberFormatter
 {
-    return nil;
+    static NSNumberFormatter *s_DecimalNumberFormatter= nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_DecimalNumberFormatter = [NSNumberFormatter new];
+        s_DecimalNumberFormatter.numberStyle = NSNumberFormatterNoStyle;
+    });
+    
+    return s_DecimalNumberFormatter;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
