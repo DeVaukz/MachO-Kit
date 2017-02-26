@@ -28,11 +28,14 @@
 #import <MachOKit/MKNodeFieldType.h>
 #import <MachOKit/MKNodeFieldNumericType.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
+#import <MachOKit/MKNodeFieldOptionSetType.h>
 #import <MachOKit/MKNodeFieldNodeType.h>
 
 #import <MachOKit/MKNodeFieldTypeByte.h>
 #import <MachOKit/MKNodeFieldTypeWord.h>
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldTypeQuadWord.h>
+#import <MachOKit/MKNodeFieldTypeEnumeration.h>
+#import <MachOKit/MKNodeFieldTypeOptionSet.h>
 #import <MachOKit/MKNodeFieldTypeNode.h>
 #import <MachOKit/MKNodeFieldTypeCollection.h>

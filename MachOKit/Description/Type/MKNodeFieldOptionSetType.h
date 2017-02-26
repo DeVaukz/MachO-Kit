@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       NSFormatter+MKNodeField.h
+//! @file       MKNodeFieldOptionSetType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,31 +25,18 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKFormatterChain.h>
-#import <MachOKit/MKObjectFormatter.h>
-#import <MachOKit/MKHexNumberFormatter.h>
-#import <MachOKit/MKEnumerationFormatter.h>
-#import <MachOKit/MKOptionSetFormatter.h>
+#import <MachOKit/MKNodeFieldNumericType.h>
+@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface NSFormatter (MKNodeField)
+@protocol MKNodeFieldOptionSetType <MKNodeFieldNumericType>
 
-+ (__kindof NSFormatter*)mk_decimalNumberFormatter;
-
-+ (__kindof NSFormatter*)mk_hexFormatter;
-+ (__kindof NSFormatter*)mk_uppercaseHexFormatter;
-
-+ (__kindof NSFormatter*)mk_hexCompactFormatter;
-
-+ (__kindof NSFormatter*)mk_AddressFormatter;
-
-+ (__kindof NSFormatter*)mk_SizeFormatter;
-
-+ (__kindof NSFormatter*)mk_OffsetFormatter;
+@property (nonatomic, readonly) NSDictionary<NSNumber*, NSString*> *options;
 
 @end
 

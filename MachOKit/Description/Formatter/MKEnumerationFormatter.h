@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       NSFormatter+MKNodeField.h
+//! @file       MKEnumerationFormatter.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -27,29 +27,30 @@
 
 @import Foundation;
 
-#import <MachOKit/MKFormatterChain.h>
-#import <MachOKit/MKObjectFormatter.h>
-#import <MachOKit/MKHexNumberFormatter.h>
-#import <MachOKit/MKEnumerationFormatter.h>
-#import <MachOKit/MKOptionSetFormatter.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface NSFormatter (MKNodeField)
+@interface MKEnumerationFormatter : NSFormatter {
+@package
+    NSString *_name;
+    NSDictionary *_elements;
+    NSFormatter *_fallbackFormatter;
+}
 
-+ (__kindof NSFormatter*)mk_decimalNumberFormatter;
++ (instancetype)enumerationFormatterWithName:(nullable NSString*)name fallbackFormatter:(nullable NSFormatter*)formatter elements:(nullable NSDictionary<id, NSString*> *)elements;
 
-+ (__kindof NSFormatter*)mk_hexFormatter;
-+ (__kindof NSFormatter*)mk_uppercaseHexFormatter;
++ (instancetype)enumerationFormatterWithName:(nullable NSString*)name elements:(nullable NSDictionary<id, NSString*> *)elements;
 
-+ (__kindof NSFormatter*)mk_hexCompactFormatter;
++ (instancetype)enumerationFormatterWithElements:(nullable NSDictionary<id, NSString*> *)elements;
 
-+ (__kindof NSFormatter*)mk_AddressFormatter;
+//!
+@property (nonatomic, copy, nullable) NSString *name;
 
-+ (__kindof NSFormatter*)mk_SizeFormatter;
+//! 
+@property (nonatomic, copy, nullable) NSDictionary<id, NSString*> *elements;
 
-+ (__kindof NSFormatter*)mk_OffsetFormatter;
+//!
+@property (nonatomic, strong, nullable) NSFormatter *fallbackFormatter;
 
 @end
 
