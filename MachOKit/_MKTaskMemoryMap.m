@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "_MKTaskMemoryMap.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 #if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
 
@@ -54,6 +54,7 @@
 - (void)dealloc
 {
     mach_port_mod_refs(mach_task_self(), _task, MACH_PORT_RIGHT_SEND, -1);
+    
     [super dealloc];
 }
 

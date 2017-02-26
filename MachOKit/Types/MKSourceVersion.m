@@ -25,7 +25,6 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-
 #import "MKSourceVersion.h"
 
 //----------------------------------------------------------------------------//
@@ -76,6 +75,7 @@
 - (void)dealloc
 {
     [_components release];
+    
     [super dealloc];
 }
 

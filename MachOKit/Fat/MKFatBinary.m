@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKFatBinary.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 #import "MKFatArch.h"
 

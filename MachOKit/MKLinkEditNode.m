@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLinkEditNode.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKMachO+Segments.h"
 #import "MKSegment.h"

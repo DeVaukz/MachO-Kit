@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKDylinkerLoadCommand.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDylinkerLoadCommand
@@ -54,6 +54,7 @@
 - (void)dealloc
 {
     [_name release];
+    
     [super dealloc];
 }
 

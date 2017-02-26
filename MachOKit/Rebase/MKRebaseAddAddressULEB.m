@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKRebaseAddAddressULEB.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKRebaseInfo.h"
 

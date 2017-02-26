@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKCStringSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKBackedNode+Pointer.h"
 #import "MKSegment.h"
 

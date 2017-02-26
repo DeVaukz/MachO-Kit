@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKIndirectSymbol.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKMachO+Symbols.h"
 #import "MKSymbolTable.h"

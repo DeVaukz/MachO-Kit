@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCSubFramework.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 
 //----------------------------------------------------------------------------//
@@ -58,6 +58,7 @@
 - (void)dealloc
 {
     [_umbrella release];
+    
     [super dealloc];
 }
 

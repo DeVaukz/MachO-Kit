@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKRebaseSetTypeImmediate.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKRebaseSetTypeImmediate

@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCRoutines.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLCRoutines

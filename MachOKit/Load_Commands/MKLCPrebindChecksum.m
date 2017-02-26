@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCPrebindChecksum.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLCPrebindChecksum

@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCSegment.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 
 //----------------------------------------------------------------------------//
@@ -139,6 +139,7 @@
 {
     [_sections release];
     [_segname release];
+    
     [super dealloc];
 }
 
@@ -261,6 +262,7 @@
 {
     [_sectname release];
     [_segname release];
+    
     [super dealloc];
 }
 

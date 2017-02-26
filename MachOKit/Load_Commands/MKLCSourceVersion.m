@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCSourceVersion.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLCSourceVersion
@@ -58,6 +58,7 @@
 - (void)dealloc
 {
     [_version release];
+    
     [super dealloc];
 }
 

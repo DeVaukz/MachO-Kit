@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKCString.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKCString
@@ -85,6 +85,7 @@
 - (void)dealloc
 {
     [_string release];
+    
     [super dealloc];
 }
 

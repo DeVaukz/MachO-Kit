@@ -33,7 +33,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef MKOptional<NSDictionary*>* (^MKDeferredContextProvider)(void);
+typedef MKOptional<NSDictionary*>* _Nullable (^MKDeferredContextProvider)(void);
 
 //----------------------------------------------------------------------------//
 //! @name       Constants

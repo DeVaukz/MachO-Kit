@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLoadCommandString.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLoadCommandString
@@ -83,6 +83,7 @@
 - (void)dealloc
 {
     [_string release];
+    
     [super dealloc];
 }
 

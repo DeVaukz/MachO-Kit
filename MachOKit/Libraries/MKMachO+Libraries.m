@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKMachO+Libraries.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKDylibLoadCommand.h"
 #import "MKDependentLibrary.h"
 

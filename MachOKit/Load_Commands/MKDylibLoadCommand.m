@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKDylibLoadCommand.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDylibLoadCommand
@@ -69,6 +69,7 @@
     [_timestamp release];
     [_current_version release];
     [_compatibility_version release];
+    
     [super dealloc];
 }
 

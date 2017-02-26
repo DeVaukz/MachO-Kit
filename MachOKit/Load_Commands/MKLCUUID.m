@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCUUID.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLCUUID
@@ -58,6 +58,7 @@
 - (void)dealloc
 {
     [_uuid release];
+    
     [super dealloc];
 }
 

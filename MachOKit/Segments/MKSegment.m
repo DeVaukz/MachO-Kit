@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKSegment.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKBackedNode+Pointer.h"
 #import "MKMachO.h"
 

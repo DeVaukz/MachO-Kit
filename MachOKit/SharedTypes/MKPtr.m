@@ -26,9 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKPtr.h"
-#import "NSError+MK.h"
-#import "MKNode+MachO.h"
-#import "MKMachO.h"
+#import "MKInternal.h"
 #import "MKPointer.h"
 #import "MKBackedNode+Pointer.h"
 

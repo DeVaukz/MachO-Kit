@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKMinVersionLoadCommand.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKMinVersionLoadCommand
@@ -61,6 +61,7 @@
 {
     [_version release];
     [_sdk release];
+    
     [super dealloc];
 }
 

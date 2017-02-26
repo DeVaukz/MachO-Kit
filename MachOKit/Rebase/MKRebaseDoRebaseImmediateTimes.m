@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKRebaseDoRebaseImmediateTimes.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKDataModel.h"
 #import "MKMachO.h"
 #import "MKRebaseInfo.h"

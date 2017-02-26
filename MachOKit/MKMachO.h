@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     //! The Mach-O image has been processed by the dynamic linker.
-    MKMachOImageWasProcessedByDYLD      = 0x1
+    MKMachOImageProcessedByDYLD         = 1UL << 0
 };
 
 

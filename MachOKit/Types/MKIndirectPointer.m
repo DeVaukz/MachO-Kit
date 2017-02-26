@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKIndirectPointer.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKDataModel.h"
 

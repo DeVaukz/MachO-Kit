@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKStubsSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKDataModel.h"
 #import "MKSegment.h"

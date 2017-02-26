@@ -50,7 +50,7 @@ static TYPE *s_ ## TYPE = nil; \
             s_ ## TYPE = [TYPE new]; \
         return s_ ## TYPE; \
     } else { \
-        return nil; \
+        return [[self new] autorelease]; /*TODO - */ \
     } \
 } \
 - (instancetype)init \

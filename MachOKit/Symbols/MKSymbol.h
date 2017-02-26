@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKSymbol class is the base parser for entries in the \c __LINKEDIT
-//! symbol table.  All symbols share a common structure, and are hence the
+//! symbol table.  All symbols share a common structure, and are therefore the
 //! same size.  The value of the \c type field determines the type of the
 //! symbol, and the meaning of the remaining fields.
 //
@@ -110,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! a null, "", name.  The string at this offset, if any, is assigned to the
 //! \ref name property of this symbol.
 @property (nonatomic, readonly) uint32_t strx;
-//! Type information for the symbol.  This is actually a bitfield the format
+//! Type information for the symbol.  This is actually a bitfield, the format
 //! of which is discussed in <mach-o/nlist.h>.
 @property (nonatomic, readonly) uint8_t type;
 @property (nonatomic, readonly) uint8_t sect;

@@ -26,8 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLoadCommand.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
-#import "NSError+MK.h"
 
 #import <objc/runtime.h>
 
@@ -68,7 +68,7 @@ extern const uint32_t _mk_load_command_classes_count;
     // No existing subclass. Create a subclass.
     @synchronized (self)
     {
-        static NSMutableDictionary *runtimeLCDict = NULL;
+        static NSMutableDictionary *runtimeLCDict = nil;
         const struct _mk_load_command_vtable *libmacho_class = NULL;
         
         if (runtimeLCDict == nil)

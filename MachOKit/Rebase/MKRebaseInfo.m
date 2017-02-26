@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKRebaseInfo.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKRebaseCommand.h"

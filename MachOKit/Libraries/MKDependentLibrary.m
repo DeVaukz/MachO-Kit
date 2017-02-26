@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKDependentLibrary.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKNode+MachO.h"
 #import "MKMachO.h"
 #import "MKDylibLoadCommand.h"
@@ -119,8 +119,8 @@
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Name"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(timestamp) description:@"Timestamp"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(current_version) description:@"Current Version"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(compatibility_version) description:@"Compatibility Version"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(currentVersion) description:@"Current Version"],
+        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(compatibilityVersion) description:@"Compatibility Version"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(required) description:@"Required"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(weak) description:@"Weak"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(upward) description:@"Upward"],

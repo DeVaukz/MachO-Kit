@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKMachO.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachHeader.h"
 #import "MKMachHeader64.h"
 #import "MKLoadCommand.h"
@@ -257,7 +257,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)isFromMemory
 {
-    return !!(_flags & MKMachOImageWasProcessedByDYLD);
+    return !!(_flags & MKMachOImageProcessedByDYLD);
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

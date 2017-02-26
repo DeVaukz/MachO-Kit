@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKPointerNode.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPtr.h"
 
 #define mk_ptr_struct(OBJ)    ((struct MKPtr*)(&(OBJ->_parent)))

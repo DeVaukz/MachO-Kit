@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKDataSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 #import "MKNode+MachO.h"
 #import "MKOffsetNode+AddressBasedInitialization.h"
