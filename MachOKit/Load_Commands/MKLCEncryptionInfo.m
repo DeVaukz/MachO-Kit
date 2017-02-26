@@ -60,10 +60,39 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct encryption_info_command lc;
+    
+    MKNodeFieldBuilder *cryptoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cryptoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), cryptoff)
+        size:sizeof(lc.cryptoff)
+    ];
+    cryptoff.description = @"Encrypted Range Offset";
+    cryptoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cryptsize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cryptsize)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), cryptsize)
+        size:sizeof(lc.cryptsize)
+    ];
+    cryptsize.description = @"Encrypted Range Size";
+    cryptsize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cryptid = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cryptid)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), cryptid)
+        size:sizeof(lc.cryptid)
+    ];
+    cryptid.description = @"Encryption System";
+    cryptid.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cryptoff) description:@"Encrypted Range Offset" offset:offsetof(struct encryption_info_command, cryptoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cryptsize) description:@"Encrypted Range Size" offset:offsetof(struct encryption_info_command, cryptsize) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cryptid) description:@"Encryption System" offset:offsetof(struct encryption_info_command, cryptid) size:sizeof(uint32_t)]
+        cryptoff.build,
+        cryptsize.build,
+        cryptid.build
     ]];
 }
 

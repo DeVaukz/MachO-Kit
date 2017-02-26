@@ -217,10 +217,51 @@ extern const uint32_t _mk_load_command_classes_count;
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    static NSMutableDictionary *s_loadCommandNames = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_loadCommandNames = [[NSMutableDictionary alloc] initWithCapacity:_mk_load_command_classes_count];
+        
+        for (uint32_t i=0; i<_mk_load_command_classes_count; i++) {
+            const struct _mk_load_command_vtable *cls = _mk_load_command_classes[i];
+            // Dirty hack to avoid importing the class strcuture into this file.
+            uint32_t cls_id = mk_load_command_id(&cls);
+            const char * cls_name = mk_type_name(&cls);
+            [s_loadCommandNames setObject:@(cls_name) forKey:@(cls_id)];
+        }
+    });
+    
+    MKNodeFieldBuilder *cmd = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cmd)
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:@"LC" elements:s_loadCommandNames]
+        offset:offsetof(struct load_command, cmd)
+    ];
+    cmd.description = @"Command";
+    cmd.options = MKNodeFieldOptionDisplayAsDetail;
+#ifdef TESTS
+    cmd.formatter = [NSFormatter mk_hexCompactFormatter];
+#endif
+    
+    MKNodeFieldBuilder *cmdsize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cmdSize)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(struct load_command, cmdsize)
+    ];
+    cmdsize.description = @"Command Size";
+    cmdsize.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cmd) description:@"Command" offset:offsetof(struct load_command, cmd) size:sizeof(uint32_t) format:MKNodeFieldFormatHexCompact],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cmdSize) description:@"Command Size" offset:offsetof(struct load_command, cmdsize) size:sizeof(uint32_t)]
+        cmd.build,
+        cmdsize.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return self.class.name; }
 
 @end

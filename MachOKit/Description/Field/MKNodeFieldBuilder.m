@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeFieldBuilder.h"
+#import "MKBackedNode.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldBuilder
@@ -88,14 +89,21 @@
     MKNodeFieldBuilder *builder = [self new];
     
     id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
+    id<MKNodeFieldDataRecipe> dataRecipe = nil;
+    
+    if ([type conformsToProtocol:@protocol(MKNodeFieldNodeType)] && [[(id<MKNodeFieldNodeType>)type nodeClass] isSubclassOfClass:MKBackedNode.class]) {
+        dataRecipe = [MKNodeFieldDataOperationExtractChildNodeData.sharedInstance retain];
+    }
     
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
     builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
+    builder.dataRecipe = dataRecipe;
     
     [valueRecipe release];
+    [dataRecipe release];
     
     return [builder autorelease];
 }

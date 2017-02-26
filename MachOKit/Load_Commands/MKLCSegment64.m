@@ -170,23 +170,139 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct segment_command_64 lc;
+    
+    MKNodeFieldBuilder *segname = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(segname)
+        type:nil /* TODO ? */
+        offset:offsetof(typeof(lc), segname)
+        size:sizeof(lc.segname)
+    ];
+    segname.description = @"Segment Name";
+    segname.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *vmaddr = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(vmaddr)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), vmaddr)
+        size:sizeof(lc.vmaddr)
+    ];
+    vmaddr.description = @"VM Address";
+    vmaddr.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(lc.vmaddr)*2)];
+    vmaddr.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *vmsize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(vmsize)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), vmsize)
+        size:sizeof(lc.vmsize)
+    ];
+    vmsize.description = @"VM Size";
+    vmsize.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(lc.vmsize)*2)];
+    vmsize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *fileoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(fileoff)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), fileoff)
+        size:sizeof(lc.fileoff)
+    ];
+    fileoff.description = @"File Offset";
+    fileoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *filesize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(filesize)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), filesize)
+        size:sizeof(lc.filesize)
+    ];
+    filesize.description = @"File Size";
+    filesize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *maxprot = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(maxprot)
+        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
+          @((typeof(lc.maxprot))VM_PROT_NONE): @"VM_PROT_NONE",
+          @((typeof(lc.maxprot))VM_PROT_READ): @"VM_PROT_READ",
+          @((typeof(lc.maxprot))VM_PROT_WRITE): @"VM_PROT_WRITE",
+          @((typeof(lc.maxprot))VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
+        }]
+        offset:offsetof(typeof(lc), maxprot)
+        size:sizeof(lc.maxprot)
+    ];
+    maxprot.description = @"Maximum VM Propection";
+    maxprot.options = MKNodeFieldOptionDisplayAsDetail;
+#ifdef TESTS
+    maxprot.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(lc.maxprot)*2)];
+#endif
+    
+    MKNodeFieldBuilder *initprot = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(initprot)
+        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
+           @((typeof(lc.initprot))VM_PROT_NONE): @"VM_PROT_NONE",
+           @((typeof(lc.initprot))VM_PROT_READ): @"VM_PROT_READ",
+           @((typeof(lc.initprot))VM_PROT_WRITE): @"VM_PROT_WRITE",
+           @((typeof(lc.initprot))VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
+        }]
+        offset:offsetof(typeof(lc), initprot)
+        size:sizeof(lc.initprot)
+    ];
+    initprot.description = @"Initial VM Propection";
+    initprot.options = MKNodeFieldOptionDisplayAsDetail;
+#ifdef TESTS
+    initprot.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(lc.initprot)*2)];
+#endif
+    
+    MKNodeFieldBuilder *nsects = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nsects)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nsects)
+        size:sizeof(lc.nsects)
+    ];
+    nsects.description = @"Number Of Sections";
+    nsects.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil options:@{
+            @((typeof(lc.flags))SG_HIGHVM): @"SG_HIGHVM",
+            @((typeof(lc.flags))SG_FVMLIB): @"SG_FVMLIB",
+            @((typeof(lc.flags))SG_NORELOC): @"SG_NORELOC",
+            @((typeof(lc.flags))SG_PROTECTED_VERSION_1): @"SG_PROTECTED_VERSION_1"
+        }]
+        offset:offsetof(typeof(lc), flags)
+        size:sizeof(lc.flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+#ifdef TESTS
+    flags.formatter = NSFormatter.mk_hexCompactFormatter;
+#endif
+    
+    MKNodeFieldBuilder *sections = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sections)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKLCSection64.class]]
+    ];
+    sections.description = @"Sections";
+    sections.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(segname) description:@"Segment Name" offset:offsetof(struct segment_command_64, segname) size:16],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(vmaddr) description:@"VM Address" offset:offsetof(struct segment_command_64, vmaddr) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(vmsize) description:@"VM Size" offset:offsetof(struct segment_command_64, vmsize) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(fileoff) description:@"File Offset" offset:offsetof(struct segment_command_64, fileoff) size:sizeof(uint64_t) format:MKNodeFieldFormatDecimal],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(filesize) description:@"File Size " offset:offsetof(struct segment_command_64, filesize) size:sizeof(uint64_t) format:MKNodeFieldFormatDecimal],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(maxprot) description:@"Maximum VM Propection" offset:offsetof(struct segment_command_64, maxprot) size:sizeof(vm_prot_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(initprot) description:@"Initial VM Protection" offset:offsetof(struct segment_command_64, initprot) size:sizeof(vm_prot_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nsects) description:@"Number Of Sections" offset:offsetof(struct segment_command_64, nsects) size:sizeof(uint32_t)],
-        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct segment_command_64, flags) size:sizeof(uint32_t) flags:@{}],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sections) description:@"Sections"]
+        segname.build,
+        vmaddr.build,
+        vmsize.build,
+        fileoff.build,
+        filesize.build,
+        maxprot.build,
+        initprot.build,
+        nsects.build,
+        flags.build,
+        sections.build
     ]];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"<%@ %@ %p; vmaddr=0x%" PRIx64 " vmsize=%" PRIi64 ">", self.segname, self.class, self, self.vmaddr, self.vmsize]; }
+{ return [NSString stringWithFormat:@"%@ (%@)", super.description, self.segname]; }
 
 @end
 
@@ -295,20 +411,145 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct section_64 sc;
+    
+    MKNodeFieldBuilder *sectname = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sectname)
+        type:nil /* TODO ? */
+        offset:offsetof(typeof(sc), sectname)
+        size:sizeof(sc.sectname)
+    ];
+    sectname.description = @"Section Name";
+    sectname.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *segname = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(segname)
+        type:nil /* TODO ? */
+        offset:offsetof(typeof(sc), segname)
+        size:sizeof(sc.segname)
+    ];
+    segname.description = @"Segment Name";
+    segname.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *addr = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(addr)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(sc), addr)
+        size:sizeof(sc.addr)
+    ];
+    addr.description = @"Address";
+    addr.options = MKNodeFieldOptionDisplayAsDetail;
+    addr.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(sc.addr)*2)];
+    
+    MKNodeFieldBuilder *size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(size)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(sc), size)
+        size:sizeof(sc.size)
+    ];
+    size.description = @"Size";
+    size.options = MKNodeFieldOptionDisplayAsDetail;
+#ifdef TESTS
+    size.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(sc.size)*2)];
+#endif
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), offset)
+        size:sizeof(sc.offset)
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *align = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(align)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), align)
+        size:sizeof(sc.align)
+    ];
+    align.description = @"Alignment";
+    align.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reloff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reloff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), reloff)
+        size:sizeof(sc.reloff)
+    ];
+    reloff.description = @"Relocations Offset";
+    reloff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nreloc = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nreloc)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), nreloc)
+        size:sizeof(sc.nreloc)
+    ];
+    nreloc.description = @"Number of Relocations";
+    nreloc.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance // TODO -
+        offset:offsetof(typeof(sc), flags)
+        size:sizeof(sc.flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+//#ifdef TESTS
+    flags.formatter = NSFormatter.mk_hexCompactFormatter;
+//#endif
+    
+    MKNodeFieldBuilder *reserved1 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved1)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), reserved1)
+        size:sizeof(sc.reserved1)
+    ];
+    reserved1.description = @"Reserved1";
+    reserved1.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved2 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved2)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), reserved2)
+        size:sizeof(sc.reserved2)
+    ];
+    reserved2.description = @"Reserved2";
+    reserved2.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved3 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved3)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(sc), reserved3)
+        size:sizeof(sc.reserved2)
+    ];
+    reserved3.description = @"Reserved2";
+    reserved3.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sectname) description:@"Section Name" offset:offsetof(struct section_64, sectname) size:16],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(segname) description:@"Segment Name" offset:offsetof(struct section_64, segname) size:16],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(addr) description:@"Address" offset:offsetof(struct section_64, addr) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(struct section_64, size) size:sizeof(uint64_t) format:MKNodeFieldFormatHex],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Offset" offset:offsetof(struct section_64, offset) size:sizeof(uint32_t) format:MKNodeFieldFormatDecimal],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(align) description:@"Alignment" offset:offsetof(struct section_64, align) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reloff) description:@"Relocations Offset" offset:offsetof(struct section_64, reloff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nreloc) description:@"Number of Relocations" offset:offsetof(struct section_64, nreloc) size:sizeof(uint32_t)],
-        [MKFlagsNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct section_64, flags) size:sizeof(uint32_t) flags:@{}],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved1) description:@"Reserved" offset:offsetof(struct section_64, reserved1) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved2) description:@"Reserved" offset:offsetof(struct section_64, reserved2) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved3) description:@"Reserved" offset:offsetof(struct section_64, reserved3) size:sizeof(uint32_t)],
+        sectname.build,
+        segname.build,
+        addr.build,
+        size.build,
+        offset.build,
+        align.build,
+        reloff.build,
+        nreloc.build,
+        flags.build,
+        reserved1.build,
+        reserved2.build,
+        reserved3.build,
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return [NSString stringWithFormat:@"Section Header (%@)", self.sectname]; }
 
 @end

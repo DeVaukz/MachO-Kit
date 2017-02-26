@@ -54,9 +54,29 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct linkedit_data_command ledc;
+    
+    MKNodeFieldBuilder *dataoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(dataoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(struct linkedit_data_command, dataoff)
+        size:sizeof(ledc.dataoff)
+    ];
+    dataoff.description = @"Data Offset";
+    dataoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *datasize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(datasize)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(struct linkedit_data_command, datasize)
+        size:sizeof(ledc.datasize)
+    ];
+    datasize.description = @"Data Size";
+    datasize.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(dataoff) description:@"Data Offset" offset:offsetof(struct linkedit_data_command, dataoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(datasize) description:@"Data Size" offset:offsetof(struct linkedit_data_command, datasize) size:sizeof(uint32_t)]
+        dataoff.build,
+        datasize.build
     ]];
 }
 

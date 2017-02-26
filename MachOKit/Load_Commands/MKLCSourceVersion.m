@@ -65,8 +65,19 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct source_version_command lc;
+    
+    MKNodeFieldBuilder *version = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(version)
+        type:nil // TODO -
+        offset:offsetof(typeof(lc), version)
+        size:sizeof(lc.version)
+    ];
+    version.description = @"Version";
+    version.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(version) description:@"Version" offset:offsetof(struct source_version_command, version) size:sizeof(uint64_t)]
+        version.build
     ]];
 }
 

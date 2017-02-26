@@ -69,9 +69,28 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct sub_client_command lc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"client.offset"
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), client.offset)
+        size:sizeof(lc.client.offset)
+    ];
+    offset.name = @"offset";
+    offset.description = @"Str Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *client = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(client)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    client.description = @"Client";
+    client.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"client.offset" description:@"Str Offset" offset:offsetof(struct sub_client_command, client.offset) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(client) description:@"Client"]
+        offset.build,
+        client.build
     ]];
 }
 

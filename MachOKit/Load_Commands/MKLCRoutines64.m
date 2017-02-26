@@ -58,9 +58,29 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct routines_command_64 lc;
+    
+    MKNodeFieldBuilder *init_address = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(init_address)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), init_address)
+        size:sizeof(lc.init_address)
+    ];
+    init_address.description = @"Initialization Routine";
+    init_address.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *init_module = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(init_module)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), init_module)
+        size:sizeof(lc.init_module)
+    ];
+    init_module.description = @"Initialization Module Index";
+    init_module.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(init_address) description:@"Initialization Routine" offset:offsetof(struct routines_command_64, init_address) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(init_module) description:@"Initialization Module Index" offset:offsetof(struct routines_command_64, init_module) size:sizeof(uint64_t)]
+        init_address.build,
+        init_module.build
     ]];
 }
 

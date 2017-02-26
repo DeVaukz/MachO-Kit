@@ -58,9 +58,29 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct entry_point_command lc;
+    
+    MKNodeFieldBuilder *entryoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(entryoff)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), entryoff)
+        size:sizeof(lc.entryoff)
+    ];
+    entryoff.description = @"Entry Point Offset";
+    entryoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *stacksize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(stacksize)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(typeof(lc), stacksize)
+        size:sizeof(lc.stacksize)
+    ];
+    stacksize.description = @"Stack Size";
+    stacksize.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(entryoff) description:@"Entry Point Offset" offset:offsetof(struct entry_point_command, entryoff) size:sizeof(uint64_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(stacksize) description:@"Stack Size" offset:offsetof(struct entry_point_command, stacksize) size:sizeof(uint64_t)]
+        entryoff.build,
+        stacksize.build
     ]];
 }
 

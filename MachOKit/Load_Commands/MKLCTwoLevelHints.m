@@ -58,9 +58,29 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct twolevel_hints_command lc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), offset)
+        size:sizeof(lc.offset)
+    ];
+    offset.description = @"Hint Table Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nhints = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nhints)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nhints)
+        size:sizeof(lc.nhints)
+    ];
+    nhints.description = @"Number of Hints";
+    nhints.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Hint Table Offset" offset:offsetof(struct twolevel_hints_command, offset) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nhints) description:@"Number of Hints" offset:offsetof(struct twolevel_hints_command, nhints) size:sizeof(uint32_t)]
+        offset.build,
+        nhints.build
     ]];
 }
 

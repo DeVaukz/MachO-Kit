@@ -62,11 +62,49 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct symtab_command lc;
+    
+    MKNodeFieldBuilder *symoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(symoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), symoff)
+        size:sizeof(lc.symoff)
+    ];
+    symoff.description = @"Symbol Table Offset";
+    symoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nsyms = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nsyms)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nsyms)
+        size:sizeof(lc.nsyms)
+    ];
+    nsyms.description = @"Number of Symbols";
+    nsyms.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *stroff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(stroff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), stroff)
+        size:sizeof(lc.stroff)
+    ];
+    stroff.description = @"String Table Offset";
+    stroff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *strsize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(strsize)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), strsize)
+        size:sizeof(lc.strsize)
+    ];
+    strsize.description = @"String Table Size";
+    strsize.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(symoff) description:@"Symbol Table Offset" offset:offsetof(struct symtab_command, symoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nsyms) description:@"Number of Symbols" offset:offsetof(struct symtab_command, nsyms) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(stroff) description:@"String Table Offset" offset:offsetof(struct symtab_command, stroff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(strsize) description:@"String Table Size" offset:offsetof(struct symtab_command, strsize) size:sizeof(uint32_t)]
+        symoff.build,
+        nsyms.build,
+        stroff.build,
+        strsize.build
     ]];
 }
 

@@ -98,25 +98,189 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct dysymtab_command lc;
+    
+    MKNodeFieldBuilder *ilocalsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(ilocalsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), ilocalsym)
+        size:sizeof(lc.ilocalsym)
+    ];
+    ilocalsym.description = @"Local Symbol Index";
+    ilocalsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nlocalsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nlocalsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nlocalsym)
+        size:sizeof(lc.nlocalsym)
+    ];
+    nlocalsym.description = @"Number of Local Symbols";
+    nlocalsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *iextdefsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(iextdefsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), iextdefsym)
+        size:sizeof(lc.iextdefsym)
+    ];
+    iextdefsym.description = @"Defined External Symbol Index";
+    iextdefsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nextdefsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nextdefsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nextdefsym)
+        size:sizeof(lc.nextdefsym)
+    ];
+    nextdefsym.description = @"Number of Defined External Symbols";
+    nextdefsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *iundefsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(iundefsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), iundefsym)
+        size:sizeof(lc.iundefsym)
+    ];
+    iundefsym.description = @"Undefined External Symbol Index";
+    iundefsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nundefsym = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nundefsym)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nundefsym)
+        size:sizeof(lc.nundefsym)
+    ];
+    nundefsym.description = @"Number of Undefined External Symbols";
+    nundefsym.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *tocoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(tocoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), tocoff)
+        size:sizeof(lc.tocoff)
+    ];
+    tocoff.description = @"TOC Offset";
+    tocoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *ntoc = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(ntoc)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), ntoc)
+        size:sizeof(lc.ntoc)
+    ];
+    ntoc.description = @"TOC Entries";
+    ntoc.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *modtaboff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(modtaboff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), modtaboff)
+        size:sizeof(lc.modtaboff)
+    ];
+    modtaboff.description = @"Module Table Offset";
+    modtaboff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nmodtab = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nmodtab)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nmodtab)
+        size:sizeof(lc.nmodtab)
+    ];
+    nmodtab.description = @"Module Table Entries";
+    nmodtab.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *extrefsymoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(extrefsymoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), extrefsymoff)
+        size:sizeof(lc.extrefsymoff)
+    ];
+    extrefsymoff.description = @"External Symbol Table Offset";
+    extrefsymoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nextrefsyms = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nextrefsyms)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nextrefsyms)
+        size:sizeof(lc.nextrefsyms)
+    ];
+    nextrefsyms.description = @"External Symbol Table Entries";
+    nextrefsyms.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *indirectsymoff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(indirectsymoff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), indirectsymoff)
+        size:sizeof(lc.indirectsymoff)
+    ];
+    indirectsymoff.description = @"Indirect Symbol Table Offset";
+    indirectsymoff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nindirectsyms = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nindirectsyms)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nindirectsyms)
+        size:sizeof(lc.nindirectsyms)
+    ];
+    nindirectsyms.description = @"Indirect Symbol Table Entries";
+    nindirectsyms.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *extreloff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(extreloff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), extreloff)
+        size:sizeof(lc.extreloff)
+    ];
+    extreloff.description = @"External Relocations Table Offset";
+    extreloff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nextrel = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nextrel)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nextrel)
+        size:sizeof(lc.nextrel)
+    ];
+    nextrel.description = @"External Relocations Table Entries";
+    nextrel.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *locreloff = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(locreloff)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), locreloff)
+        size:sizeof(lc.locreloff)
+    ];
+    locreloff.description = @"Local Relocations Table Offset";
+    locreloff.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *nlocrel = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(nlocrel)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), nlocrel)
+        size:sizeof(lc.nlocrel)
+    ];
+    nlocrel.description = @"Local Relocations Table Entries";
+    nlocrel.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ilocalsym) description:@"Local Symbol Index" offset:offsetof(struct dysymtab_command, ilocalsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nlocalsym) description:@"Number of Local Symbols" offset:offsetof(struct dysymtab_command, nlocalsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(iextdefsym) description:@"Defined External Symbol Index" offset:offsetof(struct dysymtab_command, iextdefsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nextdefsym) description:@"Number of Defined External Symbols" offset:offsetof(struct dysymtab_command, nextdefsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(iundefsym) description:@"Undefined External Symbol Index" offset:offsetof(struct dysymtab_command, iundefsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nundefsym) description:@"Number of Unefinedd External Symbols" offset:offsetof(struct dysymtab_command, nundefsym) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(tocoff) description:@"TOC Offset" offset:offsetof(struct dysymtab_command, tocoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ntoc) description:@"TOC Entries" offset:offsetof(struct dysymtab_command, ntoc) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(modtaboff) description:@"Module Table Offset" offset:offsetof(struct dysymtab_command, modtaboff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nmodtab) description:@"Module Table Entries" offset:offsetof(struct dysymtab_command, nmodtab) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(extrefsymoff) description:@"External Symbol Table Offset" offset:offsetof(struct dysymtab_command, extrefsymoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nextrefsyms) description:@"External Symbol Table Entries" offset:offsetof(struct dysymtab_command, nextrefsyms) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(indirectsymoff) description:@"Indirect Symbol Table Offset" offset:offsetof(struct dysymtab_command, indirectsymoff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nindirectsyms) description:@"Indirect Symbol Table Entries" offset:offsetof(struct dysymtab_command, nindirectsyms) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(extreloff) description:@"External Relocations Table Offset" offset:offsetof(struct dysymtab_command, extreloff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nextrel) description:@"External Relocations Table Entries" offset:offsetof(struct dysymtab_command, nextrel) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(locreloff) description:@"Local Relocations Table Offset" offset:offsetof(struct dysymtab_command, locreloff) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(nlocrel) description:@"Local Relocations Table Entries" offset:offsetof(struct dysymtab_command, nlocrel) size:sizeof(uint32_t)],
+        ilocalsym.build,
+        nlocalsym.build,
+        iextdefsym.build,
+        nextdefsym.build,
+        iundefsym.build,
+        nundefsym.build,
+        tocoff.build,
+        ntoc.build,
+        modtaboff.build,
+        nmodtab.build,
+        extrefsymoff.build,
+        nextrefsyms.build,
+        indirectsymoff.build,
+        nindirectsyms.build,
+        extreloff.build,
+        nextrel.build,
+        locreloff.build,
+        nlocrel.build,
     ]];
 }
 

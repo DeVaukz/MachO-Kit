@@ -65,9 +65,29 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct dylinker_command dc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"name.offset"
+        type:nil // TODO -
+        offset:offsetof(struct dylinker_command, name.offset)
+        size:sizeof(dc.name.offset)
+    ];
+    offset.name = @"offset";
+    offset.description = @"Str Offset";
+    offset.formatter = nil;
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"name.offset" description:@"Str Offset" offset:offsetof(struct dylinker_command, name.offset) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Name"]
+        offset.build,
+        name.build
     ]];
 }
 

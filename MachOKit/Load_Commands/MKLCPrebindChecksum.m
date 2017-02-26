@@ -56,8 +56,19 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct prebind_cksum_command lc;
+    
+    MKNodeFieldBuilder *cksum = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cksum)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), cksum)
+        size:sizeof(lc.cksum)
+    ];
+    cksum.description = @"Checksum";
+    cksum.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cksum) description:@"Checksum" offset:offsetof(struct prebind_cksum_command, cksum) size:sizeof(uint32_t)]
+        cksum.build
     ]];
 }
 

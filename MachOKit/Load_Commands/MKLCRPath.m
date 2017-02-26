@@ -69,9 +69,28 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct rpath_command lc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"path.offset"
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), path.offset)
+        size:sizeof(lc.path.offset)
+    ];
+    offset.name = @"offset";
+    offset.description = @"Str Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *path = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(path)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    path.description = @"Path";
+    path.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"pathoffset" description:@"Str Offset" offset:offsetof(struct rpath_command, path.offset) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(path) description:@"Path"]
+        offset.build,
+        path.build
     ]];
 }
 

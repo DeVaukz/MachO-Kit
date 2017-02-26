@@ -65,8 +65,20 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct uuid_command lc;
+    
+    MKNodeFieldBuilder *uuid = [MKNodeFieldBuilder
+        builderWithProperty:@"uuid.UUIDString"
+        type:nil /* TODO ? */
+        offset:offsetof(typeof(lc), uuid)
+        size:sizeof(lc.uuid)
+    ];
+    uuid.name = @"uuid";
+    uuid.description = @"Segment Name";
+    uuid.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:MK_PROPERTY(uuid) keyPath:@"uuid.UUIDString" description:@"UUID" offset:offsetof(struct uuid_command, uuid) size:16]
+        uuid.build
     ]];
 }
 

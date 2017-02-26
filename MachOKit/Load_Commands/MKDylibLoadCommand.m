@@ -80,13 +80,70 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct dylib_command dc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"name.offset"
+        type:nil // TODO -
+        offset:offsetof(struct dylib_command, dylib.name.offset)
+        size:sizeof(dc.dylib.name.offset)
+    ];
+    offset.description = @"Str Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *timestamp = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(timestamp)
+        type:nil // TODO -
+        offset:offsetof(struct dylib_command, dylib.timestamp)
+        size:sizeof(dc.dylib.timestamp)
+    ];
+    timestamp.description = @"Time Stamp";
+    timestamp.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *current_version = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(current_version)
+        type:nil // TODO -
+        offset:offsetof(struct dylib_command, dylib.current_version)
+        size:sizeof(dc.dylib.current_version)
+    ];
+    current_version.name = @"current version";
+    current_version.description = @"Current Version";
+    current_version.formatter = nil;
+    current_version.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *compatibility_version = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(compatibility_version)
+        type:nil // TODO -
+        offset:offsetof(struct dylib_command, dylib.compatibility_version)
+        size:sizeof(dc.dylib.compatibility_version)
+    ];
+    compatibility_version.name = @"compatibility version";
+    compatibility_version.description = @"Compatibility Version";
+    compatibility_version.formatter = nil;
+    compatibility_version.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:@"name"
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"name.offset" description:@"Str Offset" offset:offsetof(struct dylib_command, dylib.name.offset) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(timestamp) description:@"Timestamp" offset:offsetof(struct dylib_command, dylib.timestamp) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithName:@"current version" keyPath:MK_PROPERTY(current_version) description:@"Current Version"  offset:offsetof(struct dylib_command, dylib.current_version) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithName:@"compatibility version" keyPath:MK_PROPERTY(compatibility_version) description:@"Compatibility Version" offset:offsetof(struct dylib_command, dylib.compatibility_version) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Name"],
+        offset.build,
+        timestamp.build,
+        current_version.build,
+        compatibility_version.build,
+        name.build,
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return [NSString stringWithFormat:@"%@ (%@)", super.description, [self.name.description componentsSeparatedByString:@"/"].lastObject]; }
 
 @end

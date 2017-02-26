@@ -69,9 +69,28 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct sub_library_command lc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"sub_library.offset"
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), sub_library.offset)
+        size:sizeof(lc.sub_library.offset)
+    ];
+    offset.name = @"offset";
+    offset.description = @"Str Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *sub_library = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sub_library)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    sub_library.description = @"Sub Library";
+    sub_library.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"sub_library.offset" description:@"Str Offset" offset:offsetof(struct sub_library_command, sub_library.offset) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sub_library) description:@"Sub Library"]
+        offset.build,
+        sub_library.build
     ]];
 }
 

@@ -69,9 +69,28 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct sub_framework_command lc;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:@"umbrella.offset"
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), umbrella.offset)
+        size:sizeof(lc.umbrella.offset)
+    ];
+    offset.name = @"offset";
+    offset.description = @"Str Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *umbrella = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(umbrella)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+    ];
+    umbrella.description = @"Umbrella";
+    umbrella.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithName:@"offset" keyPath:@"umbrella.offset" description:@"Str Offset" offset:offsetof(struct sub_framework_command, umbrella.offset) size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(umbrella) description:@"Umbrella"]
+        offset.build,
+        umbrella.build
     ]];
 }
 

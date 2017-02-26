@@ -78,17 +78,109 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct dyld_info_command lc;
+    
+    MKNodeFieldBuilder *rebase_off = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(rebase_off)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), rebase_off)
+        size:sizeof(lc.rebase_off)
+    ];
+    rebase_off.description = @"Rebase Info Offset";
+    rebase_off.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *rebase_size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(rebase_size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), rebase_size)
+        size:sizeof(lc.rebase_size)
+    ];
+    rebase_size.description = @"Rebase Info Size";
+    rebase_size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *bind_off = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(bind_off)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), bind_off)
+        size:sizeof(lc.bind_off)
+    ];
+    bind_off.description = @"Binding Info Offset";
+    bind_off.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *bind_size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(bind_size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), bind_size)
+        size:sizeof(lc.bind_size)
+    ];
+    bind_size.description = @"Binding Info Size";
+    bind_size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *weak_bind_off = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weak_bind_off)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), weak_bind_off)
+        size:sizeof(lc.weak_bind_off)
+    ];
+    weak_bind_off.description = @"Weak Binding Info Offset";
+    weak_bind_off.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *weak_bind_size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weak_bind_size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), weak_bind_size)
+        size:sizeof(lc.weak_bind_size)
+    ];
+    weak_bind_size.description = @"Weak Binding Info Size";
+    weak_bind_size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *lazy_bind_off = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(lazy_bind_off)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), lazy_bind_off)
+        size:sizeof(lc.lazy_bind_off)
+    ];
+    lazy_bind_off.description = @"Lazy Binding Info Offset";
+    lazy_bind_off.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *lazy_bind_size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(lazy_bind_size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), lazy_bind_size)
+        size:sizeof(lc.lazy_bind_size)
+    ];
+    lazy_bind_size.description = @"Lazy Binding Info Size";
+    lazy_bind_size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *export_off = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(export_off)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), export_off)
+        size:sizeof(lc.export_off)
+    ];
+    export_off.description = @"Export Info Offset";
+    export_off.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *export_size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(export_size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), export_size)
+        size:sizeof(lc.export_size)
+    ];
+    export_size.description = @"Export Info Size";
+    export_size.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(rebase_off) description:@"Rebase Info Offset" offset:offsetof(struct dyld_info_command, rebase_off) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(rebase_size) description:@"Rebase Info Size" offset:offsetof(struct dyld_info_command, rebase_size) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(bind_off) description:@"Binding Info Size" offset:offsetof(struct dyld_info_command, bind_off) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(bind_size) description:@"Binding Info Size" offset:offsetof(struct dyld_info_command, bind_size) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(weak_bind_off) description:@"Weak Binding Info Size" offset:offsetof(struct dyld_info_command, weak_bind_off) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(weak_bind_size) description:@"Weak Binding Info Size" offset:offsetof(struct dyld_info_command, weak_bind_size) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(lazy_bind_off) description:@"Lazy Binding Info Size" offset:offsetof(struct dyld_info_command, lazy_bind_off) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(lazy_bind_size) description:@"Lazy Binding Info Size" offset:offsetof(struct dyld_info_command, lazy_bind_size) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(export_off) description:@"Export Info Size" offset:offsetof(struct dyld_info_command, export_off) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(export_size) description:@"Export Info Size" offset:offsetof(struct dyld_info_command, export_size) size:sizeof(uint32_t)],
+        rebase_off.build,
+        rebase_size.build,
+        bind_off.build,
+        bind_size.build,
+        weak_bind_off.build,
+        weak_bind_size.build,
+        lazy_bind_off.build,
+        lazy_bind_size.build,
+        export_off.build,
+        export_size.build,
     ]];
 }
 

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldRecipe.h
+//! @file       MKNodeFieldDataOperationExtractNodeData.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,11 +25,19 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
+@import Foundation;
+
 #import <MachOKit/MKNodeFieldValueRecipe.h>
 #import <MachOKit/MKNodeFieldDataRecipe.h>
 
-#import <MachOKit/MKNodeFieldOperationReturnConstant.h>
-#import <MachOKit/MKNodeFieldOperationReadKeyPath.h>
+NS_ASSUME_NONNULL_BEGIN
 
-#import <MachOKit/MKNodeFieldDataOperationExtractSubrange.h>
-#import <MachOKit/MKNodeFieldDataOperationExtractChildNodeData.h>
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldDataOperationExtractChildNodeData : NSObject <MKNodeFieldDataRecipe>
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

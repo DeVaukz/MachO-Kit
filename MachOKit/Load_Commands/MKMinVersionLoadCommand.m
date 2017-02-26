@@ -68,9 +68,31 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct version_min_command vmc;
+    
+    MKNodeFieldBuilder *version = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(version)
+        type:nil // TODO -
+        offset:offsetof(struct version_min_command, version)
+        size:sizeof(vmc.version)
+    ];
+    version.description = @"Version";
+    version.formatter = nil;
+    version.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *sdk = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sdk)
+        type:nil // TODO -
+        offset:offsetof(struct version_min_command, sdk)
+        size:sizeof(vmc.sdk)
+    ];
+    sdk.description = @"SDK";
+    sdk.formatter = nil;
+    sdk.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(version) description:@"Version" offset:offsetof(struct version_min_command, version) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sdk) description:@"SDK"  offset:offsetof(struct version_min_command, sdk) size:sizeof(uint32_t)]
+        version.build,
+        sdk.build
     ]];
 }
 
