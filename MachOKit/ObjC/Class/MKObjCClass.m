@@ -118,6 +118,7 @@ struct objc_class_32 {
 @synthesize cache = _cache;
 @synthesize mask = _mask;
 @synthesize occupied = _occupied;
+@synthesize classData = _classData;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode

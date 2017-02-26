@@ -37,6 +37,7 @@
 @synthesize valueRecipe = _valueRecipe;
 @synthesize dataRecipe = _dataRecipe;
 @synthesize valueFormatter = _valueFormatter;
+@synthesize options = _options;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
