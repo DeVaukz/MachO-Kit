@@ -49,6 +49,7 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
+    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
     
@@ -71,6 +72,7 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
+    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
     
@@ -90,6 +92,7 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
+    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     
     [valueRecipe release];

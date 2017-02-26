@@ -51,7 +51,7 @@
     _type = [type retain];
     _valueRecipe = [valueRecipe retain];
     _dataRecipe = [dataRecipe retain];
-    _valueFormatter = [valueFormatter retain] ?: [_type.formatter retain];
+    _valueFormatter = [valueFormatter retain];
     _options = options;
     
     return self;
