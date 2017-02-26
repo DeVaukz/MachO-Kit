@@ -612,6 +612,7 @@
 		D0E30A721E612C430005A882 /* MKFormatterChain.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E30A701E612C430005A882 /* MKFormatterChain.m */; };
 		D0E30A7B1E613A870005A882 /* MKObjectFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E30A791E613A870005A882 /* MKObjectFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E30A7C1E613A870005A882 /* MKObjectFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E30A7A1E613A870005A882 /* MKObjectFormatter.m */; };
+		D0E30A821E623B480005A882 /* MKNodeFieldNodeType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E30A811E623B480005A882 /* MKNodeFieldNodeType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E3FD2F1A58F608007B2771 /* data_model.c in Sources */ = {isa = PBXBuildFile; fileRef = D0E3FD2D1A58F608007B2771 /* data_model.c */; };
 		D0E3FD301A58F608007B2771 /* data_model.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E3FD2E1A58F608007B2771 /* data_model.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E3FD331A592E31007B2771 /* memory_map.c in Sources */ = {isa = PBXBuildFile; fileRef = D0E3FD311A592E31007B2771 /* memory_map.c */; };
@@ -1252,6 +1253,7 @@
 		D0E30A701E612C430005A882 /* MKFormatterChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFormatterChain.m; sourceTree = "<group>"; };
 		D0E30A791E613A870005A882 /* MKObjectFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjectFormatter.h; sourceTree = "<group>"; };
 		D0E30A7A1E613A870005A882 /* MKObjectFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKObjectFormatter.m; sourceTree = "<group>"; };
+		D0E30A811E623B480005A882 /* MKNodeFieldNodeType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldNodeType.h; sourceTree = "<group>"; };
 		D0E3FD2D1A58F608007B2771 /* data_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = data_model.c; sourceTree = "<group>"; };
 		D0E3FD2E1A58F608007B2771 /* data_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = data_model.h; sourceTree = "<group>"; };
 		D0E3FD311A592E31007B2771 /* memory_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = memory_map.c; sourceTree = "<group>"; };
@@ -2045,6 +2047,7 @@
 				D0B9F6BF1E57FC3200D0B35A /* MKNodeFieldType.h */,
 				D0B9F6C71E58040D00D0B35A /* MKNodeFieldNumericType.h */,
 				D0B9F6D91E581DAE00D0B35A /* MKNodeFieldEnumerationType.h */,
+				D0E30A811E623B480005A882 /* MKNodeFieldNodeType.h */,
 				D0B9F6C31E57FE3B00D0B35A /* MKNodeFieldTypeByte.h */,
 				D0B9F6C41E57FE3B00D0B35A /* MKNodeFieldTypeByte.m */,
 				D0B9F6CB1E58099900D0B35A /* MKNodeFieldTypeWord.h */,
@@ -2452,6 +2455,7 @@
 				D08B77A71A89D1E100E61338 /* segment_internal.h in Headers */,
 				D0E3FD341A592E31007B2771 /* memory_map.h in Headers */,
 				D0590CD11A74286F00CF9FD0 /* load_command_load_upward_dylib.h in Headers */,
+				D0E30A821E623B480005A882 /* MKNodeFieldNodeType.h in Headers */,
 				D0A1D8AA19E4EEB80095870C /* _load_command_dyld_info.h in Headers */,
 				D02A13E81B731BE8008FA6A5 /* MKDSCLocalSymbols.h in Headers */,
 				D0A0D2391DE82675003F0A08 /* MKPointerNode.h in Headers */,

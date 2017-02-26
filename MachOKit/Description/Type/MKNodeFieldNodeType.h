@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldTypeNode.h
+//! @file       MKNodeFieldNodeType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,19 +28,15 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldNodeType.h>
+#import <MachOKit/MKNodeFieldType.h>
+@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldTypeNode : NSObject <MKNodeFieldNodeType> {
-@package
-    Class _nodeClass;
-}
+@protocol MKNodeFieldNodeType <MKNodeFieldType>
 
-+ (instancetype)typeWithNodeType:(nullable Class)nodeType;
-
-- (instancetype)initWithNodeType:(nullable Class)nodeType NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly, nullable) Class nodeClass;
 
 @end
 
