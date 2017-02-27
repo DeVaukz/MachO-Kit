@@ -28,6 +28,8 @@
 #import "MKMachHeader.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
+#import "MKNodeFieldCPUType.h"
+#import "MKNodeFieldCPUSubType.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKMachHeader
@@ -78,15 +80,124 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct mach_header mh;
+    
+    MKNodeFieldBuilder *magic = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(magic)
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil elements:@{
+            @((typeof(mh.magic))MH_MAGIC): @"MH_MAGIC",
+            @((typeof(mh.magic))MH_CIGAM): @"MH_CIGAM",
+            @((typeof(mh.magic))MH_MAGIC_64): @"MH_MAGIC_64",
+            @((typeof(mh.magic))MH_CIGAM_64): @"MH_CIGAM_64",
+        }]
+        offset:offsetof(typeof(mh), magic)
+    ];
+    magic.description = @"Magic Number";
+    magic.formatter = [MKFormatterChain formatterChainWithLastFormatter:NSFormatter.mk_uppercaseHexFormatter, magic.formatter, nil];
+    magic.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cputype = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cputype)
+        type:MKNodeFieldCPUType.sharedInstance
+        offset:offsetof(typeof(mh), cputype)
+    ];
+    cputype.description = @"CPU Type";
+    cputype.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cpusubtype = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cpusubtype)
+        type:[MKNodeFieldCPUSubType cpuSubTypeForCPUType:self.cputype]
+        offset:offsetof(typeof(mh), cpusubtype)
+    ];
+    cpusubtype.description = @"CPU SubType";
+    cpusubtype.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *filetype = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(filetype)
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil elements:@{
+            @((typeof(mh.magic))MH_OBJECT): @"MH_OBJECT",
+            @((typeof(mh.magic))MH_EXECUTE): @"MH_EXECUTE",
+            @((typeof(mh.magic))MH_FVMLIB): @"MH_FVMLIB",
+            @((typeof(mh.magic))MH_CORE): @"MH_CORE",
+            @((typeof(mh.magic))MH_PRELOAD): @"MH_PRELOAD",
+            @((typeof(mh.magic))MH_DYLIB): @"MH_DYLIB",
+            @((typeof(mh.magic))MH_DYLINKER): @"MH_DYLINKER",
+            @((typeof(mh.magic))MH_BUNDLE): @"MH_BUNDLE",
+            @((typeof(mh.magic))MH_DYLIB_STUB): @"MH_DYLIB_STUB",
+            @((typeof(mh.magic))MH_DSYM): @"MH_DSYM",
+            @((typeof(mh.magic))MH_KEXT_BUNDLE): @"MH_KEXT_BUNDLE"
+        }]
+        offset:offsetof(typeof(mh), filetype)
+    ];
+    filetype.description = @"File Type";
+    filetype.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *ncmds = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(ncmds)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(mh), ncmds)
+    ];
+    ncmds.description = @"Number of Load Commands";
+    ncmds.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *sizeofcmds = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sizeofcmds)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(mh), sizeofcmds)
+    ];
+    sizeofcmds.description = @"Size of Load Commands";
+    sizeofcmds.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil options:@{
+            @((typeof(mh.flags))MH_NOUNDEFS): @"MH_NOUNDEFS",
+            @((typeof(mh.flags))MH_INCRLINK): @"MH_INCRLINK",
+            @((typeof(mh.flags))MH_DYLDLINK): @"MH_DYLDLINK",
+            @((typeof(mh.flags))MH_BINDATLOAD): @"MH_BINDATLOAD",
+            @((typeof(mh.flags))MH_SPLIT_SEGS): @"MH_SPLIT_SEGS",
+            @((typeof(mh.flags))MH_LAZY_INIT): @"MH_LAZY_INIT",
+            @((typeof(mh.flags))MH_TWOLEVEL): @"MH_TWOLEVEL",
+            @((typeof(mh.flags))MH_FORCE_FLAT): @"MH_FORCE_FLAT",
+            @((typeof(mh.flags))MH_NOMULTIDEFS): @"MH_NOMULTIDEFS",
+            @((typeof(mh.flags))MH_NOFIXPREBINDING): @"MH_NOFIXPREBINDING",
+            @((typeof(mh.flags))MH_PREBINDABLE): @"MH_PREBINDABLE",
+            @((typeof(mh.flags))MH_ALLMODSBOUND): @"MH_ALLMODSBOUND",
+            @((typeof(mh.flags))MH_SUBSECTIONS_VIA_SYMBOLS): @"MH_SUBSECTIONS_VIA_SYMBOLS",
+            @((typeof(mh.flags))MH_WEAK_DEFINES): @"MH_WEAK_DEFINES",
+            @((typeof(mh.flags))MH_BINDS_TO_WEAK): @"MH_BINDS_TO_WEAK",
+            @((typeof(mh.flags))MH_ALLOW_STACK_EXECUTION): @"MH_ALLOW_STACK_EXECUTION",
+            @((typeof(mh.flags))MH_ROOT_SAFE): @"MH_ROOT_SAFE",
+            @((typeof(mh.flags))MH_SETUID_SAFE): @"MH_SETUID_SAFE",
+            @((typeof(mh.flags))MH_NO_REEXPORTED_DYLIBS): @"MH_NO_REEXPORTED_DYLIBS",
+            @((typeof(mh.flags))MH_PIE): @"MH_PIE",
+            @((typeof(mh.flags))MH_DEAD_STRIPPABLE_DYLIB): @"MH_DEAD_STRIPPABLE_DYLIB",
+            @((typeof(mh.flags))MH_HAS_TLV_DESCRIPTORS): @"MH_HAS_TLV_DESCRIPTORS",
+            @((typeof(mh.flags))MH_NO_HEAP_EXECUTION): @"MH_NO_HEAP_EXECUTION",
+            @((typeof(mh.flags))MH_APP_EXTENSION_SAFE): @"MH_APP_EXTENSION_SAFE",
+        }]
+        offset:offsetof(typeof(mh), flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(magic) description:@"Magic Number" offset:offsetof(struct mach_header, magic) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cputype) description:@"CPU Type" offset:offsetof(struct mach_header, cputype) size:sizeof(cpu_type_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cpusubtype) description:@"CPU SubType" offset:offsetof(struct mach_header, cpusubtype) size:sizeof(cpu_subtype_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(filetype) description:@"File Type" offset:offsetof(struct mach_header, filetype) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ncmds) description:@"Number of Load Commands" offset:offsetof(struct mach_header, ncmds) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sizeofcmds) description:@"Size of Load Commands" offset:offsetof(struct mach_header, sizeofcmds) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct mach_header, flags) size:sizeof(uint32_t)]
+        magic.build,
+        cputype.build,
+        cpusubtype.build,
+        filetype.build,
+        ncmds.build,
+        sizeofcmds.build,
+        flags.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return @"Mach Header"; }
 
 @end

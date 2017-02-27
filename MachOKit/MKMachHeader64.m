@@ -73,8 +73,18 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    __unused struct mach_header_64 mh;
+    
+    MKNodeFieldBuilder *reserved = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(mh), reserved)
+    ];
+    reserved.description = @"Reserved";
+    reserved.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved) description:@"Reserved" offset:offsetof(struct mach_header_64, reserved) size:sizeof(uint32_t)]
+        reserved.build
     ]];
 }
 

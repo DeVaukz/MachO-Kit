@@ -42,4 +42,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldIntelCPUSubType: MKNodeFieldCPUSubType @end
+@interface MKNodeFieldIntel64CPUSubType: MKNodeFieldCPUSubType @end
+@interface MKNodeFieldARMCPUSubType: MKNodeFieldCPUSubType @end
+@interface MKNodeFieldARM64CPUSubType: MKNodeFieldCPUSubType @end
+
+
 NS_ASSUME_NONNULL_END

@@ -137,10 +137,14 @@
 {
     MKNodeFieldBuilder *magic = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(magic)
-        type:MKNodeFieldTypeDoubleWord.sharedInstance
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil elements:@{
+            @(FAT_MAGIC): @"FAT_MAGIC",
+            @(FAT_MAGIC_64): @"FAT_MAGIC_64"
+        }]
         offset:offsetof(struct fat_header, magic)
     ];
     magic.description = @"FAT Magic";
+    magic.formatter = [MKFormatterChain formatterChainWithLastFormatter:NSFormatter.mk_uppercaseHexFormatter, magic.formatter, nil];
     magic.options = MKNodeFieldOptionDisplayAsDetail;
     
     MKNodeFieldBuilder *nfat_arch = [MKNodeFieldBuilder
@@ -156,7 +160,7 @@
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFatArch.class]]
     ];
     architectures.description = @"Architectures";
-    architectures.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    architectures.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         magic.build,

@@ -141,8 +141,9 @@
 {
     char description[50];
     size_t descriptionLen = mk_architecture_copy_description(self.architecture, description, sizeof(description));
+    NSString *architecture = [[[NSString alloc] initWithBytes:(void*)description length:descriptionLen encoding:NSASCIIStringEncoding] autorelease];
     
-    return [[[NSString alloc] initWithBytes:(void*)description length:descriptionLen encoding:NSASCIIStringEncoding] autorelease];
+    return [NSString stringWithFormat:@"Fat Arch (%@)", architecture];
 }
 
 @end

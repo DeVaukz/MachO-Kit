@@ -44,7 +44,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
     if (s_CPUTypes != nil)
         return;
     
-    s_CPUTypes = @{
+    s_CPUTypes = [@{
         @(CPU_TYPE_ANY): @"CPU_TYPE_ANY",
         @(CPU_TYPE_VAX): @"CPU_TYPE_VAX",
         /* skip				((cpu_type_t) 2)	*/
@@ -67,7 +67,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
         /* skip				((cpu_type_t) 17)	*/
         @(CPU_TYPE_POWERPC): @"CPU_TYPE_POWERPC",
         @(CPU_TYPE_POWERPC64): @"CPU_TYPE_POWERPC64"
-    };
+    } retain];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -77,5 +77,11 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSDictionary*)elements
 { return s_CPUTypes; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{
+    return [MKEnumerationFormatter enumerationFormatterWithName:@"CPU_TYPE" elements:self.elements];
+}
 
 @end
