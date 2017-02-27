@@ -61,18 +61,10 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{
-    return @"Node";
-}
+{ return @"Node"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
 { return nil; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)validateValue:(id)value
-{
-    return YES;
-}
 
 @end

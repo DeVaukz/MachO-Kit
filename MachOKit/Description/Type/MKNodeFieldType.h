@@ -39,9 +39,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly, nullable) NSFormatter *formatter;
 
-//! Validate the provided value for conformance to the type.
-- (BOOL)validateValue:(id)value;
-
 @end
 
 NS_ASSUME_NONNULL_END

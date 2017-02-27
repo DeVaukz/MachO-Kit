@@ -54,12 +54,6 @@ MKMakeSingletonInitializer(MKNodeFieldTypeQuadWord)
 - (size_t)alignmentForNode:(__unused MKNode*)input
 { return 8; }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)validateValue:(id)value
-{
-    return YES;
-}
-
 @end
 
 

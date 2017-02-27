@@ -114,8 +114,4 @@
     return [MKFormatterChain formatterChainWithFormatter:enumerationFormatter, fallbackFormatter, nil];
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)validateValue:(id)value
-{ return [_underlyingType validateValue:value]; }
-
 @end

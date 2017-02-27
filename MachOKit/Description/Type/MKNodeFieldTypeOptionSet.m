@@ -108,8 +108,4 @@
     return  [MKOptionSetFormatter optionSetFormatterWithOptions:_options];
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)validateValue:(id)value
-{ return [_underlyingType validateValue:value]; }
-
 @end
