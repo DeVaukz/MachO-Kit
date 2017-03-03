@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldTypeAddress.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,18 +25,33 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#import "MKNodeFieldTypeAddress.h"
+#import "MKInternal.h"
+#import "MKNode.h"
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldTypeAddress
+
+MKMakeSingletonInitializer(MKNodeFieldTypeQuadWord)
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Address"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return NSFormatter.mk_hexFormatter; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldNumericTypeFlags)flagsForNode:(__unused MKNode*)input
+{ return MKNodeFieldNumericTypeUnsigned; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)sizeForNode:(__unused MKNode*)input
+{ return 8; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)alignmentForNode:(__unused MKNode*)input
+{ return 8; }
+
+@end

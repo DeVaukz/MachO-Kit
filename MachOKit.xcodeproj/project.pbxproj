@@ -598,6 +598,8 @@
 		D0CAF8E219E638B700C833F0 /* MachOKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CAF8E019E638B700C833F0 /* MachOKit.m */; };
 		D0CC85841C6FBBEF001FB7C7 /* MKDSCImagesInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CC85821C6FBBEF001FB7C7 /* MKDSCImagesInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0CC85851C6FBBEF001FB7C7 /* MKDSCImagesInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D0CC85831C6FBBEF001FB7C7 /* MKDSCImagesInfo.m */; };
+		D0DC9CF21E69429900AD0FC1 /* MKNodeFieldTypeAddress.h in Headers */ = {isa = PBXBuildFile; fileRef = D0DC9CF01E69429900AD0FC1 /* MKNodeFieldTypeAddress.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0DC9CF31E69429900AD0FC1 /* MKNodeFieldTypeAddress.m in Sources */ = {isa = PBXBuildFile; fileRef = D0DC9CF11E69429900AD0FC1 /* MKNodeFieldTypeAddress.m */; };
 		D0E040911C758AF000AA3DED /* MKRebaseCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E0408F1C758AF000AA3DED /* MKRebaseCommand.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0E040921C758AF000AA3DED /* MKRebaseCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E040901C758AF000AA3DED /* MKRebaseCommand.m */; };
 		D0E040A31C75981500AA3DED /* MKRebaseDone.h in Headers */ = {isa = PBXBuildFile; fileRef = D0E040A11C75981500AA3DED /* MKRebaseDone.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1249,6 +1251,8 @@
 		D0CAF8E019E638B700C833F0 /* MachOKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MachOKit.m; sourceTree = "<group>"; };
 		D0CC85821C6FBBEF001FB7C7 /* MKDSCImagesInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCImagesInfo.h; sourceTree = "<group>"; };
 		D0CC85831C6FBBEF001FB7C7 /* MKDSCImagesInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCImagesInfo.m; sourceTree = "<group>"; };
+		D0DC9CF01E69429900AD0FC1 /* MKNodeFieldTypeAddress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeAddress.h; sourceTree = "<group>"; };
+		D0DC9CF11E69429900AD0FC1 /* MKNodeFieldTypeAddress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeAddress.m; sourceTree = "<group>"; };
 		D0E0408F1C758AF000AA3DED /* MKRebaseCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRebaseCommand.h; sourceTree = "<group>"; };
 		D0E040901C758AF000AA3DED /* MKRebaseCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRebaseCommand.m; sourceTree = "<group>"; };
 		D0E040A11C75981500AA3DED /* MKRebaseDone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRebaseDone.h; sourceTree = "<group>"; };
@@ -2085,6 +2089,8 @@
 				D0B9F6D01E580A7D00D0B35A /* MKNodeFieldTypeDoubleWord.m */,
 				D0B9F6D31E580B8000D0B35A /* MKNodeFieldTypeQuadWord.h */,
 				D0B9F6D41E580B8000D0B35A /* MKNodeFieldTypeQuadWord.m */,
+				D0DC9CF01E69429900AD0FC1 /* MKNodeFieldTypeAddress.h */,
+				D0DC9CF11E69429900AD0FC1 /* MKNodeFieldTypeAddress.m */,
 				D0E30A751E612F0E0005A882 /* MKNodeFieldTypeEnumeration.h */,
 				D0E30A761E612F0E0005A882 /* MKNodeFieldTypeEnumeration.m */,
 				D0E30A871E6289AB0005A882 /* MKNodeFieldTypeOptionSet.h */,
@@ -2567,6 +2573,7 @@
 				D0539BB41A23D3FA00D3A5F0 /* MKLCDyldEnvironment.h in Headers */,
 				D010F71C1CB870C1004025F5 /* MKObjCProtocolReferencesSection.h in Headers */,
 				D0A1D8C219E4EEB80095870C /* load_command_encryption_info_64.h in Headers */,
+				D0DC9CF21E69429900AD0FC1 /* MKNodeFieldTypeAddress.h in Headers */,
 				D06618671CBB32EA006979A1 /* MKObjCProtocolList.h in Headers */,
 				D0848AF11A959E6C0076976F /* symbol_table_internal.h in Headers */,
 				D0A0D2311DE22C16003F0A08 /* MKPointerListSection.h in Headers */,
@@ -3174,6 +3181,7 @@
 				D010F72D1CB871DC004025F5 /* MKObjCDataSection.m in Sources */,
 				D03030611A23D15100288B3E /* MKLCDyldInfo.m in Sources */,
 				D0B9F6D21E580A7D00D0B35A /* MKNodeFieldTypeDoubleWord.m in Sources */,
+				D0DC9CF31E69429900AD0FC1 /* MKNodeFieldTypeAddress.m in Sources */,
 				D0672B1F1A4FBC0300D44610 /* MKSegment.m in Sources */,
 				D0BC78B81B71C44100467975 /* MKDSCLocalSymbolsHeader.m in Sources */,
 				D0A0D23A1DE82675003F0A08 /* MKPointerNode.m in Sources */,
