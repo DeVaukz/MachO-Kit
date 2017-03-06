@@ -233,6 +233,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"%@ %@", self.loadCommand.segname, self.name]; }
+{ return [NSString stringWithFormat:@"%@,%@", self.loadCommand.segname, self.name]; }
 
 @end

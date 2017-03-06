@@ -42,15 +42,30 @@
     // CStrings are NULL terminated and we are given no indication of the
     // string's length.
     
-    // The provided offset must be within the range of our parent node.
     mk_error_t err;
-    mk_vm_range_t parentRange = mk_vm_range_make(parent.nodeContextAddress, parent.nodeSize);
-    if ((err = mk_vm_range_contains_address(parentRange, offset, parent.nodeContextAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Provided offset %" MK_VM_PRIiOFFSET " is not within the parent node %@", offset, parent];
-        [self release]; return nil;
+    mk_vm_address_t parentAddress = parent.nodeContextAddress;
+    mk_vm_size_t parentSize = parent.nodeSize;
+    
+    // If the parent size is zero then the parent is initializing and is
+    // dependent on knowing the size of this string to compute its own size.
+    // In this case we hop up a level and use our parent's parent to compute
+    // a rough max size which will be refixed once we know the string length.
+    if (parentSize == 0)
+    {
+        _nodeSize = MK_VM_SIZE_MAX; // TODO - Implement this.
+    }
+    else
+    {
+        // The provided offset must be within the range of our parent node.
+        mk_vm_range_t parentRange = mk_vm_range_make(parentAddress, parentSize);
+        if ((err = mk_vm_range_contains_address(parentRange, offset, parentAddress))) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Provided offset %" MK_VM_PRIiOFFSET " is not within the parent node %@", offset, parent.nodeDescription];
+            [self release]; return nil;
+        }
+        
+        _nodeSize = parent.nodeSize - offset;
     }
     
-    _nodeSize = parent.nodeSize - offset;
     __block NSError *localError = nil;
     
     [parent.memoryMap remapBytesAtOffset:offset fromAddress:parent.nodeContextAddress length:_nodeSize requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
@@ -69,7 +84,7 @@
             // Account for the NULL byte.
             _nodeSize = _nodeSize + 1;
         } else {
-            MK_PUSH_WARNING(MK_PROPERTY(sring), MK_EINVALID_DATA, @"String not properly terminated.");
+            MK_PUSH_WARNING(MK_PROPERTY(sring), MK_EINVALID_DATA, @"String may not be properly terminated.");
         }
     }];
     
@@ -100,8 +115,17 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *string = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(string)
+        type:nil // TODO ?
+        offset:0
+        size:_nodeSize
+    ];
+    string.description = @"String";
+    string.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(string) description:@"Value"]
+        string.build
     ]];
 }
 
@@ -111,7 +135,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return _string; }
+{ return self.string; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)isEqual:(id)object
