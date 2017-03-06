@@ -53,6 +53,9 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     //! child of the node.
     //! Only applicable to node type fields.
     MKNodeFieldOptionDisplayAsDetail                            = (1U<<6),
+    //! Hint to display the contents of a collection field as a detail
+    //! od the field.  Only applicable to fields of a collection type.
+    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = (1U<<7)
 };
 
 

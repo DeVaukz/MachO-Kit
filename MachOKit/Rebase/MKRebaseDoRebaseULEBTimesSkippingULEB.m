@@ -123,10 +123,33 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *count = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(count)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:1
+        size:_size
+    ];
+    count.description = @"Rebase Count";
+    count.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *skip = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(skip)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    ];
+    skip.description = @"Skip";
+    skip.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(count) description:@"Rebase Count"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(skip) description:@"Skip Per Rebase"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset Per Rebase"]
+        count.build,
+        skip.build,
+        offset.build
     ]];
 }
 

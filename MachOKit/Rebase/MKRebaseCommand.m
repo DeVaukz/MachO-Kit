@@ -150,8 +150,26 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *opcode = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(opcode)
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeByte.sharedInstance name:nil elements:@{
+            @(REBASE_OPCODE_DONE): @"REBASE_OPCODE_DONE",
+            @(REBASE_OPCODE_SET_TYPE_IMM): @"REBASE_OPCODE_SET_TYPE_IMM",
+            @(REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB): @"REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB",
+            @(REBASE_OPCODE_ADD_ADDR_ULEB): @"REBASE_OPCODE_ADD_ADDR_ULEB",
+            @(REBASE_OPCODE_ADD_ADDR_IMM_SCALED): @"REBASE_OPCODE_ADD_ADDR_IMM_SCALED",
+            @(REBASE_OPCODE_DO_REBASE_IMM_TIMES): @"REBASE_OPCODE_DO_REBASE_IMM_TIMES",
+            @(REBASE_OPCODE_DO_REBASE_ULEB_TIMES): @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES",
+            @(REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB): @"REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB",
+            @(REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB): @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB"
+        }]
+        offset:0
+    ];
+    opcode.description = @"Opcode";
+    opcode.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(opcode) description:@"Opcode"]
+        opcode.build
     ]];
 }
 

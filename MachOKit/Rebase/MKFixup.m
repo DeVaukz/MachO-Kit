@@ -121,11 +121,43 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *segment = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(segment)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKSegment.class]
+    ];
+    segment.description = @"Segment";
+    segment.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
+    MKNodeFieldBuilder *section = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(section)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]
+    ];
+    section.description = @"Section";
+    section.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
+    MKNodeFieldBuilder *address = [MKNodeFieldBuilder
+       builderWithProperty:MK_PROPERTY(address)
+       type:MKNodeFieldTypeAddress.sharedInstance
+    ];
+    address.description = @"Address";
+    address.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
+    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(type)
+        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil elements:@{
+            @(REBASE_TYPE_POINTER): @"REBASE_TYPE_POINTER",
+            @(REBASE_TYPE_TEXT_ABSOLUTE32): @"REBASE_TYPE_TEXT_ABSOLUTE32",
+            @(REBASE_TYPE_TEXT_PCREL32): @"REBASE_TYPE_TEXT_PCREL32"
+        }]
+    ];
+    type.description = @"Type";
+    type.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(segment) description:@"Segment"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(section) description:@"Section"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(address) description:@"Address"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(type) description:@"Type"],
+        segment.build,
+        section.build,
+        address.build,
+        type.build,
     ]];
 }
 

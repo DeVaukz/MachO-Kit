@@ -80,9 +80,23 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *immediate = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(immediate)
+        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+    ];
+    immediate.description = @"Immediate";
+    immediate.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(immediate) description:@"Immediate"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset"]
+        immediate.build,
+        offset.build
     ]];
 }
 

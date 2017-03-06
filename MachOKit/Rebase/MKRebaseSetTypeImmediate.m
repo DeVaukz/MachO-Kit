@@ -65,8 +65,15 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+      builderWithProperty:MK_PROPERTY(type)
+      type:MKNodeFieldTypeByte.sharedInstance
+    ];
+    type.description = @"Type";
+    type.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(type) description:@"Type"]
+        type.build
     ]];
 }
 

@@ -83,9 +83,23 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *count = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(count)
+        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+    ];
+    count.description = @"Rebase Count";
+    count.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(count) description:@"Rebase Count"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset Per Rebase"]
+        count.build,
+        offset.build
     ]];
 }
 

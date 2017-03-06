@@ -150,7 +150,7 @@
         if (dyldInfoOnlyCommands) [commands addObjectsFromArray:dyldInfoOnlyCommands];
         
         if (commands.count > 1)
-            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO.  Ignoring %@", commands.lastObject);
+            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@", commands.lastObject);
         
         if (commands.count == 0) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image load commands does not contain LC_DYLD_INFO."];
@@ -184,10 +184,32 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *commands = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(commands)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKRebaseCommand.class]]
+    ];
+    commands.description = @"Commands";
+    commands.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    
+    MKNodeFieldBuilder *fixups = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(fixups)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFixup.class]]
+    ];
+    fixups.description = @"Fixups";
+    fixups.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(commands) description:@"Commands"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fixups) description:@"Fixups"]
+        commands.build,
+        fixups.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return @"Rebase Info"; }
 
 @end

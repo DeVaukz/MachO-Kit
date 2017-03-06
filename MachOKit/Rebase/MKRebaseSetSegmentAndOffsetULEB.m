@@ -104,9 +104,25 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *segmentIndex = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(segmentIndex)
+        type:MKNodeFieldTypeByte.sharedInstance
+        offset: 1
+        size:_size
+    ];
+    segmentIndex.description = @"Segment";
+    segmentIndex.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(segmentIndex) description:@"Segment Index"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset"]
+        segmentIndex.build,
+        offset.build
     ]];
 }
 

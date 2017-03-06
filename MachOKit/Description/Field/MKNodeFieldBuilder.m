@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeFieldBuilder.h"
-#import "MKBackedNode.h"
+#import "MKOffsetNode.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldBuilder
@@ -91,7 +91,7 @@
     id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
     id<MKNodeFieldDataRecipe> dataRecipe = nil;
     
-    if ([type conformsToProtocol:@protocol(MKNodeFieldNodeType)] && [[(id<MKNodeFieldNodeType>)type nodeClass] isSubclassOfClass:MKBackedNode.class]) {
+    if ([type conformsToProtocol:@protocol(MKNodeFieldNodeType)] && [[(id<MKNodeFieldNodeType>)type nodeClass] isSubclassOfClass:MKOffsetNode.class]) {
         dataRecipe = [MKNodeFieldDataOperationExtractChildNodeData.sharedInstance retain];
     }
     

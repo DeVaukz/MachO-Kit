@@ -104,8 +104,17 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset: 1
+        size: _size
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(offset) description:@"Offset"]
+        offset.build
     ]];
 }
 
