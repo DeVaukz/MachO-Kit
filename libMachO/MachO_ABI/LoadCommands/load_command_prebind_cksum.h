@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_prebind_cksum_id();
+mk_load_command_prebind_cksum_id(void);
 
 _mk_export mk_error_t
 mk_load_command_prebind_cksum_copy_native(mk_load_command_ref load_command, struct prebind_cksum_command *result);

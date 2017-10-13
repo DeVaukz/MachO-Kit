@@ -250,7 +250,7 @@
             }
             
             // entryBytes can not be NULL, entry would not have loaded.
-            const uint8 *entryBytes = entry.data.bytes;
+            const uint8_t *entryBytes = entry.data.bytes;
             uint32_t entrySize = (uint32_t)entry.nodeSize;
             
             for (unsigned int j = 0; j < entrySize; j++) {

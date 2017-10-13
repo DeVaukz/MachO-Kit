@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_sub_framework_id();
+mk_load_command_sub_framework_id(void);
 
 _mk_export mk_error_t
 mk_load_command_sub_framework_copy_native(mk_load_command_ref load_command, struct sub_framework_command *result, size_t extra);

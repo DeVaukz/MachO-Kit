@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_source_version_id();
+mk_load_command_source_version_id(void);
 
 _mk_export mk_error_t
 mk_load_command_source_version_copy_native(mk_load_command_ref load_command, struct source_version_command *result);

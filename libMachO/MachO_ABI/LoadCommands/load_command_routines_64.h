@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_routines_64_id();
+mk_load_command_routines_64_id(void);
 
 _mk_export mk_error_t
 mk_load_command_routines_64_copy_native(mk_load_command_ref load_command, struct routines_command_64 *result);

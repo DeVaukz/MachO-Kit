@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_reexport_dylib_id();
+mk_load_command_reexport_dylib_id(void);
 
 _mk_export mk_error_t
 mk_load_command_reexport_dylib_copy_native(mk_load_command_ref load_command, struct dylib_command *result, size_t extra);

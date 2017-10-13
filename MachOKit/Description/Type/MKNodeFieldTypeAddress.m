@@ -32,7 +32,7 @@
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldTypeAddress
 
-MKMakeSingletonInitializer(MKNodeFieldTypeQuadWord)
+MKMakeSingletonInitializer(MKNodeFieldTypeAddress)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name

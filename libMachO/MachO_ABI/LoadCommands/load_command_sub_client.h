@@ -38,7 +38,7 @@
 //----------------------------------------------------------------------------//
 
 _mk_export uint32_t
-mk_load_command_sub_client_id();
+mk_load_command_sub_client_id(void);
 
 _mk_export mk_error_t
 mk_load_command_sub_client_copy_native(mk_load_command_ref load_command, struct sub_client_command *result, size_t extra);

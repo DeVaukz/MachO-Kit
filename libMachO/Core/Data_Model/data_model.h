@@ -77,12 +77,12 @@ _mk_export intptr_t mk_data_model_lp64_type;
 //! Returns a \ref mk_data_model_t for the ILP32 data model used in
 //! Intel/32-bit Mach-O images.
 _mk_export mk_data_model_ref
-mk_data_model_ilp32();
+mk_data_model_ilp32(void);
 
 //! Returns a \ref mk_data_model_t for the LP64 data model used in
 //! Intel/64-bit Mach-O images.
 _mk_export mk_data_model_ref
-mk_data_model_lp64();
+mk_data_model_lp64(void);
 
 
 //----------------------------------------------------------------------------//
