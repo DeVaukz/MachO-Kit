@@ -97,7 +97,7 @@
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
          builderWithProperty:MK_PROPERTY(offset)
-         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
          offset:offsetof(typeof(lc), offset)
          size:sizeof(lc.offset)
     ];
@@ -106,7 +106,7 @@
     
     MKNodeFieldBuilder *size = [MKNodeFieldBuilder
          builderWithProperty:MK_PROPERTY(size)
-         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
          offset:offsetof(typeof(lc), size)
          size:sizeof(lc.size)
     ];

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKLCNote.h
+//! @file       MKLCBuildVersion.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,29 +28,58 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKMinVersionLoadCommand.h>
+#import <MachOKit/MKLoadCommand.h>
+#import <MachOKit/MKVersion.h>
+
+@class MKLCBuildToolVersion;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! Parser for \c LC_NOTE.
+//! Parser for \c LC_BUILD_VERSION.
 //!
-//! The note load commands describe a region of arbitrary data included in a
-//! Mach-O file.
-//!
-@interface MKLCNote : MKLoadCommand {
+//! The build_version_command contains the min OS version on which this
+//! binary was built to run for its platform.
+//
+@interface MKLCBuildVersion : MKLoadCommand {
 @package
-    NSString *_data_owner;
-    uint64_t _offset;
-    uint64_t _size;
+    NSArray<MKLCBuildToolVersion*> *_tools;
+    uint32_t _platform;
+    MKVersion *_minos;
+    MKVersion *_sdk;
+    uint32_t _ntools;
 }
 
-//! Owner name
-@property (nonatomic, readonly, nullable) NSString *data_owner;
-//! File offset of this data
-@property (nonatomic, readonly) uint64_t offset;
-//! File size of this data
-@property (nonatomic, readonly) uint64_t size;
+//!
+@property (nonatomic, readonly) NSArray<MKLCBuildToolVersion*> *tools;
+
+//! The platform.
+@property (nonatomic, readonly) uint32_t platform;
+//! The minimum version of the OS this binary was built to run on.
+@property (nonatomic, readonly) MKVersion *minos;
+//! The SDK version that this binary was linked with.
+@property (nonatomic, readonly) MKVersion *sdk;
+//! Number of build tools
+@property (nonatomic, readonly) uint32_t ntools;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+//! Parser for a build tool version declaration inside of a build version
+//! load command.
+//
+@interface MKLCBuildToolVersion : MKOffsetNode {
+@package
+    uint32_t _tool;
+    uint32_t _version;
+}
+
+//! The build tool.
+@property (nonatomic, readonly) uint32_t tool;
+//! The build tool version number.
+@property (nonatomic, readonly) uint32_t version;
 
 @end
 

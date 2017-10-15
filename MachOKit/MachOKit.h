@@ -123,6 +123,7 @@
     #import <MachOKit/MKLCVersionMinTVOS.h>
     #import <MachOKit/MKLCVersionMinWatchOS.h>
     #import <MachOKit/MKLCNote.h>
+    #import <MachOKit/MKLCBuildVersion.h>
 #import <MachOKit/MKMachO+Libraries.h>
     #import <MachOKit/MKDependentLibrary.h>
 #import <MachOKit/MKSegment.h>

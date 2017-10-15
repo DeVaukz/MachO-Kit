@@ -77,6 +77,7 @@ extern const struct _mk_load_command_vtable _mk_load_command_encryption_info_64_
 extern const struct _mk_load_command_vtable _mk_load_command_version_min_tvos_class;
 extern const struct _mk_load_command_vtable _mk_load_command_version_min_watchos_class;
 extern const struct _mk_load_command_vtable _mk_load_command_note_class;
+extern const struct _mk_load_command_vtable _mk_load_command_build_version_class;
 
 const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     &_mk_load_command_segment_class,
@@ -128,7 +129,8 @@ const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     // LC_LINKER_OPTIMIZATION_HINT - Not Implemented
     &_mk_load_command_version_min_tvos_class,
     &_mk_load_command_version_min_watchos_class,
-    &_mk_load_command_note_class
+    &_mk_load_command_note_class,
+    &_mk_load_command_build_version_class
 };
 const uint32_t _mk_load_command_classes_count = sizeof(_mk_load_command_classes)/sizeof(struct _mk_load_command_vtable*);
 
@@ -367,6 +369,9 @@ mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_
             break;
         case LC_NOTE:
             load_command->vtable = &_mk_load_command_note_class;
+            break;
+        case LC_BUILD_VERSION:
+            load_command->vtable = &_mk_load_command_build_version_class;
             break;
         default:
             _mkl_error(mk_type_get_context(image.macho), "Unknown load command %d in image %s", lc->cmd, image.macho->name);
