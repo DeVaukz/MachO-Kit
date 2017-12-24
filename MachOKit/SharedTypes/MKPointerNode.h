@@ -34,7 +34,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An \c MKPointerNode is a pointer that also adopts node semantics.
+//! An \c MKPointerNode is a an \ref MKNode subclass that parses a pointer.
+//!
 @interface MKPointerNode<Pointee> : MKOffsetNode {
 @package
     mk_vm_address_t _address;
@@ -45,13 +46,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(nullable Class)targetClass error:(NSError**)error;
 
-//! The address referenced by this pointer.
+//! The address referenced by the pointer.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The target class of this pointer.
+//! The target class of the pointer.
 @property (nonatomic, readonly, nullable) Class targetClass;
 
-//! The node referenced by this pointer.
+//! The node referenced by the pointer.
 @property (nonatomic, readonly) MKOptional<Pointee> *pointee;
 
 @end

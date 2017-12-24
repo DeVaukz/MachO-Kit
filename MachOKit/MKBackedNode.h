@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @relates    MKBackedNode
 //!
 typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
-    //! The address of this node with respect to its \ref memoryMap.
+    //! The address of the node with respect to its \ref memoryMap.
     //!
     //! @details
     //! For a memory map reading process memory, the context address matches
@@ -46,7 +46,7 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
     //! For a memory map reading a file on disk, the context address *usually* 
     //! matches the offset of the node in the file.
     MKNodeContextAddress                = 0,
-    //! The address of this node when the image is mapped into virtual memory.
+    //! The address of the node when the image is mapped into virtual memory.
     //!
     //! @details
     //! This value does not include any slide that is applied to the image.
@@ -56,8 +56,8 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
 
 
 //----------------------------------------------------------------------------//
-//! \c MKBackedNode is a type of \ref MKNode which represents the contents
-//! in some range of memory.
+//! \c MKBackedNode is a subclass of \ref MKNode which represents the parsed
+//! contents in some fixed range of memory.
 //!
 @interface MKBackedNode : MKNode
 
@@ -66,7 +66,7 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
 //! @name       Memory Layout
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The size of this node.  Includes the size of all child nodes.
+//! The size of the node.  Includes the size of all child nodes.
 //! Subclasses must implement the getter for this property.
 //!
 //! @note
@@ -91,7 +91,7 @@ typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! An \c NSData instance containing the contents of memory represented by
-//! this node.
+//! the node.
 @property (nonatomic, readonly, nullable) NSData *data;
 
 @end

@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! An instance of \c MKRebaseCommand parses a single rebase command in a
-//! Mach-O image.
+//! Mach-O.
 //
 @interface MKRebaseCommand : MKOffsetNode {
 @package
@@ -94,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Rebase Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The opcode designating this rebase command.
+//! The opcode.
 @property (nonatomic, readonly) uint8_t opcode;
 
 @end

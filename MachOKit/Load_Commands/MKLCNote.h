@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! Parser for \c LC_NOTE.
 //!
 //! The note load commands describe a region of arbitrary data included in a
-//! Mach-O file.
+//! Mach-O.
 //!
 @interface MKLCNote : MKLoadCommand {
 @package
@@ -47,9 +47,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Owner name
 @property (nonatomic, readonly, nullable) NSString *data_owner;
-//! File offset of this data
+//! File offset of the data
 @property (nonatomic, readonly) uint64_t offset;
-//! File size of this data
+//! File size of the data
 @property (nonatomic, readonly) uint64_t size;
 
 @end

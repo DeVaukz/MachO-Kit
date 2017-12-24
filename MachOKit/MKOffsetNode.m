@@ -77,6 +77,7 @@
     mk_vm_address_t retValue;
     
     if ((err = mk_vm_address_apply_offset(parentAddress, _nodeOffset, &retValue))) {
+        // This should have been caught during initialization.
         NSString *reason = [NSString stringWithFormat:@"Arithmetic error %s while applying offset 0x%" MK_VM_PRIiOFFSET " of node %@ to address (type %lu) 0x%" MK_VM_PRIxADDR " of parent node %@.", mk_error_string(err), _nodeOffset, self, (unsigned long)type, parentAddress, parent];
         @throw [NSException exceptionWithName:NSRangeException reason:reason userInfo:nil];
     }

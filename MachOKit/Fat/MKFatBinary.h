@@ -34,8 +34,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKFatBinary describes the structures of the file format
-//! for "fat" architecture specific file (wrapper design).
+//! An instance of \c MKFatBinary parses the header of a 'FAT' binary, and
+//! provides interfaces to query the slices containined within.
 //
 @interface MKFatBinary : MKBackedNode {
 @package
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable instancetype)initWithMemoryMap:(MKMemoryMap*)memoryMap error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 //! An array of \ref MKFatArch instances, each represeting an architecture
-//! present in this fat binary.
+//! present in the fat binary.
 @property (nonatomic, readonly) NSArray<MKFatArch*> *architectures;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

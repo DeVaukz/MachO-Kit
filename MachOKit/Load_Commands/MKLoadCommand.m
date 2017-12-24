@@ -88,7 +88,7 @@ extern const uint32_t _mk_load_command_classes_count;
             }
         }
         
-        // Dynamically Generate a class
+        // Dynamically generate a subclass
         Class newClass = NULL;
         {
             NSString *className;

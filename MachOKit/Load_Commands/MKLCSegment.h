@@ -92,16 +92,16 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 //! An array of \ref MKLCSection instances, each representing a section
-//! specified in this segment's load command.
+//! specified in the load command.
 @property (nonatomic, readonly) NSArray<MKLCSection*> *sections;
 
 //! Segment name.
 @property (nonatomic, readonly, nullable) NSString *segname;
-//! The memory address of this segment.
+//! The memory address of the segment.
 @property (nonatomic, readonly) uint32_t vmaddr;
-//! The memory size of this segment.
+//! The memory size of the segment.
 @property (nonatomic, readonly) uint32_t vmsize;
-//! File offset of this segment.
+//! File offset of the segment.
 @property (nonatomic, readonly) uint32_t fileoff;
 //! The number of bytes to map from the file.
 @property (nonatomic, readonly) uint32_t filesize;
@@ -109,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) vm_prot_t maxprot;
 //! Initial VM protection.
 @property (nonatomic, readonly) vm_prot_t initprot;
-//! Number of sections in this segment.
+//! Number of sections in the segment.
 @property (nonatomic, readonly) uint32_t nsects;
 //! Flags.
 @property (nonatomic, readonly) uint32_t flags;
@@ -136,17 +136,17 @@ NS_ASSUME_NONNULL_BEGIN
     uint32_t _reserved2;
 }
 
-//! The name of this section.
+//! The name of the section.
 @property (nonatomic, readonly, nullable) NSString *sectname;
-//! The name of the segment this section goes in.
+//! The name of the segment the section is within.
 @property (nonatomic, readonly, nullable) NSString *segname;
-//! Memory address of this section.
+//! Memory address of the section.
 @property (nonatomic, readonly) uint32_t addr;
-//! Size in bytes of this section.
+//! Size in bytes of the section.
 @property (nonatomic, readonly) uint32_t size;
-//! File offset of this section.
+//! File offset of the section.
 @property (nonatomic, readonly) uint32_t offset;
-//! Section alignment, in bytes.
+//! The alignment of the section, in bytes.
 @property (nonatomic, readonly) uint32_t align;
 //! File offset of the relocation entries.
 @property (nonatomic, readonly) uint32_t reloff;

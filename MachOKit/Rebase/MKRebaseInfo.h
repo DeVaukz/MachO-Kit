@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSArray<MKFixup*> *_fixups;
 }
 
-//! Initializes the receiver with the provided Mach-O image.
+//! Initializes the receiver with the provided Mach-O.
 - (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
 //! An array of rebasing commands.

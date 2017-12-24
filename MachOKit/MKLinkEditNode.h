@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! \c MKLinkEditNode is a specialization of \ref MKBackedNode for blobs
 //! of data in the \c __LINKEDIT segment.  It contains logic for determining
 //! the proper file offset and VM address for a range of memory, given
-//! its offset to the data from the start of the Mach-O image.
+//! its offset to the data from the start of the Mach-O.
 //
 @interface MKLinkEditNode : MKBackedNode {
 @package

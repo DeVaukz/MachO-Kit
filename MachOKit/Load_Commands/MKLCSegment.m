@@ -104,7 +104,7 @@
             
             MKLCSection *sect = [[MKLCSection alloc] initWithOffset:offset fromParent:self error:&sectionError];
             if (sect == nil) {
-                // If we fail to instantiate an instance of the MKLCSection64 it
+                // If we fail to instantiate an instance of MKLCSection it
                 // means we've walked off the end of memory that can be mapped
                 // by our MKMemoryMap.
                 MK_PUSH_UNDERLYING_WARNING(sections, sectionError, @"Failed to instantiate section at index " PRIi32 "", (self.nsects - sectionCount));
@@ -115,7 +115,7 @@
             offset += sect.nodeSize;
                 
             if (oldOffset > offset || offset > self.nodeSize) {
-                // The kernel will refuse to load any MachO image in which the
+                // The kernel will refuse to load any Mach-O image in which the
                 // number of sections specifed would not fit within the load
                 // command's size.  We will match this behavior and throw away
                 // any section which straddles the boundary.

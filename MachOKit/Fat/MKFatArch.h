@@ -33,8 +33,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKFatArch represents the structure identifying a
-//! slice of a fat binary.
+//! An instance of \c MKFatArch parses the structure identifying a
+//! slice in a fat binary.
 //
 @interface MKFatArch : MKOffsetNode {
 @package
@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
     uint32_t _align;
 }
 
-//! The architecture of this slice.
+//! The architecture of the slice.
 @property (nonatomic, readonly) mk_architecture_t architecture;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) cpu_type_t cputype;
 //! Machine specifier.
 @property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-//! Offset to the Mach-O image identified by this slice.
+//! Offset to the Mach-O image identified by the slice.
 @property (nonatomic, readonly) uint32_t offset;
 //! The size of this slice.
 @property (nonatomic, readonly) uint32_t size;

@@ -136,7 +136,7 @@
     }
     else
     {
-        // Safe.  File range check would have failed if this coul wrap around.
+        // Safe.  File range check would have failed if this could wrap around.
         _nodeContextAddress = _fileOffset - segment.fileOffset;
         _nodeContextSize = _size;
         

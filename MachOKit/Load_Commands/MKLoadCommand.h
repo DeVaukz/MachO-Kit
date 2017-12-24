@@ -33,8 +33,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKLoadCommand parses a single load command a Mach-O
-//! image.
+//! An instance of \c MKLoadCommand parses a single load command a Mach-O.
 //
 @interface MKLoadCommand : MKOffsetNode {
 @package
@@ -43,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 //! Returns the subclass of \ref MKLoadCommand that is most suitable for
-//! parsing the load command with the provided Mach load command identifier.
+//! parsing the load command with the provided Mach-O load command identifier.
 + (Class)classForCommandID:(uint32_t)commandID;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -96,7 +95,8 @@ NS_ASSUME_NONNULL_BEGIN
 //!             load_command without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Returns the Mach load command identifier.
+//! Returns the Mach load command identifier.  This may include the
+//! LC_REQ_DYLD bit.
 @property (nonatomic, readonly) uint32_t cmd;
 //! Returns the size in bytes of this load command.
 @property (nonatomic, readonly) uint32_t cmdSize;

@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! 
 @property (nonatomic, readonly) uint8_t count;
 
-//! The offset to apply to the current address after each rebase.
+//! The offset to apply to the segment base address after each rebase.
 @property (nonatomic, readonly) uint64_t offset;
 
 @end

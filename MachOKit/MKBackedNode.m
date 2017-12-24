@@ -79,7 +79,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)nodeDescription
 {
-    if (self.nodeSize)
+    if (self.nodeSize != 0)
         return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ">", NSStringFromClass(self.class), self.nodeContextAddress, self.nodeSize];
     else
         return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self.nodeContextAddress];

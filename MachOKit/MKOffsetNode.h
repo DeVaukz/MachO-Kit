@@ -33,9 +33,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! \c MKOffsetNode is a specialization of \ref MKBackedNode that represents
+//! \c MKOffsetNode is a specialization of \ref MKBackedNode which represents
 //! the contents of memory residing at a fixed offset from the parent node
-//! (which must be an \ref MKBackedNode).  This class provides a default
+//! (the parent must be an \ref MKBackedNode).  This class provides a default
 //! implementation of the \c -nodeAddress: method from \ref MKBackedNode.
 //! 
 @interface MKOffsetNode : MKBackedNode  {
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Memory Layout
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The offset of this node from the parent node.
+//! The offset of the node from the parent node.
 @property (nonatomic, readonly) mk_vm_offset_t nodeOffset;
 
 @end

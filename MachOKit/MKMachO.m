@@ -63,7 +63,7 @@
     uint32_t magic = [mapping readDoubleWordAtOffset:0 fromAddress:contextAddress withDataModel:nil error:error];
     if (magic == 0) { [self release]; return nil; }
     
-    // Load the appropriate data model for the image
+    // Load the appropriate data model for the Mach-O
     switch (magic) {
         case MH_CIGAM:
         case MH_MAGIC:
@@ -96,7 +96,7 @@
             break;
     }
     
-    // Only support a subset of the MachO types at this time
+    // Only support a subset of the Mach-O types at this time
     switch (_header.filetype) {
         case MH_EXECUTE:
         case MH_DYLIB:
@@ -111,9 +111,9 @@
         uint32_t loadCommandLength = _header.sizeofcmds;
         uint32_t loadCommandCount = _header.ncmds;
         
-        // The kernel will refuse to load a MachO image in which the
+        // The kernel will refuse to load a Mach-O image in which the
         // mach_header_size + header->sizeofcmds is greater than the size of the
-        // MachO image.  However, we can not know the size of the MachO image here.
+        // Mach-O image.  However, we can not know the size of the Mach-O here.
         
         // TODO - Premap the load commands once MKMemoryMap has support for that.
         
@@ -145,16 +145,16 @@
             
             [loadCommands addObject:lc];
             
-            // The kernel will refuse to load a MachO image if it detects that the
+            // The kernel will refuse to load a Mach-O image if it detects that the
             // kernel's offset into the load commands (when parsing the load
             // commands) has exceeded the total mach header size (mach_header_size
             // + mach_header->sizeofcmds).  However, we don't care as long as there
-            // was not an overflow.
+            // was not an overflow...
             if (oldOffset > offset) {
                 MK_PUSH_WARNING(loadCommands, MK_EOVERFLOW, @"Encountered an overflow while advancing the parser to the load command following index %" PRIu32 ".", _header.ncmds - loadCommandCount);
                 break;
             }
-            // We will add a warning however.
+            // ...but we will add a warning.
             if (offset > _header.nodeSize + (mach_vm_size_t)loadCommandLength)
                 MK_PUSH_WARNING(loadCommands, MK_EINVALID_DATA, @"Part of load command at index %" PRIi32 " is beyond sizeofcmds.  This is invalid.", _header.ncmds - loadCommandCount);
         }
@@ -163,7 +163,7 @@
         [loadCommands release];
     }
     
-    // Determine the VM address and slide of this image
+    // Determine the VM address and slide
     {
         mk_error_t err;
         
@@ -176,7 +176,7 @@
                 _vmAddress = segmentLC.mk_vmaddr;
         }
         
-        // Only need to compute the slide if this image is loaded from
+        // Only need to compute the slide if this Mach-O is loaded from
         // memory.
         if (self.isFromMemory) {
             // The slide can now be computed by subtracting the preferred load
@@ -194,8 +194,6 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKBackedNode*)parent error:(NSError**)error
 {
-    NSParameterAssert(parent);
-    
     MKMemoryMap *mapping = parent.memoryMap;
     NSParameterAssert(mapping);
     

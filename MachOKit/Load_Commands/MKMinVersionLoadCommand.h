@@ -35,8 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKMinVersionLoadCommand class is the common parent class for all
-//! specialization of \ref MKLoadCommand which contains the min OS version on
-//! which this binary was built to run.
+//! specializations of \ref MKLoadCommand which contain the minimum OS version
+//! that the binary was built to run on.
 //
 @interface MKMinVersionLoadCommand : MKLoadCommand {
 @package
@@ -44,9 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
     MKVersion *_sdk;
 }
 
-//! The minimum version of the OS this binary was built to run on.
+//! The minimum version of the OS the binary was built to run on.
 @property (nonatomic, readonly) MKVersion *version;
-//! The minimum SDK this binary can be linked with.
+//! The minimum SDK the binary can be linked with.
 @property (nonatomic, readonly) MKVersion *sdk;
 
 @end

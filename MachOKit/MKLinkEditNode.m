@@ -77,7 +77,7 @@
     }
     else
     {
-        // TODO - Investigate whether this is the correct way.
+        // TODO - Investigate whether this is the correct approach.
         
         // Context Address
         if ((err = mk_vm_address_apply_offset(image.nodeContextAddress, offset, &_nodeContextAddress))) {

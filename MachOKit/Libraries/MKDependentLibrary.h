@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! The compatibility version number of the library.
 @property (nonatomic, readonly) MKDylibVersion *compatibilityVersion;
 
-//!
+//! Whether the library must be present at dynamic-link time.
 @property (nonatomic, readonly) BOOL required;
 
 //!

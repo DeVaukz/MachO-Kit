@@ -51,6 +51,7 @@ extern NSString * const MKInitializationContextDeferredProvider;
 //! Pointers are used to encapsulate a level of indirection which can not be
 //! resolved by the current node; for example, because the target of the
 //! pointer resides in a sibling node hierarchy.
+//! 
 @interface MKPointer<Pointee> : NSObject {
 @package
     MKBackedNode *_parent;
@@ -69,13 +70,13 @@ extern NSString * const MKInitializationContextDeferredProvider;
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
 
-//! The address referenced by this pointer.
+//! The address referenced by the pointer.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The target class of this pointer.
+//! The target class of the pointer.
 @property (nonatomic, readonly, nullable) Class targetClass;
 
-//! The node referenced by this pointer.
+//! The node referenced by the pointer.
 @property (nonatomic, readonly) MKOptional<Pointee> *pointee;
 
 @end

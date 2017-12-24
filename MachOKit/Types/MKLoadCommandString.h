@@ -34,10 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! An instance of \c MKLoadCommandString parses a string which trails
-//! the main structure of a struct  \c load_command.  Each string in a load
+//! the fixed structure of a load command.  Each string in a load
 //! command is identified by an \c lc_str in the load command structure,
-//! which includes an offset from the start of the load command to the
-//! contents of the string.
+//! which includes an offset from the start of the load command structure to
+//! the contents of the string.
 //
 @interface MKLoadCommandString : MKOffsetNode {
 @package
@@ -45,9 +45,10 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *_string;
 }
 
-//! The offset of the first byte of the string from this node's parent.
+//! The offset to the first byte of the string from the node's parent (the
+//! load command).
 @property (nonatomic, readonly) uint32_t offset;
-//! A string representation of the bytes within this node.  May be \c nil.
+//! A string representation of the bytes within the node.  May be \c nil.
 @property (nonatomic, readonly, nullable) NSString *string;
 
 @end

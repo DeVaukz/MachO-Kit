@@ -61,9 +61,9 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 
 //----------------------------------------------------------------------------//
 //! An instance of \c MKSegment represents a contiguous range of memory mapped
-//! from a Mach-O binary into memory when the image is loaded.  Each segment
-//! is identified by an instance of \ref MKLCSegment or \ref MKLCSegment64 in
-//! the list of load commands.
+//! from the binary into memory when the Mach-O is loaded.  Each segment is
+//! identified by an instance of \ref MKLCSegment or \ref MKLCSegment64 in
+//! the load commands.
 //
 @interface MKSegment : MKBackedNode {
 @package
@@ -117,9 +117,9 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 //! @name       About This Segment
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The name of this segment, as specified in the load command.
+//! The name of the segment, as specified in the load command.
 @property (nonatomic, readonly, nullable) NSString *name;
-//! The load command identifying this segment.
+//! The load command identifying the segment.
 @property (nonatomic, readonly) id<MKLCSegment> loadCommand;
 
 @property (nonatomic, readonly) mk_vm_address_t vmAddress;
@@ -138,7 +138,7 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! A set of \ref MKSection instances, each representing a section within
-//! this segment.
+//! the segment.
 @property (nonatomic, readonly) NSSet<__kindof MKSection*> *sections;
 
 //! Returns the \ref MKSection from the \ref sections array that is identified

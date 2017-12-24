@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKLinkEditDataLoadCommand class is the common parent class for all
-//! specialization of \ref MKLoadCommand which reference a blob of data in
+//! specializations of \ref MKLoadCommand which reference a blob of data in
 //! the __LINKEDIT segment.
 //
 @interface MKLinkEditDataLoadCommand : MKLoadCommand {

@@ -45,11 +45,11 @@ struct MKPtr {
 
 //!
 //! @param context
-//!        The context is a side-channel mechanism for passing information from
-//!        the pointer-owning node to the node representing the pointee, for
-//!        use during its initialization.  Use of this mechanism is discouraged
-//!        but is ocassionally necessary, for example, because only the
-//!        pointer-owning node knows the size of the pointee.
+//!        The context is a mechanism for passing information from the node
+//!        containing the pointer to the node representing the pointee, for use
+//!        during its initialization.  Use of this mechanism is discouraged
+//!        but is ocassionally necessary, for example, because only the node
+//!        containing the pointer knows the size of the pointee.
 _mk_internal_extern bool
 MKPtrInitialize(struct MKPtr *ptr, MKBackedNode *node, mk_vm_address_t addr, NSDictionary<NSString*, id> * __nullable ctx, NSError **error);
 

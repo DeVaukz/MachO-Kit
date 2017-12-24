@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKMachOImage (Libraries)
 
-//! An array of the libraries this image depends on, in their load order.
+//! An array of the libraries tat the binary depends on, in their load order.
 @property (nonatomic, readonly) NSArray<MKOptional<MKDependentLibrary*>*> *dependentLibraries;
 
 @end

@@ -57,7 +57,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKMachOImage parses a single Mach-O image.
+//! An instance of \c MKMachOImage parses a single Mach-O.
 //
 @interface MKMachOImage : MKBackedNode {
 @package

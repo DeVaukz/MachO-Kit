@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 @property (nonatomic, readonly) uint64_t skip;
 
-//!
+//! The offset to apply to the segment base address after each rebase.
 @property (nonatomic, readonly) uint64_t offset;
 
 @end

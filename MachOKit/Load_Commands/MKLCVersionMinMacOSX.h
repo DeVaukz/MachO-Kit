@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_VERSION_MIN_MACOSX.
 //!
-//! The version_min_command contains the min OS X version on which this
+//! The version_min_command contains the min OS X version on which the
 //! binary was built to run.
 //
 @interface MKLCVersionMinMacOSX : MKMinVersionLoadCommand

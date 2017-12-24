@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
     size_t _size;
 }
 
-//!
+//! The offset to apply to the segment base address after the rebase.
 @property (nonatomic, readonly) uint64_t offset;
 
 @end

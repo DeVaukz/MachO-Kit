@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 @property (nonatomic, readonly) uint8_t immediate;
 
-//! The offset to apply to the current address.
+//! The offset applied to the segment base address.
 @property (nonatomic, readonly) uint64_t offset;
 
 @end

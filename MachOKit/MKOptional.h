@@ -56,7 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
 //! Initializes the receiver with the provided \a error.
 - (instancetype)initWithError:(NSError*)error;
 
-//!
+//! \c YES if the optional is empty - does not contain a value and does not
+//! contain an error.
 @property (readonly) BOOL none;
 
 //!

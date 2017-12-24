@@ -44,10 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //----------------------------------------------------------------------------//
-//! An instance of the MKNode class represents a portion of data parsed by
-//! Mach-O Kit and the interfaces accessing content in that area.
+//! An instance of \c MKNode parses a portion of the Mach-O.
 //!
-//! Mach-O Kit represents a parsed file as a tree of nodes.
+//! Mach-O Kit represents a parsed Mach-O as a tree of nodes.
 //
 @interface MKNode : NSObject {
 @package
@@ -56,7 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Initializes the receiver with the provided \a parent node.  Subclasses
 //! are expected to override this method and may place restrictions on
-//! which type(s) of nodes may be provided as a parent.
+//! the type(s) of nodes may be provided as a parent.
 - (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -68,12 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Returns the layout of this node.
 //!
-//! A layout describes the fields parsed from the range of the Mach-O file
-//! represented by this node.
+//! A layout describes the fields parsed from the range of the data represented
+//! by this node.
 @property (nonatomic, readonly) MKNodeDescription *layout;
 
-//! A description that captures node specific information such as class and
-//! address & size (for backed nodes).  Used when forming error messages
+//! A description that captures node specific information such as class,
+//! address, and size (for backed nodes).  Useful when forming error messages
 //! where knowng this information is important, even when the node class
 //! may have reimplemented -description.
 @property (nonatomic, readonly) NSString *nodeDescription;
@@ -83,11 +82,11 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Accessing Related Objects
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The delegate for this node.  If no delegate has been set for this node,
-//! the delegate of this node's ancestor.
+//! The delegate for the node.  If no delegate has been set for the node,
+//! the delegate of the node's parent.
 @property (nonatomic, assign, nullable) id<MKNodeDelegate> delegate;
 
-//! The memory map for this node.  By default this is the memory map of this
+//! The memory map for the node.  By default this is the memory map of the
 //! node's parent.  Subclasses should override the getter for this property
 //! to provide the \ref MKMemoryMap that is to be used by their child nodes.
 @property (nonatomic, readonly) MKMemoryMap *memoryMap;
@@ -98,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! by their child nodes.
 @property (nonatomic, readonly) id<MKDataModel> dataModel;
 
-//! An array of warnings raised while initiaizing this node.  Each warning
+//! An array of warnings raised while initiaizing the node.  Each warning
 //! is represented by an instance of \c NSError.
 @property (nonatomic, copy) NSArray<NSError*> *warnings;
 
@@ -107,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Navigating the Node Tree
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The parent node, or \c nil if this node has no parent.
+//! The parent node, or \c nil if the node has no parent.
 @property (nonatomic, readonly, nullable) MKNode *parent;
 
 //! Returns the nearest ancestor node of type \a cls.
@@ -124,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 //!             extensibility.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Returns a set containing all known subclasses of the receiver.
+//! Returns a set containing all of the known subclasses of the receiver.
 + (NSSet*)subclasses;
 
 //! Returns the subclass with the highest ranking, as determined by the

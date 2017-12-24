@@ -168,9 +168,9 @@ typedef NS_OPTIONS(uint32_t, MKSectionAttributes) {
 //! @name       About This Section
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The name of this section, as specified in the load command.
+//! The name of the section, as specified in the load command.
 @property (nonatomic, readonly, nullable) NSString *name;
-//! The load command identifying this section.
+//! The load command identifying the section.
 @property (nonatomic, readonly) id<MKLCSection> loadCommand;
 @property (nonatomic, readonly) uint32_t alignment;
 

@@ -38,8 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 //! Parser for \c LC_BUILD_VERSION.
 //!
-//! The build_version_command contains the min OS version on which this
-//! binary was built to run for its platform.
+//! The build_version_command contains the minimum OS version that the
+//! binary was built to run on.
 //
 @interface MKLCBuildVersion : MKLoadCommand {
 @package
@@ -55,9 +55,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! The platform.
 @property (nonatomic, readonly) uint32_t platform;
-//! The minimum version of the OS this binary was built to run on.
+//! The minimum version of the OS the binary was built to run on.
 @property (nonatomic, readonly) MKVersion *minos;
-//! The SDK version that this binary was linked with.
+//! The SDK version that the binary was linked with.
 @property (nonatomic, readonly) MKVersion *sdk;
 //! Number of build tools
 @property (nonatomic, readonly) uint32_t ntools;

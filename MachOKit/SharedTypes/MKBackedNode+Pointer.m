@@ -46,7 +46,7 @@
 {
     MKOptional<MKBackedNode*> *child = [self childNodeOccupyingVMAddress:address targetClass:nil];
     
-    // Some nodes may 'create' the child node upon request.
+    // Some nodes may want to 'create' the child node upon request.
     if (child.value && child.value != self)
         child = [child.value childNodeAtVMAddress:address targetClass:targetClass];
     

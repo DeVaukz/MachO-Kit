@@ -33,8 +33,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! The \c MKMachHeader parses the structure at the beginning of a Mach-O
-//! binary.
+//! The \c MKMachHeader parses the structure at the start of a Mach-O.
 //
 @interface MKMachHeader : MKOffsetNode {
 @package

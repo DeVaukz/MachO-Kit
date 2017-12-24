@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKDylinkerLoadCommand class is the common parent class for all
-//! specialization of \ref MKLoadCommand which reference a dynamic linker.
+//! specializations of \ref MKLoadCommand which reference a dynamic linker.
 //
 @interface MKDylinkerLoadCommand : MKLoadCommand {
 @package

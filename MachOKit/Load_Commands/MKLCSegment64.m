@@ -114,7 +114,7 @@
             oldOffset = offset;
             offset += sect.nodeSize;
             
-            // The kernel will refuse to load any MachO image in which the
+            // The kernel will refuse to load any Mach-O image in which the
             // number of sections specifed would not fit within the load
             // command's size.  We will match this behavior as well as throw
             // away any section which straddles the boundary.

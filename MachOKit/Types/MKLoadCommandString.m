@@ -71,8 +71,8 @@
     else
     {
         // This is technically an invalid Mach-O but we'll try to parse it
-        // anyway (eventully).
-        // <http://reverse.put.as/2012/01/31/anti-debug-trick-1-abusing-mach-o-to-crash-gdb/>
+        // anyway.
+        // TODO - <http://reverse.put.as/2012/01/31/anti-debug-trick-1-abusing-mach-o-to-crash-gdb/>
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:@"Implement this" userInfo:nil];
     }
     

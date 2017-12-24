@@ -64,7 +64,7 @@ typedef NS_ENUM(uint8_t, MKRebaseType) {
 
 - (nullable instancetype)initWithType:(uint8_t)type offset:(mk_vm_offset_t)offset segment:(unsigned)segmentIndex atCommand:(MKRebaseCommand*)command error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! The segment in which the location to be rebased resides.
+//! The segment in which the fixup location resides.
 @property (nonatomic, readonly) MKSegment *segment;
 
 //! Offset from the start of the segment to the fixup location.
