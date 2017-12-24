@@ -212,6 +212,10 @@
     [_symbolTable release];
     [_stringTable release];
     
+    [_lazyBindingsInfo release];
+    [_weakBindingsInfo release];
+    [_bindingsInfo release];
+    
     [_rebaseInfo release];
     
     [_segments release];

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       _mach_trie.h
+//! @file       MKBindDoBindULEBTimesSkippingULEB.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,17 +25,31 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef __mach_trie_h
-#define __mach_trie_h
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKBindCommand.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKBindDoBindULEBTimesSkippingULEB : MKBindCommand {
+    @package
+    uint64_t _count;
+    uint64_t _skip;
+    size_t _size;
+}
 
 //!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end,
-                           uint64_t *output, size_t *output_len);
+@property (nonatomic, readonly) uint64_t count;
 
 //!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_sleb128(const uint8_t* p, const uint8_t* end,
-                           int64_t *output, size_t *output_len);
+@property (nonatomic, readonly) uint64_t skip;
 
-#endif /* __mach_trie_h */
+//! The offset applied to the segment base address after invoking the bind
+//! action.
+@property (nonatomic, readonly) uint64_t offset;
+
+@end
+
+NS_ASSUME_NONNULL_END

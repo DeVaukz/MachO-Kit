@@ -53,3 +53,31 @@ _mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end, uint64_t *outpu
     
     return MK_ESUCCESS;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+_mk_mach_trie_copy_sleb128(const uint8_t* p, const uint8_t* end, int64_t *output, size_t *output_len)
+{
+    int64_t result = 0;
+    unsigned i = 0;
+    int		 bit = 0;
+    uint8_t byte;
+    
+    do {
+        if (&p[i] == end)
+            return MK_EOUT_OF_RANGE;
+        
+        byte = p[i++];
+        result |= (((int64_t)(byte & 0x7f)) << bit);
+        bit += 7;
+    } while (byte & 0x80);
+    
+    // sign extend negative numbers
+    if ((byte & 0x40) != 0)
+        result |= (-1LL) << bit;
+    
+    if (output) *output = result;
+    if (output_len) *output_len = i;
+    
+    return MK_ESUCCESS;
+}

@@ -85,6 +85,62 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseBindCommands:(NSString*)input
+{
+    NSMutableArray *result = nil;
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        if ([line rangeOfString:@"binding opcodes"].location == 0) {
+            result = [NSMutableArray array];
+        } else if ([line rangeOfString:@"BIND_"].location != NSNotFound)
+            [result addObject:line];
+        else if (result.count > 0)
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseWeakBindCommands:(NSString*)input
+{
+    NSMutableArray *result = nil;
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        if ([line rangeOfString:@"weak binding opcodes"].location == 0) {
+            result = [NSMutableArray array];
+            continue;
+        } else if ([line rangeOfString:@"BIND_"].location != NSNotFound)
+            [result addObject:line];
+        else if (result.count > 0)
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseLazyBindCommands:(NSString*)input
+{
+    NSMutableArray *result = nil;
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        if ([line rangeOfString:@"lazy binding opcodes"].location == 0) {
+            result = [NSMutableArray array];
+            continue;
+        } else if ([line rangeOfString:@"BIND_"].location != NSNotFound)
+            [result addObject:line];
+        else if (result.count > 0)
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseFixups:(NSString*)input
 {
     NSMutableArray *result = [NSMutableArray array];
@@ -108,6 +164,103 @@
             // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
             // slice first so we stop parsing when we hit then end of the first
             // set of fixups.
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseBindings:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count > 1 && [components[0] rangeOfString:@"__"].location == 0) {
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            [result addObject:@{
+                @"segment": components[0],
+                @"section": components[1],
+                @"address": components[2],
+                @"type": components[3],
+                @"addend": components[4],
+                @"dylib": components[5],
+                @"symbol": components[6]
+            }];
+        } else if (result.count > 0)
+            // dyldinfo -arch x86_64 ... prints the bindings for both
+            // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
+            // slice first so we stop parsing when we hit then end of the first
+            // set of bindings.
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseWeakBindings:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count > 1 && [components[0] rangeOfString:@"__"].location == 0) {
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            [result addObject:@{
+                @"segment": components[0],
+                @"section": components[1],
+                @"address": components[2],
+                @"type": components[3],
+                @"addend": components[4],
+                @"symbol": components[5]
+            }];
+        } else if (result.count > 0)
+            // dyldinfo -arch x86_64 ... prints the bindings for both
+            // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
+            // slice first so we stop parsing when we hit then end of the first
+            // set of bindings.
+            break;
+    }
+    
+    return result;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseLazyBindings:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count > 1 && [components[0] rangeOfString:@"__"].location == 0) {
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            [result addObject:@{
+                @"segment": components[0],
+                @"section": components[1],
+                @"address": components[2],
+                @"index": components[3],
+                @"dylib": components[4],
+                @"symbol": components[5]
+            }];
+        } else if (result.count > 0)
+            // dyldinfo -arch x86_64 ... prints the bindings for both
+            // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
+            // slice first so we stop parsing when we hit then end of the first
+            // set of bindings.
             break;
     }
     

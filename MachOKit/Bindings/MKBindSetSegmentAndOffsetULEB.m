@@ -1,0 +1,142 @@
+//----------------------------------------------------------------------------//
+//|
+//|             MachOKit - A Lightweight Mach-O Parsing Library
+//|             MKBindSetSegmentAndOffsetULEB.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//|
+//| Permission is hereby granted, free of charge, to any person obtaining a
+//| copy of this software and associated documentation files (the "Software"),
+//| to deal in the Software without restriction, including without limitation
+//| the rights to use, copy, modify, merge, publish, distribute, sublicense,
+//| and/or sell copies of the Software, and to permit persons to whom the
+//| Software is furnished to do so, subject to the following conditions:
+//|
+//| The above copyright notice and this permission notice shall be included
+//| in all copies or substantial portions of the Software.
+//|
+//| THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+//| OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+//| MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+//| IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+//| CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+//| TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+//| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//----------------------------------------------------------------------------//
+
+#import "MKBindSetSegmentAndOffsetULEB.h"
+#import "NSError+MK.h"
+#import "MKMachO.h"
+#import "MKBindingsInfo.h"
+
+#include "_mach_trie.h"
+
+//----------------------------------------------------------------------------//
+@implementation MKBindSetSegmentAndOffsetULEB
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint8_t)opcode
+{ return BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
+{
+    self = [super initWithOffset:offset fromParent:parent error:error];
+    if (self == nil) return nil;
+    
+    __block BOOL success = NO;
+    
+    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
+        if (address == 0x0) { *error = e; return; }
+        
+        mk_error_t err;
+        uint8_t *start = (uint8_t*)address;
+        uint8_t *end = (uint8_t*)(address + length);
+        
+        if ((err = _mk_mach_trie_copy_uleb128(start, end, &_offset, &_size))) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read uleb128."];
+            return;
+        }
+        
+        success = YES;
+    }];
+    
+    if (!success)
+        return nil;
+    
+    return self;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - Performing Binding
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
+{
+#pragma unused(binder)
+#pragma unused(error)
+    bindContext->segmentIndex = self.segmentIndex;
+    bindContext->offset = self.offset;
+    return YES;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)weakBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
+{ return [self bind:binder withContext:bindContext error:error]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)lazyBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
+{ return [self bind:binder withContext:bindContext error:error]; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - Values
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize offset = _offset;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (unsigned)segmentIndex
+{ return _data & BIND_IMMEDIATE_MASK; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)nodeSize
+{ return _size + 1; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeDescription*)layout
+{
+    MKNodeFieldBuilder *segmentIndex = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(segmentIndex)
+        type:nil
+        offset: 1
+        size:_size
+    ];
+    segmentIndex.description = @"Segment Index";
+    segmentIndex.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:nil
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        segmentIndex.build,
+        offset.build
+    ]];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{
+    return [NSString stringWithFormat:@"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(0x%.2X, 0x%.8" PRIX64 ")", self.segmentIndex, self.offset];
+}
+
+@end

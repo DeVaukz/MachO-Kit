@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       _mach_trie.h
+//! @file       MKBindContext.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,17 +25,27 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef __mach_trie_h
-#define __mach_trie_h
+@class MKBindingsInfo;
+@class MKBindCommand;
 
-//!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end,
-                           uint64_t *output, size_t *output_len);
-
-//!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_sleb128(const uint8_t* p, const uint8_t* end,
-                           int64_t *output, size_t *output_len);
-
-#endif /* __mach_trie_h */
+//----------------------------------------------------------------------------//
+struct MKBindContext
+{
+    mk_vm_offset_t actionStartOffset;
+    mk_vm_size_t actionSize;
+    unsigned segmentIndex;
+    uint64_t offset;
+    uint8_t type;
+    int64_t libraryOrdinal;
+    int64_t addend;
+    uint8_t symbolFlags;
+#if __has_feature(objc_arc)
+    void *symbolName;
+    void *command;
+    void *info;
+#else
+    NSString *symbolName;
+    MKBindCommand *command;
+    MKBindingsInfo *info;
+#endif
+};

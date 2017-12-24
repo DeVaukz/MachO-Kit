@@ -148,6 +148,25 @@
     #import <MachOKit/MKRebaseDoRebaseULEBTimesSkippingULEB.h>
 #import <MachOKit/MKStringTable.h>
 #import <MachOKit/MKSymbolTable.h>
+#import <MachOKit/MKMachO+Bindings.h>
+    #import <MachOKit/MKBindingsInfo.h>
+    #import <MachOKit/MKWeakBindingsInfo.h>
+    #import <MachOKit/MKLazyBindingsInfo.h>
+    #import <MachOKit/MKBindAction.h>
+    #import <MachOKit/MKBindCommand.h>
+    #import <MachOKit/MKBindDone.h>
+    #import <MachOKit/MKBindSetDylibOrdinalImmediate.h>
+    #import <MachOKit/MKBindSetDylibOrdinalULEB.h>
+    #import <MachOKit/MKBindSetDylibSpecialImmediate.h>
+    #import <MachOKit/MKBindSetSymbolAndFlags.h>
+    #import <MachOKit/MKBindSetTypeImmediate.h>
+    #import <MachOKit/MKBindSetAddendSLEB.h>
+    #import <MachOKit/MKBindSetSegmentAndOffsetULEB.h>
+    #import <MachOKit/MKBindAddAddressULEB.h>
+    #import <MachOKit/MKBindDoBind.h>
+    #import <MachOKit/MKBindDoBindAddAddressULEB.h>
+    #import <MachOKit/MKBindDoBindAddAddressImmediateScaled.h>
+    #import <MachOKit/MKBindDoBindULEBTimesSkippingULEB.h>
     #import <MachOKit/MKSymbol.h>
 #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>

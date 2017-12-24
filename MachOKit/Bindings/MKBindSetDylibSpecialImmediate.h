@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       _mach_trie.h
+//! @file       MKBindSetDylibSpecialImmediate.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,17 +25,19 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef __mach_trie_h
-#define __mach_trie_h
+#include <MachOKit/macho.h>
+@import Foundation;
 
-//!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end,
-                           uint64_t *output, size_t *output_len);
+#import <MachOKit/MKBindCommand.h>
 
-//!
-_mk_internal_extern mk_error_t
-_mk_mach_trie_copy_sleb128(const uint8_t* p, const uint8_t* end,
-                           int64_t *output, size_t *output_len);
+NS_ASSUME_NONNULL_BEGIN
 
-#endif /* __mach_trie_h */
+//----------------------------------------------------------------------------//
+@interface MKBindSetDylibSpecialImmediate : MKBindCommand
+
+//! Library ordinal
+@property (nonatomic, readonly) int64_t ordinal;
+
+@end
+
+NS_ASSUME_NONNULL_END

@@ -39,6 +39,9 @@
 @class MKLoadCommand;
 @class MKDependentLibrary;
 @class MKRebaseInfo;
+@class MKBindingsInfo;
+@class MKWeakBindingsInfo;
+@class MKLazyBindingsInfo;
 @class MKStringTable;
 @class MKSymbolTable;
 @class MKIndirectSymbolTable;
@@ -79,6 +82,10 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     NSDictionary *_segments;
     // Rebase //
     MKOptional<MKRebaseInfo*> *_rebaseInfo;
+    // Bindings //
+    MKBindingsInfo *_bindingsInfo;
+    MKWeakBindingsInfo *_weakBindingsInfo;
+    MKLazyBindingsInfo *_lazyBindingsInfo;
     // Symbols //
     MKStringTable *_stringTable;
     MKSymbolTable *_symbolTable;

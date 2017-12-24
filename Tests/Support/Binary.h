@@ -39,7 +39,14 @@
 @property (nonatomic, readonly) NSArray *loadCommands;
 @property (nonatomic, readonly) NSArray *dependentLibraries;
 @property (nonatomic, readonly) NSArray *rebaseCommands;
+@property (nonatomic, readonly) NSArray *bindCommands;
+@property (nonatomic, readonly) NSArray *weakBindCommands;
+@property (nonatomic, readonly) NSArray *lazybindCommands;
 @property (nonatomic, readonly) NSArray *fixupAddresses;
+@property (nonatomic, readonly) NSArray *bindings;
+@property (nonatomic, readonly) NSArray *weakBindings;
+@property (nonatomic, readonly) NSArray *lazyBindings;
+@property (nonatomic, readonly) NSDictionary *objcInfo;
 
 @end
 

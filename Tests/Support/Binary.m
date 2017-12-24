@@ -74,6 +74,9 @@
     @autoreleasepool {
         NSString *opcodes = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-opcodes"])];
         _rebaseCommands = [DyldInfoUtil parseRebaseCommands:opcodes];
+        _bindCommands = [DyldInfoUtil parseBindCommands:opcodes];
+        _weakBindCommands = [DyldInfoUtil parseWeakBindCommands:opcodes];
+        _lazybindCommands = [DyldInfoUtil parseLazyBindCommands:opcodes];
     }
     
     return self;
@@ -88,6 +91,50 @@
         fixupAddresses = [DyldInfoUtil parseFixups:fixups];
     }
     return fixupAddresses;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)bindings
+{
+    NSArray *bindingAddresses;
+    @autoreleasepool {
+        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-bind"])];
+        bindingAddresses = [DyldInfoUtil parseBindings:bindings];
+    }
+    return bindingAddresses;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)weakBindings
+{
+    NSArray *bindingAddresses;
+    @autoreleasepool {
+        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-weak_bind"])];
+        bindingAddresses = [DyldInfoUtil parseWeakBindings:bindings];
+    }
+    return bindingAddresses;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)lazyBindings
+{
+    NSArray *bindingAddresses;
+    @autoreleasepool {
+        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-lazy_bind"])];
+        bindingAddresses = [DyldInfoUtil parseLazyBindings:bindings];
+    }
+    return bindingAddresses;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSDictionary*)objcInfo
+{
+    NSDictionary *objcInfo;
+    @autoreleasepool {
+        NSString *info = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-o"])];
+        objcInfo = [OtoolUtil parseObjCImageInfo:info];
+    }
+    return objcInfo;
 }
 
 @end

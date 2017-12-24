@@ -46,6 +46,30 @@
 //!
 + (NSArray*)parseRebaseCommands:(NSString*)input;
 
+//! Parses \a input into an array of strings, each representing a single
+//! opcode. Strings are in the following format where \c XXXX is the offset
+//! from the start of the bind commands.
+//!
+//!     0xXXXX OPOCDE_NAME([ARGS])
+//!
++ (NSArray*)parseBindCommands:(NSString*)input;
+
+//! Parses \a input into an array of strings, each representing a single
+//! opcode. Strings are in the following format where \c XXXX is the offset
+//! from the start of the bind commands.
+//!
+//!     0xXXXX OPOCDE_NAME([ARGS])
+//!
++ (NSArray*)parseLazyBindCommands:(NSString*)input;
+
+//! Parses \a input into an array of strings, each representing a single
+//! opcode. Strings are in the following format where \c XXXX is the offset
+//! from the start of the bind commands.
+//!
+//!     0xXXXX OPOCDE_NAME([ARGS])
+//!
++ (NSArray*)parseWeakBindCommands:(NSString*)input;
+
 //! Parses \a input into an array of dictionaries, each representing a single
 //! fixup.  Each dictionary contains the following keys:
 //!
@@ -55,5 +79,42 @@
 //!     type: fixup type
 //!
 + (NSArray*)parseFixups:(NSString*)input;
+
+//! Parses \a input into an array of dictionaries, each representing a single
+//! binding.  Each dictionary contains the following keys:
+//!
+//!     segment: Name of the segment in which the bind location resides
+//!     section: Name of the section in which the bind location resides
+//!     address: vm address of the bind location
+//!     type: bind type
+//!     addend: Value offset
+//!     dylib: Source Library
+//!     symbol: Symbol name
+//!
++ (NSArray*)parseBindings:(NSString*)input;
+
+//! Parses \a input into an array of dictionaries, each representing a single
+//! weak binding.  Each dictionary contains the following keys:
+//!
+//!     segment: Name of the segment in which the bind location resides
+//!     section: Name of the section in which the bind location resides
+//!     address: vm address of the bind location
+//!     type: bind type
+//!     addend: Value offset
+//!     symbol: Symbol name
+//!
++ (NSArray*)parseWeakBindings:(NSString*)input;
+
+//! Parses \a input into an array of dictionaries, each representing a single
+//! lazy binding.  Each dictionary contains the following keys:
+//!
+//!     segment: Name of the segment in which the bind location resides
+//!     section: Name of the section in which the bind location resides
+//!     address: vm address of the bind location
+//!     index: bind type
+//!     dylib: Source Library
+//!     symbol: Symbol name
+//!
++ (NSArray*)parseLazyBindings:(NSString*)input;
 
 @end
