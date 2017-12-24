@@ -96,7 +96,11 @@
     for (MKCString *string in self.strings) {
         mk_vm_range_t range = mk_vm_range_make(string.nodeVMAddress, string.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [string childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKOptional *child = [string childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
         }
     }
     

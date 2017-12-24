@@ -109,7 +109,7 @@
     // If the section type is \c S_ZEROFILL then the section lies within the
     // zero-fill memory of its enclosing segment and has no corresponding
     // memory in the file.
-    if (!(sectionLoadCommand.flags & S_ZEROFILL) && (err = mk_vm_range_contains_range(mk_vm_range_make(segment.fileOffset, segment.fileSize), mk_vm_range_make(_fileOffset, _size), false))) {
+    if (!(self.type == S_ZEROFILL) && (err = mk_vm_range_contains_range(mk_vm_range_make(segment.fileOffset, segment.fileSize), mk_vm_range_make(_fileOffset, _size), false))) {
         MK_PUSH_WARNING(MK_PROPERTY(fileOffset), MK_ENOT_FOUND, @"File offset %" MK_VM_PRIxADDR " is not within segment %@", _fileOffset, segment);
     }
     
@@ -129,7 +129,7 @@
             }
         }
     }
-    else if (sectionLoadCommand.flags & S_ZEROFILL)
+    else if (self.type == S_ZEROFILL)
     {
         _nodeContextAddress = 0;
         _nodeContextSize = 0;

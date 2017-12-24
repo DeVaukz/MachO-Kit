@@ -161,7 +161,11 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     for (MKSegment *segment in self._segments[MKAllSegments]) {
         mk_vm_range_t range = mk_vm_range_make(segment.nodeVMAddress, segment.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [segment childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKOptional *child = [segment childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
         }
     }
     

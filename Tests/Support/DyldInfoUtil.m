@@ -64,17 +64,25 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseRebaseCommands:(NSString*)input
 {
-    NSMutableArray *result = [NSMutableArray array];
+    NSMutableArray *result = nil;
     NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
     for (NSString *line in lines) {
-        if ([line rangeOfString:@"REBASE_"].location != NSNotFound)
+        if ([line rangeOfString:@"rebase opcodes"].location == 0) {
+            result = [NSMutableArray array];
+            continue;
+        } else if ([line rangeOfString:@"REBASE_"].location != NSNotFound)
             [result addObject:line];
+        else if (result.count > 0)
+            // dyldinfo -arch x86_64 ... prints the rebase commands for both
+            // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
+            // slice first so we stop parsing when we hit then end of the first
+            // set of rebase opcodes.
+            break;
     }
     
     return result;
 }
-
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseFixups:(NSString*)input
@@ -84,21 +92,26 @@
     
     for (NSString *line in lines) {
         NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if (components.count < 1 || [components[0] rangeOfString:@"__"].location != 0)
-            continue;
-        
-        components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
-            return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
-        }]];
-        
-        [result addObject:@{
-            @"segment": components[0],
-            @"section": components[1],
-            @"address": components[2],
-            @"type": [[components subarrayWithRange:NSMakeRange(3, components.count - 3)] componentsJoinedByString:@" "]
-        }];
+        if (components.count > 1 && [components[0] rangeOfString:@"__"].location == 0) {
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            [result addObject:@{
+                @"segment": components[0],
+                @"section": components[1],
+                @"address": components[2],
+                @"type": [[components subarrayWithRange:NSMakeRange(3, components.count - 3)] componentsJoinedByString:@" "]
+            }];
+        } else if (result.count > 0)
+            // dyldinfo -arch x86_64 ... prints the fixups for both
+            // x86_64_all and x86_64h.  Fortunately, it prints the x86_64_all
+            // slice first so we stop parsing when we hit then end of the first
+            // set of fixups.
+            break;
     }
     
     return result;
 }
+
 @end

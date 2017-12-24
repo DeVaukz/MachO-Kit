@@ -81,7 +81,11 @@
     if (imageInfo) {
         mk_vm_range_t range = mk_vm_range_make(imageInfo.nodeVMAddress, imageInfo.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [imageInfo childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKOptional *child = [imageInfo childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
         }
     }
     

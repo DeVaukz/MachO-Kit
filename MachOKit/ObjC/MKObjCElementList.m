@@ -176,7 +176,11 @@ struct objc_entlist {
     for (MKOffsetNode *element in self.elements) {
         mk_vm_range_t range = mk_vm_range_make(element.nodeVMAddress, element.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [element childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKOptional *child = [element childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
         }
     }
     

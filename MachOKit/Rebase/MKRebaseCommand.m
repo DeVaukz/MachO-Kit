@@ -75,7 +75,7 @@
     uint8_t opcode;
     NSError *e = nil;
     
-    opcode = [parent.memoryMap readByteAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.macho.dataModel error:&e];
+    opcode = [parent.memoryMap readByteAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&e];
     if (e) {
         MK_ERROR_OUT = e;
         return nil;

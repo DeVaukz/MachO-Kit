@@ -147,6 +147,7 @@ SpecBegin(MKMachOImage)
                                     break;
                                 }
                             }
+                            
                             expect(machoLoadCommandValue).to.equal(otoolArchitectureLoadCommand[key]);
                         });
                     }
@@ -182,8 +183,8 @@ SpecBegin(MKMachOImage)
                     
                     it(@"should have the correct attributes", ^{
                         NSString *expectedAttribute = dyldDependentLibraries[i][@"attributes"];
-                        BOOL expectedRequired = ![expectedAttribute isEqualToString:@"weak"];
-                        BOOL expectedWeak = [expectedAttribute isEqualToString:@"weak"];
+                        BOOL expectedRequired = ![expectedAttribute isEqualToString:@"weak_import"];
+                        BOOL expectedWeak = [expectedAttribute isEqualToString:@"weak_import"];
                         BOOL expectedUpward = [expectedAttribute isEqualToString:@"upward"];
                         BOOL expectedReexport = [expectedAttribute isEqualToString:@"re-export"];
                         

@@ -243,7 +243,11 @@
     for (MKSection *section in self.sections) {
         mk_vm_range_t range = mk_vm_range_make(section.nodeVMAddress, section.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            return [section childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKOptional *child = [section childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
         }
     }
     
