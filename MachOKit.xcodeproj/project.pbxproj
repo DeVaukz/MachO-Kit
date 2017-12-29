@@ -1122,6 +1122,8 @@
 		D0848AF01A959E6C0076976F /* symbol_table_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol_table_internal.h; sourceTree = "<group>"; };
 		D08634E01C76F2D80094330F /* _mach_trie.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = _mach_trie.c; sourceTree = "<group>"; };
 		D08634E11C76F2D80094330F /* _mach_trie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _mach_trie.h; sourceTree = "<group>"; };
+		D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Mac-XCTest.xcconfig"; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
+		D087E8C51FEAE5F5009AEABC /* iOS-Extension.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "iOS-Extension.xcconfig"; path = "iOS-Extension.xcconfig"; sourceTree = "<group>"; };
 		D08B43751CBC96A80059BB43 /* MKObjCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjCCategory.h; sourceTree = "<group>"; };
 		D08B43761CBC96A80059BB43 /* MKObjCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKObjCCategory.m; sourceTree = "<group>"; };
 		D08B77A61A89D1E100E61338 /* segment_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = segment_internal.h; sourceTree = "<group>"; };
@@ -1480,11 +1482,12 @@
 		D0079FD31895C07D00E9D0CF /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				D0355AC41BC75DFA00708C4F /* iOS-DynamicLibrary.xcconfig */,
 				D0079FD51895C08E00E9D0CF /* iOS-Base.xcconfig */,
+				D0355AC41BC75DFA00708C4F /* iOS-DynamicLibrary.xcconfig */,
 				D0079FD41895C08E00E9D0CF /* iOS-Application.xcconfig */,
 				D0E3FD9D199971A40097C0FF /* iOS-Framework.xcconfig */,
 				D0079FD61895C08E00E9D0CF /* iOS-StaticLibrary.xcconfig */,
+				D087E8C51FEAE5F5009AEABC /* iOS-Extension.xcconfig */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1497,6 +1500,7 @@
 				D0079FDA1895C0BA00E9D0CF /* Mac-DynamicLibrary.xcconfig */,
 				D0079FDB1895C0BA00E9D0CF /* Mac-Framework.xcconfig */,
 				D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */,
+				D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */,
 			);
 			name = "OS X";
 			path = "Mac OS X";
@@ -2981,7 +2985,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0900;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D02FEB4C1890FF88004E88ED = {
