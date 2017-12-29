@@ -135,9 +135,10 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
     * Rebase Information ✔
         * Commands ✔
         * Fixups ✔
-    * Bindings (*not implemented*)
-        * Standard
-        * Weak 
+    * Bindings ✔
+        * Standard ✔
+        * Weak ✔
+        * Lazy ✔
     * Exports (*not implemented*) 
     * Symbols (*incomplete - needs to be reworked*)
 * ObjC Metadata

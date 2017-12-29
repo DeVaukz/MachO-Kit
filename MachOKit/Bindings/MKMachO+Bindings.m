@@ -44,7 +44,7 @@
         
         _bindingsInfo = [[MKBindingsInfo alloc] initWithParent:self error:&e];
         if (_bindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(rebaseInfo, e, @"Failed to load bindings information.");
+            MK_PUSH_UNDERLYING_WARNING(bindingsInfo, e, @"Failed to load bindings information.");
     }
     
     return _bindingsInfo;
@@ -59,7 +59,7 @@
         
         _weakBindingsInfo = [[MKWeakBindingsInfo alloc] initWithParent:self error:&e];
         if (_weakBindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(rebaseInfo, e, @"Failed to load weak bindings information.");
+            MK_PUSH_UNDERLYING_WARNING(weakBindingsInfo, e, @"Failed to load weak bindings information.");
     }
     
     return _weakBindingsInfo;
@@ -74,7 +74,7 @@
         
         _lazyBindingsInfo = [[MKLazyBindingsInfo alloc] initWithParent:self error:&e];
         if (_lazyBindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(rebaseInfo, e, @"Failed to load lazy bindings information.");
+            MK_PUSH_UNDERLYING_WARNING(lazyBindingsInfo, e, @"Failed to load lazy bindings information.");
     }
     
     return _lazyBindingsInfo;
