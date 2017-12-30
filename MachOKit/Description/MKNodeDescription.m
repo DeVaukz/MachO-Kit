@@ -151,10 +151,12 @@
             [retValue appendFormat:@"\twarnings = {\n"];
             for (NSError *warning in node.warnings)
             @autoreleasepool {
-                if (warning.userInfo[NSUnderlyingErrorKey])
-                    [retValue appendFormat:@"\t\t%@: %@ - %@\n", warning.mk_property, warning.localizedDescription, [warning.userInfo[NSUnderlyingErrorKey] localizedDescription]];
-                else
-                    [retValue appendFormat:@"\t\t%@: %@\n", warning.mk_property, warning.localizedDescription];
+				[retValue appendFormat:@"\t\t%@: %@", warning.mk_property, warning.localizedDescription];
+				
+				for (NSError *w = warning.userInfo[NSUnderlyingErrorKey]; w != nil; w = w.userInfo[NSUnderlyingErrorKey])
+					[retValue appendFormat:@" -> %@", w.localizedDescription];
+				
+				[retValue appendFormat:@"\n"];
             }
             [retValue appendFormat:@"\t}\n"];
         }
