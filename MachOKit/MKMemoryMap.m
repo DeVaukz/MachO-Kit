@@ -48,7 +48,7 @@
 - (id)init
 {
     if (self.class == MKMemoryMap.class)
-        @throw [NSException exceptionWithName:NSGenericException reason:@"-init unavailable" userInfo:nil];
+        @throw [NSException exceptionWithName:NSGenericException reason:@"-init unavailable." userInfo:nil];
     else
         return [super init];
 }
@@ -103,7 +103,7 @@
 #pragma unused (length)
 #pragma unused (requireFull)
 #pragma unused (handler)
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Not implemented by subclass" userInfo:nil];
+	@throw [NSException exceptionWithName:NSGenericException reason:@"Subclasses must implement -remapBytesAtOffset:fromAddress:length:requireFull:withHandler:." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

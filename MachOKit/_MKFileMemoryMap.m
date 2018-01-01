@@ -66,7 +66,7 @@
     
     // Compute the offset address.
     if ((err = mk_vm_address_apply_offset(contextAddress, offset, &offsetAddress))) {
-        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)(err | MK_EMEMORY_ERROR) description:@"Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(err), offset, contextAddress];
+        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)(err | MK_EMEMORY_ERROR) description:@"Arithmetic error [%s] adding offset [%" MK_VM_PRIuOFFSET "] to address [0x%" MK_VM_PRIxADDR "].", mk_error_string(err), offset, contextAddress];
         handler(0, 0, error);
         return;
     }

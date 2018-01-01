@@ -43,7 +43,7 @@
     
     kern_return_t err = mach_port_mod_refs(mach_task_self(), _task, MACH_PORT_RIGHT_SEND, 1);
     if (err) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:NSMachErrorDomain code:err description:@"Failed to retain task port"];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:NSMachErrorDomain code:err description:@"Failed to retain the target task port."];
         [self release]; return nil;
     }
     
@@ -65,11 +65,12 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)remapBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull withHandler:(void (^)(vm_address_t address, vm_size_t length, NSError *error))handler
 {
+	// TODO - Investigate caching mappings.  This is too much work to be doing thousands of times.
     mk_error_t mkErr;
     
     // Compute the offset address
     if ((mkErr = mk_vm_address_apply_offset(contextAddress, offset, &contextAddress))) {
-        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(mkErr | MK_EMEMORY_ERROR) description:@"Arithmetic error %s when adding input offset %" MK_VM_PRIiOFFSET " to input address 0x%" MK_VM_PRIxADDR ".", mk_error_string(mkErr), offset, contextAddress];
+        NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(mkErr | MK_EMEMORY_ERROR) description:@"Arithmetic error [%s] adding offset [%" MK_VM_PRIuOFFSET "] to address [0x%" MK_VM_PRIxADDR "].", mk_error_string(mkErr), offset, contextAddress];
         handler(0, 0, error);
         return;
     }
@@ -87,7 +88,7 @@
         if (!requireFull)
             totalLength = UINT64_MAX;
         else {
-            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" PRIxPTR ", length = 0x%" PRIxPTR ") is not within %@", contextAddress, length, self];
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = 0x%" MK_VM_PRIxSIZE ") is not within %@.", contextAddress, length, self];
             handler(0, 0, error);
             return;
         }
@@ -98,7 +99,7 @@
         if (!requireFull)
             totalLength = UINT64_MAX - baseContextAddress;
         else {
-            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" PRIxPTR ", length = 0x%" PRIxPTR ") is not within %@", contextAddress, length, self];
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = 0x%" MK_VM_PRIxSIZE ") is not within %@.", contextAddress, length, self];
             handler(0, 0, error);
             return;
         }
@@ -134,7 +135,7 @@
         
         // No mappable pages found at contextAddress.
         if (verifiedLength == 0) {
-            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" PRIxPTR ", length = 0x%" PRIxPTR ") is not within %@", contextAddress, length, self];
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = 0x%" MK_VM_PRIxSIZE ") is not within %@.", contextAddress, length, self];
             handler(0, 0, error);
             return;
         }
@@ -171,7 +172,7 @@
                 // TODO - Log this.  We're leaking pages.
             }
             
-            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" PRIxPTR ", length = 0x%" PRIxPTR ") is not within %@", contextAddress, length, self];
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:(MK_EBAD_ACCESS | MK_EMEMORY_ERROR) description:@"Input range (offset address = 0x%" MK_VM_PRIxADDR ", length = 0x%" MK_VM_PRIxSIZE ") is not within %@.", contextAddress, length, self];
             handler(0, 0, error);
             return;
         }
@@ -194,7 +195,7 @@
                 // TODO - Log this.  We're leaking ports.
             }
             
-            NSError *error = [NSError mk_errorWithDomain:NSMachErrorDomain code:err description:@"mach_vm_map() failure."];
+            NSError *error = [NSError mk_errorWithDomain:NSMachErrorDomain code:err description:@"mach_vm_map() failed."];
             handler(0, 0, error);
             return;
         }
@@ -213,7 +214,7 @@
     contextAddress = mappingAddress + contextAddressOffset;
     length = mappedLength - (contextAddress - mappingAddress);
     
-    // Call the handler.  The potential down-cast is afe because the mapping
+    // Call the handler.  The potential down-cast is safe because the mapping
     // would have failed if we could not bring the entire range into this
     // process.
     handler((vm_address_t)contextAddress, (vm_size_t)length, nil);
