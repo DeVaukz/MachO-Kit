@@ -110,7 +110,7 @@ mk_vm_range_contains_address(mk_vm_range_t range, mk_vm_offset_t offset, mk_vm_a
         return MK_EOVERFLOW;
     
     if (address < range.location || address >= range.location + range.length)
-        return MK_ENOT_FOUND;
+        return MK_EOUT_OF_RANGE;
     
     return MK_ESUCCESS;
 }
@@ -127,23 +127,23 @@ mk_vm_range_contains_range(mk_vm_range_t outer_range, mk_vm_range_t inner_range,
     if (partial)
     {
         if (inner_range.location < outer_range.location && inner_range.location + inner_range.length < outer_range.location)
-            return MK_ENOT_FOUND;
+            return MK_EOUT_OF_RANGE;
         else if (inner_range.location > outer_range.location + outer_range.length)
-            return MK_ENOT_FOUND;
+            return MK_EOUT_OF_RANGE;
     }
     else
     {
         if (inner_range.location < outer_range.location)
-            return MK_ENOT_FOUND;
+            return MK_EOUT_OF_RANGE;
         else if (inner_range.location + inner_range.length > outer_range.location + outer_range.length)
-            return MK_ENOT_FOUND;
+            return MK_EOUT_OF_RANGE;
     }
     
     return MK_ESUCCESS;
 }
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Type Safe Operations
+#pragma mark -  Safe Arithmetic Operations
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//

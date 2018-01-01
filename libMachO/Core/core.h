@@ -207,8 +207,8 @@ mk_vm_range_contains_range(mk_vm_range_t outer_range, mk_vm_range_t inner_range,
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Type Safe Operations
-//! @name       Type Safe Operations
+#pragma mark -  Safe Arithmetic Operations
+//! @name       Safe Arithmetic Operations
 //----------------------------------------------------------------------------//
 
 //! Safely computes \a addr + \a offset and stores the result in \a result.
