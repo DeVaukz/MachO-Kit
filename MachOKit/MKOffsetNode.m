@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKOffsetNode.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKOffsetNode
@@ -34,13 +34,11 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
-#pragma unused (error)
-    
     mk_error_t err;
     
     // Verify that calculating our context address will not overflow.
     if (parent && (err = mk_vm_address_apply_offset(parent.nodeContextAddress, offset, NULL))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithemtic error %s applying offset " MK_VM_PRIxOFFSET " to parent node %@", offset, parent];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Arithmetic error [%s] applying offset [%" MK_VM_PRIuOFFSET "] to address [0x%" MK_VM_PRIxADDR "] of parent node %@.", mk_error_string(err), offset, parent.nodeContextAddress, parent.nodeDescription];
         [self release]; return nil;
     }
     
@@ -78,7 +76,7 @@
     
     if ((err = mk_vm_address_apply_offset(parentAddress, _nodeOffset, &retValue))) {
         // This should have been caught during initialization.
-        NSString *reason = [NSString stringWithFormat:@"Arithmetic error %s while applying offset 0x%" MK_VM_PRIiOFFSET " of node %@ to address (type %lu) 0x%" MK_VM_PRIxADDR " of parent node %@.", mk_error_string(err), _nodeOffset, self, (unsigned long)type, parentAddress, parent];
+        NSString *reason = [NSString stringWithFormat:@"Arithmetic error [%s] applying offset [%" MK_VM_PRIuOFFSET "] of node %@ to address (type %lu) [0x%" MK_VM_PRIxADDR "] of parent node %@.", mk_error_string(err), _nodeOffset, self.nodeDescription, (unsigned long)type, parentAddress, parent.nodeDescription];
         @throw [NSException exceptionWithName:NSRangeException reason:reason userInfo:nil];
     }
     

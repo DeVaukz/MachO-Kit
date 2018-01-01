@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBackedNode.h
+//! @file       MKAddressedNode.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,38 +28,56 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKAddressedNode.h>
+#import <MachOKit/MKNode.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! \c MKBackedNode is a subclass of \ref MKNode which represents the parsed
-//! contents in some fixed range of memory.
+//! @name       Node Address Types
+//! @relates    MKAddressedNode
 //!
-@interface MKBackedNode : MKAddressedNode
+typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
+	//! The address of the node with respect to its \ref memoryMap.
+	//!
+	//! @details
+	//! For a memory map reading process memory, the context address matches
+	//! the node's VM address plus any slide.
+	//!
+	//! For a memory map reading a file on disk, the context address *usually*
+	//! matches the offset of the node in the file.
+	MKNodeContextAddress                = 0,
+	//! The address of the node when the image is mapped into virtual memory.
+	//!
+	//! @details
+	//! This value does not include any slide that is applied to the image.
+	MKNodeVMAddress
+};
+
+
+
+//----------------------------------------------------------------------------//
+//!	\c MKAddressedNode is a subclass of \ref MKNode which can trace its
+//! origination back to a specific location in the Mach-O.
+//
+@interface MKAddressedNode : MKNode
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Memory Layout
 //! @name       Memory Layout
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The size of the node.  Includes the size of all child nodes.
-//! Subclasses must implement the getter for this property.
-//!
-//! @note
-//! A value of \c 0 indicates the node size is unknown.  This value should only
-//! be returned by top-level nodes such as \ref MKMachO.
-@property (nonatomic, readonly) mk_vm_size_t nodeSize;
+//! Shortcut for calling the \ref -nodeAddress: method with the
+//! \ref MKNodeContextAddress address type.
+@property (nonatomic, readonly) mk_vm_address_t nodeContextAddress;
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Accessing the Underlying Data
-//! @name       Accessing the Underlying Data
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+//! Shortcut for calling the \ref -nodeAddress: method with the
+//! \ref MKNodeVMAddress address type.
+@property (nonatomic, readonly) mk_vm_address_t nodeVMAddress;
 
-//! An \c NSData instance containing the contents of memory represented by
-//! the node.
-@property (nonatomic, readonly, nullable) NSData *data;
+//! Subclasses must implement this method.
+- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type;
 
 @end
 
 NS_ASSUME_NONNULL_END
+

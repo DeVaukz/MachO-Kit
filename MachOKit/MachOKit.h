@@ -40,6 +40,7 @@
 #import <MachOKit/MKOptional.h>
 #import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNode.h>
+#import <MachOKit/MKAddressedNode.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
 

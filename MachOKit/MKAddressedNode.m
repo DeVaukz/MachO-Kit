@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKBackedNode.m
+//|             MKAddressedNode.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,38 +25,29 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKBackedNode.h"
+#import "MKAddressedNode.h"
 #import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKBackedNode
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
-{
-    if (parent && ![parent isKindOfClass:MKBackedNode.class]) {
-        NSString *reason = [NSString stringWithFormat:@"The parent of an MKBackedNode must be an MKBackedNode, not %@", NSStringFromClass(parent.class)];
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-    }
-    
-    return [super initWithParent:parent error:error];
-}
+@implementation MKAddressedNode
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Memory Layout
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -nodeSize." userInfo:nil]; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Accessing the Underlying Data
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+- (mk_vm_address_t)nodeContextAddress
+{ return [self nodeAddress:MKNodeContextAddress]; }
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_address_t)nodeVMAddress
+{ return [self nodeAddress:MKNodeVMAddress]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSData*)data
-{ return [self.memoryMap dataAtOffset:0 fromAddress:self.nodeContextAddress length:self.nodeSize requireFull:YES error:NULL]; }
+- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
+{
+#pragma unused (type)
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -nodeAddress:." userInfo:nil];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSObject
@@ -65,19 +56,17 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)nodeDescription
 {
-	IMP nodeDescriptionMethod = [MKBackedNode instanceMethodForSelector:@selector(description)];
+	IMP nodeDescriptionMethod = [MKAddressedNode instanceMethodForSelector:@selector(description)];
 	IMP descriptionMethod = [self methodForSelector:@selector(description)];
 	
 	if (descriptionMethod != nodeDescriptionMethod)
-		return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ", %@>", NSStringFromClass(self.class), self.nodeContextAddress, self.nodeSize, self.description];
+		return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ", %@>", NSStringFromClass(self.class), self.nodeContextAddress, self.description];
 	else
-    	return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ">", NSStringFromClass(self.class), self.nodeContextAddress, self.nodeSize];
+		return [NSString stringWithFormat:@"<%@: address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self.nodeContextAddress];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-	return [NSString stringWithFormat:@"<%@ %p: address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ">", NSStringFromClass(self.class), self, self.nodeContextAddress, self.nodeSize];
-}
+{ return [NSString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self, self.nodeContextAddress]; }
 
 @end

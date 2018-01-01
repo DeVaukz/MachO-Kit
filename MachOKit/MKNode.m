@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNode.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKBackedNode.h"
 
 #import <objc/runtime.h>
@@ -63,7 +63,7 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Retreiving The Layout
+#pragma mark -  Retreiving The Layout and Description
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -72,7 +72,15 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)nodeDescription
-{ return [NSString stringWithFormat:@"<%@>", NSStringFromClass(self.class)]; }
+{
+	IMP nodeDescriptionMethod = [MKNode instanceMethodForSelector:@selector(description)];
+	IMP descriptionMethod = [self methodForSelector:@selector(description)];
+	
+	if (descriptionMethod != nodeDescriptionMethod)
+		return [NSString stringWithFormat:@"<%@: %@>", NSStringFromClass(self.class), self.description];
+	else
+		return [NSString stringWithFormat:@"<%@>", NSStringFromClass(self.class)];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -   Getting Related Objects
@@ -115,7 +123,7 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 //|++++++++++++++++++++++++++++++++++++|//
 - (nullable __kindof MKNode*)nearestAncestorOfType:(Class)cls
 {
-    NSAssert([cls isSubclassOfClass:MKNode.class], @"cls must be an MKNode.");
+    NSParameterAssert([cls isSubclassOfClass:MKNode.class]);
     
     for (MKNode *n = self; n != nil; n = n.parent) {
         if ([n isKindOfClass:cls])
