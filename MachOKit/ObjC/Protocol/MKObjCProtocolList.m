@@ -27,7 +27,6 @@
 
 #import "MKObjCProtocolList.h"
 #import "NSError+MK.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKObjCProtocol.h"
 
 struct objc_protocollist_32 {

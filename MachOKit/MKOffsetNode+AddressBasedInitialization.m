@@ -27,7 +27,6 @@
 
 #import "MKOffsetNode+AddressBasedInitialization.h"
 #import "MKInternal.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKMachO.h"
 
 //----------------------------------------------------------------------------//

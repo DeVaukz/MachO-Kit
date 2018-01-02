@@ -27,7 +27,6 @@
 
 #import "MKSegment.h"
 #import "MKInternal.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKMachO.h"
 
 #import <objc/runtime.h>

@@ -47,7 +47,6 @@
 #import <MachOKit/MKNodeFieldCPUType.h>
 #import <MachOKit/MKNodeFieldCPUSubType.h>
 
-#import <MachOKit/MKBackedNode+Pointer.h>
 #import <MachOKit/MKPointer.h>
 #import <MachOKit/MKPointerNode.h>
 #import <MachOKit/MKCString.h>

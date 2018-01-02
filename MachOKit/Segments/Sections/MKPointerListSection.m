@@ -28,7 +28,6 @@
 #import "MKPointerListSection.h"
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
-#import "MKBackedNode+Pointer.h"
 
 #include <objc/message.h>
 

@@ -30,7 +30,6 @@
 #import "MKSegment.h"
 #import "MKNode+MachO.h"
 #import "MKOffsetNode+AddressBasedInitialization.h"
-#import "MKBackedNode+Pointer.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDataSection

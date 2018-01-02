@@ -27,7 +27,6 @@
 
 #import "MKObjCProtocolMethodTypesList.h"
 #import "NSError+MK.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKCString.h"
 
 //----------------------------------------------------------------------------//

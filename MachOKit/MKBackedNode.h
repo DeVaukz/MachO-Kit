@@ -28,6 +28,7 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOptional.h>
 #import <MachOKit/MKAddressedNode.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -59,6 +60,22 @@ NS_ASSUME_NONNULL_BEGIN
 //! An \c NSData instance containing the contents of memory represented by
 //! the node.
 @property (nonatomic, readonly, nullable) NSData *data;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Looking Up Child Nodes By Address
+//! @name       Looking Up Child Nodes By Address
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! Returns the child node occupying \a address.  Subclasses should override
+//! this method.
+- (MKOptional<__kindof MKBackedNode*> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(nullable Class)targetClass;
+
+//! Returns the child node at \a address, if it's class matches the
+//! \a targetClass.
+- (MKOptional<__kindof MKBackedNode*> *)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(nullable Class)targetClass;
+
+//! Returns the child node at \a address.
+- (MKOptional<__kindof MKBackedNode*> *)childNodeAtVMAddress:(mk_vm_address_t)address;
 
 @end
 

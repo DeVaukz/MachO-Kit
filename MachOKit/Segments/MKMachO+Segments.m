@@ -28,7 +28,6 @@
 #import "MKMachO+Segments.h"
 #import "MKInternal.h"
 
-#import "MKBackedNode+Pointer.h"
 #import "MKLCSegment.h"
 #import "MKLCSegment64.h"
 #import "MKLCSymtab.h"

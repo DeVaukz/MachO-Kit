@@ -27,7 +27,6 @@
 
 #import "MKObjCElementList.h"
 #import "NSError+MK.h"
-#import "MKBackedNode+Pointer.h"
 
 struct objc_entlist {
     uint32_t entsizeAndFlags;

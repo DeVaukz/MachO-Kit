@@ -27,7 +27,6 @@
 
 #import "MKFixup.h"
 #import "MKInternal.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKMachO.h"
 #import "MKRebaseInfo.h"
 #import "MKRebaseCommand.h"

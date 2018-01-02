@@ -28,7 +28,6 @@
 #import "MKPtr.h"
 #import "MKInternal.h"
 #import "MKPointer.h"
-#import "MKBackedNode+Pointer.h"
 
 #define POINTEE_FLAGS_MASK              (uintptr_t)(7U)
 #define POINTEE_VALUE(in)               (id)(in & ~POINTEE_FLAGS_MASK)

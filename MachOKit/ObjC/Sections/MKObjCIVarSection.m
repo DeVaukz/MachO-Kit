@@ -28,7 +28,6 @@
 #import "MKObjCIVarSection.h"
 #import "NSError+MK.h"
 #import "MKSegment.h"
-#import "MKBackedNode+Pointer.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKObjCIVarSection

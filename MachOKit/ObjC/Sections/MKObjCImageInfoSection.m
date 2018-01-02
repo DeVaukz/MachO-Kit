@@ -27,7 +27,6 @@
 
 #import "MKObjCImageInfoSection.h"
 #import "NSError+MK.h"
-#import "MKBackedNode+Pointer.h"
 #import "MKSegment.h"
 #import "MKObjCImageInfo.h"
 
