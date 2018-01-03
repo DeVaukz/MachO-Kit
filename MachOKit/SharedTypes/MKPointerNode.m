@@ -27,6 +27,7 @@
 
 #import "MKPointerNode.h"
 #import "MKInternal.h"
+#import "MKMemoryMap+Pointer.h"
 #import "MKPtr.h"
 
 #define mk_ptr_struct(OBJ)    ((struct MKPtr*)(&(OBJ->_parent)))
@@ -41,20 +42,12 @@
     if (self == nil) return nil;
     
     mk_vm_address_t address;
-    NSError *localError = nil;
-    
-    id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
-    
-    if (dataModel.pointerSize == 8)
-        address = [self.memoryMap readQuadWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&localError];
-    else if (dataModel.pointerSize == 4)
-        address = [self.memoryMap readDoubleWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&localError];
-    else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
+    NSError *memoryMapError = nil;
+	
+	address = [self.memoryMap readPointerAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:self.dataModel error:&memoryMapError];
+	
+    if (memoryMapError) {
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
         [self release]; return nil;
     }
     

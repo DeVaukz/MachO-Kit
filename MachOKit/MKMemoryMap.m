@@ -27,7 +27,6 @@
 
 #import "MKMemoryMap.h"
 #import "MKInternal.h"
-#import "MKDataModel.h"
 #import "_MKFileMemoryMap.h"
 #import "_MKTaskMemoryMap.h"
 
