@@ -75,6 +75,10 @@ NS_ASSUME_NONNULL_BEGIN
 //! address, and size (for backed nodes).  Useful when forming error messages
 //! where knowng this information is important, even when the node class
 //! may have reimplemented -description.
+//!
+//!	@note
+//!	Never call \c -nodeDescription from within your subclasse's \c -description
+//!	method.
 @property (nonatomic, readonly) NSString *nodeDescription;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

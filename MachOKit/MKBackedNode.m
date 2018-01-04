@@ -35,7 +35,7 @@
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
     if (parent && ![parent isKindOfClass:MKBackedNode.class]) {
-        NSString *reason = [NSString stringWithFormat:@"The parent of an MKBackedNode must be an MKBackedNode, not %@", NSStringFromClass(parent.class)];
+        NSString *reason = [NSString stringWithFormat:@"The parent of an MKBackedNode must be an MKBackedNode, not %@.", NSStringFromClass(parent.class)];
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
@@ -57,6 +57,33 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSData*)data
 { return [self.memoryMap dataAtOffset:0 fromAddress:self.nodeContextAddress length:self.nodeSize requireFull:YES error:NULL]; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Looking Up Ancestor Nodes By Address
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)ancestorNodeOccupyingAddress:(mk_vm_address_t)address type:(MKNodeAddressType)addressType targetClass:(Class)targetClass includeReceiver:(BOOL)includeReceiver
+{
+	MKBackedNode *node = includeReceiver ? self : (MKBackedNode*)self.parent;
+	
+	// Walk up the parent chain until we find a node containing the address.
+	for (; node && [node isKindOfClass:MKBackedNode.class]; node = (MKBackedNode*)node.parent) {
+		if (targetClass && ![node isKindOfClass:targetClass])
+			continue;
+		
+		mk_vm_range_t nodeRange = mk_vm_range_make([node nodeAddress:addressType], node.nodeSize);
+		
+		// TODO - Rework MKMachOImage so that we don't need this hack.
+		if (nodeRange.length == 0)
+			return [MKOptional optionalWithValue:node];
+		
+		if (mk_vm_range_contains_address(nodeRange, 0, address) == MK_ESUCCESS)
+			return [MKOptional optionalWithValue:node];
+	}
+	
+	return [MKOptional optional];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Looking Up Child Nodes By Address

@@ -34,7 +34,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An \c MKPointerNode is a an \ref MKNode subclass that parses a pointer.
+//! An \c MKPointerNode is a an \ref MKNode subclass that parses a single
+//! pointer.
 //!
 @interface MKPointerNode<Pointee> : MKOffsetNode {
 @package
@@ -49,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! The address referenced by the pointer.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The target class of the pointer.
+//! The class of the node that the pointer is expected to reference.
 @property (nonatomic, readonly, nullable) Class targetClass;
 
 //! The node referenced by the pointer.

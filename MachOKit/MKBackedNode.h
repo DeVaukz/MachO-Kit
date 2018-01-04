@@ -62,6 +62,20 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) NSData *data;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Looking Up Ancestor Nodes By Address
+//! @name       Looking Up Ancestor Nodes By Address
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//!	Returns the nearest ancestor node occupying \a address, if it's class
+//! matches the \a targetClass.
+//!
+//!	@param 	includeReceiver
+//!			If \c YES, the search starts at the receiver.  Otherwise, the
+//!			search starts at the receiver's parent.
+//!
+- (MKOptional<__kindof MKBackedNode*> *)ancestorNodeOccupyingAddress:(mk_vm_address_t)address type:(MKNodeAddressType)addressType targetClass:(nullable Class)targetClass includeReceiver:(BOOL)includeReceiver;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Looking Up Child Nodes By Address
 //! @name       Looking Up Child Nodes By Address
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

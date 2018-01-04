@@ -94,7 +94,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -110,15 +110,15 @@
 { return MKPtrPointee(mk_ptr_struct(self)); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - NSObject
+#pragma mark - 	NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-    MKOptional *pointee = self.pointee;
-    if (pointee.value)
-        return [NSString stringWithFormat:@"-> %@", pointee];
+    MKBackedNode *pointee = self.pointee.value;
+    if (pointee)
+        return [NSString stringWithFormat:@"-> %@", pointee.nodeDescription];
     else
         return [NSString stringWithFormat:@"-> 0x%" MK_VM_PRIxADDR "", self.address];
 }

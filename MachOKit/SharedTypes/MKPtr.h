@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 struct MKPtr {
     MKBackedNode *parent;
-    uintptr_t __reserved;
+    uint64_t __reserved;
     mk_vm_address_t address;
     uintptr_t __opaque;
 };
@@ -62,7 +62,7 @@ _mk_internal_extern __nullable Class
 MKPtrTargetClass(struct MKPtr *ptr);
 
 //!
-_mk_internal_extern MKOptional*
+_mk_internal_extern MKOptional<__kindof MKBackedNode*> *
 MKPtrPointee(struct MKPtr *ptr);
 
 NS_ASSUME_NONNULL_END

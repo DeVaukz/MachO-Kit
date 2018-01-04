@@ -37,7 +37,7 @@ typedef MKOptional<NSDictionary*>* _Nullable (^MKDeferredContextProvider)(void);
 
 //----------------------------------------------------------------------------//
 //! @name       Constants
-//! @relates    MKPtr
+//! @relates    MKPointer
 //
 
 //!
@@ -50,12 +50,12 @@ extern NSString * const MKInitializationContextDeferredProvider;
 //----------------------------------------------------------------------------//
 //! Pointers are used to encapsulate a level of indirection which can not be
 //! resolved by the current node; for example, because the target of the
-//! pointer resides in a sibling node hierarchy.
+//! pointer resides in a sibling node.
 //! 
 @interface MKPointer<Pointee> : NSObject {
 @package
     MKBackedNode *_parent;
-    uintptr_t __reserved;
+    uint64_t __reserved;
     mk_vm_address_t _address;
     uintptr_t __opaque;
 }
@@ -73,7 +73,7 @@ extern NSString * const MKInitializationContextDeferredProvider;
 //! The address referenced by the pointer.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The target class of the pointer.
+//! The class of the node that the pointer is expected to reference.
 @property (nonatomic, readonly, nullable) Class targetClass;
 
 //! The node referenced by the pointer.
