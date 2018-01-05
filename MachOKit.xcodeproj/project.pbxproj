@@ -590,6 +590,8 @@
 		D0B16D451CA7A92A00E2116C /* MKBindContext.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B16D441CA7A92A00E2116C /* MKBindContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0B16D481CA8503800E2116C /* MKWeakBindingsInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B16D461CA8503800E2116C /* MKWeakBindingsInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B16D471CA8503800E2116C /* MKWeakBindingsInfo.m */; };
+		D0B16D6D1CA8D27700E2116C /* MKLEB.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B16D6B1CA8D27700E2116C /* MKLEB.h */; };
+		D0B16D6E1CA8D27700E2116C /* MKLEB.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B16D6C1CA8D27700E2116C /* MKLEB.m */; };
 		D0B64B831E5414F000DFBFAD /* MKNodeFieldDeprecated.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B64B811E5414F000DFBFAD /* MKNodeFieldDeprecated.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0B64B841E5414F000DFBFAD /* MKNodeFieldDeprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B64B821E5414F000DFBFAD /* MKNodeFieldDeprecated.m */; };
 		D0B9F6C11E57FC3200D0B35A /* MKNodeFieldType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B9F6BF1E57FC3200D0B35A /* MKNodeFieldType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1299,6 +1301,8 @@
 		D0B16D441CA7A92A00E2116C /* MKBindContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKBindContext.h; sourceTree = "<group>"; };
 		D0B16D461CA8503800E2116C /* MKWeakBindingsInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKWeakBindingsInfo.h; sourceTree = "<group>"; };
 		D0B16D471CA8503800E2116C /* MKWeakBindingsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKWeakBindingsInfo.m; sourceTree = "<group>"; };
+		D0B16D6B1CA8D27700E2116C /* MKLEB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLEB.h; sourceTree = "<group>"; };
+		D0B16D6C1CA8D27700E2116C /* MKLEB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLEB.m; sourceTree = "<group>"; };
 		D0B64B811E5414F000DFBFAD /* MKNodeFieldDeprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldDeprecated.h; sourceTree = "<group>"; };
 		D0B64B821E5414F000DFBFAD /* MKNodeFieldDeprecated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldDeprecated.m; sourceTree = "<group>"; };
 		D0B9F6BF1E57FC3200D0B35A /* MKNodeFieldType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldType.h; sourceTree = "<group>"; };
@@ -1642,6 +1646,8 @@
 				D01B98751B7690050035F464 /* MKCString.m */,
 				D04269E31DD931E40091AB2A /* MKPtr.h */,
 				D04269E41DD931E40091AB2A /* MKPtr.m */,
+				D0B16D6B1CA8D27700E2116C /* MKLEB.h */,
+				D0B16D6C1CA8D27700E2116C /* MKLEB.m */,
 			);
 			path = SharedTypes;
 			sourceTree = "<group>";
@@ -2845,6 +2851,7 @@
 				D030305C1A23D0C700288B3E /* MKLCEncryptionInfo.h in Headers */,
 				D03030501A23CF3200288B3E /* MKLCCodeSignature.h in Headers */,
 				D0B9F6C51E57FE3B00D0B35A /* MKNodeFieldTypeByte.h in Headers */,
+				D0B16D6D1CA8D27700E2116C /* MKLEB.h in Headers */,
 				D0539BBC1A23D4F600D3A5F0 /* MKLCDataInCode.h in Headers */,
 				D0E30A851E623D2F0005A882 /* MKNodeFieldDataOperationExtractChildNodeData.h in Headers */,
 				D0302FFF1A22DB1B00288B3E /* MKNodeDescription.h in Headers */,
@@ -3225,6 +3232,7 @@
 				D08E5EC81B76FBD3009185FE /* MKDSCSymbol.m in Sources */,
 				D0C5640F1A94517100443090 /* string_table.c in Sources */,
 				D010B3881A747D0B00AED697 /* MKDylibVersion.m in Sources */,
+				D0B16D6E1CA8D27700E2116C /* MKLEB.m in Sources */,
 				D01C75221CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.m in Sources */,
 				D0A1D8C519E4EEB80095870C /* load_command_id_dylib.c in Sources */,
 				D066184D1CBB11E4006979A1 /* MKObjCClassIVarList.m in Sources */,
