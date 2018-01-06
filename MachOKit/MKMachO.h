@@ -42,6 +42,7 @@
 @class MKBindingsInfo;
 @class MKWeakBindingsInfo;
 @class MKLazyBindingsInfo;
+@class MKExportsInfo;
 @class MKStringTable;
 @class MKSymbolTable;
 @class MKIndirectSymbolTable;
@@ -86,6 +87,8 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     MKBindingsInfo *_bindingsInfo;
     MKWeakBindingsInfo *_weakBindingsInfo;
     MKLazyBindingsInfo *_lazyBindingsInfo;
+    // Exports //
+    MKOptional<MKExportsInfo*> *_exportsInfo;
     // Symbols //
     MKStringTable *_stringTable;
     MKSymbolTable *_symbolTable;

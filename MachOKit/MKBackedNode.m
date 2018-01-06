@@ -108,12 +108,12 @@
 	if (child.value && child.value != self)
 		child = [child.value childNodeAtVMAddress:address targetClass:targetClass];
 	
-	if (child.value && (targetClass == nil || [child.value isKindOfClass:targetClass])) {
-		if (child.value.nodeVMAddress == address)
+	if (child.value) {
+		if (child.value.nodeVMAddress == address && (targetClass == nil || [child.value isKindOfClass:targetClass]))
 			// Found a child node at address
 			return child;
 		else
-			// Did not find a child node at address
+			// Did not find a child node at address, or the class did not match
 			return [MKOptional optional];
 	} else
 		// There was an error finding (or creating) the child node at address.

@@ -117,4 +117,14 @@
 //!
 + (NSArray*)parseLazyBindings:(NSString*)input;
 
+//! Parses \a input into an array of strings, each representing a single
+//! export.  Strings are in the following format.
+//!
+//!		# For regular exports
+//!		0x00000000  <Symbol Name>
+//!		# For re-exports
+//!		[re-export] <Symbol Name> (from <Source Library Name>)
+//!
++ (NSArray*)parseExports:(NSString*)input;
+
 @end

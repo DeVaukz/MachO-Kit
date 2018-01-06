@@ -127,6 +127,17 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)exports
+{
+	NSArray *exportsList;
+	@autoreleasepool {
+		NSString *exports = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-export"])];
+		exportsList = [DyldInfoUtil parseExports:exports];
+	}
+	return exportsList;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSDictionary*)objcInfo
 {
     NSDictionary *objcInfo;

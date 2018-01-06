@@ -210,7 +210,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoRebaseCommands).toNot.beNil();
+					expect(machoRebaseFixups).toNot.beNil();
                 });
+				
+				it(@"should not have any warnings", ^{
+					expect(machoRebaseInfo.warnings).to.equal(@[]);
+				});
                 
                 it(@"should have the correct number of rebase commands", ^{
                     expect(machoRebaseCommands.count).to.equal(dyldInfoRebaseCommands.count);
@@ -234,7 +239,7 @@ SpecBegin(MKMachOImage)
                         MKFixup *fixup = machoRebaseFixups[i];
                         
                         expect(fixup.segment.name).to.equal(dyldInfoRebaseFixups[i][@"segment"]);
-                        expect(fixup.section.name).to.equal(dyldInfoRebaseFixups[i][@"section"]);
+                        expect(fixup.section.value.name).to.equal(dyldInfoRebaseFixups[i][@"section"]);
                         expect([NSString stringWithFormat:@"0x%.8" MK_VM_PRIXADDR "", fixup.address]).to.equal(dyldInfoRebaseFixups[i][@"address"]);
                     }
                 });
@@ -385,6 +390,34 @@ SpecBegin(MKMachOImage)
                     }
                 });
             });
+			
+			//----------------------------------------------------------------//
+			describe(@"exports", ^{
+				NSArray<NSDictionary*> *dyldInfoExports = otoolArchitecture.exports;
+				MKExportsInfo *machoExportsInfo = macho.exportsInfo.value;
+				
+				if (machoExportsInfo == nil)
+					return; // TODO - Check if the image should have exports.
+				
+				NSArray *machoExports = machoExportsInfo.exports;
+				
+				it(@"should exist", ^{
+					expect(machoExports).toNot.beNil();
+				});
+				
+				it(@"should have the correct number of exports", ^{
+					expect(machoExports.count).to.equal(dyldInfoExports.count);
+				});
+				
+				it(@"should result in the correct exports", ^{
+					for (NSUInteger i=0; i<MIN(machoExports.count, dyldInfoExports.count); i++) {
+						MKExport *export = machoExports[i];
+						
+						expect(export.description).to.equal(dyldInfoExports[i]);
+					}
+				});
+			});
+			
             //----------------------------------------------------------------//
             describe(@"_objc", ^{
                 // Skip images that use legacy OBJC ABI.

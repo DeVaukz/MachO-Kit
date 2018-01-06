@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             Binary.h
+//|             MKMachO+Exports.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,45 +25,37 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#import "MKMachO+Exports.h"
+#import "MKInternal.h"
+
+#import "MKExportsInfo.h"
 
 //----------------------------------------------------------------------------//
-@interface Architecture : NSObject
+@implementation MKMachOImage (Exports)
 
-- (instancetype)initWithURL:(NSURL*)url offset:(uint32_t)offset name:(NSString*)name;
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	Exports Information
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) uint32_t offset;
-
-@property (nonatomic, readonly) NSDictionary *machHeader;
-@property (nonatomic, readonly) NSArray *loadCommands;
-@property (nonatomic, readonly) NSArray *dependentLibraries;
-@property (nonatomic, readonly) NSArray *rebaseCommands;
-@property (nonatomic, readonly) NSArray *bindCommands;
-@property (nonatomic, readonly) NSArray *weakBindCommands;
-@property (nonatomic, readonly) NSArray *lazybindCommands;
-@property (nonatomic, readonly) NSArray *fixupAddresses;
-@property (nonatomic, readonly) NSArray *bindings;
-@property (nonatomic, readonly) NSArray *weakBindings;
-@property (nonatomic, readonly) NSArray *lazyBindings;
-@property (nonatomic, readonly) NSArray *exports;
-@property (nonatomic, readonly) NSDictionary *objcInfo;
-
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface Binary : NSObject
-
-+ (instancetype)binaryAtURL:(NSURL*)url;
-
-- (instancetype)initWithURL:(NSURL*)url;
-
-@property (nonatomic, readonly) NSURL *url;
-
-@property (nonatomic, readonly) NSDictionary<NSString*, id> *fatHeader;
-@property (nonatomic, readonly) NSDictionary *fatHeader_verbose;
-@property (nonatomic, readonly) NSArray /*Architecture*/ *architectures;
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)exportsInfo
+{
+    if (_exportsInfo == nil)
+    {
+        NSError *exportsInfoError = nil;
+        
+        MKExportsInfo *exportsInfo = [[MKExportsInfo alloc] initWithParent:self error:&exportsInfoError];
+		if (exportsInfo)
+			_exportsInfo = [[MKOptional alloc] initWithValue:exportsInfo];
+		else if (exportsInfoError /* Only failed if we have an error */)
+			_exportsInfo = [[MKOptional alloc] initWithError:exportsInfoError];
+		else
+			_exportsInfo = [MKOptional new];
+		
+		[exportsInfo release];
+    }
+    
+    return _exportsInfo;
+}
 
 @end

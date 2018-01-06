@@ -171,6 +171,15 @@
     #import <MachOKit/MKBindDoBindAddAddressULEB.h>
     #import <MachOKit/MKBindDoBindAddAddressImmediateScaled.h>
     #import <MachOKit/MKBindDoBindULEBTimesSkippingULEB.h>
+#import <MachOKit/MKMachO+Exports.h>
+	#import <MachOKit/MKExportsInfo.h>
+    #import <MachOKit/MKExport.h>
+    #import <MachOKit/MKRegularExport.h>
+	#import <MachOKit/MKResolvedExport.h>
+    #import <MachOKit/MKReExport.h>
+	#import <MachOKit/MKExportTrieNode.h>
+	#import <MachOKit/MKExportTrieTerminalNode.h>
+	#import <MachOKit/MKExportTrieBranch.h>
     #import <MachOKit/MKSymbol.h>
 #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>

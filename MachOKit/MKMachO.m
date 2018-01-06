@@ -212,6 +212,8 @@
     [_symbolTable release];
     [_stringTable release];
     
+    [_exportsInfo release];
+    
     [_lazyBindingsInfo release];
     [_weakBindingsInfo release];
     [_bindingsInfo release];

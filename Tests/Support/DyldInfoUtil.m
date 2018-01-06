@@ -267,4 +267,24 @@
     return result;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseExports:(NSString*)input
+{
+	NSMutableArray *result = nil;
+	NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+	
+	for (NSString *line in lines) {
+		if (result == nil && [line rangeOfString:@"export information"].location == 0) {
+			result = [NSMutableArray array];
+			continue;
+		} else if ([line rangeOfString:@"0x"].location != NSNotFound ||
+				   [line rangeOfString:@"[re-export]"].location != NSNotFound)
+			[result addObject:line];
+		else if (result.count > 0)
+			break;
+	}
+	
+	return result;
+}
+
 @end
