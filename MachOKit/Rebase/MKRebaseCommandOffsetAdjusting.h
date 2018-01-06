@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKRebaseSetSegmentAndOffsetULEB.h
+//! @file       MKRebaseCommandOffsetAdjusting.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,26 +25,17 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKRebaseCommand.h>
-#import <MachOKit/MKRebaseCommandOffsetAdjusting.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKRebaseSetSegmentAndOffsetULEB : MKRebaseCommand <MKRebaseCommandOffsetAdjusting> {
-@package
-    uint64_t _offset;
-    size_t _offsetULEBSize;
-}
+//!	A protocol adopted by rebase commands that adjust the offset into the
+//! current segment for the next fixup.  For most of these commands, the offset
+//!	is not read directly from the encoded command but instead is derived from
+//!	the command data and the current pointer size.
+//
+@protocol MKRebaseCommandOffsetAdjusting
 
-//! The index of the segment where subsequent fixups will occur.
-@property (nonatomic, readonly) unsigned segmentIndex;
-
-//! The offset applied to the segment base address.
-@property (nonatomic, readonly) uint64_t offset;
+@property (nonatomic, readonly) uint64_t derivedOffset;
 
 @end
 

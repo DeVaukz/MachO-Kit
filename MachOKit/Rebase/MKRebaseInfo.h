@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! An array of rebasing commands.
 @property (nonatomic, readonly) NSArray<__kindof MKRebaseCommand*> *commands;
 
-//! An array of pointers to be fixed-up during rebasing
+//! An array of fixups derived from the rebasing commands.
 @property (nonatomic, readonly) NSArray<MKFixup*> *fixups;
 
 @end

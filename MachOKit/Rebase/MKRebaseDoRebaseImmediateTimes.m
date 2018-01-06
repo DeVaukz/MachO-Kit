@@ -27,9 +27,6 @@
 
 #import "MKRebaseDoRebaseImmediateTimes.h"
 #import "MKInternal.h"
-#import "MKDataModel.h"
-#import "MKMachO.h"
-#import "MKRebaseInfo.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKRebaseDoRebaseImmediateTimes
@@ -39,29 +36,30 @@
 { return REBASE_OPCODE_DO_REBASE_IMM_TIMES; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Rebasing
+#pragma mark - 	Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error
+- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
 {
-#pragma unused(type)
-#pragma unused(segment)
-    for (uint8_t i = 0; i < self.count; i++) {
-        rebase();
-        
-        mk_error_t err;
-        if ((err = mk_vm_offset_add(*offset, self.offset, offset))) {
-            MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, *offset, self.offset);
-            return NO;
-        }
-    }
-    
-    return YES;
+	for (uint8_t i = 0; i < self.count; i++) {
+		rebase();
+		
+		mk_error_t err;
+		if ((err = mk_vm_offset_add(rebaseContext->offset, self.derivedOffset, &rebaseContext->offset))) {
+			MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, rebaseContext->offset, self.derivedOffset);
+			return NO;
+		}
+	}
+	
+	// Reset
+	rebaseContext->command = nil;
+	
+	return YES;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Rebase Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -69,11 +67,11 @@
 { return _data & REBASE_IMMEDIATE_MASK; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)offset
+- (uint64_t)derivedOffset
 { return self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -90,18 +88,14 @@
     count.description = @"Rebase Count";
     count.options = MKNodeFieldOptionDisplayAsDetail;
     
-    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(offset)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-    ];
-    offset.description = @"Offset";
-    offset.options = MKNodeFieldOptionDisplayAsDetail;
-    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        count.build,
-        offset.build
+        count.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description

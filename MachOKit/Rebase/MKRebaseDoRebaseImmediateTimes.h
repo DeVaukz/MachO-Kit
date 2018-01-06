@@ -29,17 +29,15 @@
 @import Foundation;
 
 #import <MachOKit/MKRebaseCommand.h>
+#import <MachOKit/MKRebaseCommandOffsetAdjusting.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKRebaseDoRebaseImmediateTimes : MKRebaseCommand
+@interface MKRebaseDoRebaseImmediateTimes : MKRebaseCommand <MKRebaseCommandOffsetAdjusting>
 
 //! 
 @property (nonatomic, readonly) uint8_t count;
-
-//! The offset to apply to the segment base address after each rebase.
-@property (nonatomic, readonly) uint64_t offset;
 
 @end
 

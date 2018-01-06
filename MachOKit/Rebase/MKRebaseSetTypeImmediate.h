@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKRebaseSetTypeImmediate : MKRebaseCommand
 
-//! 
+//! The type of subsequent fixups.
 @property (nonatomic, readonly) uint8_t type;
 
 @end

@@ -28,7 +28,9 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKOptional.h>
+#import <MachOKit/MKAddressedNode.h>
+#import <MachOKit/MKRebaseContext.h>
 
 @class MKSegment;
 @class MKSection;
@@ -50,33 +52,32 @@ typedef NS_ENUM(uint8_t, MKRebaseType) {
 
 
 //----------------------------------------------------------------------------//
-@interface MKFixup : MKOffsetNode {
+@interface MKFixup : MKAddressedNode {
 @package
+	mk_vm_offset_t _nodeOffset;
     MKSegment *_segment;
-    MKSection *_section;
+    MKOptional<MKSection*> *_section;
     mk_vm_offset_t _offset;
-    mk_vm_size_t _nodeSize;
     MKRebaseType _type;
 }
 
 - (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_UNAVAILABLE;
-- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_UNAVAILABLE;
 
-- (nullable instancetype)initWithType:(uint8_t)type offset:(mk_vm_offset_t)offset segment:(unsigned)segmentIndex atCommand:(MKRebaseCommand*)command error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! The segment in which the fixup location resides.
+//! The segment where the fixup location resides.
 @property (nonatomic, readonly) MKSegment *segment;
 
-//! Offset from the start of the segment to the fixup location.
+//! The offset from the start of the segment to the fixup location.
 @property (nonatomic, readonly) mk_vm_offset_t offset;
 
-//! VM address of the fixup location.
+//! The VM address of the fixup location.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The section in which the location to be rebased resides, or \c nil if it
-//! does not reside in a known section.
-@property (nonatomic, readonly, nullable) MKSection *section;
+//! The section where the fixup location resides.
+@property (nonatomic, readonly) MKOptional<MKSection*> *section;
 
+//!	The fixup type.
 @property (nonatomic, readonly) MKRebaseType type;
 
 @end

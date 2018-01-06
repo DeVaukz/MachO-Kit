@@ -27,7 +27,6 @@
 
 #import "MKRebaseCommand.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
 #import "MKRebaseInfo.h"
 
 //----------------------------------------------------------------------------//
@@ -65,19 +64,17 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Creating a Rebase Command
+#pragma mark - 	Creating a Rebase Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKRebaseInfo*)parent error:(NSError**)error
 {
-    NSParameterAssert(parent.memoryMap);
     uint8_t opcode;
-    NSError *e = nil;
-    
-    opcode = [parent.memoryMap readByteAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&e];
-    if (e) {
-        MK_ERROR_OUT = e;
+    NSError *memoryMapError = nil;
+	
+    if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&opcode length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read opcode at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
         return nil;
     }
     
@@ -85,7 +82,7 @@
     
     Class commandClass = [self classForOpcode:opcode];
     if (commandClass == NULL) {
-        NSString *reason = [NSString stringWithFormat:@"No class for rebase opcode %" PRIi32 "", opcode];
+        NSString *reason = [NSString stringWithFormat:@"No class for rebase opcode [%" PRIu8 "].", opcode];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
     }
     
@@ -97,46 +94,47 @@
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
-    
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&_data length:sizeof(uint8_t) requireFull:YES error:error] < sizeof(uint8_t))
-    { [self release]; return nil; }
+	
+	NSError *memoryMapError = nil;
+	
+    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&_data length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read the rebase command immediate data."];
+		[self release]; return nil;
+	}
     
     uint8_t opcode = _data & REBASE_OPCODE_MASK;
     
     if (opcode != self.class.opcode) {
-        NSString *reason = [NSString stringWithFormat:@"Cannot initialize %@ with opcode %" PRIu8 ".", NSStringFromClass(self.class), opcode];
+        NSString *reason = [NSString stringWithFormat:@"Can not initialize %@ with opcode [%" PRIu8 "].", NSStringFromClass(self.class), opcode];
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-        
     }
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Rebasing
+#pragma mark - 	Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error
+- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
 {
 #pragma unused(rebase)
-#pragma unused(type)
-#pragma unused(segment)
-#pragma unused(offset)
+#pragma unused(rebaseContext)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-rebase:type:section:address must be called on a concrete subclass of MKRebaseCommand" userInfo:nil];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -rebase:withContext:error:." userInfo:nil];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - About This Rebase Command
+#pragma mark - 	About This Rebase Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint8_t)opcode
-{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"+opcode must be called on a concrete subclass of MKRebaseCommand" userInfo:nil]; }
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +opcode." userInfo:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Rebase Command Values
+#pragma mark - 	Rebase Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -144,12 +142,13 @@
 { return _data & REBASE_OPCODE_MASK; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+	// TODO - Derive these from the subclasses?
     MKNodeFieldBuilder *opcode = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(opcode)
         type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeByte.sharedInstance name:nil elements:@{

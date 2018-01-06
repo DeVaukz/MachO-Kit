@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKRebaseSetSegmentAndOffsetULEB.h
+//! @file       MKRebaseContext.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,27 +25,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKRebaseCommand.h>
-#import <MachOKit/MKRebaseCommandOffsetAdjusting.h>
-
-NS_ASSUME_NONNULL_BEGIN
+@class MKRebaseInfo;
+@class MKRebaseCommand;
 
 //----------------------------------------------------------------------------//
-@interface MKRebaseSetSegmentAndOffsetULEB : MKRebaseCommand <MKRebaseCommandOffsetAdjusting> {
-@package
-    uint64_t _offset;
-    size_t _offsetULEBSize;
-}
-
-//! The index of the segment where subsequent fixups will occur.
-@property (nonatomic, readonly) unsigned segmentIndex;
-
-//! The offset applied to the segment base address.
-@property (nonatomic, readonly) uint64_t offset;
-
-@end
-
-NS_ASSUME_NONNULL_END
+struct MKRebaseContext
+{
+	mk_vm_offset_t actionStartOffset;
+	mk_vm_size_t actionSize;
+	uint8_t type;
+	unsigned segmentIndex;
+	mk_vm_offset_t offset;
+#if __has_feature(objc_arc)
+	void *command;
+	void *info;
+#else
+	MKRebaseCommand *command;
+	MKRebaseInfo *info;
+#endif
+};

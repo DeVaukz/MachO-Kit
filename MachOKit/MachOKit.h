@@ -137,8 +137,10 @@
     #import <MachOKit/MKIndirectPointersSection.h>
 #import <MachOKit/MKMachO+Rebase.h>
     #import <MachOKit/MKRebaseInfo.h>
+	#import <MachOKit/MKRebaseContext.h>
     #import <MachOKit/MKFixup.h>
     #import <MachOKit/MKRebaseCommand.h>
+	#import <MachOKit/MKRebaseCommandOffsetAdjusting.h>
     #import <MachOKit/MKRebaseDone.h>
     #import <MachOKit/MKRebaseSetTypeImmediate.h>
     #import <MachOKit/MKRebaseSetSegmentAndOffsetULEB.h>

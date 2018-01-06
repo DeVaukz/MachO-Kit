@@ -27,9 +27,6 @@
 
 #import "MKRebaseAddAddressImmediateScaled.h"
 #import "MKInternal.h"
-#import "MKDataModel.h"
-#import "MKMachO.h"
-#import "MKRebaseInfo.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKRebaseAddAddressImmediateScaled
@@ -39,38 +36,36 @@
 { return REBASE_OPCODE_ADD_ADDR_IMM_SCALED; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Rebasing
+#pragma mark - 	Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error
+- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
 {
 #pragma unused(rebase)
-#pragma unused(type)
-#pragma unused(segment)
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(*offset, self.offset, offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, *offset, self.offset);
-        return NO;
-    }
-    
-    return YES;
+	mk_error_t err;
+	if ((err = mk_vm_offset_add(rebaseContext->offset, self.derivedOffset, &rebaseContext->offset))) {
+		MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, rebaseContext->offset, self.derivedOffset);
+		return NO;
+	}
+	
+	return YES;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Rebase Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)immediate
+- (uint8_t)scale
 { return _data & REBASE_IMMEDIATE_MASK; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)offset
-{ return self.immediate * self.dataModel.pointerSize; }
+- (uint64_t)derivedOffset
+{ return self.scale * self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -80,28 +75,24 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    MKNodeFieldBuilder *immediate = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(immediate)
+    MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(scale)
         type:MKNodeFieldTypeUnsignedByte.sharedInstance
     ];
-    immediate.description = @"Immediate";
-    immediate.options = MKNodeFieldOptionDisplayAsDetail;
-    
-    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(offset)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-    ];
-    offset.description = @"Offset";
-    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    scale.description = @"Scale";
+    scale.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        immediate.build,
-        offset.build
+        scale.build
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"REBASE_OPCODE_ADD_ADDR_IMM_SCALED(0x%" PRIX64 ")", self.offset]; }
+{ return [NSString stringWithFormat:@"REBASE_OPCODE_ADD_ADDR_IMM_SCALED(0x%" PRIX64 ")", self.derivedOffset]; }
 
 @end

@@ -27,10 +27,7 @@
 
 #import "MKRebaseDoRebaseAddAddressULEB.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
-#import "MKRebaseInfo.h"
-
-#include "_mach_trie.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKRebaseDoRebaseAddAddressULEB
@@ -45,64 +42,57 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    __block BOOL success = NO;
-    
-    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (address == 0x0) { *error = e; return; }
-        
-        mk_error_t err;
-        uint8_t *start = (uint8_t*)address;
-        uint8_t *end = (uint8_t*)(address + length);
-        
-        if ((err = _mk_mach_trie_copy_uleb128(start, end, &_offset, &_size))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read uleb128."];
-            return;
-        }
-        
-        success = YES;
-    }];
-    
-    if (!success)
-        return nil;
+	// Read the offset ULEB
+	{
+		NSError *ULEBError = nil;
+		
+		if (!MKULEBRead(self, 1, &_offset, &_offsetULEBSize, &ULEBError)) {
+			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:ULEBError description:@"Could not read offset."];
+			[self release]; return nil;
+		}
+	}
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Rebasing
+#pragma mark - 	Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error
+- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
 {
-#pragma unused(type)
-#pragma unused(segment)
-    rebase();
-    
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(*offset, self.offset, offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, *offset, self.offset);
-        return NO;
-    }
-    
-    return YES;
+	rebase();
+	
+	mk_error_t err;
+	if ((err = mk_vm_offset_add(rebaseContext->offset, self.derivedOffset, &rebaseContext->offset))) {
+		MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, rebaseContext->offset, self.derivedOffset);
+		return NO;
+	}
+	
+	// Reset
+	rebaseContext->command = nil;
+	
+	return YES;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Rebase Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize offset = _offset;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)offset
-{ return _offset + self.dataModel.pointerSize; }
+- (uint64_t)derivedOffset
+{ return self.offset + self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _size + 1; }
+{ return 1 + _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -111,7 +101,7 @@
         builderWithProperty:MK_PROPERTY(offset)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
         offset:1
-        size:_size
+        size:_offsetULEBSize
     ];
     offset.description = @"Offset";
     offset.options = MKNodeFieldOptionDisplayAsDetail;
@@ -121,10 +111,14 @@
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-    return [NSString stringWithFormat:@"REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB(%" PRIu64 ")", self.offset];
+    return [NSString stringWithFormat:@"REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB(%" PRIu64 ")", self.derivedOffset];
 }
 
 @end

@@ -27,7 +27,6 @@
 
 #import "MKFixup.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
 #import "MKRebaseInfo.h"
 #import "MKRebaseCommand.h"
 #import "MKMachO+Segments.h"
@@ -37,45 +36,39 @@
 @implementation MKFixup
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (nullable instancetype)initWithType:(uint8_t)type offset:(mk_vm_offset_t)offset segment:(unsigned)segmentIndex atCommand:(MKRebaseCommand*)command error:(NSError**)error
+- (instancetype)initWithContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
 {
-    self = [super initWithOffset:command.nodeOffset fromParent:(MKBackedNode*)command.parent error:error];
+	NSParameterAssert(rebaseContext->info != nil);
+	
+    self = [super initWithParent:rebaseContext->info error:error];
     if (self == nil) return nil;
-    
-    _type = type;
-    _offset = offset;
-    _nodeSize = command.nodeSize;
+	
+	_nodeOffset = rebaseContext->actionStartOffset;
+	
+    _type = rebaseContext->type;
+    _offset = rebaseContext->offset;
     
     // Lookup the segment
-    _segment = [self.macho.segments[@(segmentIndex)] retain];
+    _segment = [self.macho.segments[@(rebaseContext->segmentIndex)] retain];
     if (_segment == nil) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index %u.", segmentIndex];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", rebaseContext->segmentIndex];
         [self release]; return nil;
     }
     
-    // Verify that the offset is within section
+    // Verify that the fixup location is within the segment
     mk_error_t err;
     mk_vm_address_t segmentAddress = _segment.vmAddress;
     
     mk_vm_range_t segmentRange = mk_vm_range_make(segmentAddress, _segment.vmSize);
     if ((err = mk_vm_range_contains_address(segmentRange, _offset, segmentAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"Section at index %u does not contain the provided offset (%" MK_VM_PRIiOFFSET ").", segmentIndex];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"The offset [%" MK_VM_PRIuOFFSET "] is not within the %@ segement (index %u).", rebaseContext->offset, _segment, rebaseContext->segmentIndex];
         [self release]; return nil;
     }
     
     // Try to find the section
-    _section = [_segment childNodeOccupyingVMAddress:self.address targetClass:MKSection.class].value;
+    _section = (typeof(_section))[[_segment childNodeOccupyingVMAddress:self.address targetClass:MKSection.class] retain];
     
     return self;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{
-#pragma unused(offset)
-#pragma unused(parent)
-#pragma unused(error)
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Unavailable" userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -83,7 +76,7 @@
 {
 #pragma unused(parent)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Unavailable" userInfo:nil];
+	@throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-initWithParent:error: unavailable." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -96,7 +89,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize segment = _segment;
@@ -112,10 +105,15 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize nodeSize = _nodeSize;
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
+{
+	// SAFE - _nodeOffset comes from the rebase commands, which are within the MKRebaseInfo.
+	return [(MKBackedNode*)self.parent nodeAddress:type] + _nodeOffset;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -129,7 +127,7 @@
     
     MKNodeFieldBuilder *section = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(section)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]
+        type:nil
     ];
     section.description = @"Section";
     section.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
@@ -160,6 +158,10 @@
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
@@ -178,7 +180,7 @@
             break;
     }
     
-    return [NSString stringWithFormat:@"%@ %@ 0x%.8" MK_VM_PRIxADDR " %@", self.segment.name, self.section.name, self.address, type];
+    return [NSString stringWithFormat:@"%@ %@ 0x%.8" MK_VM_PRIxADDR " %@", self.segment.name, self.section.value.name, self.address, type];
 }
 
 @end

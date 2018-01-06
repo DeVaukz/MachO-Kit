@@ -34,23 +34,25 @@
 @implementation MKMachOImage (Rebase)
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Rebasing Information
+#pragma mark - 	Rebasing Information
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional<MKRebaseInfo*>*)rebaseInfo
+- (MKOptional*)rebaseInfo
 {
     if (_rebaseInfo == nil)
     {
-        NSError *e = nil;
+        NSError *rebaseInfoError = nil;
         
-        MKRebaseInfo *rebaseInfo = [[MKRebaseInfo alloc] initWithParent:self error:&e];
+        MKRebaseInfo *rebaseInfo = [[MKRebaseInfo alloc] initWithParent:self error:&rebaseInfoError];
         if (rebaseInfo)
             _rebaseInfo = [[MKOptional alloc] initWithValue:rebaseInfo];
-        else if (e /* Only failed if we have an error */)
-            _rebaseInfo = [[MKOptional alloc] initWithError:e];
+        else if (rebaseInfoError /* Only failed if we have an error */)
+            _rebaseInfo = [[MKOptional alloc] initWithError:rebaseInfoError];
         else
             _rebaseInfo = [MKOptional new];
+		
+		[rebaseInfo release];
     }
     
     return _rebaseInfo;

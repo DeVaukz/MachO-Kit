@@ -52,8 +52,9 @@
     
     // A size of 0 is strange but valid.
     if (self.nodeSize == 0) {
-        // Still need to assign a value to the commands array.
+        // Still need to assign a value to the commands and fixups array.
         _commands = [@[] retain];
+		_fixups = [@[] retain];
         return self;
     }
     
@@ -65,11 +66,11 @@
         
         while (offset < self.nodeSize)
         {
-            NSError *e;
+            NSError *rebaseCommandError = nil;
             
-            MKRebaseCommand *command = [MKRebaseCommand commandAtOffset:offset fromParent:self error:&e];
+            MKRebaseCommand *command = [MKRebaseCommand commandAtOffset:offset fromParent:self error:&rebaseCommandError];
             if (command == nil) {
-                MK_PUSH_UNDERLYING_WARNING(commands, e, @"Could not load rebase command at offset %" MK_VM_PRIiOFFSET ".", offset);
+				MK_PUSH_WARNING_WITH_ERROR(commands, MK_EINTERNAL_ERROR, rebaseCommandError, @"Could not parse rebase command at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
@@ -94,14 +95,12 @@
         NSMutableArray<MKFixup*> *fixups = [[NSMutableArray alloc] initWithCapacity:size/3];
         
         __block BOOL keepGoing = YES;
-        __block NSError *e = nil;
-        __block MKRebaseCommand *currentCommand = nil;
-        __block uint8_t type = UINT8_MAX;
-        __block unsigned segmentIndex = UINT_MAX;
-        __block mk_vm_offset_t offset = MK_VM_OFFSET_INVALID;
-        
+        __block NSError *rebaseError = nil;
+		// Initialize the rebase context to zero in order to match dyld's behavior.
+		__block struct MKRebaseContext context = { 0, .info = self };
+		
         void (^doRebase)(void) = ^{
-            MKFixup *fixup = [[MKFixup alloc] initWithType:type offset:offset segment:segmentIndex atCommand:currentCommand error:&e];
+			MKFixup *fixup = [[MKFixup alloc] initWithContext:&context error:&rebaseError];
             
             if (fixup)
                 [fixups addObject:fixup];
@@ -112,16 +111,19 @@
         };
         
         for (MKRebaseCommand *command in _commands) {
-            currentCommand = command;
-            keepGoing &= [command rebase:doRebase type:&type segment:&segmentIndex offset:&offset error:&e];
+			if (context.command == nil) {
+				context.actionStartOffset = command.nodeOffset;
+				context.actionSize = 0;
+			}
+			context.actionSize += command.nodeSize;
+			context.command = command;
+			
+			keepGoing &= [command rebase:doRebase withContext:&context error:&rebaseError];
             
-            if (keepGoing)
-                continue;
-            else if (e) {
-                MK_PUSH_UNDERLYING_WARNING(fixups, e, @"Rebasing failed at command: %@", currentCommand);
-                break;
-            } else {
-                MK_PUSH_WARNING(fixups, MK_EINVALID_DATA, @"Rebasing failed at command: %@", currentCommand);
+            if (keepGoing == NO) {
+				if (rebaseError) {
+					MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, rebaseError, @"Fixup list generation failed at command: %@.", context.command.nodeDescription);
+				}
                 break;
             }
         }
@@ -136,12 +138,12 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error
 {
-    NSParameterAssert(image);
+    NSParameterAssert(image != nil);
     
     // Find LC_DYLD_INFO
     MKLCDyldInfo *dyldInfoLoadCommand = nil;
     {
-        NSMutableArray *commands = [[NSMutableArray alloc] initWithCapacity:1];
+        NSMutableArray<MKLCDyldInfo*> *commands = [[NSMutableArray alloc] initWithCapacity:1];
         
         NSArray *dyldInfoCommands = [image loadCommandsOfType:LC_DYLD_INFO];
         if (dyldInfoCommands) [commands addObjectsFromArray:dyldInfoCommands];
@@ -150,10 +152,11 @@
         if (dyldInfoOnlyCommands) [commands addObjectsFromArray:dyldInfoOnlyCommands];
         
         if (commands.count > 1)
-            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@", commands.lastObject);
+            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@.", commands.lastObject);
         
         if (commands.count == 0) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image load commands does not contain LC_DYLD_INFO."];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not contain a LC_DYLD_INFO load command."];
+			[commands release];
             [self release]; return nil;
         }
         
@@ -178,7 +181,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -205,7 +208,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  NSObject
+#pragma mark -	NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

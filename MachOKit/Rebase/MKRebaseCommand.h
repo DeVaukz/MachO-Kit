@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKRebaseContext.h>
 
 @class MKRebaseInfo;
 
@@ -59,8 +60,8 @@ NS_ASSUME_NONNULL_BEGIN
 //! Subclasses should return a non-zero integer if they support parsing the
 //! command.  The subclass that returns the largest value will be instantiated
 //! with the command data.  \ref MKRebaseCommand subclasses in Mach-O Kit
-//! return \c 10 if they can parse the provided load command.  You can
-//! substitute your own subclass by returning a larger value.
+//!	return a value no larger than \c 100.  You can substitute your own subclass
+//!	by returning a larger value.
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -78,23 +79,27 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       About This Rebase Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Returns the rebase command opcode that this class parses.
-//! Subclasses must implement this method.
-+ (uint8_t)opcode;
+//! The opcode of the rebase command that this class parses.
+//!
+//! Subclasses must implement the getter for this property.
+@property (class, nonatomic, readonly) uint8_t opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Rebasing
 //! @name       Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-- (BOOL)rebase:(void (^)(void))rebase type:(uint8_t*)type segment:(unsigned*)segment offset:(mk_vm_offset_t*)offset error:(NSError**)error;
+- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Rebase Command Values
 //! @name       Rebase Command Values
+//!
+//! @brief      These values are extracted directly from the Mach-O
+//!             rebase command without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The opcode.
+//! The rebase command opcode.
 @property (nonatomic, readonly) uint8_t opcode;
 
 @end
