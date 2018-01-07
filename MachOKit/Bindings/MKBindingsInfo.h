@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! An array of bind commands.
 @property (nonatomic, readonly) NSArray<__kindof MKBindCommand*> *commands;
 
-//! An array of bind actions.
+//! An array of bind actions derived from the bind commands.
 @property (nonatomic, readonly) NSArray<__kindof MKBindAction*> *actions;
 
 @end

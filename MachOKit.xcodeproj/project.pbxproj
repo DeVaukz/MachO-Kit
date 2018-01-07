@@ -262,6 +262,7 @@
 		D061B16E1FF75CD4004A3047 /* MKExport.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B16C1FF75CD4004A3047 /* MKExport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D061B16F1FF75CD4004A3047 /* MKExport.m in Sources */ = {isa = PBXBuildFile; fileRef = D061B16D1FF75CD4004A3047 /* MKExport.m */; };
 		D061B1711FF8502B004A3047 /* MKRebaseCommandOffsetAdjusting.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1701FF8502B004A3047 /* MKRebaseCommandOffsetAdjusting.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D061B1731FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1721FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D061B1761FF8BD7C004A3047 /* MKAddressedNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1741FF8BD7C004A3047 /* MKAddressedNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D061B1771FF8BD7C004A3047 /* MKAddressedNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D061B1751FF8BD7C004A3047 /* MKAddressedNode.m */; };
 		D061B1931FFAC996004A3047 /* MKMemoryMap+Pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1911FFAC996004A3047 /* MKMemoryMap+Pointer.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1104,6 +1105,7 @@
 		D061B16C1FF75CD4004A3047 /* MKExport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKExport.h; sourceTree = "<group>"; };
 		D061B16D1FF75CD4004A3047 /* MKExport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKExport.m; sourceTree = "<group>"; };
 		D061B1701FF8502B004A3047 /* MKRebaseCommandOffsetAdjusting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKRebaseCommandOffsetAdjusting.h; sourceTree = "<group>"; };
+		D061B1721FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindCommandOffsetAdjusting.h; sourceTree = "<group>"; };
 		D061B1741FF8BD7C004A3047 /* MKAddressedNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKAddressedNode.h; sourceTree = "<group>"; };
 		D061B1751FF8BD7C004A3047 /* MKAddressedNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKAddressedNode.m; sourceTree = "<group>"; };
 		D061B1911FFAC996004A3047 /* MKMemoryMap+Pointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKMemoryMap+Pointer.h"; sourceTree = "<group>"; };
@@ -1708,6 +1710,7 @@
 				D0E2D1E21CA776AB00CC2DF8 /* MKBindAction.m */,
 				D01C74EB1CA7360600648CA6 /* MKBindCommand.h */,
 				D01C74EC1CA7360600648CA6 /* MKBindCommand.m */,
+				D061B1721FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h */,
 				D01C74EF1CA7388D00648CA6 /* MKBindDone.h */,
 				D01C74F01CA7388D00648CA6 /* MKBindDone.m */,
 				D01C74F31CA7398200648CA6 /* MKBindSetDylibOrdinalImmediate.h */,
@@ -2659,6 +2662,7 @@
 				D0539BB01A23D36B00D3A5F0 /* MKLCFunctionStarts.h in Headers */,
 				D09145921E5121DD00959648 /* MKHexNumberFormatter.h in Headers */,
 				D010F70C1CB86EF0004025F5 /* MKObjCProtocolListSection.h in Headers */,
+				D061B1731FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h in Headers */,
 				D0B9F6CA1E58076300D0B35A /* MKInternal.h in Headers */,
 				D030302C1A23BF3800288B3E /* MKLCSubClient.h in Headers */,
 				D061B16A1FF71AAC004A3047 /* MKExportTrieBranch.h in Headers */,

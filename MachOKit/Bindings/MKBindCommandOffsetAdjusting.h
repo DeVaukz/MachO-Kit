@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachO+Bindings.h
+//! @file       MKBindCommandOffsetAdjusting.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,37 +25,19 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKMachO.h>
-
-@class MKBindingsInfo;
-@class MKWeakBindingsInfo;
-@class MKLazyBindingsInfo;
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKMachOImage (Bindings)
+//!	A protocol adopted by bind commands that adjust the offset into the
+//! current segment for the next bind action.  For many of these commands, the
+//!	offset is not read directly from the encoded command but instead is derived
+//!	from the command data and the current pointer size.
+//
+@protocol MKBindCommandOffsetAdjusting
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Bindings Information
-//! @name       Bindings Information
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//! The bindings information.  The returned optional may contain a \c nil
-//! value and a \c nil error if the image has no bindings information.
-@property (nonatomic, readonly) MKOptional<MKBindingsInfo*> *bindingsInfo;
-
-//! The weak bindings information.  The returned optional may contain a \c nil
-//! value and a \c nil error if the image has no weak bindings information.
-@property (nonatomic, readonly) MKOptional<MKWeakBindingsInfo*> *weakBindingsInfo;
-
-//! The lazy bindings information.  The returned optional may contain a \c nil
-//! value and a \c nil error if the image has no lazy bindings information.
-@property (nonatomic, readonly) MKOptional<MKLazyBindingsInfo*> *lazyBindingsInfo;
+@property (nonatomic, readonly) uint64_t derivedOffset;
 
 @end
 
 NS_ASSUME_NONNULL_END
+

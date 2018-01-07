@@ -34,9 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKBindSetAddendSLEB : MKBindCommand  {
-    @package
+@package
     int64_t _addend;
-    size_t _size;
+    size_t _addendSLEBSize;
 }
 
 //!

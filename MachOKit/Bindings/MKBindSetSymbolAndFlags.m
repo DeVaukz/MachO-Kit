@@ -26,9 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindSetSymbolAndFlags.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-#import "MKBindingsInfo.h"
+#import "MKInternal.h"
 #import "MKCString.h"
 
 //----------------------------------------------------------------------------//
@@ -44,9 +42,15 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    _symbolName = [[MKCString alloc] initWithOffset:(offset + 1) fromParent:parent error:error];
-    if (_symbolName == nil) {
-        [self release]; return nil;
+    // Read the Symbol name
+    {
+        NSError *symbolNameError = nil;
+        
+        _symbolName = [[MKCString alloc] initWithOffset:(offset + 1) fromParent:parent error:&symbolNameError];
+        if (_symbolName == nil) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:symbolNameError description:@"Could not read symbol name."];
+            [self release]; return nil;
+        }
     }
     
     return self;
@@ -61,7 +65,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -71,6 +75,7 @@
 #pragma unused(error)
     bindContext->symbolName = self.symbolName.string;
     bindContext->symbolFlags = self.symbolFlags;
+    
     return YES;
 }
 
@@ -83,7 +88,7 @@
 { return [self bind:binder withContext:bindContext error:error]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize symbolName = _symbolName;
@@ -93,12 +98,12 @@
 { return _data & BIND_IMMEDIATE_MASK; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _symbolName.nodeSize + 1; }
+{ return 1 + _symbolName.nodeSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -106,8 +111,8 @@
     MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(symbolFlags)
         type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
-              @((uint8_t)BIND_SYMBOL_FLAGS_WEAK_IMPORT): @"BIND_SYMBOL_FLAGS_WEAK_IMPORT",
-              @((uint8_t)BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION): @"BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION"
+            @((uint8_t)BIND_SYMBOL_FLAGS_WEAK_IMPORT): @"BIND_SYMBOL_FLAGS_WEAK_IMPORT",
+            @((uint8_t)BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION): @"BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION"
         }]
     ];
     symbolFlags.description = @"Symbol Flags";
@@ -127,6 +132,10 @@
         symbolName.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description

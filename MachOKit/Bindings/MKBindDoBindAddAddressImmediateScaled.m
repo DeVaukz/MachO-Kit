@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindDoBindAddAddressImmediateScaled.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBindDoBindAddAddressImmediateScaled
@@ -36,7 +36,7 @@
 { return BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -45,8 +45,8 @@
     binder();
     
     mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->offset, self.offset, &bindContext->offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.offset);
+    if ((err = mk_vm_offset_add(bindContext->offset, self.derivedOffset, &bindContext->offset))) {
+        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.derivedOffset);
         return NO;
     }
     
@@ -73,19 +73,19 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)immediate
+- (uint8_t)scale
 { return _data & REBASE_IMMEDIATE_MASK; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)offset
-{ return (self.immediate * self.dataModel.pointerSize) + self.dataModel.pointerSize; }
+- (uint64_t)derivedOffset
+{ return (self.scale * self.dataModel.pointerSize) + self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -95,20 +95,24 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(offset)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+    MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(scale)
+        type:MKNodeFieldTypeUnsignedByte.sharedInstance
     ];
-    offset.description = @"Offset";
-    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    scale.description = @"Scale";
+    scale.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        offset.build
+        scale.build
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED(0x%.8" PRIX64 ")", self.offset]; }
+{ return [NSString stringWithFormat:@"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED(0x%.8" PRIX64 ")", self.derivedOffset]; }
 
 @end

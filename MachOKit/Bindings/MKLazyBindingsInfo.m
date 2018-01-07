@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLazyBindingsInfo.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKBindCommand.h"
@@ -40,7 +40,7 @@
 { return [self initWithSize:dyldInfo.lazy_bind_size offset:dyldInfo.lazy_bind_off inImage:image error:error]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Parsing
+#pragma mark -  Parsing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -59,20 +59,18 @@
         NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/3];
         
         __block BOOL keepGoing = YES;
-        __block NSError *e = nil;
+        __block NSError *bindingError = nil;
         __block struct MKBindContext context = { 0, .type = BIND_TYPE_POINTER, .info = self };
         
         void (^doBind)(void) = ^{
-            MKBindAction *action = [[MKLazyBindAction alloc] initWithContext:&context error:&e];
+            MKBindAction *action = [[MKLazyBindAction alloc] initWithContext:&context error:&bindingError];
             
-            if (actions)
+            if (action)
                 [actions addObject:action];
-            else {
-                MK_PUSH_WARNING(fixups, MK_EINVALID_DATA, @"Binding failed at command: %@", context.command);
+            else
                 keepGoing = NO;
-            }
             
-            // TODO - Should we completely reset the context?
+            // TODO - Should we reset the context?
             
             [action release];
         };
@@ -85,15 +83,15 @@
             context.actionSize += command.nodeSize;
             context.command = command;
             
-            keepGoing &= [command lazyBind:doBind withContext:&context error:&e];
+            keepGoing &= [command lazyBind:doBind withContext:&context error:&bindingError];
             
-            if (keepGoing)
-                continue;
-            else if (e) {
-                MK_PUSH_UNDERLYING_WARNING(fixups, e, @"Lazy binding failed at command: %@", context.command);
+            if (keepGoing == NO) {
+                if (bindingError) {
+                    MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Lazy binding actions list generation failed at command: %@.", context.command.nodeDescription);
+                }
+                
                 break;
-            } else
-                break;
+            }
         }
         
         _actions = [actions copy];

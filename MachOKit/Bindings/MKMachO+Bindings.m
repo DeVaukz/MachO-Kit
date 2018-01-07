@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKMachO+Bindings.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 
 #import "MKBindingsInfo.h"
 #import "MKWeakBindingsInfo.h"
@@ -35,46 +35,68 @@
 //----------------------------------------------------------------------------//
 @implementation MKMachOImage (Bindings)
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Bindings Information
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKBindingsInfo*)bindingsInfo
+- (MKOptional*)bindingsInfo
 {
     if (_bindingsInfo == nil)
     {
-        NSError *e = nil;
+        NSError *bindingsInfoError = nil;
         
-        _bindingsInfo = [[MKBindingsInfo alloc] initWithParent:self error:&e];
-        if (_bindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(bindingsInfo, e, @"Failed to load bindings information.");
+        MKBindingsInfo *bindingsInfo = [[MKBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
+        if (bindingsInfo)
+            _bindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+        else if (bindingsInfoError /* Only failed if we have an error */)
+            _bindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+        else
+            _bindingsInfo = [MKOptional new];
+        
+        [bindingsInfo release];
     }
     
     return _bindingsInfo;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKWeakBindingsInfo*)weakBindingsInfo
+- (MKOptional*)weakBindingsInfo
 {
     if (_weakBindingsInfo == nil)
     {
-        NSError *e = nil;
+        NSError *bindingsInfoError = nil;
         
-        _weakBindingsInfo = [[MKWeakBindingsInfo alloc] initWithParent:self error:&e];
-        if (_weakBindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(weakBindingsInfo, e, @"Failed to load weak bindings information.");
+        MKWeakBindingsInfo *bindingsInfo = [[MKWeakBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
+        if (bindingsInfo)
+            _weakBindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+        else if (bindingsInfoError /* Only failed if we have an error */)
+            _weakBindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+        else
+            _weakBindingsInfo = [MKOptional new];
+        
+        [bindingsInfo release];
     }
     
     return _weakBindingsInfo;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKLazyBindingsInfo*)lazyBindingsInfo
+- (MKOptional*)lazyBindingsInfo
 {
     if (_lazyBindingsInfo == nil)
     {
-        NSError *e = nil;
+        NSError *bindingsInfoError = nil;
         
-        _lazyBindingsInfo = [[MKLazyBindingsInfo alloc] initWithParent:self error:&e];
-        if (_lazyBindingsInfo == nil && e /* Only failed if we have an error */)
-            MK_PUSH_UNDERLYING_WARNING(lazyBindingsInfo, e, @"Failed to load lazy bindings information.");
+        MKLazyBindingsInfo *bindingsInfo = [[MKLazyBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
+        if (bindingsInfo)
+            _lazyBindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+        else if (bindingsInfoError /* Only failed if we have an error */)
+            _lazyBindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+        else
+            _lazyBindingsInfo = [MKOptional new];
+        
+        [bindingsInfo release];
     }
     
     return _lazyBindingsInfo;

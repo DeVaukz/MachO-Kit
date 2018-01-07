@@ -29,16 +29,12 @@
 @import Foundation;
 
 #import <MachOKit/MKBindCommand.h>
+#import <MachOKit/MKBindCommandOffsetAdjusting.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKBindDoBind : MKBindCommand
-
-//! The offset applied to the segment base address after invoking the bind
-//! action.
-@property (nonatomic, readonly) uint64_t offset;
-
+@interface MKBindDoBind : MKBindCommand <MKBindCommandOffsetAdjusting>
 @end
 
 NS_ASSUME_NONNULL_END

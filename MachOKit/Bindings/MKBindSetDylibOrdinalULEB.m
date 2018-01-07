@@ -26,11 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindSetDylibOrdinalULEB.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-#import "MKBindingsInfo.h"
-
-#include "_mach_trie.h"
+#import "MKInternal.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBindSetDylibOrdinalULEB
@@ -44,32 +41,22 @@
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
-    
-    __block BOOL success = NO;
-    
-    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (address == 0x0) { *error = e; return; }
-        
-        mk_error_t err;
-        uint8_t *start = (uint8_t*)address;
-        uint8_t *end = (uint8_t*)(address + length);
-        
-        if ((err = _mk_mach_trie_copy_uleb128(start, end, (uint64_t*)&_ordinal, &_size))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read uleb128."];
-            return;
-        }
-        
-        success = YES;
-    }];
-    
-    if (!success)
-        return nil;
+	
+	// Read the ordinal ULEB
+	{
+		NSError *ULEBError = nil;
+		
+		if (!MKULEBRead(self, 1, (uint64_t*)&_ordinal, &_ordinalULEBSize, &ULEBError)) {
+			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:ULEBError description:@"Could not read ordinal."];
+			[self release]; return nil;
+		}
+	}
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark - 	Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -78,6 +65,7 @@
 #pragma unused(binder)
 #pragma unused(error)
     bindContext->libraryOrdinal = self.ordinal;
+	
     return YES;
 }
 
@@ -98,18 +86,18 @@
 { return [self bind:binder withContext:bindContext error:error]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark - 	Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize ordinal = _ordinal;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark - 	MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _size + 1; }
+{ return 1 + _ordinalULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -117,8 +105,8 @@
     MKNodeFieldBuilder *ordinal = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(ordinal)
         type:MKNodeFieldTypeQuadWord.sharedInstance
-        offset: 1
-        size:_size
+        offset:1
+        size:_ordinalULEBSize
     ];
     ordinal.description = @"Dylib Ordinal";
     ordinal.options = MKNodeFieldOptionDisplayAsDetail;
@@ -127,6 +115,10 @@
         ordinal.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark - 	NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description

@@ -26,8 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindAction.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
+#import "MKInternal.h"
 #import "MKBindingsInfo.h"
 #import "MKBindCommand.h"
 #import "MKDependentLibrary.h"
@@ -42,28 +41,36 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    self = [super initWithOffset:bindContext->actionStartOffset fromParent:bindContext->info error:error];
+	NSParameterAssert(bindContext->info != nil);
+	
+	self = [super initWithParent:bindContext->info error:error];
     if (self == nil) return nil;
-    
-    _nodeSize = bindContext->actionSize;
-    
-    _libraryOrdinal = bindContext->libraryOrdinal;
-    if (_libraryOrdinal > 0) {
+	
+	_nodeOffset = bindContext->actionStartOffset;
+	
+	_type = bindContext->type;
+	
+    _sourceLibraryOrdinal = bindContext->libraryOrdinal;
+    if (_sourceLibraryOrdinal > 0) {
+		NSArray *libraries = self.macho.dependentLibraries;
+		MKOptional<MKDependentLibrary*> *library = nil;
+		
         // Lookup the library
-        if ((NSUInteger)_libraryOrdinal <= self.macho.dependentLibraries.count)
-            _sourceLibrary = [self.macho.dependentLibraries[(NSUInteger)(_libraryOrdinal - 1)].value retain];
-        if (_sourceLibrary == nil)
-            MK_PUSH_WARNING(sourceLibrary, MK_ENOT_FOUND, @"Could not locate library for ordinal %li", _libraryOrdinal);
-    } else if (_libraryOrdinal != MKLibraryOrdinalSelf &&
-               _libraryOrdinal != MKLibraryOrdinalMainExecutable &&
-               _libraryOrdinal != MKLibraryOrdinalFlatLookup) {
-        // This is a malformed Mach-O (according to dyld).
-        // But we don't care.
-        MK_PUSH_WARNING(sourceLibrary, MK_EOUT_OF_RANGE, @"Unknown special library ordinal %li", _libraryOrdinal);
+        if ((NSUInteger)_sourceLibraryOrdinal <= libraries.count)
+            library = libraries[(NSUInteger)(_sourceLibraryOrdinal - 1)];
+		
+        if (library.value)
+			_sourceLibrary = [library.value retain];
+		else
+            MK_PUSH_WARNING_WITH_ERROR(sourceLibrary, MK_ENOT_FOUND, library.error, @"Could not locate library for ordinal [%" PRIi64 "].", _sourceLibraryOrdinal);
+		
+    } else if (_sourceLibraryOrdinal != MKLibraryOrdinalSelf &&
+               _sourceLibraryOrdinal != MKLibraryOrdinalMainExecutable &&
+               _sourceLibraryOrdinal != MKLibraryOrdinalFlatLookup) {
+        // This is a malformed Mach-O (according to dyld).  But we don't care.
+        MK_PUSH_WARNING(sourceLibrary, MK_EOUT_OF_RANGE, @"Unknown special library ordinal [%" PRIi64 "].", _sourceLibraryOrdinal);
     }
-    
-    _type = bindContext->type;
-    
+	
     _symbolName = [bindContext->symbolName retain];
     _symbolOptions = bindContext->symbolFlags;
     
@@ -71,10 +78,9 @@
     _addend = bindContext->addend;
     
     // Lookup the segment
-    if (bindContext->segmentIndex < self.macho.segments.count)
-        _segment = [self.macho.segments[@(bindContext->segmentIndex)] retain];
+    _segment = [self.macho.segments[@(bindContext->segmentIndex)] retain];
     if (_segment == nil) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index %u.", bindContext->segmentIndex];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", bindContext->segmentIndex];
         [self release]; return nil;
     }
     
@@ -84,29 +90,14 @@
     
     mk_vm_range_t segmentRange = mk_vm_range_make(segmentAddress, _segment.vmSize);
     if ((err = mk_vm_range_contains_address(segmentRange, _offset, segmentAddress))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"Offset (%" MK_VM_PRIiOFFSET ") is not within the section at index %u.", bindContext->segmentIndex];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"The offset [%" MK_VM_PRIuOFFSET "] is not within the %@ segement (index %u).", _offset, _segment, bindContext->segmentIndex];
         [self release]; return nil;
     }
     
     // Try to find the section
-    for (MKSection *section in _segment.sections) {
-        mk_vm_range_t sectionRange = mk_vm_range_make(section.vmAddress, section.size);
-        if (MK_ESUCCESS == mk_vm_range_contains_address(sectionRange, 0, self.address)) {
-            _section = [section retain];
-            break;
-        }
-    }
+	_section = (typeof(_section))[[_segment childNodeOccupyingVMAddress:self.address targetClass:MKSection.class] retain];
     
     return self;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{
-#pragma unused(offset)
-#pragma unused(parent)
-#pragma unused(error)
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Currently unavailable" userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -114,7 +105,7 @@
 {
 #pragma unused(parent)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Currently unavailable" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-initWithParent:error: unavailable." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -129,11 +120,11 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Binding Information
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize type = _type;
-@synthesize libraryOrdinal = _libraryOrdinal;
+@synthesize sourceLibraryOrdinal = _sourceLibraryOrdinal;
 @synthesize sourceLibrary = _sourceLibrary;
 @synthesize symbolName = _symbolName;
 @synthesize symbolFlags = _symbolOptions;
@@ -150,25 +141,99 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize nodeSize = _nodeSize;
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
+{
+	// SAFE - _nodeOffset comes from the rebase commands, which are within the MKRebaseInfo.
+	return [(MKBackedNode*)self.parent nodeAddress:type] + _nodeOffset;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    // TODO - Adopt the new description system.
+	MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(type)
+		type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil elements:@{
+			@(BIND_TYPE_POINTER): @"BIND_TYPE_POINTER",
+			@(BIND_TYPE_TEXT_ABSOLUTE32): @"BIND_TYPE_TEXT_ABSOLUTE32",
+			@(BIND_TYPE_TEXT_PCREL32): @"BIND_TYPE_TEXT_PCREL32"
+		}]
+	];
+	type.description = @"Type";
+	type.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *sourceLibraryOrdinal = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(sourceLibraryOrdinal)
+		type:MKNodeFieldTypeQuadWord.sharedInstance
+	];
+	sourceLibraryOrdinal.description = @"Library Ordinal";
+	sourceLibraryOrdinal.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *sourceLibrary = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(sourceLibrary)
+		type:[MKNodeFieldTypeNode typeWithNodeType:MKDependentLibrary.class]
+	];
+	sourceLibrary.description = @"Library";
+	sourceLibrary.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *symbolName = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(symbolName)
+		type:nil /* TODO ? */
+	];
+	symbolName.description = @"Symbol Name";
+	symbolName.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(symbolFlags)
+		type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedByte.sharedInstance name:nil options:@{
+			@((uint8_t)BIND_SYMBOL_FLAGS_WEAK_IMPORT): @"BIND_SYMBOL_FLAGS_WEAK_IMPORT",
+			@((uint8_t)BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION): @"BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION"
+		}]
+	];
+	symbolFlags.description = @"Symbol Flags";
+	symbolFlags.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *addend = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(addend)
+		type:MKNodeFieldTypeQuadWord.sharedInstance
+	];
+	addend.description = @"Addend";
+	addend.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *segment = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(segment)
+		type:[MKNodeFieldTypeNode typeWithNodeType:MKSegment.class]
+	];
+	segment.description = @"Segment";
+	segment.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *section = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(section)
+		type:nil
+	];
+	section.description = @"Section";
+	section.options = MKNodeFieldOptionDisplayAsDetail;
+	
+	MKNodeFieldBuilder *address = [MKNodeFieldBuilder
+		builderWithProperty:MK_PROPERTY(address)
+		type:MKNodeFieldTypeAddress.sharedInstance
+	];
+	address.description = @"Address";
+	address.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(type) description:@"Type"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(libraryOrdinal) description:@"Library Ordinal"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sourceLibrary) description:@"Library"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolName) description:@"Symbol Name"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolFlags) description:@"Symbol Flags"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(addend) description:@"Addend"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(segment) description:@"Segment"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(section) description:@"Section"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(address) description:@"Address"]
+        type.build,
+        sourceLibraryOrdinal.build,
+        sourceLibrary.build,
+        symbolName.build,
+        symbolFlags.build,
+        addend.build,
+        segment.build,
+        section.build,
+        address.build
     ]];
 }
 

@@ -29,14 +29,15 @@
 @import Foundation;
 
 #import <MachOKit/MKBindCommand.h>
+#import <MachOKit/MKBindCommandOffsetAdjusting.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKBindAddAddressULEB : MKBindCommand {
+@interface MKBindAddAddressULEB : MKBindCommand <MKBindCommandOffsetAdjusting> {
 @package
     int64_t _offset;
-    size_t _size;
+    size_t _offsetULEBSize;
 }
 
 //! The offset applied to the segment base address.

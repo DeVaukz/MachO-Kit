@@ -26,11 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindSetSegmentAndOffsetULEB.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-#import "MKBindingsInfo.h"
-
-#include "_mach_trie.h"
+#import "MKInternal.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBindSetSegmentAndOffsetULEB
@@ -45,31 +42,21 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    __block BOOL success = NO;
-    
-    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (address == 0x0) { *error = e; return; }
+    // Read the offset ULEB
+    {
+        NSError *ULEBError = nil;
         
-        mk_error_t err;
-        uint8_t *start = (uint8_t*)address;
-        uint8_t *end = (uint8_t*)(address + length);
-        
-        if ((err = _mk_mach_trie_copy_uleb128(start, end, &_offset, &_size))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read uleb128."];
-            return;
+        if (!MKULEBRead(self, 1, &_offset, &_offsetULEBSize, &ULEBError)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:ULEBError description:@"Could not read offset."];
+            [self release]; return nil;
         }
-        
-        success = YES;
-    }];
-    
-    if (!success)
-        return nil;
+    }
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -79,6 +66,7 @@
 #pragma unused(error)
     bindContext->segmentIndex = self.segmentIndex;
     bindContext->offset = self.offset;
+    
     return YES;
 }
 
@@ -91,7 +79,7 @@
 { return [self bind:binder withContext:bindContext error:error]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize offset = _offset;
@@ -100,13 +88,17 @@
 - (unsigned)segmentIndex
 { return _data & BIND_IMMEDIATE_MASK; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (uint64_t)derivedOffset
+{ return self.offset; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _size + 1; }
+{ return 1 + _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -114,8 +106,6 @@
     MKNodeFieldBuilder *segmentIndex = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(segmentIndex)
         type:nil
-        offset: 1
-        size:_size
     ];
     segmentIndex.description = @"Segment Index";
     segmentIndex.options = MKNodeFieldOptionDisplayAsDetail;
@@ -123,6 +113,8 @@
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(offset)
         type:nil
+        offset:1
+        size:_offsetULEBSize
     ];
     offset.description = @"Offset";
     offset.options = MKNodeFieldOptionDisplayAsDetail;
@@ -133,10 +125,12 @@
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(0x%.2X, 0x%.8" PRIX64 ")", self.segmentIndex, self.offset];
-}
+{ return [NSString stringWithFormat:@"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(0x%.2X, 0x%.8" PRIX64 ")", self.segmentIndex, self.offset]; }
 
 @end

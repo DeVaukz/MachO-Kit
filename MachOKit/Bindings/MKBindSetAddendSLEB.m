@@ -26,11 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindSetAddendSLEB.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-#import "MKBindingsInfo.h"
-
-#include "_mach_trie.h"
+#import "MKInternal.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBindSetAddendSLEB
@@ -45,31 +42,21 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    __block BOOL success = NO;
-    
-    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (address == 0x0) { *error = e; return; }
+    // Read the addend SLEB
+    {
+        NSError *SLEBError = nil;
         
-        mk_error_t err;
-        uint8_t *start = (uint8_t*)address;
-        uint8_t *end = (uint8_t*)(address + length);
-        
-        if ((err = _mk_mach_trie_copy_sleb128(start, end, &_addend, &_size))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read sleb128."];
-            return;
+        if (!MKSLEBRead(self, 1, &_addend, &_addendSLEBSize, &SLEBError)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:SLEBError description:@"Could not read addend."];
+            [self release]; return nil;
         }
-        
-        success = YES;
-    }];
-    
-    if (!success)
-        return nil;
+    }
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -78,6 +65,7 @@
 #pragma unused(binder)
 #pragma unused(error)
     bindContext->addend = self.addend;
+    
     return YES;
 }
 
@@ -90,25 +78,27 @@
 { return [self bind:binder withContext:bindContext error:error]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize addend = _addend;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _size + 1; }
+{ return 1 + _addendSLEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *addend = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(addend)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        type:MKNodeFieldTypeQuadWord.sharedInstance
+        offset:1
+        size:_addendSLEBSize
     ];
     addend.description = @"Addend";
     addend.options = MKNodeFieldOptionDisplayAsDetail;
@@ -117,6 +107,10 @@
         addend.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description

@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindingsInfo.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKBindCommand.h"
@@ -52,8 +52,9 @@
     
     // A size of 0 is strange but valid.
     if (self.nodeSize == 0) {
-        // Still need to assign a value to the commands array.
+        // Still need to assign a value to the commands and actions array.
         _commands = [@[] retain];
+		_actions = [@[] retain];
         return self;
     }
     
@@ -73,12 +74,12 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error
 {
-    NSParameterAssert(image);
+    NSParameterAssert(image != nil);
     
     // Find LC_DYLD_INFO
     MKLCDyldInfo *dyldInfoLoadCommand = nil;
     {
-        NSMutableArray *commands = [[NSMutableArray alloc] initWithCapacity:1];
+        NSMutableArray<MKLCDyldInfo*> *commands = [[NSMutableArray alloc] initWithCapacity:1];
         
         NSArray *dyldInfoCommands = [image loadCommandsOfType:LC_DYLD_INFO];
         if (dyldInfoCommands) [commands addObjectsFromArray:dyldInfoCommands];
@@ -87,10 +88,11 @@
         if (dyldInfoOnlyCommands) [commands addObjectsFromArray:dyldInfoOnlyCommands];
         
         if (commands.count > 1)
-            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@", commands.lastObject);
+            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@.", commands.lastObject);
         
         if (commands.count == 0) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image load commands does not contain LC_DYLD_INFO."];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not contain a LC_DYLD_INFO load command."];
+			[commands release];
             [self release]; return nil;
         }
         
@@ -115,7 +117,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Parsing
+#pragma mark -  Parsing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -136,11 +138,11 @@
         
         while (offset < self.nodeSize)
         {
-            NSError *e;
+            NSError *bindCommandError = nil;
             
-            MKBindCommand *command = [MKBindCommand commandAtOffset:offset fromParent:self error:&e];
+            MKBindCommand *command = [MKBindCommand commandAtOffset:offset fromParent:self error:&bindCommandError];
             if (command == nil) {
-                MK_PUSH_UNDERLYING_WARNING(commands, e, @"Could not load bind command at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_WARNING_WITH_ERROR(commands, MK_EINTERNAL_ERROR, bindCommandError, @"Could not parse bind command at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
@@ -151,7 +153,7 @@
             if (command.opcode == BIND_OPCODE_DONE && self._parseCommandsStopAtDone)
                 break;
             
-            // Safe.  All command nodes must be within the size of this node.
+            // SAFE - All command nodes must be within the size of this node.
             offset += command.nodeSize;
         }
         
@@ -168,18 +170,16 @@
         NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/3];
         
         __block BOOL keepGoing = YES;
-        __block NSError *e = nil;
+        __block NSError *bindingError = nil;
         __block struct MKBindContext context = { 0, .info = self };
         
         void (^doBind)(void) = ^{
-            MKBindAction *action = [[self._parseActionClass alloc] initWithContext:&context error:&e];
+            MKBindAction *action = [[self._parseActionClass alloc] initWithContext:&context error:&bindingError];
             
-            if (actions)
+            if (action)
                 [actions addObject:action];
-            else {
-                MK_PUSH_WARNING(fixups, MK_EINVALID_DATA, @"Binding failed at command: %@", context.command);
+            else
                 keepGoing = NO;
-            }
             
             [action release];
         };
@@ -192,15 +192,15 @@
             context.actionSize += command.nodeSize;
             context.command = command;
             
-            keepGoing &= [command bind:doBind withContext:&context error:&e];
-            
-            if (keepGoing)
-                continue;
-            else if (e) {
-                MK_PUSH_UNDERLYING_WARNING(fixups, e, @"Binding failed at command: %@", context.command);
-                break;
-            } else
-                break;
+            keepGoing &= [command bind:doBind withContext:&context error:&bindingError];
+			
+			if (keepGoing == NO) {
+				if (bindingError) {
+					MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Binding actions list generation failed at command: %@.", context.command.nodeDescription);
+				}
+					
+				break;
+			}
         }
         
         _actions = [actions copy];
@@ -209,7 +209,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

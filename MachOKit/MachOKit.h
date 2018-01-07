@@ -158,6 +158,7 @@
     #import <MachOKit/MKLazyBindingsInfo.h>
     #import <MachOKit/MKBindAction.h>
     #import <MachOKit/MKBindCommand.h>
+	#import <MachOKit/MKBindCommandOffsetAdjusting.h>
     #import <MachOKit/MKBindDone.h>
     #import <MachOKit/MKBindSetDylibOrdinalImmediate.h>
     #import <MachOKit/MKBindSetDylibOrdinalULEB.h>

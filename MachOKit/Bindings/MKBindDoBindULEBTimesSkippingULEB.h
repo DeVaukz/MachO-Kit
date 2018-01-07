@@ -29,15 +29,17 @@
 @import Foundation;
 
 #import <MachOKit/MKBindCommand.h>
+#import <MachOKit/MKBindCommandOffsetAdjusting.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKBindDoBindULEBTimesSkippingULEB : MKBindCommand {
+@interface MKBindDoBindULEBTimesSkippingULEB : MKBindCommand <MKBindCommandOffsetAdjusting> {
     @package
     uint64_t _count;
     uint64_t _skip;
-    size_t _size;
+	size_t _countULEBSize;
+	size_t _skipULEBSize;
 }
 
 //!
@@ -45,10 +47,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 //!
 @property (nonatomic, readonly) uint64_t skip;
-
-//! The offset applied to the segment base address after invoking the bind
-//! action.
-@property (nonatomic, readonly) uint64_t offset;
 
 @end
 

@@ -59,9 +59,9 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 //! Subclasses should return a non-zero integer if they support parsing the
 //! command.  The subclass that returns the largest value will be instantiated
-//! with the command data.  \ref MKBindCommand subclasses in Mach-O Kit
-//! return \c 10 if they can parse the provided load command.  You can
-//! substitute your own subclass by returning a larger value.
+//! with the command data.  \ref MKRebaseCommand subclasses in Mach-O Kit
+//!	return a value no larger than \c 100.  You can substitute your own subclass
+//!	by returning a larger value.
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! Creates and instantiates the appropriate subclass of \ref MKBindCommand
 //! for parsing the opcode at the provided \a offset from the
 //! parent \ref MKBindingsInfo.
-+ (nullable instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
++ (nullable instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBindingsInfo*)parent error:(NSError**)error;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  About This Bind Command
@@ -80,8 +80,9 @@ NS_ASSUME_NONNULL_BEGIN
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! Returns the bind command opcode that this class parses.
-//! Subclasses must implement this method.
-+ (uint8_t)opcode;
+//!
+//! Subclasses must implement the getter for this property.
+@property (class, nonatomic, readonly) uint8_t opcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
@@ -97,9 +98,12 @@ NS_ASSUME_NONNULL_BEGIN
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Bind Command Values
 //! @name       Bind Command Values
+//!
+//! @brief      These values are extracted directly from the Mach-O
+//!             bind command without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The opcode designating this bind command.
+//! The bind command opcode.
 @property (nonatomic, readonly) uint8_t opcode;
 
 @end

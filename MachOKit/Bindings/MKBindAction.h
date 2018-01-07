@@ -31,11 +31,10 @@
 #import <MachOKit/MKOffsetNode.h>
 #import <MachOKit/MKBindContext.h>
 
-@class MKBindCommand;
-@class MKBindingsInfo;
-@class MKDependentLibrary;
 @class MKSegment;
 @class MKSection;
+@class MKDependentLibrary;
+@class MKBindCommand;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -78,14 +77,14 @@ typedef NS_ENUM(uint8_t, MKBindType) {
 
 
 //----------------------------------------------------------------------------//
-@interface MKBindAction : MKOffsetNode {
+@interface MKBindAction : MKAddressedNode {
 @package
-    mk_vm_size_t _nodeSize;
-    MKLibraryOrdinal _libraryOrdinal;
+	mk_vm_offset_t _nodeOffset;
+    MKLibraryOrdinal _sourceLibraryOrdinal;
     MKDependentLibrary *_sourceLibrary;
     NSString *_symbolName;
     MKSegment *_segment;
-    MKSection *_section;
+    MKOptional<MKSection*> *_section;
     mk_vm_offset_t _offset;
     int64_t _addend;
     MKBindOptions _symbolOptions;
@@ -93,15 +92,14 @@ typedef NS_ENUM(uint8_t, MKBindType) {
 }
 
 - (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_UNAVAILABLE;
-- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error NS_UNAVAILABLE;
 
 - (nullable instancetype)initWithContext:(struct MKBindContext*)bindContext error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! Bind type.
+//! The binding type.
 @property (nonatomic, readonly) MKBindType type;
 
 //!
-@property (nonatomic, readonly) MKLibraryOrdinal libraryOrdinal;
+@property (nonatomic, readonly) MKLibraryOrdinal sourceLibraryOrdinal;
 
 //!
 @property (nonatomic, readonly, nullable) MKDependentLibrary *sourceLibrary;
@@ -115,18 +113,17 @@ typedef NS_ENUM(uint8_t, MKBindType) {
 //!
 @property (nonatomic, readonly) int64_t addend;
 
-//! The segment in which the bind location resides.
+//! The segment where bind location resides.
 @property (nonatomic, readonly) MKSegment *segment;
 
-//! Offset from the start of the segment to the bind location.
+//! The offset from the start of the segment to the bind location.
 @property (nonatomic, readonly) mk_vm_offset_t offset;
 
-//! VM address of the bind location.
+//! The VM address of the bind location.
 @property (nonatomic, readonly) mk_vm_address_t address;
 
-//! The section in which the bind location resides, or \c nil if it
-//! does not reside in a known section.
-@property (nonatomic, readonly, nullable) MKSection *section;
+//! The section where the bind location resides.
+@property (nonatomic, readonly) MKOptional<MKSection*> *section;
 
 @end
 

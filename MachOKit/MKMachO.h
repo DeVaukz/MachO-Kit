@@ -84,9 +84,9 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     // Rebase //
     MKOptional<MKRebaseInfo*> *_rebaseInfo;
     // Bindings //
-    MKBindingsInfo *_bindingsInfo;
-    MKWeakBindingsInfo *_weakBindingsInfo;
-    MKLazyBindingsInfo *_lazyBindingsInfo;
+    MKOptional<MKBindingsInfo*> *_bindingsInfo;
+    MKOptional<MKWeakBindingsInfo*> *_weakBindingsInfo;
+    MKOptional<MKLazyBindingsInfo*> *_lazyBindingsInfo;
     // Exports //
     MKOptional<MKExportsInfo*> *_exportsInfo;
     // Symbols //

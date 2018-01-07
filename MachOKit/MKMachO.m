@@ -308,6 +308,30 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    // BINDINGS
+    MKNodeFieldBuilder *bindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(bindingsInfo)
+        type:nil
+    ];
+    bindingsInfo.description = @"Binding Info";
+    bindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
+    // WEAK BINDINGS
+    MKNodeFieldBuilder *weakBindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weakBindingsInfo)
+        type:nil
+    ];
+    weakBindingsInfo.description = @"Weak Binding Info";
+    weakBindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
+    // LAZY BINDINGS
+    MKNodeFieldBuilder *lazyBindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(lazyBindingsInfo)
+        type:nil
+    ];
+    lazyBindingsInfo.description = @"Lazy Binding Info";
+    lazyBindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Image Path"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(slide) description:@"Slide"],
@@ -315,6 +339,9 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(loadCommands) description:@"Load Commands"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
+        bindingsInfo.build,
+        weakBindingsInfo.build,
+        lazyBindingsInfo.build,
     ]];
 }
 

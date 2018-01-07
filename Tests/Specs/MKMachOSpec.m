@@ -249,7 +249,7 @@ SpecBegin(MKMachOImage)
             describe(@"bind commands", ^{
                 NSArray<NSString*> *dyldInfoBindCommands = otoolArchitecture.bindCommands;
                 NSArray<NSDictionary*> *dyldInfoBindings = otoolArchitecture.bindings;
-                MKBindingsInfo *machoBindInfo = macho.bindingsInfo;
+                MKBindingsInfo *machoBindInfo = macho.bindingsInfo.value;
                 
                 if (machoBindInfo == nil)
                     return; // TODO - Check if the image should have binding info.
@@ -259,7 +259,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoBindCommands).toNot.beNil();
+					expect(machoBindings).toNot.beNil();
                 });
+				
+				it(@"should not have any warnings", ^{
+					expect(machoBindInfo.warnings).to.equal(@[]);
+				});
                 
                 it(@"should have the correct number of bind commands", ^{
                     expect(machoBindCommands.count).to.equal(dyldInfoBindCommands.count);
@@ -283,7 +288,7 @@ SpecBegin(MKMachOImage)
                         MKBindAction *binding = machoBindings[i];
                         
                         expect(binding.segment.name).to.equal(dyldInfoBindings[i][@"segment"]);
-                        expect(binding.section.name).to.equal(dyldInfoBindings[i][@"section"]);
+                        expect(binding.section.value.name).to.equal(dyldInfoBindings[i][@"section"]);
                         expect([NSString stringWithFormat:@"0x%.8" MK_VM_PRIXADDR "", binding.address]).to.equal(dyldInfoBindings[i][@"address"]);
                         //expect(@(binding.type).description).to.equal(dyldInfoBindings[i][@"type"]);
                         expect(@(binding.addend).description).to.equal(dyldInfoBindings[i][@"addend"]);
@@ -297,7 +302,7 @@ SpecBegin(MKMachOImage)
             describe(@"weak bind commands", ^{
                 NSArray<NSString*> *dyldInfoWeakBindCommands = otoolArchitecture.weakBindCommands;
                 NSArray<NSDictionary*> *dyldInfoWeakBindings = otoolArchitecture.weakBindings;
-                MKWeakBindingsInfo *machoWeakBindInfo = macho.weakBindingsInfo;
+                MKWeakBindingsInfo *machoWeakBindInfo = macho.weakBindingsInfo.value;
                 
                 if (machoWeakBindInfo == nil)
                     return; // TODO - Check if the image should have weak bindings info.
@@ -307,7 +312,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoWeakBindCommands).toNot.beNil();
+					expect(machoWeakBindings).toNot.beNil();
                 });
+				
+				it(@"should not have any warnings", ^{
+					expect(machoWeakBindInfo.warnings).to.equal(@[]);
+				});
                 
                 it(@"should have the correct number of commands", ^{
                     expect(machoWeakBindCommands.count).to.equal(dyldInfoWeakBindCommands.count);
@@ -331,7 +341,7 @@ SpecBegin(MKMachOImage)
                         MKBindAction *binding = machoWeakBindings[i];
                         
                         expect(binding.segment.name).to.equal(dyldInfoWeakBindings[i][@"segment"]);
-                        expect(binding.section.name).to.equal(dyldInfoWeakBindings[i][@"section"]);
+                        expect(binding.section.value.name).to.equal(dyldInfoWeakBindings[i][@"section"]);
                         expect([NSString stringWithFormat:@"0x%.8" MK_VM_PRIXADDR "", binding.address]).to.equal(dyldInfoWeakBindings[i][@"address"]);
                         //expect(@(binding.type).description).to.equal(dyldInfoWeakBindings[i][@"type"]);
                         expect(@(binding.addend).description).to.equal(dyldInfoWeakBindings[i][@"addend"]);
@@ -344,11 +354,7 @@ SpecBegin(MKMachOImage)
             describe(@"lazy bind commands", ^{
                 NSArray<NSString*> *dyldInfoLazyBindCommands = otoolArchitecture.lazybindCommands;
                 NSArray<NSDictionary*> *dyldInfoLazyBindings = otoolArchitecture.lazyBindings;
-                MKLazyBindingsInfo *machoLazyBindInfo = macho.lazyBindingsInfo;
-                
-                it(@"should generate no warnings", ^{
-                    expect(machoLazyBindInfo.warnings.count).to.equal(0);
-                });
+                MKLazyBindingsInfo *machoLazyBindInfo = macho.lazyBindingsInfo.value;
                 
                 if (machoLazyBindInfo == nil)
                     return; // TODO - Check if the image should have lazy bindings info.
@@ -358,7 +364,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoLazyBindCommands).toNot.beNil();
+					expect(machoLazyBindings).toNot.beNil();
                 });
+				
+				it(@"should not have any warnings", ^{
+					expect(machoLazyBindInfo.warnings).to.equal(@[]);
+				});
                 
                 it(@"should have the correct number of commands", ^{
                     expect(machoLazyBindCommands.count).to.equal(dyldInfoLazyBindCommands.count);
@@ -382,9 +393,9 @@ SpecBegin(MKMachOImage)
                         MKBindAction *binding = machoLazyBindings[i];
                         
                         expect(binding.segment.name).to.equal(dyldInfoLazyBindings[i][@"segment"]);
-                        expect(binding.section.name).to.equal(dyldInfoLazyBindings[i][@"section"]);
+                        expect(binding.section.value.name).to.equal(dyldInfoLazyBindings[i][@"section"]);
                         expect([NSString stringWithFormat:@"0x%.8" MK_VM_PRIXADDR "", binding.address]).to.equal(dyldInfoLazyBindings[i][@"address"]);
-                        expect([NSString stringWithFormat:@"0x%.4" MK_VM_PRIXADDR "", binding.nodeOffset]).to.equal(dyldInfoLazyBindings[i][@"index"]);
+                        expect([NSString stringWithFormat:@"0x%.4" MK_VM_PRIXADDR "", binding.nodeVMAddress - machoLazyBindInfo.nodeVMAddress]).to.equal(dyldInfoLazyBindings[i][@"index"]);
                         expect(binding.symbolName).to.equal(dyldInfoLazyBindings[i][@"symbol"]);
                         expect([binding.sourceLibrary.name rangeOfString:dyldInfoLazyBindings[i][@"dylib"]].location).toNot.equal(NSNotFound);
                     }

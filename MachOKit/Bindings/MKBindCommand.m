@@ -26,8 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindCommand.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
+#import "MKInternal.h"
 #import "MKBindingsInfo.h"
 
 //----------------------------------------------------------------------------//
@@ -65,19 +64,17 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Creating a Bind Command
+#pragma mark -  Creating a Bind Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
++ (instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBindingsInfo*)parent error:(NSError**)error
 {
-    NSParameterAssert(parent.memoryMap);
     uint8_t opcode;
-    NSError *e = nil;
+    NSError *memoryMapError = nil;
     
-    opcode = [parent.memoryMap readByteAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&e];
-    if (e) {
-        MK_ERROR_OUT = e;
+    if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&opcode length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read opcode at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
         return nil;
     }
     
@@ -85,7 +82,7 @@
     
     Class commandClass = [self classForOpcode:opcode];
     if (commandClass == NULL) {
-        NSString *reason = [NSString stringWithFormat:@"No class for bind opcode %" PRIi32 "", opcode];
+        NSString *reason = [NSString stringWithFormat:@"No class for bind opcode [%" PRIu8 "].", opcode];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
     }
     
@@ -98,13 +95,17 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&_data length:sizeof(uint8_t) requireFull:YES error:error] < sizeof(uint8_t))
-    { [self release]; return nil; }
+    NSError *memoryMapError = nil;
+    
+    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&_data length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read bind command immediate data."];
+        [self release]; return nil;
+    }
     
     uint8_t opcode = _data & BIND_OPCODE_MASK;
     
     if (opcode != self.class.opcode) {
-        NSString *reason = [NSString stringWithFormat:@"Cannot initialize %@ with opcode %" PRIu8 ".", NSStringFromClass(self.class), opcode];
+        NSString *reason = [NSString stringWithFormat:@"Can not initialize %@ with opcode [%" PRIu8 "].", NSStringFromClass(self.class), opcode];
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
@@ -112,7 +113,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -121,7 +122,7 @@
 #pragma unused(binder)
 #pragma unused(bindContext)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-bind:withContext:error: of MKBindCommand" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -bind:withContext:error:." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -130,7 +131,7 @@
 #pragma unused(binder)
 #pragma unused(bindContext)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-weakBind:withContext:error: of MKBindCommand" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -weakBind:withContext:error:." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -139,19 +140,19 @@
 #pragma unused(binder)
 #pragma unused(bindContext)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-lazyBind:withContext:error: of MKBindCommand" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement -lazyBind:withContext:error:." userInfo:nil];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - About This Bind Command
+#pragma mark -  About This Bind Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint8_t)opcode
-{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"+opcode must be called on a concrete subclass of MKBindCommand" userInfo:nil]; }
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +opcode." userInfo:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Bind Command Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -159,7 +160,7 @@
 { return _data & BIND_OPCODE_MASK; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

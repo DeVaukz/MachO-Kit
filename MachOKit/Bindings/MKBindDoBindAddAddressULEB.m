@@ -26,11 +26,8 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBindDoBindAddAddressULEB.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-#import "MKBindingsInfo.h"
-
-#include "_mach_trie.h"
+#import "MKInternal.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBindDoBindAddAddressULEB
@@ -45,31 +42,21 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    __block BOOL success = NO;
-    
-    [self.memoryMap remapBytesAtOffset:1 fromAddress:self.nodeContextAddress length:(parent.nodeSize - (offset + 1)) requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (address == 0x0) { *error = e; return; }
+    // Read the offset ULEB
+    {
+        NSError *ULEBError = nil;
         
-        mk_error_t err;
-        uint8_t *start = (uint8_t*)address;
-        uint8_t *end = (uint8_t*)(address + length);
-        
-        if ((err = _mk_mach_trie_copy_uleb128(start, end, &_offset, &_size))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Could not read uleb128."];
-            return;
+        if (!MKULEBRead(self, 1, &_offset, &_offsetULEBSize, &ULEBError)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:ULEBError description:@"Could not read offset."];
+            [self release]; return nil;
         }
-        
-        success = YES;
-    }];
-    
-    if (!success)
-        return nil;
+    }
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Performing Binding
+#pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -78,8 +65,8 @@
     binder();
     
     mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->offset, self.offset, &bindContext->offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.offset);
+    if ((err = mk_vm_offset_add(bindContext->offset, self.derivedOffset, &bindContext->offset))) {
+        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.derivedOffset);
         return NO;
     }
     
@@ -106,20 +93,22 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize offset = _offset;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)offset
-{ return _offset + self.dataModel.pointerSize; }
+- (uint64_t)derivedOffset
+{ return self.offset + self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return _size + 1; }
+{ return 1 + _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
@@ -127,6 +116,8 @@
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(offset)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:1
+        size:_offsetULEBSize
     ];
     offset.description = @"Offset";
     offset.options = MKNodeFieldOptionDisplayAsDetail;
@@ -136,8 +127,12 @@
     ]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB(0x%.8" PRIX32 ")", (uint32_t)_offset]; }
+{ return [NSString stringWithFormat:@"BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB(0x%.8" PRIX32 ")", (uint32_t)self.offset]; }
 
 @end
