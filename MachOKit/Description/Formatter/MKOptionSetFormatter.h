@@ -29,16 +29,43 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NSDictionary<NSNumber*, NSString*> MKOptionSetFormatterOptions;
+
+//----------------------------------------------------------------------------//
+//! @name       Option Set Formatter Behavior For Zero Values
+//! @relates    MKOptionSetFormatterZeroBehavior
+//!
+typedef NS_ENUM(NSUInteger, MKOptionSetFormatterZeroBehavior) {
+    //! Return the string "0".  The default behavior.
+    MKOptionSetFormatterZeroBehaviorZeroString      = 0,
+    //! Return an empty string.
+    MKOptionSetFormatterZeroBehaviorEmptyString,
+    //! Return \c nil.
+    MKOptionSetFormatterZeroBehaviorNil
+};
+
+
+
 //----------------------------------------------------------------------------//
 @interface MKOptionSetFormatter : NSFormatter {
 @package
-    NSDictionary *_options;
+    MKOptionSetFormatterOptions *_options;
+    MKOptionSetFormatterZeroBehavior _zeroBehavior;
 }
 
-+ (instancetype)optionSetFormatterWithOptions:(nullable NSDictionary<NSNumber*, NSString*> *)options;
++ (instancetype)optionSetFormatterWithOptions:(nullable MKOptionSetFormatterOptions*)options;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //!
-@property (nonatomic, copy, nullable) NSDictionary<NSNumber*, NSString*> *options;
+@property (nonatomic, copy, nullable) MKOptionSetFormatterOptions *options;
+
+//! The behavior when the formatter encounters a zero value.  Only applicable
+//! if the options dictionary does not contain a value for zero.
+@property (nonatomic, readwrite) MKOptionSetFormatterZeroBehavior zeroBehavior;
 
 @end
 

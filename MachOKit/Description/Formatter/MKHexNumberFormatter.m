@@ -30,16 +30,13 @@
 //----------------------------------------------------------------------------//
 @implementation MKHexNumberFormatter
 
-@synthesize digits = _digits;
-@synthesize uppercase = _uppercase;
-@synthesize omitPrefix = _omitPrefix;
-
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)hexNumberFormatterWithDigits:(size_t)digits uppercase:(BOOL)uppercase
 {
     MKHexNumberFormatter *retValue = [[[self alloc] init] autorelease];
     retValue.digits = digits;
     retValue.uppercase = uppercase;
+    
     return retValue;
 }
 
@@ -48,6 +45,54 @@
 {
     return [self hexNumberFormatterWithDigits:digits uppercase:NO];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCoding
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super init];
+    if (self == nil) return nil;
+    
+    _digits = (size_t)[aDecoder decodeIntegerForKey:@"digits"];
+    _uppercase = [aDecoder decodeBoolForKey:@"uppercase"];
+    _omitPrefix = [aDecoder decodeBoolForKey:@"omitPrefix"];
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)encodeWithCoder:(NSCoder*)aCoder
+{
+    [aCoder encodeInteger:(NSInteger)self.digits forKey:@"digits"];
+    [aCoder encodeBool:self.uppercase forKey:@"uppercase"];
+    [aCoder encodeBool:self.omitPrefix forKey:@"omitPrefix"];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCopying
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)copyWithZone:(NSZone*)zone
+{
+    MKHexNumberFormatter *copy = [[MKHexNumberFormatter allocWithZone:zone] init];
+    copy.digits = self.digits;
+    copy.uppercase = self.uppercase;
+    copy.omitPrefix = self.omitPrefix;
+    
+    return copy;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize digits = _digits;
+@synthesize uppercase = _uppercase;
+@synthesize omitPrefix = _omitPrefix;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSFormatter

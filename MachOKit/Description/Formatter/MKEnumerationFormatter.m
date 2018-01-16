@@ -30,10 +30,6 @@
 //----------------------------------------------------------------------------//
 @implementation MKEnumerationFormatter
 
-@synthesize name = _name;
-@synthesize elements = _elements;
-@synthesize fallbackFormatter = _fallbackFormatter;
-
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)enumerationFormatterWithName:(NSString*)name fallbackFormatter:(NSFormatter*)formatter elements:(NSDictionary*)elements
 {
@@ -41,6 +37,7 @@
     retValue.elements = elements;
     retValue.name = name;
     retValue.fallbackFormatter = formatter;
+    
     return [retValue autorelease];
 }
 
@@ -50,6 +47,7 @@
     MKEnumerationFormatter *retValue = [self new];
     retValue.elements = elements;
     retValue.name = name;
+    
     return [retValue autorelease];
 }
 
@@ -58,6 +56,7 @@
 {
     MKEnumerationFormatter *retValue = [self new];
     retValue.elements = elements;
+    
     return [retValue autorelease];
 }
 
@@ -72,12 +71,63 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCoding
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super init];
+    if (self == nil) return nil;
+    
+    _name = [[aDecoder decodeObjectOfClass:NSString.class forKey:@"name"] retain];
+    _elements = [[aDecoder decodeObjectOfClass:NSDictionary.class forKey:@"elements"] retain];
+    _fallbackFormatter = [[aDecoder decodeObjectOfClass:NSFormatter.class forKey:@"fallbackFormatter"] retain];
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)encodeWithCoder:(NSCoder*)aCoder
+{
+    [aCoder encodeObject:self.name forKey:@"name"];
+    [aCoder encodeObject:self.elements forKey:@"elements"];
+    [aCoder encodeObject:self.fallbackFormatter forKey:@"fallbackFormatter"];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCopying
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)copyWithZone:(NSZone*)zone
+{
+    MKEnumerationFormatter *copy = [[MKEnumerationFormatter allocWithZone:zone] init];
+    copy.name = self.name;
+    copy.elements = self.elements;
+    copy.fallbackFormatter = self.fallbackFormatter;
+    
+    return copy;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize name = _name;
+@synthesize elements = _elements;
+@synthesize fallbackFormatter = _fallbackFormatter;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSFormatter
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)stringForObjectValue:(id)anObject
 {
+    if (anObject == nil)
+        return nil;
+    
     NSString *matchingElement = [self.elements objectForKey:anObject];
     if (matchingElement)
         return matchingElement;

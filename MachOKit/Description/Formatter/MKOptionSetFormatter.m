@@ -30,13 +30,12 @@
 //----------------------------------------------------------------------------//
 @implementation MKOptionSetFormatter
 
-@synthesize options = _options;
-
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionSetFormatterWithOptions:(NSDictionary*)options
 {
     MKOptionSetFormatter *retValue = [self new];
     retValue.options = options;
+    
     return [retValue autorelease];
 }
 
@@ -49,6 +48,50 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCoding
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super init];
+    if (self == nil) return nil;
+    
+    _options = [[aDecoder decodeObjectOfClass:NSDictionary.class forKey:@"options"] retain];
+    _zeroBehavior = (NSUInteger)[aDecoder decodeIntegerForKey:@"zeroBehavior"];
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)encodeWithCoder:(NSCoder*)aCoder
+{
+    [aCoder encodeObject:self.options forKey:@"options"];
+    [aCoder encodeInteger:self.zeroBehavior forKey:@"zeroBehavior"];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCopying
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)copyWithZone:(NSZone*)zone
+{
+    MKOptionSetFormatter *copy = [[MKOptionSetFormatter allocWithZone:zone] init];
+    copy.options = self.options;
+    copy.zeroBehavior = self.zeroBehavior;
+    
+    return copy;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize options = _options;
+@synthesize zeroBehavior = _zeroBehavior;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSFormatter
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
@@ -58,43 +101,77 @@
     if ([anObject isKindOfClass:NSNumber.class] == NO)
         return nil;
     
-    uint64_t value = [anObject unsignedLongLongValue];
-    
-    // Special case the 0 value
-    if (value == 0) {
-        if (_options[@(0)])
-            return _options[@(0)];
-        else
-            return 0;
-    }
-    
+    uint64_t value;
     size_t bits;
     switch (*[anObject objCType]) {
         case 'c':
         case 'C':
             bits = sizeof(uint8_t) * 8;
+            value = (uint64_t)[anObject unsignedCharValue];
             break;
         case 's':
         case 'S':
             bits = sizeof(uint16_t) * 8;
+            value = (uint64_t)[anObject unsignedShortValue];
             break;
         case 'i':
         case 'I':
             bits = sizeof(uint32_t) * 8;
+            value = (uint64_t)[anObject unsignedIntValue];
             break;
         case 'q':
         case 'Q':
             bits = sizeof(uint64_t) * 8;
+            value = (uint64_t)[anObject unsignedLongLongValue];
             break;
         default:
             return nil;
     }
     
+    MKOptionSetFormatterOptions *options = self.options;
+    
+    // Special case the 0 value
+    if (value == 0) {
+        if (options[@(0)])
+            return options[@(0)];
+        else {
+            switch (self.zeroBehavior) {
+                case MKOptionSetFormatterZeroBehaviorNil:
+                    return nil;
+                case MKOptionSetFormatterZeroBehaviorEmptyString:
+                    return @"";
+                case MKOptionSetFormatterZeroBehaviorZeroString:
+                default:
+                    return @"0";
+            }
+        }
+    }
+    
     NSMutableString *retValue = [NSMutableString string];
     uint64_t maskedBits = 0;
     
-    for (NSNumber *maskValue in _options) {
-        uint64_t mask = maskValue.unsignedLongLongValue;
+    for (NSNumber *maskValue in options) {
+        uint64_t mask;
+        switch (*[maskValue objCType]) {
+            case 'c':
+            case 'C':
+                mask = (uint64_t)[maskValue unsignedCharValue];
+                break;
+            case 's':
+            case 'S':
+                mask = (uint64_t)[maskValue unsignedShortValue];
+                break;
+            case 'i':
+            case 'I':
+                mask = (uint64_t)[maskValue unsignedIntValue];
+                break;
+            case 'q':
+            case 'Q':
+                mask = (uint64_t)[maskValue unsignedLongLongValue];
+                break;
+            default:
+                continue;
+        }
         
         if (mask == 0x0)
             continue;
@@ -102,7 +179,7 @@
         if ((value & mask) == mask) {
             maskedBits |= mask;
             if (retValue.length != 0) [retValue appendString:@" "];
-            [retValue appendString:_options[maskValue]];
+            [retValue appendString:options[maskValue]];
         }
     }
     

@@ -30,9 +30,21 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKObjectFormatter : NSFormatter
+@interface MKObjectFormatter : NSFormatter {
+@package
+    SEL _descriptionSelector;
+}
 
-+ (instancetype)sharedInstance;
++ (instancetype)objectFormatterWithDescriptionSelector:(SEL)descriptionSelector;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The selector of the method to call on the input object to retrieve the
+//! object's description.
+@property (nonatomic, readwrite, nullable) SEL descriptionSelector;
 
 @end
 

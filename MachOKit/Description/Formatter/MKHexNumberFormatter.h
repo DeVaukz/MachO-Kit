@@ -51,13 +51,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)hexNumberFormatterWithDigits:(size_t)digits;
 
-//! The minimum number of digits to include in the formatted sitring.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The minimum number of digits to include in the formatted string.
 @property (nonatomic, readwrite) size_t digits;
 
 //!
 @property (nonatomic, readwrite) BOOL uppercase;
 
-//! Do not include the standard hexadecimal prefix (0x) in the output.
+//! If \c YES, the standard hexadecimal prefix (0x) will not be included in the
+//! formatted string.
 @property (nonatomic, readwrite) BOOL omitPrefix;
 
 @end

@@ -26,12 +26,60 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjectFormatter.h"
-#import "MKInternal.h"
+
+#include <objc/message.h>
 
 //----------------------------------------------------------------------------//
 @implementation MKObjectFormatter
 
-MKMakeSingletonInitializer(MKObjectFormatter)
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)objectFormatterWithDescriptionSelector:(SEL)descriptionSelector
+{
+    MKObjectFormatter *retValue = [[[self alloc] init] autorelease];
+    retValue.descriptionSelector = descriptionSelector;
+    
+    return retValue;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCoding
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithCoder:(NSCoder*)aDecoder
+{
+    self = [super init];
+    if (self == nil) return nil;
+    
+    _descriptionSelector = NSSelectorFromString([aDecoder decodeObjectOfClass:NSString.class forKey:@"descriptionSelector"]);
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)encodeWithCoder:(NSCoder*)aCoder
+{
+    [aCoder encodeObject:NSStringFromSelector(self.descriptionSelector) forKey:@"descriptionSelector"];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSCopying
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id)copyWithZone:(NSZone*)zone
+{
+    MKObjectFormatter *copy = [[MKObjectFormatter allocWithZone:zone] init];
+    copy.descriptionSelector = self.descriptionSelector;
+    
+    return copy;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize descriptionSelector = _descriptionSelector;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSFormatter
@@ -40,7 +88,9 @@ MKMakeSingletonInitializer(MKObjectFormatter)
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)stringForObjectValue:(id)anObject
 {
-    return [anObject description];
+    SEL descriptionSelector = self.descriptionSelector ?: @selector(description);
+    
+    return ((NSString* (*)(id, SEL))objc_msgSend)(anObject, descriptionSelector);
 }
 
 @end

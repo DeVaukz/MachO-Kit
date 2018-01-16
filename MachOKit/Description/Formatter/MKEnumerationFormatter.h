@@ -29,28 +29,35 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NSDictionary<id<NSCopying>, NSString*> MKEnumerationFormatterElements;
+
 //----------------------------------------------------------------------------//
 @interface MKEnumerationFormatter : NSFormatter {
 @package
     NSString *_name;
-    NSDictionary *_elements;
+    MKEnumerationFormatterElements *_elements;
     NSFormatter *_fallbackFormatter;
 }
 
-+ (instancetype)enumerationFormatterWithName:(nullable NSString*)name fallbackFormatter:(nullable NSFormatter*)formatter elements:(nullable NSDictionary<id, NSString*> *)elements;
++ (instancetype)enumerationFormatterWithName:(nullable NSString*)name fallbackFormatter:(nullable NSFormatter*)formatter elements:(nullable MKEnumerationFormatterElements*)elements;
 
-+ (instancetype)enumerationFormatterWithName:(nullable NSString*)name elements:(nullable NSDictionary<id, NSString*> *)elements;
++ (instancetype)enumerationFormatterWithName:(nullable NSString*)name elements:(nullable MKEnumerationFormatterElements*)elements;
 
-+ (instancetype)enumerationFormatterWithElements:(nullable NSDictionary<id, NSString*> *)elements;
++ (instancetype)enumerationFormatterWithElements:(nullable MKEnumerationFormatterElements*)elements;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //!
 @property (nonatomic, copy, nullable) NSString *name;
 
 //! 
-@property (nonatomic, copy, nullable) NSDictionary<id, NSString*> *elements;
+@property (nonatomic, copy, nullable) MKEnumerationFormatterElements *elements;
 
 //!
-@property (nonatomic, strong, nullable) NSFormatter *fallbackFormatter;
+@property (nonatomic, copy, nullable) NSFormatter *fallbackFormatter;
 
 @end
 

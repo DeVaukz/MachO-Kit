@@ -31,9 +31,21 @@
 @implementation NSFormatter (MKNodeField)
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_objectFormatter
+{
+    static MKObjectFormatter *s_ObjectFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_ObjectFormatter = [MKObjectFormatter new];
+    });
+    
+    return s_ObjectFormatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_decimalNumberFormatter
 {
-    static NSNumberFormatter *s_DecimalNumberFormatter= nil;
+    static NSNumberFormatter *s_DecimalNumberFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         s_DecimalNumberFormatter = [NSNumberFormatter new];
@@ -46,19 +58,49 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_hexFormatter
 {
-    return [MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX];
+    static MKHexNumberFormatter *s_HexFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_HexFormatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX] retain];
+    });
+    
+    return s_HexFormatter;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_uppercaseHexFormatter
 {
-    return [MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX uppercase:YES];
+    static MKHexNumberFormatter *s_UppercaseHexFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHexFormatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:SIZE_T_MAX uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHexFormatter;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_hexCompactFormatter
 {
-    return [MKHexNumberFormatter hexNumberFormatterWithDigits:0];
+    static MKHexNumberFormatter *s_HexCompactFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_HexCompactFormatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:0] retain];
+    });
+    
+    return s_HexCompactFormatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHexCompactFormatter
+{
+    static MKHexNumberFormatter *s_UppercaseHexCompactFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHexCompactFormatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:0 uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHexCompactFormatter;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -70,13 +112,13 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_SizeFormatter
 {
-    return nil;
+    return [self mk_decimalNumberFormatter];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_OffsetFormatter
 {
-    return [self mk_hexFormatter];
+    return [self mk_decimalNumberFormatter];
 }
 
 @end

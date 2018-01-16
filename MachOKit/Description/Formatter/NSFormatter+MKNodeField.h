@@ -38,18 +38,19 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface NSFormatter (MKNodeField)
 
-+ (__kindof NSFormatter*)mk_decimalNumberFormatter;
++ (NSFormatter*)mk_objectFormatter;
 
-+ (__kindof NSFormatter*)mk_hexFormatter;
-+ (__kindof NSFormatter*)mk_uppercaseHexFormatter;
++ (NSFormatter*)mk_decimalNumberFormatter;
 
-+ (__kindof NSFormatter*)mk_hexCompactFormatter;
++ (NSFormatter*)mk_hexFormatter;
++ (NSFormatter*)mk_uppercaseHexFormatter;
 
-+ (__kindof NSFormatter*)mk_AddressFormatter;
++ (NSFormatter*)mk_hexCompactFormatter;
++ (NSFormatter*)mk_uppercaseHexCompactFormatter;
 
-+ (__kindof NSFormatter*)mk_SizeFormatter;
-
-+ (__kindof NSFormatter*)mk_OffsetFormatter;
++ (NSFormatter*)mk_AddressFormatter;
++ (NSFormatter*)mk_SizeFormatter;
++ (NSFormatter*)mk_OffsetFormatter;
 
 @end
 

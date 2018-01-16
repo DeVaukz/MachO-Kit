@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKFormatterChain : NSFormatter {
 @package
-    NSArray *_formatters;
+    NSArray<NSFormatter*> *_formatters;
 }
 
 + (instancetype)formatterChainWithFormatters:(nullable NSArray<NSFormatter*> *)formatters;
@@ -40,6 +40,11 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)formatterChainWithFormatter:(NSFormatter*)first, ... NS_REQUIRES_NIL_TERMINATION;
 
 + (instancetype)formatterChainWithLastFormatter:(NSFormatter*)last, ... NS_REQUIRES_NIL_TERMINATION;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //! 
 @property (nonatomic, copy, nullable) NSArray<NSFormatter*> *formatters;
