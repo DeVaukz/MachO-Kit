@@ -51,19 +51,29 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldNumericType>)type offset:(mk_vm_offset_t)offset;
 + (instancetype)builderWithProperty:(NSString*)propertyName type:(nullable id<MKNodeFieldType>)type;
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Field Configuration
+//! @name       Field Configuration
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 @property (nonatomic, strong, nullable) NSString *name;
 
 @property (nonatomic, strong, nullable) NSString *description;
 
 @property (nonatomic, strong, nullable) id<MKNodeFieldType> type;
 
-@property (nonatomic, strong, nullable) NSFormatter *formatter;
-
-@property (nonatomic, readwrite) MKNodeFieldOptions options;
-
 @property (nonatomic, strong, nullable) id<MKNodeFieldValueRecipe> valueRecipe;
 
 @property (nonatomic, strong, nullable) id<MKNodeFieldDataRecipe> dataRecipe;
+
+@property (nonatomic, readwrite) MKNodeFieldOptions options;
+
+@property (nonatomic, strong, nullable) NSFormatter *formatter;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Creating Fields
+//! @name       Creating Fields
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 - (MKNodeField*)build;
 

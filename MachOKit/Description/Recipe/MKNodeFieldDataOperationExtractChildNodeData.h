@@ -28,7 +28,6 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldValueRecipe.h>
 #import <MachOKit/MKNodeFieldDataRecipe.h>
 
 NS_ASSUME_NONNULL_BEGIN

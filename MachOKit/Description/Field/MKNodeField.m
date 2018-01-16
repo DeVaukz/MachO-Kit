@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeField.h"
+#import "MKInternal.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
@@ -42,7 +43,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
 {
-    NSParameterAssert(valueRecipe);
+    NSParameterAssert(name != nil);
+    NSParameterAssert(valueRecipe != nil);
     
     self = [super init];
     if (self == nil) return nil;
@@ -52,6 +54,7 @@
     _type = [type retain];
     _valueRecipe = [valueRecipe retain];
     _dataRecipe = [dataRecipe retain];
+    // The formatter really should be copied but it saves memory not to.
     _valueFormatter = [valueFormatter retain];
     _options = options;
     
@@ -75,13 +78,18 @@
     [super dealloc];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Obtaining a Formatted Description
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)formattedDescriptionForNode:(MKNode*)node
 {
-    id value = [_valueRecipe valueForField:self ofNode:node];
+    id value = [self.valueRecipe valueForField:self ofNode:node];
+    NSFormatter *formatter = self.valueFormatter;
     
-    if (_valueFormatter)
-        return [_valueFormatter stringForObjectValue:value];
+    if (formatter)
+        return [formatter stringForObjectValue:value];
     else
         return [value description];
 }

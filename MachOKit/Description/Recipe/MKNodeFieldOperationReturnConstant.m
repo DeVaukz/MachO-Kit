@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeFieldOperationReturnConstant.h"
-#import "MKNode.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldOperationReturnConstant
@@ -54,8 +54,14 @@
     [super dealloc];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldValueRecipe
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (id)valueForField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
-{ return _constant; }
+{
+    return _constant;
+}
 
 @end

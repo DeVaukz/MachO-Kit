@@ -38,24 +38,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       Node Field Options
-//! @relates    MKFormattedNodeField
+//! @relates    MKNodeField
 //!
 typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     MKNodeFieldOptionNone                                       = 0,
+/* Formating Options */
+    //! Hint to use the \c valueFormatter of the field to format each
+    //! value of the collection (instead of the collection as a whole).
+    //! Only applicable to fields of a collection type.
+    MKNodeFieldOptionFormatCollectionValues                     = (1U << 1),
+/* Display Options */
     //! Hint to display the contents of the field alongside its parent.
-    //! Only applicable to node or collection (of node) type fields.
-    MKNodeFieldOptionMergeWithParent                            = (1U<<0),
+    //! Only applicable to fields of a node or collection of node type.
+    MKNodeFieldOptionMergeWithParent                            = (1U << 5),
     //! Hint to display the field as a child of the node, rather than as a
     //! detail of the node.
     //! Only applicable to node type fields.
-    MKNodeFieldOptionDisplayAsChild                             = (1U<<5),
+    MKNodeFieldOptionDisplayAsChild                             = (1U << 6),
     //! Hint to treat the field as a detail of the node, rather than as a
     //! child of the node.
     //! Only applicable to node type fields.
-    MKNodeFieldOptionDisplayAsDetail                            = (1U<<6),
+    MKNodeFieldOptionDisplayAsDetail                            = (1U << 7),
     //! Hint to display the contents of a collection field as a detail
     //! od the field.  Only applicable to fields of a collection type.
-    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = (1U<<7)
+    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = (1U << 8)
 };
 
 
@@ -76,23 +82,38 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
 
 - (instancetype)init NS_UNAVAILABLE;
 
-//! The name of this field.  This usually matches the name of the property
-//! used to retreive the data for this field from the node.
-@property (nonatomic, readonly) NSString *name;
-//! A short description of this field.
-@property (nonatomic, readonly, nullable) NSString *description;
-//! The type of this field.
-@property (nonatomic, readonly, nullable) id<MKNodeFieldType> type;
-//! A sequence of steps to retrieve the value for this field from a node.
-@property (nonatomic, readonly) id<MKNodeFieldValueRecipe> valueRecipe;
-//! A sequence of steps to retreive the data for this field from a node.
-@property (nonatomic, readonly, nullable) id<MKNodeFieldDataRecipe> dataRecipe;
-//! The formatter used to format the value of this field.
-@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Field Configuration
+//! @name       Field Configuration
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //! The field options.
 @property (nonatomic, readonly) MKNodeFieldOptions options;
 
-- (NSString*)formattedDescriptionForNode:(MKNode*)node;
+//! The name of the field.
+@property (nonatomic, readonly) NSString *name;
+
+//! A short description of the field.
+@property (nonatomic, readonly, nullable) NSString *description;
+
+//! The type of the field.
+@property (nonatomic, readonly, nullable) id<MKNodeFieldType> type;
+
+//! The steps to retrieve the value for the field from a node.
+@property (nonatomic, readonly) id<MKNodeFieldValueRecipe> valueRecipe;
+
+//! The steps to retreive the data for the field from a node.
+@property (nonatomic, readonly, nullable) id<MKNodeFieldDataRecipe> dataRecipe;
+
+//! A formatter used to format the value of the field.
+@property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Obtaining a Formatted Description
+//! @name       Obtaining a Formatted Description
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+- (NSString*)formattedDescriptionForNode:(MKNode*)node __attribute__((deprecated("To be removed.")));
 
 @end
 

@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeFieldDataOperationExtractSubrange.h"
+#import "MKInternal.h"
 #import "MKBackedNode.h"
 
 //----------------------------------------------------------------------------//
@@ -46,6 +47,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset type:(id<MKNodeFieldNumericType>)type
 {
+    NSParameterAssert(type != nil);
+    
     self = [super init];
     if (self == nil) return nil;
     
@@ -74,7 +77,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSNumber*)address:(NSUInteger)type ofField:(__unused MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    NSAssert([input isKindOfClass:MKBackedNode.class], @"Input must be an MKBackedNode.");
+    NSParameterAssert([input isKindOfClass:MKBackedNode.class]);
     
     mk_error_t err;
     mk_vm_address_t address;
@@ -99,7 +102,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSData*)dataForField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    NSAssert([input isKindOfClass:MKBackedNode.class], @"Input must be an MKBackedNode.");
+    NSParameterAssert([input isKindOfClass:MKBackedNode.class]);
     
     // If offset or size are invalid, -subdataWithRange: will throw.  Don't
     // let that bring down the program.  Catch it and return nil.

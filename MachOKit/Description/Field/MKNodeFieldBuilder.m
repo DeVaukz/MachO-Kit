@@ -26,18 +26,11 @@
 //----------------------------------------------------------------------------//
 
 #import "MKNodeFieldBuilder.h"
+#import "MKInternal.h"
 #import "MKOffsetNode.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldBuilder
-
-@synthesize name = _name;
-@synthesize description = _description;
-@synthesize type = _type;
-@synthesize formatter = _formatter;
-@synthesize options = _options;
-@synthesize valueRecipe = _valueRecipe;
-@synthesize dataRecipe = _dataRecipe;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldType>)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
@@ -50,9 +43,15 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
-    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
+    
+    if ([type conformsToProtocol:@protocol(MKNodeFieldCollectionType)]) {
+        builder.formatter = [[(id<MKNodeFieldCollectionType>)type elementType] formatter];
+        builder.options = MKNodeFieldOptionFormatCollectionValues;
+    } else {
+        builder.formatter = [type formatter];
+    }
     
     [valueRecipe release];
     [dataRecipe release];
@@ -63,8 +62,6 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)builderWithProperty:(NSString*)propertyName type:(id<MKNodeFieldNumericType>)type offset:(mk_vm_offset_t)offset;
 {
-    NSParameterAssert(type);
-    
     MKNodeFieldBuilder *builder = [self new];
     
     id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
@@ -73,9 +70,15 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
-    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
+    
+    if ([type conformsToProtocol:@protocol(MKNodeFieldCollectionType)]) {
+        builder.formatter = [[(id<MKNodeFieldCollectionType>)type elementType] formatter];
+        builder.options = MKNodeFieldOptionFormatCollectionValues;
+    } else {
+        builder.formatter = [type formatter];
+    }
     
     [valueRecipe release];
     [dataRecipe release];
@@ -98,9 +101,15 @@
     builder.name = propertyName;
     builder.description = propertyName;
     builder.type = type;
-    builder.formatter = [type formatter];
     builder.valueRecipe = valueRecipe;
     builder.dataRecipe = dataRecipe;
+    
+    if ([type conformsToProtocol:@protocol(MKNodeFieldCollectionType)]) {
+        builder.formatter = [[(id<MKNodeFieldCollectionType>)type elementType] formatter];
+        builder.options = MKNodeFieldOptionFormatCollectionValues;
+    } else {
+        builder.formatter = [type formatter];
+    }
     
     [valueRecipe release];
     [dataRecipe release];
@@ -120,6 +129,22 @@
     
     [super dealloc];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Field Configuration
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize name = _name;
+@synthesize description = _description;
+@synthesize type = _type;
+@synthesize valueRecipe = _valueRecipe;
+@synthesize dataRecipe = _dataRecipe;
+@synthesize options = _options;
+@synthesize formatter = _formatter;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Creating Fields
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeField*)build

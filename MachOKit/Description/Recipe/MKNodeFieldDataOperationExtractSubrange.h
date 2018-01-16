@@ -28,7 +28,6 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldValueRecipe.h>
 #import <MachOKit/MKNodeFieldDataRecipe.h>
 #import <MachOKit/MKNodeFieldNumericType.h>
 
