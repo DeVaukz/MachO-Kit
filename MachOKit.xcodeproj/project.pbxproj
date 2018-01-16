@@ -594,6 +594,7 @@
 		D0A3BBE21A68ECBF00D663A0 /* load_command_version_min_macosx.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D8A819E4EEB80095870C /* load_command_version_min_macosx.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A3BBE31A68ECBF00D663A0 /* load_command_version_min_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D8A719E4EEB80095870C /* load_command_version_min_macosx.c */; };
 		D0A4A63F19CEB65B00B83A93 /* MKMachOSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A4A63E19CEB65B00B83A93 /* MKMachOSpec.m */; };
+		D0A92F4320033DDC0001C18D /* MKNodeFieldCollectionType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A92F4220033DDC0001C18D /* MKNodeFieldCollectionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A9EAAB1A8FD6FA00280D38 /* section.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A9EAA91A8FD6FA00280D38 /* section.c */; };
 		D0A9EAAD1A8FD6FA00280D38 /* section.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A9EAA91A8FD6FA00280D38 /* section.c */; };
 		D0A9EAAE1A8FD6FA00280D38 /* section.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A9EAAA1A8FD6FA00280D38 /* section.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1329,6 +1330,7 @@
 		D0A3BB531A68DEF200D663A0 /* macho_image_spec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = macho_image_spec.m; sourceTree = "<group>"; };
 		D0A3BB741A68EB9D00D663A0 /* libMachO.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachO.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0A4A63E19CEB65B00B83A93 /* MKMachOSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMachOSpec.m; sourceTree = "<group>"; };
+		D0A92F4220033DDC0001C18D /* MKNodeFieldCollectionType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldCollectionType.h; sourceTree = "<group>"; };
 		D0A9EAA91A8FD6FA00280D38 /* section.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = section.c; sourceTree = "<group>"; };
 		D0A9EAAA1A8FD6FA00280D38 /* section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = section.h; sourceTree = "<group>"; };
 		D0A9EAB11A8FD70C00280D38 /* section_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = section_internal.h; sourceTree = "<group>"; };
@@ -2328,6 +2330,7 @@
 				D0B9F6C71E58040D00D0B35A /* MKNodeFieldNumericType.h */,
 				D0B9F6D91E581DAE00D0B35A /* MKNodeFieldEnumerationType.h */,
 				D0E1C7FB1E610E4F00C4110D /* MKNodeFieldOptionSetType.h */,
+				D0A92F4220033DDC0001C18D /* MKNodeFieldCollectionType.h */,
 				D0E30A811E623B480005A882 /* MKNodeFieldNodeType.h */,
 				D0B9F6C31E57FE3B00D0B35A /* MKNodeFieldTypeByte.h */,
 				D0B9F6C41E57FE3B00D0B35A /* MKNodeFieldTypeByte.m */,
@@ -2871,6 +2874,7 @@
 				D0B9F6D11E580A7D00D0B35A /* MKNodeFieldTypeDoubleWord.h in Headers */,
 				D061B1931FFAC996004A3047 /* MKMemoryMap+Pointer.h in Headers */,
 				D0A1D8EA19E4EEB80095870C /* load_command_symtab.h in Headers */,
+				D0A92F4320033DDC0001C18D /* MKNodeFieldCollectionType.h in Headers */,
 				D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */,
 				D0B9F6C11E57FC3200D0B35A /* MKNodeFieldType.h in Headers */,
 				D0A1D84619E4EE320095870C /* logging_internal.h in Headers */,

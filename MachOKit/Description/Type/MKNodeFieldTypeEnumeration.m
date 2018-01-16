@@ -33,11 +33,11 @@
 @implementation MKNodeFieldTypeEnumeration
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)enumerationWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name elements:(NSDictionary*)elements
++ (instancetype)enumerationWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name elements:(MKNodeFieldEnumerationElements*)elements
 { return [[[self alloc] initWithUnderlyingType:underlyingType name:name elements:elements] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name elements:(NSDictionary*)elements
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name elements:(MKNodeFieldEnumerationElements*)elements
 {
     NSParameterAssert([underlyingType conformsToProtocol:@protocol(MKNodeFieldNumericType)]);
     
@@ -58,6 +58,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_formatter release];
     [_name release];
     [_elements release];
     [_underlyingType release];
@@ -76,14 +77,12 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input
-{ return [_underlyingType flagsForNode:input]; }
-
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(MKNode*)input
+{ return [_underlyingType traitsForNode:input]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)sizeForNode:(MKNode*)input
 { return [_underlyingType sizeForNode:input]; }
-
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)alignmentForNode:(MKNode*)input
@@ -105,13 +104,26 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
 {
-    NSFormatter *fallbackFormatter = _name ? _underlyingType.formatter : nil;
+    if (_formatter == nil) {
+        NSFormatter *fallbackFormatter = _name ? _underlyingType.formatter : nil;
+        
+        MKEnumerationFormatter *enumerationFormatter = [MKEnumerationFormatter new];
+        enumerationFormatter.elements = _elements;
+        enumerationFormatter.name = _name;
+        enumerationFormatter.fallbackFormatter = fallbackFormatter;
+        
+        NSArray *formatters = [[NSArray alloc] initWithObjects:enumerationFormatter, fallbackFormatter, nil];
+        
+        MKFormatterChain *formatterChain = [MKFormatterChain new];
+        formatterChain.formatters = formatters;
+        
+        _formatter = formatterChain;
+        
+        [formatters release];
+        [enumerationFormatter release];
+    }
     
-    MKEnumerationFormatter *enumerationFormatter = [MKEnumerationFormatter enumerationFormatterWithElements:_elements];
-    enumerationFormatter.name = _name;
-    enumerationFormatter.fallbackFormatter = fallbackFormatter;
-    
-    return [MKFormatterChain formatterChainWithFormatter:enumerationFormatter, fallbackFormatter, nil];
+    return _formatter;
 }
 
 @end

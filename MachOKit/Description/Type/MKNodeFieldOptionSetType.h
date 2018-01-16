@@ -29,14 +29,15 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeFieldNumericType.h>
-@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef NSDictionary<NSNumber*, NSString*> MKNodeFieldOptionSetOptions;
 
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldOptionSetType <MKNodeFieldNumericType>
 
-@property (nonatomic, readonly) NSDictionary<NSNumber*, NSString*> *options;
+@property (nonatomic, readonly) MKNodeFieldOptionSetOptions *options;
 
 @end
 

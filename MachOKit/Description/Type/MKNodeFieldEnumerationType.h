@@ -29,14 +29,15 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeFieldType.h>
-@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef NSDictionary<NSNumber*, NSString*> MKNodeFieldEnumerationElements;
 
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldEnumerationType <MKNodeFieldType>
 
-@property (nonatomic, readonly) NSDictionary<NSNumber*, NSString*> *elements;
+@property (nonatomic, readonly) MKNodeFieldEnumerationElements *elements;
 
 @end
 

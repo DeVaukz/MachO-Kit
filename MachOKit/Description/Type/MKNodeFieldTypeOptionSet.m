@@ -33,11 +33,11 @@
 @implementation MKNodeFieldTypeOptionSet
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(NSDictionary*)options
++ (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(MKNodeFieldOptionSetOptions*)options
 { return [[[self alloc] initWithUnderlyingType:underlyingType name:name options:options] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(NSDictionary*)options
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(MKNodeFieldOptionSetOptions*)options
 {
     NSParameterAssert([underlyingType conformsToProtocol:@protocol(MKNodeFieldNumericType)]);
     
@@ -58,6 +58,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_formatter release];
     [_name release];
     [_options release];
     [_underlyingType release];
@@ -76,14 +77,12 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input
-{ return [_underlyingType flagsForNode:input]; }
-
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(MKNode*)input
+{ return [_underlyingType traitsForNode:input]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)sizeForNode:(MKNode*)input
 { return [_underlyingType sizeForNode:input]; }
-
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)alignmentForNode:(MKNode*)input
@@ -105,7 +104,14 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
 {
-    return  [MKOptionSetFormatter optionSetFormatterWithOptions:_options];
+    if (_formatter == nil) {
+        MKOptionSetFormatter *optionSetFormatter = [MKOptionSetFormatter new];
+        optionSetFormatter.options = self.options;
+        
+        _formatter = optionSetFormatter;
+    }
+    
+    return _formatter;
 }
 
 @end

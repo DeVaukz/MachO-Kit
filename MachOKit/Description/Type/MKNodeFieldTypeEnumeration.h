@@ -37,13 +37,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKNodeFieldTypeEnumeration : NSObject <MKNodeFieldEnumerationType, MKNodeFieldNumericType> {
 @package
     id<MKNodeFieldNumericType> _underlyingType;
-    NSDictionary *_elements;
+    MKNodeFieldEnumerationElements *_elements;
     NSString *_name;
+    NSFormatter *_formatter;
 }
 
-+ (instancetype)enumerationWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name elements:(nullable NSDictionary<NSNumber*, NSString*> *)elements;
++ (instancetype)enumerationWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name elements:(nullable MKNodeFieldEnumerationElements*)elements;
 
-- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name elements:(nullable NSDictionary<NSNumber*, NSString*> *)elements NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name elements:(nullable MKNodeFieldEnumerationElements*)elements NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 

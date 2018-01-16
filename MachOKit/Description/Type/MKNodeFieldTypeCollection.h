@@ -28,14 +28,14 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldType.h>
+#import <MachOKit/MKNodeFieldCollectionType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldTypeCollection : NSObject <MKNodeFieldType> {
+@interface MKNodeFieldTypeCollection : NSObject <MKNodeFieldCollectionType> {
 @package
-    id<MKNodeFieldType> _collectionType;
+    id<MKNodeFieldType> _elementType;
 }
 
 + (instancetype)typeWithCollectionType:(nullable id<MKNodeFieldType>)collectionType;

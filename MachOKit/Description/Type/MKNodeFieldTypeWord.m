@@ -43,7 +43,7 @@ MKMakeSingletonInitializer(MKNodeFieldTypeWord)
 { return NSFormatter.mk_decimalNumberFormatter; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(__unused MKNode*)input
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(__unused MKNode*)input
 { return 0; }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -68,7 +68,7 @@ MKMakeSingletonInitializer(MKNodeFieldTypeUnsignedWord)
 { return @"Unsigned Word"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input
-{ return MKNodeFieldNumericTypeUnsigned | [super flagsForNode:input]; }
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(MKNode*)input
+{ return MKNodeFieldNumericTypeTraitUnsigned | [super traitsForNode:input]; }
 
 @end

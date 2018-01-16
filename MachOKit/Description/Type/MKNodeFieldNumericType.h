@@ -29,18 +29,15 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeFieldType.h>
-@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Node Field Numeric Type Flags
+//! @name       Numeric Type Traits
 //! @relates    MKNodeFieldNumericType
 //!
-typedef NS_OPTIONS(NSUInteger, MKNodeFieldNumericTypeFlags) {
-    MKNodeFieldNumericTypeNone          = 0,
-    //!
-    MKNodeFieldNumericTypeUnsigned      = (1U<<0)
+typedef NS_OPTIONS(NSUInteger, MKNodeFieldNumericTypeTraits) {
+    MKNodeFieldNumericTypeTraitUnsigned         = (1U << 0)
 };
 
 
@@ -48,7 +45,7 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldNumericTypeFlags) {
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldNumericType <MKNodeFieldType>
 
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(MKNode*)input;
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(MKNode*)input;
 
 - (size_t)sizeForNode:(MKNode*)input;
 

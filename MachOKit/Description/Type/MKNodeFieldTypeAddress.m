@@ -40,11 +40,11 @@ MKMakeSingletonInitializer(MKNodeFieldTypeAddress)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
-{ return NSFormatter.mk_hexFormatter; }
+{ return NSFormatter.mk_AddressFormatter; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeFlags)flagsForNode:(__unused MKNode*)input
-{ return MKNodeFieldNumericTypeUnsigned; }
+- (MKNodeFieldNumericTypeTraits)traitsForNode:(__unused MKNode*)input
+{ return MKNodeFieldNumericTypeTraitUnsigned; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (size_t)sizeForNode:(__unused MKNode*)input

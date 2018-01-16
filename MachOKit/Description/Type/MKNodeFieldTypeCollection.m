@@ -42,7 +42,7 @@
     self = [super init];
     if (self == nil) return nil;
     
-    _collectionType = [collectionType retain];
+    _elementType = [collectionType retain];
     
     return self;
 }
@@ -54,10 +54,16 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_collectionType release];
+    [_elementType release];
     
     [super dealloc];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldCollectionType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize elementType = _elementType;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldTypeCollection
@@ -66,8 +72,10 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
 {
-    if (_collectionType)
-        return [NSString stringWithFormat:@"Collection<%@>", _collectionType.name];
+    id<MKNodeFieldType> elementType = self.elementType;
+    
+    if (elementType)
+        return [NSString stringWithFormat:@"Collection<%@>", elementType.name];
     else
         return @"Collection";
 }

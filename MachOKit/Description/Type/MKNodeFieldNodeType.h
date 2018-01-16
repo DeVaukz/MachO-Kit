@@ -29,7 +29,6 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeFieldType.h>
-@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 

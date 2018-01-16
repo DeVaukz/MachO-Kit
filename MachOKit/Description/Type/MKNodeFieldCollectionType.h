@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldTypeQuadWord.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKNodeFieldCollectionType.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,50 +25,18 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldTypeQuadWord.h"
-#import "MKInternal.h"
-#import "MKNode.h"
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldType.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldTypeQuadWord
+@protocol MKNodeFieldCollectionType <MKNodeFieldType>
 
-MKMakeSingletonInitializer(MKNodeFieldTypeQuadWord)
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)name
-{ return @"Quad Word"; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSFormatter*)formatter
-{ return NSFormatter.mk_decimalNumberFormatter; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeTraits)traitsForNode:(__unused MKNode*)input
-{ return 0; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (size_t)sizeForNode:(__unused MKNode*)input
-{ return 8; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (size_t)alignmentForNode:(__unused MKNode*)input
-{ return 8; }
+@property (nonatomic, readonly, nullable) id<MKNodeFieldType> elementType;
 
 @end
 
-
-
-//----------------------------------------------------------------------------//
-@implementation MKNodeFieldTypeUnsignedQuadWord
-
-MKMakeSingletonInitializer(MKNodeFieldTypeUnsignedQuadWord)
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)name
-{ return @"Unsigned Quad Word"; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldNumericTypeTraits)traitsForNode:(MKNode*)input
-{ return MKNodeFieldNumericTypeTraitUnsigned | [super traitsForNode:input]; }
-
-@end
+NS_ASSUME_NONNULL_END

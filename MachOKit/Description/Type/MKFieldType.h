@@ -29,6 +29,7 @@
 #import <MachOKit/MKNodeFieldNumericType.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
 #import <MachOKit/MKNodeFieldOptionSetType.h>
+#import <MachOKit/MKNodeFieldCollectionType.h>
 #import <MachOKit/MKNodeFieldNodeType.h>
 
 #import <MachOKit/MKNodeFieldTypeByte.h>
