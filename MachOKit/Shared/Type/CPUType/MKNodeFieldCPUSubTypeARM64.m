@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldCPUSubTypeARM64.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,20 +25,45 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#import "MKNodeFieldCPUSubTypeARM64.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubTypeARM64
+
+static NSDictionary *s_Types = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (s_Types != nil && s_Formatter != nil)
+        return;
+    
+    s_Types = [@{
+         @((cpu_subtype_t)CPU_SUBTYPE_ARM64_ALL): @"CPU_SUBTYPE_ARM64_ALL",
+         @((cpu_subtype_t)CPU_SUBTYPE_ARM64_V8): @"CPU_SUBTYPE_ARM64_V8"
+    } retain];
+    
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"CPU_SUBTYPE_ARM64";
+    formatter.elements = s_Types;
+    s_Formatter = formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"CPU_SUBTYPE_ARM64"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSDictionary*)elements
+{ return s_Types; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
+
+@end

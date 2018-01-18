@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKBitfieldFormatter.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,20 +25,41 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKBitfieldFormatterMask : NSObject <NSCoding> {
+@package
+    NSNumber *_mask;
+    NSFormatter *_formatter;
+    int _shift;
+    BOOL _ignoreZero;
+}
+
+@property (nonatomic, strong, nullable) NSNumber *mask;
+@property (nonatomic, strong, nullable) NSFormatter *formatter;
+@property (nonatomic, readwrite) int shift;
+@property (nonatomic, readwrite) BOOL ignoreZero;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKBitfieldFormatter : NSFormatter {
+@package
+    NSArray<MKBitfieldFormatterMask*> *_bits;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Configuring Formatter Behavior
+//! @name       Configuring Formatter Behavior
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@property (nonatomic, copy, nullable) NSArray<MKBitfieldFormatterMask*> *bits;
+
+@end
+
+NS_ASSUME_NONNULL_END

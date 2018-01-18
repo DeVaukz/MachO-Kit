@@ -28,27 +28,32 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
+#include <mach/machine.h>
+
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
+#import <MachOKit/MKNodeFieldBitfieldType.h>
+
+#import <MachOKit/MKNodeFieldCPUSubTypeCapability.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeI386.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeX86.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM64.h>
+#import <MachOKit/MKNodeFieldCPUSubTypePowerPC.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
-
-+ (instancetype)sharedInstance;
+@interface MKNodeFieldCPUSubType : MKNodeFieldTypeDoubleWord <MKNodeFieldBitfieldType> {
+@package
+    MKNodeFieldCPUSubTypeAny *_implType;
+    NSFormatter *_formatter;
+}
 
 + (__kindof MKNodeFieldCPUSubType*)cpuSubTypeForCPUType:(cpu_type_t)cpuType;
 
+- (instancetype)initWithCPUSubType:(nullable MKNodeFieldCPUSubTypeAny*)subtype NS_DESIGNATED_INITIALIZER;
+
 @end
-
-
-
-//----------------------------------------------------------------------------//
-@interface MKNodeFieldIntelCPUSubType: MKNodeFieldCPUSubType @end
-@interface MKNodeFieldIntel64CPUSubType: MKNodeFieldCPUSubType @end
-@interface MKNodeFieldARMCPUSubType: MKNodeFieldCPUSubType @end
-@interface MKNodeFieldARM64CPUSubType: MKNodeFieldCPUSubType @end
-
 
 NS_ASSUME_NONNULL_END

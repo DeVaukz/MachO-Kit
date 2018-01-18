@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldCPUType.h
+//! @file       MKNodeFieldCPUSubTypeAny.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -34,7 +34,23 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+//! @name       CPU SubTypes
+//! @relates    MKNodeFieldCPUSubTypeAny
+//!
+//
+typedef cpu_subtype_t MKCPUSubType NS_TYPED_EXTENSIBLE_ENUM;
+
+static const MKCPUSubType MKCPUSubTypeMultiple      = CPU_SUBTYPE_MULTIPLE;
+static const MKCPUSubType MKCPUSubTypeLittleEndian  = CPU_SUBTYPE_LITTLE_ENDIAN;
+static const MKCPUSubType MKCPUSubTypeBigEndian     = CPU_SUBTYPE_BIG_ENDIAN;
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeAny : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+
++ (instancetype)sharedInstance;
+
 @end
 
 NS_ASSUME_NONNULL_END

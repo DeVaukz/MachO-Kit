@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldBitfieldType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,20 +25,27 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+#import <MachOKit/MKNodeFieldNumericType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+typedef NSArray<NSNumber*/*Mask*/> MKNodeFieldBitfieldMasks;
+
+//----------------------------------------------------------------------------//
+@protocol MKNodeFieldBitfieldType <MKNodeFieldNumericType>
+
+@property (nonatomic, readonly) MKNodeFieldBitfieldMasks *bits;
+
+- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask;
+
+//! The bitshift to apply to the masked bits.  A negative number specifies
+//! a right shift.  A positive number specifies a left shift.
+- (int)shiftForMask:(NSNumber*)mask;
+
+@end
+
+NS_ASSUME_NONNULL_END
+

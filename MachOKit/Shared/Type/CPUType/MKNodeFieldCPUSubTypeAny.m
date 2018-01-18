@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       NSFormatter+MKNodeField.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldCPUSubTypeAny.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,34 +25,46 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
-
-#import <MachOKit/MKFormatterChain.h>
-#import <MachOKit/MKObjectFormatter.h>
-#import <MachOKit/MKHexNumberFormatter.h>
-#import <MachOKit/MKEnumerationFormatter.h>
-#import <MachOKit/MKOptionSetFormatter.h>
-#import <MachOKit/MKBitfieldFormatter.h>
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKNodeFieldCPUSubTypeAny.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@interface NSFormatter (MKNodeField)
+@implementation MKNodeFieldCPUSubTypeAny
 
-+ (NSFormatter*)mk_objectFormatter;
+static NSDictionary *s_Types = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
 
-+ (NSFormatter*)mk_decimalNumberFormatter;
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeAny)
 
-+ (NSFormatter*)mk_hexFormatter;
-+ (NSFormatter*)mk_uppercaseHexFormatter;
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (s_Types != nil && s_Formatter != nil)
+        return;
+    
+    s_Types = [@{
+        @((cpu_subtype_t)CPU_SUBTYPE_MULTIPLE): @"CPU_SUBTYPE_MULTIPLE",
+        @((cpu_subtype_t)CPU_SUBTYPE_LITTLE_ENDIAN): @"CPU_SUBTYPE_LITTLE_ENDIAN",
+        @((cpu_subtype_t)CPU_SUBTYPE_BIG_ENDIAN): @"CPU_SUBTYPE_BIG_ENDIAN"
+    } retain];
+    
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"CPU_SUBTYPE";
+    formatter.elements = s_Types;
+    s_Formatter = formatter;
+}
 
-+ (NSFormatter*)mk_hexCompactFormatter;
-+ (NSFormatter*)mk_uppercaseHexCompactFormatter;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"CPU_SUBTYPE"; }
 
-+ (NSFormatter*)mk_AddressFormatter;
-+ (NSFormatter*)mk_SizeFormatter;
-+ (NSFormatter*)mk_OffsetFormatter;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSDictionary*)elements
+{ return s_Types; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end
-
-NS_ASSUME_NONNULL_END

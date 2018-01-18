@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldCPUSubTypeARM64.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,20 +25,30 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+//! @name       ARM64 CPU SubTypes
+//! @relates    MKNodeFieldCPUSubTypeARM64
+//!
+//
+NS_SWIFT_NAME(MKCPUSubType.ARM64_ALL)
+static const MKCPUSubType MKARM64CPUSubTypeAll     = CPU_SUBTYPE_ARM64_ALL;
+NS_SWIFT_NAME(MKCPUSubType.ARM64_V8)
+static const MKCPUSubType MKARM64CPUSubTypeV8      = CPU_SUBTYPE_ARM64_V8;
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeARM64 : MKNodeFieldCPUSubTypeAny
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

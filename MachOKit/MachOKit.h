@@ -45,9 +45,7 @@
 #import <MachOKit/MKOffsetNode.h>
 
 #import <MachOKit/MKMemoryMap+Pointer.h>
-
-#import <MachOKit/MKNodeFieldCPUType.h>
-#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKSharedFieldType.h>
 
 #import <MachOKit/MKPointer.h>
 #import <MachOKit/MKPointerNode.h>

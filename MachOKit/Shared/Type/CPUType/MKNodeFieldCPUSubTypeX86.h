@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldCPUSubTypeX86.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,20 +25,40 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+//! @name       X86 CPU SubTypes
+//! @relates    MKNodeFieldCPUSubTypeX86
+//!
+//
+NS_SWIFT_NAME(MKCPUSubType.X86_All)
+static const MKCPUSubType MKX86CPUSubTypeAll         = CPU_SUBTYPE_X86_ALL;
+
+
+
+//----------------------------------------------------------------------------//
+//! @name       X86-64 CPU SubTypes
+//! @relates    MKNodeFieldCPUSubTypeX86
+//!
+//
+NS_SWIFT_NAME(MKCPUSubType.X8664_All)
+static const MKCPUSubType MKX8664CPUSubTypeAll       = CPU_SUBTYPE_X86_64_ALL;
+NS_SWIFT_NAME(MKCPUSubType.X8664_Haswell)
+static const MKCPUSubType MKX8664CPUSubTypeHaswell   = CPU_SUBTYPE_X86_64_H;
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeX86 : MKNodeFieldCPUSubTypeAny
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END
