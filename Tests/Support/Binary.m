@@ -138,6 +138,17 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)functionStarts
+{
+    NSArray *functionStartsList;
+    @autoreleasepool {
+        NSString *functionStarts = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-function_starts"])];
+        functionStartsList = [DyldInfoUtil parseFunctionStarts:functionStarts];
+    }
+    return functionStartsList;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSDictionary*)objcInfo
 {
     NSDictionary *objcInfo;

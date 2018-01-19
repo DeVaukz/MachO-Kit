@@ -133,6 +133,11 @@
     #import <MachOKit/MKDataSection.h>
     #import <MachOKit/MKStubsSection.h>
     #import <MachOKit/MKIndirectPointersSection.h>
+#import <MachOKit/MKMachO+Functions.h>
+    #import <MachOKit/MKFunctionStarts.h>
+    #import <MachOKit/MKFunctionStartsContext.h>
+    #import <MachOKit/MKFunctionOffset.h>
+    #import <MachOKit/MKFunction.h>
 #import <MachOKit/MKMachO+Rebase.h>
     #import <MachOKit/MKRebaseInfo.h>
 	#import <MachOKit/MKRebaseContext.h>

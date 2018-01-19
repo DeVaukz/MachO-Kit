@@ -140,6 +140,9 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
         * Weak ✔
         * Lazy ✔
     * Exports Information ✔
+    * Function Starts ✔
+    * Segment Split Info
+    * Data in Code Entries
     * Symbols (*incomplete - needs to be reworked*)
 * ObjC Metadata
     * Image Info ✔

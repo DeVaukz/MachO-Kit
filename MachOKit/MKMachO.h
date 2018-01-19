@@ -38,6 +38,7 @@
 @class MKMachHeader;
 @class MKLoadCommand;
 @class MKDependentLibrary;
+@class MKFunctionStarts;
 @class MKRebaseInfo;
 @class MKBindingsInfo;
 @class MKWeakBindingsInfo;
@@ -81,6 +82,8 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     NSArray<MKOptional<MKDependentLibrary*>*>  *_dependentLibraries;
     // Segments //
     NSDictionary *_segments;
+    // Function Starts //
+    MKOptional<MKFunctionStarts*> *_functionStarts;
     // Rebase //
     MKOptional<MKRebaseInfo*> *_rebaseInfo;
     // Bindings //

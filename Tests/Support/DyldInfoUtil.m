@@ -287,4 +287,42 @@
 	return result;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseFunctionStarts:(NSString*)input
+{
+    unsigned long long previous = 0;
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count > 0 && [components[0] rangeOfString:@"0x"].location == 0) {
+            
+            NSScanner *scanner = [[NSScanner alloc] initWithString:components[0]];
+            unsigned long long address;
+            if ([scanner scanHexLongLong:&address] == NO || address < previous)
+                break;
+            else
+                previous = address;
+            
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            if (components.count > 1 && [components[1] isEqualToString:@"?"] == NO) {
+                [result addObject:@{
+                    @"address": components[0],
+                    @"symbol": components[1]
+                }];
+            } else {
+                [result addObject:@{
+                    @"address": components[0]
+                }];
+            }
+        }
+    }
+    
+    return result;
+}
+
 @end

@@ -127,4 +127,12 @@
 //!
 + (NSArray*)parseExports:(NSString*)input;
 
+//! Parses \a input into an array of dictionaries, each representing a single
+//! function start.  Each dictionary contains the following keys:
+//!
+//!     address: vm address of the function
+//!     symbol: Symbol name.  May not always be present.
+//!
++ (NSArray*)parseFunctionStarts:(NSString*)input;
+
 @end

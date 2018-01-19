@@ -218,6 +218,8 @@
     [_weakBindingsInfo release];
     [_bindingsInfo release];
     
+    [_functionStarts release];
+    
     [_rebaseInfo release];
     
     [_segments release];
@@ -308,6 +310,14 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    // FUNCTION STARTS
+    MKNodeFieldBuilder *functionStarts = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(functionStarts)
+        type:nil
+    ];
+    functionStarts.description = @"Function Starts";
+    functionStarts.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
     // BINDINGS
     MKNodeFieldBuilder *bindingsInfo = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(bindingsInfo)
@@ -339,6 +349,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(loadCommands) description:@"Load Commands"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
+        functionStarts.build,
         bindingsInfo.build,
         weakBindingsInfo.build,
         lazyBindingsInfo.build,

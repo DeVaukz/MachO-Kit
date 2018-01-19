@@ -210,12 +210,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoRebaseCommands).toNot.beNil();
-					expect(machoRebaseFixups).toNot.beNil();
+                    expect(machoRebaseFixups).toNot.beNil();
                 });
-				
-				it(@"should not have any warnings", ^{
-					expect(machoRebaseInfo.warnings).to.equal(@[]);
-				});
+                
+                it(@"should not have any warnings", ^{
+                    expect(machoRebaseInfo.warnings).to.equal(@[]);
+                });
                 
                 it(@"should have the correct number of rebase commands", ^{
                     expect(machoRebaseCommands.count).to.equal(dyldInfoRebaseCommands.count);
@@ -259,12 +259,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoBindCommands).toNot.beNil();
-					expect(machoBindings).toNot.beNil();
+                    expect(machoBindings).toNot.beNil();
                 });
-				
-				it(@"should not have any warnings", ^{
-					expect(machoBindInfo.warnings).to.equal(@[]);
-				});
+                
+                it(@"should not have any warnings", ^{
+                    expect(machoBindInfo.warnings).to.equal(@[]);
+                });
                 
                 it(@"should have the correct number of bind commands", ^{
                     expect(machoBindCommands.count).to.equal(dyldInfoBindCommands.count);
@@ -312,12 +312,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoWeakBindCommands).toNot.beNil();
-					expect(machoWeakBindings).toNot.beNil();
+                    expect(machoWeakBindings).toNot.beNil();
                 });
-				
-				it(@"should not have any warnings", ^{
-					expect(machoWeakBindInfo.warnings).to.equal(@[]);
-				});
+                
+                it(@"should not have any warnings", ^{
+                    expect(machoWeakBindInfo.warnings).to.equal(@[]);
+                });
                 
                 it(@"should have the correct number of commands", ^{
                     expect(machoWeakBindCommands.count).to.equal(dyldInfoWeakBindCommands.count);
@@ -364,12 +364,12 @@ SpecBegin(MKMachOImage)
                 
                 it(@"should exist", ^{
                     expect(machoLazyBindCommands).toNot.beNil();
-					expect(machoLazyBindings).toNot.beNil();
+                    expect(machoLazyBindings).toNot.beNil();
                 });
-				
-				it(@"should not have any warnings", ^{
-					expect(machoLazyBindInfo.warnings).to.equal(@[]);
-				});
+                
+                it(@"should not have any warnings", ^{
+                    expect(machoLazyBindInfo.warnings).to.equal(@[]);
+                });
                 
                 it(@"should have the correct number of commands", ^{
                     expect(machoLazyBindCommands.count).to.equal(dyldInfoLazyBindCommands.count);
@@ -402,32 +402,59 @@ SpecBegin(MKMachOImage)
                 });
             });
 			
-			//----------------------------------------------------------------//
-			describe(@"exports", ^{
-				NSArray<NSDictionary*> *dyldInfoExports = otoolArchitecture.exports;
-				MKExportsInfo *machoExportsInfo = macho.exportsInfo.value;
-				
-				if (machoExportsInfo == nil)
-					return; // TODO - Check if the image should have exports.
-				
-				NSArray *machoExports = machoExportsInfo.exports;
-				
-				it(@"should exist", ^{
-					expect(machoExports).toNot.beNil();
-				});
-				
-				it(@"should have the correct number of exports", ^{
-					expect(machoExports.count).to.equal(dyldInfoExports.count);
-				});
-				
-				it(@"should result in the correct exports", ^{
-					for (NSUInteger i=0; i<MIN(machoExports.count, dyldInfoExports.count); i++) {
-						MKExport *export = machoExports[i];
-						
-						expect(export.description).to.equal(dyldInfoExports[i]);
-					}
-				});
-			});
+            //----------------------------------------------------------------//
+            describe(@"exports", ^{
+                NSArray<NSDictionary*> *dyldInfoExports = otoolArchitecture.exports;
+                MKExportsInfo *machoExportsInfo = macho.exportsInfo.value;
+                
+                if (machoExportsInfo == nil)
+                    return; // TODO - Check if the image should have exports.
+                
+                NSArray *machoExports = machoExportsInfo.exports;
+                
+                it(@"should exist", ^{
+                    expect(machoExports).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of exports", ^{
+                    expect(machoExports.count).to.equal(dyldInfoExports.count);
+                });
+                
+                it(@"should result in the correct exports", ^{
+                    for (NSUInteger i=0; i<MIN(machoExports.count, dyldInfoExports.count); i++) {
+                        MKExport *export = machoExports[i];
+                        
+                        expect(export.description).to.equal(dyldInfoExports[i]);
+                    }
+                });
+            });
+            
+            //----------------------------------------------------------------//
+            describe(@"function starts", ^{
+                NSArray<NSDictionary*> *dyldFunctionStarts = otoolArchitecture.functionStarts;
+                MKFunctionStarts *machoFunctionStarts = macho.functionStarts.value;
+                
+                if (machoFunctionStarts == nil)
+                    return; // TODO - Check if the image should have function starts.
+                
+                NSArray *machoFunctions = machoFunctionStarts.functions;
+                
+                it(@"should exist", ^{
+                    expect(machoFunctionStarts).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of functions", ^{
+                    expect(machoFunctions.count).to.equal(dyldFunctionStarts.count);
+                });
+                
+                it(@"should result in the correct functions", ^{
+                    for (NSUInteger i=0; i<MIN(machoFunctions.count, dyldFunctionStarts.count); i++) {
+                        MKFunction *function = machoFunctions[i];
+                        
+                        expect(function.description).to.equal(dyldFunctionStarts[i][@"address"]);
+                    }
+                });
+            });
 			
             //----------------------------------------------------------------//
             describe(@"_objc", ^{
