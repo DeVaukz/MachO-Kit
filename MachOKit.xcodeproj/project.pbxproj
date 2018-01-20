@@ -2321,7 +2321,7 @@
 				D01DF2C41A2EE4F100CB1510 /* _MKTaskMemoryMap.h */,
 				D01DF2C51A2EE4F100CB1510 /* _MKTaskMemoryMap.m */,
 			);
-			name = Memory;
+			path = Memory;
 			sourceTree = "<group>";
 		};
 		D0A1D8F319E510B80095870C /* MachOKit */ = {
@@ -2532,7 +2532,7 @@
 				D0672B3D1A52771500D44610 /* MKOffsetNode.h */,
 				D0672B3E1A52771500D44610 /* MKOffsetNode.m */,
 			);
-			name = Core;
+			path = Core;
 			sourceTree = "<group>";
 		};
 		D0C5AC1C19CBDD2700EBF837 /* Products */ = {

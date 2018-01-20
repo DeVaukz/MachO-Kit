@@ -40,5 +40,5 @@
 #import <MachOKit/MKNodeFieldTypeAddress.h>
 #import <MachOKit/MKNodeFieldTypeEnumeration.h>
 #import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
 #import <MachOKit/MKNodeFieldTypeCollection.h>
+#import <MachOKit/MKNodeFieldTypeNode.h>
