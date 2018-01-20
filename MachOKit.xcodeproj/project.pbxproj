@@ -1733,23 +1733,6 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
-		D01B98731B768FBB0035F464 /* SharedTypes */ = {
-			isa = PBXGroup;
-			children = (
-				D0A0D2371DE82675003F0A08 /* MKPointerNode.h */,
-				D0A0D2381DE82675003F0A08 /* MKPointerNode.m */,
-				D0E8B8241CB9800C00237EA1 /* MKPointer.h */,
-				D0E8B8251CB9800C00237EA1 /* MKPointer.m */,
-				D01B98741B7690050035F464 /* MKCString.h */,
-				D01B98751B7690050035F464 /* MKCString.m */,
-				D04269E31DD931E40091AB2A /* MKPtr.h */,
-				D04269E41DD931E40091AB2A /* MKPtr.m */,
-				D0B16D6B1CA8D27700E2116C /* MKLEB.h */,
-				D0B16D6C1CA8D27700E2116C /* MKLEB.m */,
-			);
-			path = SharedTypes;
-			sourceTree = "<group>";
-		};
 		D01C74E21CA7331A00648CA6 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
@@ -2076,6 +2059,16 @@
 			children = (
 				D061B1901FFAC972004A3047 /* Memory */,
 				D061B18F1FFAC92C004A3047 /* Type */,
+				D0A0D2371DE82675003F0A08 /* MKPointerNode.h */,
+				D0A0D2381DE82675003F0A08 /* MKPointerNode.m */,
+				D0E8B8241CB9800C00237EA1 /* MKPointer.h */,
+				D0E8B8251CB9800C00237EA1 /* MKPointer.m */,
+				D04269E31DD931E40091AB2A /* MKPtr.h */,
+				D04269E41DD931E40091AB2A /* MKPtr.m */,
+				D01B98741B7690050035F464 /* MKCString.h */,
+				D01B98751B7690050035F464 /* MKCString.m */,
+				D0B16D6B1CA8D27700E2116C /* MKLEB.h */,
+				D0B16D6C1CA8D27700E2116C /* MKLEB.m */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -2341,7 +2334,6 @@
 				D038B70B1A1021AA008621AE /* NSError+MK.m */,
 				D0C3B2ED19F463C000CAFE58 /* Core */,
 				D061B18E1FFAC84B004A3047 /* Shared */,
-				D01B98731B768FBB0035F464 /* SharedTypes */,
 				D09959EC1A6A29B8007134CE /* Fat */,
 				D03CD7FE1B68808500F52FBB /* DSC */,
 				D0C3B2EC19F4634D00CAFE58 /* MachO */,

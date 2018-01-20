@@ -46,9 +46,8 @@
 
 #import <MachOKit/MKMemoryMap+Pointer.h>
 #import <MachOKit/MKSharedFieldType.h>
-
-#import <MachOKit/MKPointer.h>
 #import <MachOKit/MKPointerNode.h>
+#import <MachOKit/MKPointer.h>
 #import <MachOKit/MKCString.h>
 
 #import <MachOKit/MKFatBinary.h>
