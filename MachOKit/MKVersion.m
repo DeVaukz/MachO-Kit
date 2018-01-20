@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKSourceVersion.m
+//|             MKVersion.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,18 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKSourceVersion.h"
+#import "MKVersion.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKSourceVersion
-
-@synthesize components = _components;
+@implementation MKVersion
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithMachVersion:(uint64_t)version
+- (instancetype)initWithMachVersion:(uint32_t)version
 {
     self = [super init];
     if (self == nil) return nil;
     
-    NSMutableArray<NSNumber*> *components = [[NSMutableArray alloc] initWithObjects:
-        @( (version >> 40) & 0xFFFFFF ),
-        @( (version >> 30) & 0x3FF ),
-        @( (version >> 20) & 0x3FF ),
-        @( (version >> 10) & 0x3FF ),
-        @( (version >> 0) & 0x3FF ),
-        nil
-    ];
-    
-    // Remove all trailing zero components.
-    for (NSUInteger i = components.count-1; i > 0; i--) {
-        if ([components[i] integerValue] != 0)
-            break;
-        
-        [components removeObjectAtIndex:i];
-    }
-    
-    // If only the first component was non-zero, append a single zero
-    // component to the end of the array, ensuring there are at least t
-    // wo components.
-    if (components.count < 2)
-        [components addObject:@(0)];
-    
-    _components = [components copy];
-    [components release];
+    _data = version;
     
     return self;
 }
@@ -72,26 +46,30 @@
 { return [self initWithMachVersion:0]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_components release];
-    
-    [super dealloc];
-}
+- (uint16_t)major
+{ return (_data & 0xFFFF0000) >> 16; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (uint8_t)minor
+{ return (_data & 0x0000FF00) >> 8; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (uint8_t)patch
+{ return (_data & 0x000000FF) >> 0; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-    NSMutableString *description = [NSMutableString string];
-
-    [_components enumerateObjectsUsingBlock:^(NSNumber *component, NSUInteger idx, BOOL __unused *stop) {
-        if (idx == _components.count-1)
-            [description appendFormat:@"%@", component];
-        else
-            [description appendFormat:@"%@.", component];
-    }];
-    
-    return [[description copy] autorelease];
+    if (self.major && self.minor && self.patch)
+        return [NSString stringWithFormat:@"%" PRIu16 ".%" PRIu8 ".%" PRIu8 "", self.major, self.minor, self.patch];
+    else if (self.major && self.minor)
+        return [NSString stringWithFormat:@"%" PRIu16 ".%" PRIu8 "", self.major, self.minor];
+    else
+        return [NSString stringWithFormat:@"%" PRIu16 "", self.major];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

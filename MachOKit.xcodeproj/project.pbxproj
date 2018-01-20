@@ -1830,14 +1830,6 @@
 		D03030011A22EBDE00288B3E /* Types */ = {
 			isa = PBXGroup;
 			children = (
-				D0539BD21A23F83A00D3A5F0 /* MKVersion.h */,
-				D0539BD31A23F83A00D3A5F0 /* MKVersion.m */,
-				D010B3831A747D0B00AED697 /* MKDylibVersion.h */,
-				D010B3841A747D0B00AED697 /* MKDylibVersion.m */,
-				D0539BE61A24199C00D3A5F0 /* MKSourceVersion.h */,
-				D0539BE71A24199C00D3A5F0 /* MKSourceVersion.m */,
-				D0672B091A4CEC0500D44610 /* MKIndirectPointer.h */,
-				D0672B0A1A4CEC0500D44610 /* MKIndirectPointer.m */,
 			);
 			path = Types;
 			sourceTree = "<group>";
@@ -2479,6 +2471,14 @@
 				D0672B461A535DFB00D44610 /* MKNode+MachO.m */,
 				D04269F51DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.h */,
 				D04269F61DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.m */,
+				D0539BD21A23F83A00D3A5F0 /* MKVersion.h */,
+				D0539BD31A23F83A00D3A5F0 /* MKVersion.m */,
+				D010B3831A747D0B00AED697 /* MKDylibVersion.h */,
+				D010B3841A747D0B00AED697 /* MKDylibVersion.m */,
+				D0539BE61A24199C00D3A5F0 /* MKSourceVersion.h */,
+				D0539BE71A24199C00D3A5F0 /* MKSourceVersion.m */,
+				D0672B091A4CEC0500D44610 /* MKIndirectPointer.h */,
+				D0672B0A1A4CEC0500D44610 /* MKIndirectPointer.m */,
 				D0C3B2E119F37B2800CAFE58 /* MKMachO.h */,
 				D0C3B2E219F37B2800CAFE58 /* MKMachO.m */,
 				D0539BEA1A252C9500D3A5F0 /* MKMachHeader.h */,
