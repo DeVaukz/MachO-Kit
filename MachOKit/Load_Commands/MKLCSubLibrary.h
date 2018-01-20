@@ -29,7 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,11 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKLCSubLibrary : MKLoadCommand {
 @package
-    MKLoadCommandString *_sub_library;
+    MKCString *_sub_library;
 }
 
 //! The sub_library name.
-@property (nonatomic, readonly) MKLoadCommandString *sub_library;
+@property (nonatomic, readonly) MKCString *sub_library;
 
 @end
 

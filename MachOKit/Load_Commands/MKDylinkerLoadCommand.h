@@ -29,7 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,11 +39,11 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKDylinkerLoadCommand : MKLoadCommand {
 @package
-    MKLoadCommandString *_name;
+    MKCString *_name;
 }
 
 //! The dynamic linker's path name
-@property (nonatomic, readonly) MKLoadCommandString *name;
+@property (nonatomic, readonly) MKCString *name;
 
 @end
 

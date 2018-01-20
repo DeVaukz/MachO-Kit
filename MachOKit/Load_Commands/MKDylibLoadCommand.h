@@ -29,8 +29,8 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
 #import <MachOKit/MKDylibVersion.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -50,14 +50,14 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKDylibLoadCommand : MKLoadCommand {
 @package
-    MKLoadCommandString *_name;
+    MKCString *_name;
     NSDate *_timestamp;
     MKDylibVersion *_current_version;
     MKDylibVersion *_compatibility_version;
 }
 
 //! The pathname of the library.
-@property (nonatomic, readonly) MKLoadCommandString *name;
+@property (nonatomic, readonly) MKCString *name;
 
 //! The build time stamp of the library.
 @property (nonatomic, readonly) NSDate *timestamp;

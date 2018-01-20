@@ -29,7 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -41,11 +41,11 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKLCRPath : MKLoadCommand {
 @package
-    MKLoadCommandString *_path;
+    MKCString *_path;
 }
 
 //! The path to add to run path.
-@property (nonatomic, readonly) MKLoadCommandString *path;
+@property (nonatomic, readonly) MKCString *path;
 
 @end
 

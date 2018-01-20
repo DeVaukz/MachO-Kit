@@ -45,7 +45,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.name.offset, self.macho.dataModel);
-    _name = [[MKLoadCommandString alloc] initWithOffset:lc.name.offset fromParent:self error:error];
+    _name = [[MKCString alloc] initWithOffset:lc.name.offset fromParent:self error:error];
     
     return self;
 }
@@ -68,7 +68,7 @@
     __unused struct dylinker_command dc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"name.offset"
+        builderWithProperty:@"name.nodeOffset"
         type:nil // TODO -
         offset:offsetof(struct dylinker_command, name.offset)
         size:sizeof(dc.name.offset)
@@ -80,7 +80,7 @@
     
     MKNodeFieldBuilder *name = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(name)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     name.description = @"Name";
     name.options = MKNodeFieldOptionDisplayAsDetail;

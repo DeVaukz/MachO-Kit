@@ -29,7 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -46,11 +46,11 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKLCSubClient : MKLoadCommand {
 @package
-    MKLoadCommandString *_client;
+    MKCString *_client;
 }
 
 //! The client name.
-@property (nonatomic, readonly) MKLoadCommandString *client;
+@property (nonatomic, readonly) MKCString *client;
 
 @end
 

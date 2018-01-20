@@ -49,7 +49,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.path.offset, self.macho.dataModel);
-    _path = [[MKLoadCommandString alloc] initWithOffset:lc.path.offset fromParent:self error:error];
+    _path = [[MKCString alloc] initWithOffset:lc.path.offset fromParent:self error:error];
     
     return self;
 }
@@ -72,7 +72,7 @@
     __unused struct rpath_command lc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"path.offset"
+        builderWithProperty:@"path.nodeOffset"
         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
         offset:offsetof(typeof(lc), path.offset)
         size:sizeof(lc.path.offset)
@@ -83,7 +83,7 @@
     
     MKNodeFieldBuilder *path = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(path)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     path.description = @"Path";
     path.options = MKNodeFieldOptionDisplayAsDetail;

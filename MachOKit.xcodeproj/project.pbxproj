@@ -151,8 +151,6 @@
 		D03030111A22F77700288B3E /* MKLCLoadDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = D030300F1A22F77700288B3E /* MKLCLoadDylib.m */; };
 		D03030141A22FCBD00288B3E /* MKLCIDDylib.h in Headers */ = {isa = PBXBuildFile; fileRef = D03030121A22FCBD00288B3E /* MKLCIDDylib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03030151A22FCBD00288B3E /* MKLCIDDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = D03030131A22FCBD00288B3E /* MKLCIDDylib.m */; };
-		D03030181A231F6F00288B3E /* MKLoadCommandString.h in Headers */ = {isa = PBXBuildFile; fileRef = D03030161A231F6F00288B3E /* MKLoadCommandString.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D03030191A231F6F00288B3E /* MKLoadCommandString.m in Sources */ = {isa = PBXBuildFile; fileRef = D03030171A231F6F00288B3E /* MKLoadCommandString.m */; };
 		D030301C1A23B86600288B3E /* MKLCLoadDylinker.h in Headers */ = {isa = PBXBuildFile; fileRef = D030301A1A23B86600288B3E /* MKLCLoadDylinker.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D030301D1A23B86600288B3E /* MKLCLoadDylinker.m in Sources */ = {isa = PBXBuildFile; fileRef = D030301B1A23B86600288B3E /* MKLCLoadDylinker.m */; };
 		D03030201A23B8E500288B3E /* MKLCIDDylinker.h in Headers */ = {isa = PBXBuildFile; fileRef = D030301E1A23B8E500288B3E /* MKLCIDDylinker.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1019,8 +1017,6 @@
 		D030300F1A22F77700288B3E /* MKLCLoadDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCLoadDylib.m; sourceTree = "<group>"; };
 		D03030121A22FCBD00288B3E /* MKLCIDDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCIDDylib.h; sourceTree = "<group>"; };
 		D03030131A22FCBD00288B3E /* MKLCIDDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCIDDylib.m; sourceTree = "<group>"; };
-		D03030161A231F6F00288B3E /* MKLoadCommandString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLoadCommandString.h; sourceTree = "<group>"; };
-		D03030171A231F6F00288B3E /* MKLoadCommandString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLoadCommandString.m; sourceTree = "<group>"; };
 		D030301A1A23B86600288B3E /* MKLCLoadDylinker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCLoadDylinker.h; sourceTree = "<group>"; };
 		D030301B1A23B86600288B3E /* MKLCLoadDylinker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCLoadDylinker.m; sourceTree = "<group>"; };
 		D030301E1A23B8E500288B3E /* MKLCIDDylinker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCIDDylinker.h; sourceTree = "<group>"; };
@@ -1834,8 +1830,6 @@
 		D03030011A22EBDE00288B3E /* Types */ = {
 			isa = PBXGroup;
 			children = (
-				D03030161A231F6F00288B3E /* MKLoadCommandString.h */,
-				D03030171A231F6F00288B3E /* MKLoadCommandString.m */,
 				D0539BD21A23F83A00D3A5F0 /* MKVersion.h */,
 				D0539BD31A23F83A00D3A5F0 /* MKVersion.m */,
 				D010B3831A747D0B00AED697 /* MKDylibVersion.h */,
@@ -2851,7 +2845,6 @@
 				D082FD3D20072F6F00E6C3E5 /* MKNodeFieldCPUSubTypePowerPC.h in Headers */,
 				D0A1D8D619E4EEB80095870C /* load_command_routines.h in Headers */,
 				D0E1C7FC1E610E4F00C4110D /* MKNodeFieldOptionSetType.h in Headers */,
-				D03030181A231F6F00288B3E /* MKLoadCommandString.h in Headers */,
 				D0995A071A6B7B3D007134CE /* MKLinkEditNode.h in Headers */,
 				D08E5EB21B76D02D009185FE /* MKDSCSymbolTable.h in Headers */,
 				D03030401A23CD1D00288B3E /* MKLCSegment64.h in Headers */,
@@ -3602,7 +3595,6 @@
 				D0E30A801E614D210005A882 /* MKOptionSetFormatter.m in Sources */,
 				D082FD422007326400E6C3E5 /* MKNodeFieldCPUSubTypeCapability.m in Sources */,
 				D010F6FF1CB868EF004025F5 /* MKOptional.m in Sources */,
-				D03030191A231F6F00288B3E /* MKLoadCommandString.m in Sources */,
 				D03030051A22F2D200288B3E /* MKLCSegment.m in Sources */,
 				D0C3B2E519F37B2800CAFE58 /* MKMachO.m in Sources */,
 				D03D193E1C72F0C1006A2CEB /* MKMachO+Rebase.m in Sources */,

@@ -29,7 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKLoadCommand.h>
-#import <MachOKit/MKLoadCommandString.h>
+#import <MachOKit/MKCString.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -47,11 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKLCSubFramework : MKLoadCommand {
 @package
-    MKLoadCommandString *_umbrella;
+    MKCString *_umbrella;
 }
 
 //! The umbrella framework name.
-@property (nonatomic, readonly) MKLoadCommandString *umbrella;
+@property (nonatomic, readonly) MKCString *umbrella;
 
 @end
 

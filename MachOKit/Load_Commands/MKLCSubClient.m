@@ -49,7 +49,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.client.offset, self.macho.dataModel);
-    _client = [[MKLoadCommandString alloc] initWithOffset:lc.client.offset fromParent:self error:error];
+    _client = [[MKCString alloc] initWithOffset:lc.client.offset fromParent:self error:error];
     
     return self;
 }
@@ -72,7 +72,7 @@
     __unused struct sub_client_command lc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"client.offset"
+        builderWithProperty:@"client.nodeOffset"
         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
         offset:offsetof(typeof(lc), client.offset)
         size:sizeof(lc.client.offset)
@@ -83,7 +83,7 @@
     
     MKNodeFieldBuilder *client = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(client)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     client.description = @"Client";
     client.options = MKNodeFieldOptionDisplayAsDetail;

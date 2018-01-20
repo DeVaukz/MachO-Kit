@@ -49,7 +49,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.sub_library.offset, self.macho.dataModel);
-    _sub_library = [[MKLoadCommandString alloc] initWithOffset:lc.sub_library.offset fromParent:self error:error];
+    _sub_library = [[MKCString alloc] initWithOffset:lc.sub_library.offset fromParent:self error:error];
     
     return self;
 }
@@ -72,7 +72,7 @@
     __unused struct sub_library_command lc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"sub_library.offset"
+        builderWithProperty:@"sub_library.nodeOffset"
         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
         offset:offsetof(typeof(lc), sub_library.offset)
         size:sizeof(lc.sub_library.offset)
@@ -83,7 +83,7 @@
     
     MKNodeFieldBuilder *sub_library = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(sub_library)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     sub_library.description = @"Sub Library";
     sub_library.options = MKNodeFieldOptionDisplayAsDetail;

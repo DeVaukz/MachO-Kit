@@ -28,6 +28,7 @@
 #import "MKDylibLoadCommand.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
+#import "MKCString.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKDylibLoadCommand
@@ -48,7 +49,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.dylib.name.offset, self.macho.dataModel);
-    _name = [[MKLoadCommandString alloc] initWithOffset:lc.dylib.name.offset fromParent:self error:error];
+    _name = [[MKCString alloc] initWithOffset:lc.dylib.name.offset fromParent:self error:error];
     
     MKSwapLValue32(lc.dylib.timestamp, self.macho.dataModel);
     _timestamp = [[NSDate alloc] initWithTimeIntervalSince1970:lc.dylib.timestamp];
@@ -83,7 +84,7 @@
     __unused struct dylib_command dc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"name.offset"
+        builderWithProperty:@"name.nodeOffset"
         type:nil // TODO -
         offset:offsetof(struct dylib_command, dylib.name.offset)
         size:sizeof(dc.dylib.name.offset)
@@ -124,7 +125,7 @@
     
     MKNodeFieldBuilder *name = [MKNodeFieldBuilder
         builderWithProperty:@"name"
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     name.description = @"Name";
     name.options = MKNodeFieldOptionDisplayAsDetail;

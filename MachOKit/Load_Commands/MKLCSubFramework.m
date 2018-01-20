@@ -49,7 +49,7 @@
     { [self release]; return nil; }
     
     MKSwapLValue32(lc.umbrella.offset, self.macho.dataModel);
-    _umbrella = [[MKLoadCommandString alloc] initWithOffset:lc.umbrella.offset fromParent:self error:error];
+    _umbrella = [[MKCString alloc] initWithOffset:lc.umbrella.offset fromParent:self error:error];
     
     return self;
 }
@@ -72,7 +72,7 @@
     __unused struct sub_framework_command lc;
     
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:@"umbrella.offset"
+        builderWithProperty:@"umbrella.nodeOffset"
         type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
         offset:offsetof(typeof(lc), umbrella.offset)
         size:sizeof(lc.umbrella.offset)
@@ -83,7 +83,7 @@
     
     MKNodeFieldBuilder *umbrella = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(umbrella)
-        type:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommandString.class]
+        type:nil // TODO?
     ];
     umbrella.description = @"Umbrella";
     umbrella.options = MKNodeFieldOptionDisplayAsDetail;
