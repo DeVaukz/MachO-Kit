@@ -27,9 +27,10 @@
 
 #import "MKMachHeader.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
 #import "MKNodeFieldCPUType.h"
 #import "MKNodeFieldCPUSubType.h"
+#import "MKNodeFieldMachOFileType.h"
+#import "MKNodeFieldMachOFlagsType.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKMachHeader
@@ -37,14 +38,16 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
-    NSParameterAssert(parent.dataModel);
-    
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
     struct mach_header lc;
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc))
-    { [self release]; return nil; }
+    NSError *memoryMapError = nil;
+    
+    if ([self.memoryMap copyBytesAtOffset:0 fromAddress:self.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc)) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read header."];
+        [self release]; return nil;
+    }
     
     _magic = MKSwapLValue32(lc.magic, self.dataModel);
     _cputype = MKSwapLValue32s(lc.cputype, self.dataModel);
@@ -74,7 +77,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mach_vm_size_t)nodeSize
+- (mk_vm_size_t)nodeSize
 { return sizeof(struct mach_header); }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -114,19 +117,7 @@
     
     MKNodeFieldBuilder *filetype = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(filetype)
-        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil elements:@{
-            @((typeof(mh.magic))MH_OBJECT): @"MH_OBJECT",
-            @((typeof(mh.magic))MH_EXECUTE): @"MH_EXECUTE",
-            @((typeof(mh.magic))MH_FVMLIB): @"MH_FVMLIB",
-            @((typeof(mh.magic))MH_CORE): @"MH_CORE",
-            @((typeof(mh.magic))MH_PRELOAD): @"MH_PRELOAD",
-            @((typeof(mh.magic))MH_DYLIB): @"MH_DYLIB",
-            @((typeof(mh.magic))MH_DYLINKER): @"MH_DYLINKER",
-            @((typeof(mh.magic))MH_BUNDLE): @"MH_BUNDLE",
-            @((typeof(mh.magic))MH_DYLIB_STUB): @"MH_DYLIB_STUB",
-            @((typeof(mh.magic))MH_DSYM): @"MH_DSYM",
-            @((typeof(mh.magic))MH_KEXT_BUNDLE): @"MH_KEXT_BUNDLE"
-        }]
+        type:MKNodeFieldMachOFileType.sharedInstance
         offset:offsetof(typeof(mh), filetype)
     ];
     filetype.description = @"File Type";
@@ -150,32 +141,7 @@
     
     MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(flags)
-        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil options:@{
-            @((typeof(mh.flags))MH_NOUNDEFS): @"MH_NOUNDEFS",
-            @((typeof(mh.flags))MH_INCRLINK): @"MH_INCRLINK",
-            @((typeof(mh.flags))MH_DYLDLINK): @"MH_DYLDLINK",
-            @((typeof(mh.flags))MH_BINDATLOAD): @"MH_BINDATLOAD",
-            @((typeof(mh.flags))MH_SPLIT_SEGS): @"MH_SPLIT_SEGS",
-            @((typeof(mh.flags))MH_LAZY_INIT): @"MH_LAZY_INIT",
-            @((typeof(mh.flags))MH_TWOLEVEL): @"MH_TWOLEVEL",
-            @((typeof(mh.flags))MH_FORCE_FLAT): @"MH_FORCE_FLAT",
-            @((typeof(mh.flags))MH_NOMULTIDEFS): @"MH_NOMULTIDEFS",
-            @((typeof(mh.flags))MH_NOFIXPREBINDING): @"MH_NOFIXPREBINDING",
-            @((typeof(mh.flags))MH_PREBINDABLE): @"MH_PREBINDABLE",
-            @((typeof(mh.flags))MH_ALLMODSBOUND): @"MH_ALLMODSBOUND",
-            @((typeof(mh.flags))MH_SUBSECTIONS_VIA_SYMBOLS): @"MH_SUBSECTIONS_VIA_SYMBOLS",
-            @((typeof(mh.flags))MH_WEAK_DEFINES): @"MH_WEAK_DEFINES",
-            @((typeof(mh.flags))MH_BINDS_TO_WEAK): @"MH_BINDS_TO_WEAK",
-            @((typeof(mh.flags))MH_ALLOW_STACK_EXECUTION): @"MH_ALLOW_STACK_EXECUTION",
-            @((typeof(mh.flags))MH_ROOT_SAFE): @"MH_ROOT_SAFE",
-            @((typeof(mh.flags))MH_SETUID_SAFE): @"MH_SETUID_SAFE",
-            @((typeof(mh.flags))MH_NO_REEXPORTED_DYLIBS): @"MH_NO_REEXPORTED_DYLIBS",
-            @((typeof(mh.flags))MH_PIE): @"MH_PIE",
-            @((typeof(mh.flags))MH_DEAD_STRIPPABLE_DYLIB): @"MH_DEAD_STRIPPABLE_DYLIB",
-            @((typeof(mh.flags))MH_HAS_TLV_DESCRIPTORS): @"MH_HAS_TLV_DESCRIPTORS",
-            @((typeof(mh.flags))MH_NO_HEAP_EXECUTION): @"MH_NO_HEAP_EXECUTION",
-            @((typeof(mh.flags))MH_APP_EXTENSION_SAFE): @"MH_APP_EXTENSION_SAFE",
-        }]
+        type:MKNodeFieldMachOFlagsType.sharedInstance
         offset:offsetof(typeof(mh), flags)
     ];
     flags.description = @"Flags";

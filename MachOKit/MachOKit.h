@@ -75,6 +75,7 @@
     #import <MachOKit/MKDSCDylibInfos.h>
     #import <MachOKit/MKDSCDylibSymbolInfo.h>
 
+#import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachO+Segments.h>
 #import <MachOKit/MKMachO+Symbols.h>

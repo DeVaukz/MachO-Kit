@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMachHeader64.m
+//|             MKNodeFieldMachOFileType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,67 +25,62 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMachHeader64.h"
+#import "MKNodeFieldMachOFileType.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKMachHeader64
+@implementation MKNodeFieldMachOFileType
+
+static MKNodeFieldEnumerationElements *s_FileTypes = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldMachOFileType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
++ (void)initialize
 {
-    NSParameterAssert(parent.macho);
+    if (s_FileTypes != nil && s_Formatter != nil)
+        return;
     
-    self = [super initWithOffset:offset fromParent:parent error:error];
-    if (self == nil) return nil;
+    s_FileTypes = [@{
+        @(MH_OBJECT): @"MH_OBJECT",
+        @(MH_EXECUTE): @"MH_EXECUTE",
+        @(MH_FVMLIB): @"MH_FVMLIB",
+        @(MH_CORE): @"MH_CORE",
+        @(MH_PRELOAD): @"MH_PRELOAD",
+        @(MH_DYLIB): @"MH_DYLIB",
+        @(MH_DYLINKER): @"MH_DYLINKER",
+        @(MH_BUNDLE): @"MH_BUNDLE",
+        @(MH_DYLIB_STUB): @"MH_DYLIB_STUB",
+        @(MH_DSYM): @"MH_DSYM",
+        @(MH_KEXT_BUNDLE): @"MH_KEXT_BUNDLE"
+    } retain];
     
-    struct mach_header_64 lc;
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc))
-    { [self release]; return nil; }
-    
-    _reserved = MKSwapLValue32(lc.reserved, self.macho.dataModel);
-    
-    return self;
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"MH";
+    formatter.elements = s_FileTypes;
+    s_Formatter = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Mach-O Header Values
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-@dynamic magic;
-@dynamic cputype;
-@dynamic cpusubtype;
-@dynamic filetype;
-@dynamic ncmds;
-@dynamic sizeofcmds;
-@dynamic flags;
-@synthesize reserved = _reserved;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
+#pragma mark -  MKNodeFieldEnumerationType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mach_vm_size_t)nodeSize
-{ return sizeof(struct mach_header_64); }
+- (MKNodeFieldEnumerationElements*)elements
+{ return s_FileTypes; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    __unused struct mach_header_64 mh;
-    
-    MKNodeFieldBuilder *reserved = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(reserved)
-        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
-        offset:offsetof(typeof(mh), reserved)
-    ];
-    reserved.description = @"Reserved";
-    reserved.options = MKNodeFieldOptionDisplayAsDetail;
-    
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        reserved.build
-    ]];
-}
+- (NSString*)name
+{ return @"Mach-O File Type"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end

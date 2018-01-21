@@ -32,6 +32,7 @@
 #import <MachOKit/MKNode+MachO.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKMemoryMap.h>
+#import <MachOKit/MKMachOFieldType.h>
 
 @protocol MKLCSegment;
 @class MKMachOImage;
