@@ -29,6 +29,7 @@
 
 #import <MachOKit/MKFormatterChain.h>
 #import <MachOKit/MKObjectFormatter.h>
+#import <MachOKit/MKBooleanFormatter.h>
 #import <MachOKit/MKHexNumberFormatter.h>
 #import <MachOKit/MKEnumerationFormatter.h>
 #import <MachOKit/MKOptionSetFormatter.h>
@@ -40,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSFormatter (MKNodeField)
 
 + (NSFormatter*)mk_objectFormatter;
+
++ (NSFormatter*)mk_booleanFormatter;
 
 + (NSFormatter*)mk_decimalNumberFormatter;
 

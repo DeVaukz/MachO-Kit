@@ -43,6 +43,18 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_booleanFormatter
+{
+    static MKBooleanFormatter *s_BooleanFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_BooleanFormatter = [MKBooleanFormatter new];
+    });
+    
+    return s_BooleanFormatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_decimalNumberFormatter
 {
     static NSNumberFormatter *s_DecimalNumberFormatter = nil;
