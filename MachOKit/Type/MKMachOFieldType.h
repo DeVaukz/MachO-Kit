@@ -27,3 +27,4 @@
 
 #import <MachOKit/MKNodeFieldMachOFileType.h>
 #import <MachOKit/MKNodeFieldMachOFlagsType.h>
+#import <MachOKit/MKNodeFieldVersionType.h>

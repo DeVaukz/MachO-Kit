@@ -37,8 +37,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithLoadCommand:(MKDylibLoadCommand*)loadCommand error:(NSError**)error;
 {
-    NSParameterAssert(loadCommand);
-    NSAssert(loadCommand.macho, @"");
+    NSParameterAssert(loadCommand.macho != nil);
     
     self = [super initWithParent:loadCommand.macho error:error];
     if (self == nil) return nil;
@@ -47,7 +46,6 @@
     
     return self;
 }
-
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
@@ -62,7 +60,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -98,7 +96,7 @@
 { return _loadCommand.cmd == LC_REEXPORT_DYLIB; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKBackedNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -106,26 +104,82 @@
 { return [_loadCommand nodeAddress:type]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return [_loadCommand nodeSize]; }
+- (MKNodeDescription*)layout
+{
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:MKNodeFieldTypeString.sharedInstance
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *timestamp = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(timestamp)
+        type:MKNodeFieldTypeDate.sharedInstance
+    ];
+    timestamp.description = @"Timestamp";
+    timestamp.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *currentVersion = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(currentVersion)
+        type:MKNodeFieldDylibVersionType.sharedInstance
+    ];
+    currentVersion.description = @"Current Version";
+    currentVersion.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *compatibilityVersion = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(compatibilityVersion)
+        type:MKNodeFieldDylibVersionType.sharedInstance
+    ];
+    compatibilityVersion.description = @"Compatibility Version";
+    compatibilityVersion.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *required = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(required)
+        type:MKNodeFieldTypeBoolean.sharedInstance
+    ];
+    required.description = @"Required";
+    required.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *weak = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weak)
+        type:MKNodeFieldTypeBoolean.sharedInstance
+    ];
+    weak.description = @"Weak";
+    weak.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *upward = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(upward)
+        type:MKNodeFieldTypeBoolean.sharedInstance
+    ];
+    upward.description = @"Upward";
+    upward.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *rexported = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(rexported)
+        type:MKNodeFieldTypeBoolean.sharedInstance
+    ];
+    rexported.description = @"Reexported";
+    rexported.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        name.build,
+        timestamp.build,
+        currentVersion.build,
+        compatibilityVersion.build,
+        required.build,
+        weak.build,
+        upward.build,
+        rexported.build
+    ]];
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Name"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(timestamp) description:@"Timestamp"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(currentVersion) description:@"Current Version"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(compatibilityVersion) description:@"Compatibility Version"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(required) description:@"Required"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(weak) description:@"Weak"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(upward) description:@"Upward"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(rexported) description:@"Reexported"]
-    ]];
-}
+- (NSString*)description
+{ return [[self.name stringByDeletingPathExtension] lastPathComponent]; }
 
 @end

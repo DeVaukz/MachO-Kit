@@ -328,6 +328,8 @@
 		D06D59C720156DB500A99173 /* MKNodeFieldBooleanType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D59C620156DB500A99173 /* MKNodeFieldBooleanType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06D59CA20156E4000A99173 /* MKNodeFieldTypeBoolean.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D59C820156E4000A99173 /* MKNodeFieldTypeBoolean.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06D59CB20156E4000A99173 /* MKNodeFieldTypeBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = D06D59C920156E4000A99173 /* MKNodeFieldTypeBoolean.m */; };
+		D06D59CE20159A9A00A99173 /* MKNodeFieldVersionType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06D59CF20159A9A00A99173 /* MKNodeFieldVersionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */; };
 		D074B6DB1A88859B00B5E3E5 /* segment.c in Sources */ = {isa = PBXBuildFile; fileRef = D074B6D91A88859B00B5E3E5 /* segment.c */; };
 		D074B6DD1A88859B00B5E3E5 /* segment.c in Sources */ = {isa = PBXBuildFile; fileRef = D074B6D91A88859B00B5E3E5 /* segment.c */; };
 		D074B6DE1A88859B00B5E3E5 /* segment.h in Headers */ = {isa = PBXBuildFile; fileRef = D074B6DA1A88859B00B5E3E5 /* segment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1213,6 +1215,8 @@
 		D06D59C620156DB500A99173 /* MKNodeFieldBooleanType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldBooleanType.h; sourceTree = "<group>"; };
 		D06D59C820156E4000A99173 /* MKNodeFieldTypeBoolean.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeBoolean.h; sourceTree = "<group>"; };
 		D06D59C920156E4000A99173 /* MKNodeFieldTypeBoolean.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeBoolean.m; sourceTree = "<group>"; };
+		D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldVersionType.h; sourceTree = "<group>"; };
+		D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldVersionType.m; sourceTree = "<group>"; };
 		D074B6D91A88859B00B5E3E5 /* segment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = segment.c; sourceTree = "<group>"; };
 		D074B6DA1A88859B00B5E3E5 /* segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = segment.h; sourceTree = "<group>"; };
 		D07727671A553C8000A517D3 /* MKSymbolTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSymbolTable.h; sourceTree = "<group>"; };
@@ -1867,6 +1871,8 @@
 				D06D596D2013BB6700A99173 /* MKNodeFieldMachOFileType.m */,
 				D06D59702013BF6500A99173 /* MKNodeFieldMachOFlagsType.h */,
 				D06D59712013BF6500A99173 /* MKNodeFieldMachOFlagsType.m */,
+				D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */,
+				D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */,
 			);
 			path = Type;
 			sourceTree = "<group>";
@@ -3115,6 +3121,7 @@
 				D0A1D8E819E4EEB80095870C /* load_command_sub_library.h in Headers */,
 				D0B16D511CA87EE800E2116C /* MKExportsInfo.h in Headers */,
 				D0C5640A1A944E3E00443090 /* symbol_internal.h in Headers */,
+				D06D59CE20159A9A00A99173 /* MKNodeFieldVersionType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3566,6 +3573,7 @@
 				D030302D1A23BF3800288B3E /* MKLCSubClient.m in Sources */,
 				D08E5EB41B76D02D009185FE /* MKDSCSymbolTable.m in Sources */,
 				D0672B401A52771500D44610 /* MKOffsetNode.m in Sources */,
+				D06D59CF20159A9A00A99173 /* MKNodeFieldVersionType.m in Sources */,
 				D0539BC11A23D5A100D3A5F0 /* MKLCSourceVersion.m in Sources */,
 				D0EA12FE1C76418300EEBAC6 /* MKRebaseSetSegmentAndOffsetULEB.m in Sources */,
 				D09F6C521A14847700AB21E3 /* MKMemoryMap.m in Sources */,

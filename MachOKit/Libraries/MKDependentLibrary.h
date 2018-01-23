@@ -28,7 +28,7 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKBackedNode.h>
+#import <MachOKit/MKAddressedNode.h>
 #import <MachOKit/MKDylibVersion.h>
 
 @class MKDylibLoadCommand;
@@ -36,12 +36,12 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDependentLibrary : MKBackedNode {
+@interface MKDependentLibrary : MKAddressedNode {
 @package
     MKDylibLoadCommand *_loadCommand;
 }
 
-//! Initializes the receiver with the provided Mach-O image.
+//! Initializes the receiver with the provided Mach-O.
 - (nullable instancetype)initWithLoadCommand:(MKDylibLoadCommand*)loadCommand error:(NSError**)error;
 
 //! The pathname of the library.
@@ -50,13 +50,13 @@ NS_ASSUME_NONNULL_BEGIN
 //! The build time stamp of the library.
 @property (nonatomic, readonly) NSDate *timestamp;
 
-//! The current version number of the library.
+//! The current version of the library.
 @property (nonatomic, readonly) MKDylibVersion *currentVersion;
 
-//! The compatibility version number of the library.
+//! The compatibility version of the library.
 @property (nonatomic, readonly) MKDylibVersion *compatibilityVersion;
 
-//! Whether the library must be present at dynamic-link time.
+//! \c YES if the library must be present at dynamic-link time.
 @property (nonatomic, readonly) BOOL required;
 
 //!

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachOImage+Libraries.h
+//! @file       MKNodeFieldVersionType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,22 +28,32 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKMachO.h>
-
-@class MKDependentLibrary;
+#import <MachOKit/MKNodeFieldType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKMachOImage (Libraries)
+@interface MKNodeFieldVersionType : NSObject <MKNodeFieldType>
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Dependent Libraries
-//! @name       Dependent Libraries
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
++ (instancetype)sharedInstance;
 
-//! An array of the libraries that the binary depends on, in their load order.
-@property (nonatomic, readonly) NSArray<MKOptional<MKDependentLibrary*>*> *dependentLibraries;
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldDylibVersionType : NSObject <MKNodeFieldType>
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldSourceVersionType : NSObject <MKNodeFieldType>
+
++ (instancetype)sharedInstance;
 
 @end
 

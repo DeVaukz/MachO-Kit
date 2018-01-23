@@ -33,6 +33,10 @@
 //----------------------------------------------------------------------------//
 @implementation MKMachOImage (Libraries)
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Dependent Libraries
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)dependentLibraries
 {
@@ -41,16 +45,16 @@
         NSMutableArray<MKOptional<MKDependentLibrary*>*> *libraries = [[NSMutableArray alloc] init];
         
         for (MKDylibLoadCommand *lc in self.loadCommands) {
-            NSError *localError = nil;
+            NSError *libraryError = nil;
             
             if ([lc isKindOfClass:MKDylibLoadCommand.class] == NO || lc.cmd == LC_ID_DYLIB)
                 continue;
             
-            MKDependentLibrary *library = [[MKDependentLibrary alloc] initWithLoadCommand:lc error:&localError];
+            MKDependentLibrary *library = [[MKDependentLibrary alloc] initWithLoadCommand:lc error:&libraryError];
             if (library)
                 [libraries addObject:[MKOptional optionalWithValue:library]];
             else
-                [libraries addObject:[MKOptional optionalWithError:localError]];
+                [libraries addObject:[MKOptional optionalWithError:libraryError]];
             
             [library release];
         }

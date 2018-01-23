@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachOImage+Libraries.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldVersionType.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,26 +25,55 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKMachO.h>
-
-@class MKDependentLibrary;
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKNodeFieldVersionType.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@interface MKMachOImage (Libraries)
+@implementation MKNodeFieldVersionType
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Dependent Libraries
-//! @name       Dependent Libraries
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+MKMakeSingletonInitializer(MKNodeFieldVersionType)
 
-//! An array of the libraries that the binary depends on, in their load order.
-@property (nonatomic, readonly) NSArray<MKOptional<MKDependentLibrary*>*> *dependentLibraries;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Version"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return nil; }
 
 @end
 
-NS_ASSUME_NONNULL_END
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldDylibVersionType
+
+MKMakeSingletonInitializer(MKNodeFieldDylibVersionType)
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Dylib Version"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return nil; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldSourceVersionType
+
+MKMakeSingletonInitializer(MKNodeFieldSourceVersionType)
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Source Version"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return nil; }
+
+@end
