@@ -30,7 +30,6 @@
 
 #import <MachOKit/MKLinkEditNode.h>
 
-@class MKMachOImage;
 @class MKCString;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -43,10 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
     NSDictionary<NSNumber*, MKCString*> *_strings;
 }
 
-//! Initializes the receiver with the provided Mach-O image.
+//! Initializes the receiver with the provided Mach-O.
 - (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
-//! An \c NSDictionary mapping offsets from the start of this node node to
+//! An \c NSDictionary mapping offsets from the start of the string table to
 //! string entries, represented by instances of \c MKCString.
 @property (nonatomic, readonly) NSDictionary<NSNumber*, MKCString*> *strings;
 
