@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachOFieldType.h
+//! @file       MKNodeFieldSectionSystemAttributesType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,9 +25,37 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldMachOFileType.h>
-#import <MachOKit/MKNodeFieldMachOFlagsType.h>
-#import <MachOKit/MKNodeFieldVersionType.h>
-#import <MachOKit/MKNodeFieldVMProtectionType.h>
-#import <MachOKit/MKNodeFieldSegmentFlagsType.h>
-#import <MachOKit/MKNodeFieldSectionFlagsType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#include <mach-o/loader.h>
+
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldOptionSetType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+//! @name       Section System Attributes
+//! @relates    MKNodeFieldSectionSystemAttributesType
+//!
+//
+typedef NS_OPTIONS(uint32_t, MKSectionSystemAttributes) {
+    //! Section contains some machine instructions
+    MKSectionAttributeSomeInstructions          = S_ATTR_SOME_INSTRUCTIONS,
+    //! Section has external relocation entries
+    MKSectionAttributeExternalRelocations       = S_ATTR_EXT_RELOC,
+    //! Section has local relocation entries
+    MKSectionAttributeLocalRelocations          = S_ATTR_LOC_RELOC,
+};
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldSectionSystemAttributesType : MKNodeFieldTypeDoubleWord
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

@@ -29,35 +29,13 @@
 @import Foundation;
 
 #import <MachOKit/MKBackedNode.h>
+#import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKLCSegment.h>
 #import <MachOKit/MKSection.h>
 
 @class MKMachOImage;
 
 NS_ASSUME_NONNULL_BEGIN
-
-//----------------------------------------------------------------------------//
-//! @name       Segment Flags
-//! @relates    MKSegment
-//!
-//
-typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
-    //! the file contents for this segment is for the high part of the VM
-    //! space, the low part is zero filled (for stacks in core files).
-    MKSegmentHighVM                             = SG_HIGHVM,
-    //! This segment is the VM that is allocated by a fixed VM library, for
-    //! overlap checking in the link editor.
-    MKSegmentFixedVM                            = SG_FVMLIB,
-    //! this segment has nothing that was relocated in it and nothing
-    //! relocated to it, that is it maybe safely replaced without relocation.
-    MKSegmentNoRelocations                      = SG_NORELOC,
-    //! This segment is protected.  If the segment starts at file offset 0,
-    //! the first page of the segment is not protected.  All other pages of
-    //! the segment are protected.
-    MKSegmentProtectedV1                        = SG_PROTECTED_VERSION_1,
-};
-
-
 
 //----------------------------------------------------------------------------//
 //! An instance of \c MKSegment represents a contiguous range of memory mapped
@@ -97,8 +75,8 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
 //!
 //! Subclasses should return a non-zero integer if they support the segment.
 //! The subclass that returns the largest value will be instantiated.
-//! \ref MKSegment subclasses in Mach-O Kit return \c 10.  You can therefore
-//! substitute your own subclass by returning a larger value.
+//! \ref MKSegment subclasses in Mach-O Kit return a value no larger than
+//! \c 100.  You can substitute your own subclass by returning a larger value.
 + (uint32_t)canInstantiateWithSegmentLoadCommand:(id<MKLCSegment>)segmentLoadCommand;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

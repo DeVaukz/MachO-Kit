@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachO+Segments.h
-//!
-//! @author     D.V.
-//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             MKNodeFieldSectionSystemAttributesType.m
+//|
+//|             D.V.
+//|             Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,41 +25,53 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKMachO.h>
-#import <MachOKit/MKOptional.h>
-
-@class MKSegment;
-@class MKSection;
-
-NS_ASSUME_NONNULL_BEGIN
+#import "MKNodeFieldSectionSystemAttributesType.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@interface MKMachOImage (Segments)
+@implementation MKNodeFieldSectionSystemAttributesType
+
+static NSDictionary *s_SystemAttributes = nil;
+static MKOptionSetFormatter *s_SystemFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldSectionSystemAttributesType)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (s_SystemAttributes != nil && s_SystemFormatter != nil)
+        return;
+    
+    s_SystemAttributes = [@{
+        @(S_ATTR_SOME_INSTRUCTIONS): @"S_ATTR_SOME_INSTRUCTIONS",
+        @(S_ATTR_EXT_RELOC): @"S_ATTR_EXT_RELOC",
+        @(S_ATTR_LOC_RELOC): @"S_ATTR_LOC_RELOC"
+    } retain];
+    
+    MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
+    formatter.options = s_SystemAttributes;
+    s_SystemFormatter = formatter;
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Segments
-//! @name       Segments
+#pragma mark -  MKNodeFieldOptionSetType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The segments referenced by any \c LC_SEGMENT or \c LC_SEGMENT64 present
-//! in the Mach-O load commands.
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSegment*> *segments;
-
-- (NSArray<__kindof MKSegment*> *)segmentsWithName:(NSString*)name;
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetOptions*)options
+{ return s_SystemAttributes; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Sections
-//! @name       Sections
+#pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSection*> *sections;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Section System Attributes"; }
 
-- (NSArray<__kindof MKSection*> *)sectionsWithName:(NSString*)sectName inSegment:(nullable MKSegment*)segment;
-- (NSArray<__kindof MKSection*> *)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName;
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_SystemFormatter; }
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -44,7 +44,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 @implementation MKMachOImage (Segments)
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Segments and Sections
+#pragma mark -  Segments
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -64,16 +64,16 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
         
         for (id lc in self.loadCommands)
         {
-            NSError *localError = nil;
+            NSError *segmentError = nil;
             
             if ([lc conformsToProtocol:@protocol(MKLCSegment)] == NO)
                 continue;
             
             segmentIndex++;
             
-            MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&localError];
+            MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&segmentError];
             if (segment == nil) {
-                MK_PUSH_UNDERLYING_WARNING(segments, localError, @"Failed to load segment for load command %@", lc);
+                MK_PUSH_WARNING_WITH_ERROR(segments, MK_EINTERNAL_ERROR, segmentError, @"Could not create segment for load command: %@", lc);
                 continue;
             }
             
@@ -128,6 +128,10 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     return [self._segments[MKAllSegments] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name MATCHES %@", name]];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Sections
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSDictionary*)sections
 { return self._segments[MKIndexedSections]; }
@@ -151,7 +155,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 { return [self sectionsWithName:sectName inSegment:[self segmentsWithName:segName].firstObject]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

@@ -34,16 +34,6 @@
 //----------------------------------------------------------------------------//
 @implementation MKSegment
 
-@synthesize name = _name;
-@synthesize loadCommand = _loadCommand;
-@synthesize vmAddress = _vmAddress;
-@synthesize vmSize = _vmSize;
-@synthesize fileOffset = _fileOffset;
-@synthesize fileSize = _fileSize;
-@synthesize maximumProtection = _maximumProtection;
-@synthesize initialProtection = _initialProtection;
-@synthesize flags = _flags;
-
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
 { static NSSet *subclasses; return &subclasses; }
@@ -64,14 +54,17 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Creating a Segment
+#pragma mark -  Creating a Segment
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)segmentWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error
 {
     Class segmentClass = [self classForSegmentLoadCommand:segmentLoadCommand];
-    NSAssert(segmentClass, @"");
+    if (segmentClass == NULL) {
+        NSString *reason = [NSString stringWithFormat:@"No segment for load command: %@.", [(MKNode*)segmentLoadCommand nodeDescription]];
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
+    }
     
     return [[[segmentClass alloc] initWithLoadCommand:segmentLoadCommand error:error] autorelease];
 }
@@ -79,11 +72,11 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithLoadCommand:(id<MKLCSegment>)segmentLoadCommand error:(NSError**)error
 {
-    NSParameterAssert(segmentLoadCommand);
-    mk_error_t err;
+    NSParameterAssert(segmentLoadCommand.macho != nil);
     
     MKMachOImage *image = segmentLoadCommand.macho;
-    NSParameterAssert(image);
+    NSError *arithmeticError = nil;
+    mk_error_t err;
     
     self = [super initWithParent:image error:error];
     if (self == nil) return nil;
@@ -109,7 +102,8 @@
             mk_vm_slide_t slide = image.slide;
             
             if ((err = mk_vm_address_apply_slide(_nodeContextAddress, slide, &_nodeContextAddress))) {
-                MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                arithmeticError = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Could not determine the context address."];
                 [self release]; return nil;
             }
         }
@@ -121,7 +115,8 @@
         // The _fileOffset of this segment is relative to the Mach-O header
         // which may not correspond to offset 0 in the context.
         if ((err = mk_vm_address_add(image.nodeContextAddress, _fileOffset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, image.nodeContextAddress, _fileOffset);
+            arithmeticError = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, image.nodeContextAddress, _fileOffset);
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Could not determine the context address."];
             [self release]; return nil;
         }
     }
@@ -131,13 +126,15 @@
     // refuse to load the image if this value was larger than the size of the
     // Mach-O, but we don't know the size of the Mach-O.
     if ((err = mk_vm_address_check_length(_fileOffset, _fileSize))) {
-        MK_ERROR_OUT = MK_MAKE_VM_LENGTH_CHECK_ERROR(err, _fileOffset, _fileSize);
+        arithmeticError = MK_MAKE_VM_LENGTH_CHECK_ERROR(err, _fileOffset, _fileSize);
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Invalid file offset or file size."];
         [self release]; return nil;
     }
     
     // Also check the vmAddress + vmSize for potential overflow.
     if ((err = mk_vm_address_check_length(_vmAddress, _vmSize))) {
-        MK_ERROR_OUT = MK_MAKE_VM_LENGTH_CHECK_ERROR(err, _vmAddress, _vmSize);
+        arithmeticError = MK_MAKE_VM_LENGTH_CHECK_ERROR(err, _vmAddress, _vmSize);
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Invalid VM address or VM size."];
         [self release]; return nil;
     }
     
@@ -165,7 +162,7 @@
     
     // Make sure the data is actually available
     if ([self.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_nodeContextSize] == NO) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Segment data does not exist in memory map."];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Segment data does not exist in the memory map."];
         [self release]; return nil;
     }
     
@@ -173,19 +170,21 @@
     {
         NSArray *sections = [segmentLoadCommand sections];
         if (sections.count != [segmentLoadCommand nsects]) {
-            MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Segment load command lists %" PRIi32 " sections but only %" PRIuPTR " are avaiable.", [(MKLCSegment*)segmentLoadCommand nsects], sections.count);
+            MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Segment load command specifies [%" PRIu32 "] sections but only [%" PRIuPTR "] were parsed by the load command.", [(MKLCSegment*)segmentLoadCommand nsects], sections.count);
         }
         
         NSMutableSet *segmentSections = [[NSMutableSet alloc] init];
         
         for (id<MKLCSection> sectionLoadCommand in sections) {
-            NSError *e = nil;
-            MKSection *section = [MKSection sectionWithLoadCommand:sectionLoadCommand inSegment:self error:&e];
+            NSError *sectionError = nil;
             
-            if (section)
-                [segmentSections addObject:section];
-            else
-                MK_PUSH_UNDERLYING_WARNING(sections, e, @"Failed to load section for %@.", sectionLoadCommand);
+            MKSection *section = [MKSection sectionWithLoadCommand:sectionLoadCommand inSegment:self error:&sectionError];
+            if (section == nil) {
+                MK_PUSH_WARNING_WITH_ERROR(sections, MK_EINTERNAL_ERROR, sectionError, @"Failed to create section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]);
+                continue;
+            }
+            
+            [segmentSections addObject:section];
         }
         
         _sections = [segmentSections copy];
@@ -201,22 +200,37 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
-    NSAssert([parent conformsToProtocol:@protocol(MKLCSegment)], @"");
+    NSParameterAssert([parent conformsToProtocol:@protocol(MKLCSegment)]);
+    
     return [self initWithLoadCommand:(id)parent error:error];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_name release];
-    [_loadCommand release];
     [_sections release];
+    [_loadCommand release];
+    [_name release];
     
     [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Sections
+#pragma mark -  Segment Values
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize name = _name;
+@synthesize loadCommand = _loadCommand;
+@synthesize vmAddress = _vmAddress;
+@synthesize vmSize = _vmSize;
+@synthesize fileOffset = _fileOffset;
+@synthesize fileSize = _fileSize;
+@synthesize maximumProtection = _maximumProtection;
+@synthesize initialProtection = _initialProtection;
+@synthesize flags = _flags;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Sections
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize sections = _sections;
@@ -233,7 +247,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -254,7 +268,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize nodeSize = _nodeContextSize;
@@ -265,33 +279,96 @@
     switch (type) {
         case MKNodeContextAddress:
             return _nodeContextAddress;
-            break;
         case MKNodeVMAddress:
             return _vmAddress;
-            break;
-        default:
-            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported node address type." userInfo:nil];
+        default: {
+            NSString *reason = [NSString stringWithFormat:@"Invalid node address type [%" PRIuPTR "].", type];
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
+        }
     }
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:MKNodeFieldTypeString.sharedInstance
+    ];
+    name.description = @"Segment Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *fileOffset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(fileOffset)
+        type:MKNodeFieldTypeAddress.sharedInstance
+    ];
+    fileOffset.description = @"File offset";
+    fileOffset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *fileSize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(fileSize)
+        type:MKNodeFieldTypeSize.sharedInstance
+    ];
+    fileSize.description = @"File size";
+    fileSize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *vmAddress = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(vmAddress)
+        type:MKNodeFieldTypeAddress.sharedInstance
+    ];
+    vmAddress.description = @"VM Address";
+    vmAddress.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *vmSize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(vmSize)
+        type:MKNodeFieldTypeSize.sharedInstance
+    ];
+    vmSize.description = @"VM Size";
+    vmSize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *maximumProtection = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(maximumProtection)
+        type:MKNodeFieldVMProtectionType.sharedInstance
+    ];
+    maximumProtection.description = @"Maximum VM Protection";
+    maximumProtection.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *initialProtection = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(initialProtection)
+        type:MKNodeFieldVMProtectionType.sharedInstance
+    ];
+    initialProtection.description = @"Initial VM Protection";
+    initialProtection.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:MKNodeFieldSegmentFlagsType.sharedInstance
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *sections = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sections)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]]
+    ];
+    sections.description = @"Sections";
+    sections.options = MKNodeFieldOptionDisplayAsChild;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Section Name"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fileOffset) description:@"File offset"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fileSize) description:@"File size"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(vmAddress) description:@"VM Address"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(vmSize) description:@"VM Size"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(maximumProtection) description:@"Maximum VM Protection"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(initialProtection) description:@"Initial VM Protection"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(flags) description:@"Flags"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(sections) description:@"Sections"],
+        name.build,
+        fileOffset.build,
+        fileSize.build,
+        vmAddress.build,
+        vmSize.build,
+        maximumProtection.build,
+        initialProtection.build,
+        flags.build,
+        sections.build
     ]];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - NSObject
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

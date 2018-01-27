@@ -28,8 +28,6 @@
 #import "MKStubsSection.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
-#import "MKDataModel.h"
-#import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKStub
@@ -37,19 +35,18 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKStubsSection*)parent error:(NSError **)error
 {
-    if ([parent isKindOfClass:MKStubsSection.class] == NO)
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"The parent node of MKStubPointer must be an MKSection" userInfo:nil];
+    NSParameterAssert([parent isKindOfClass:MKStubsSection.class]);
     
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    // Each stub is a jmp instruction which we do not parse in this Framework.
+    // Each stub is a jmp instruction which we do not parse in this framework.
     
     return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -71,9 +68,10 @@
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
+    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_SYMBOL_STUBS)
+        return 20;
     
-    MKSectionType type = [sectionLoadCommand flags] & SECTION_TYPE;
-    return (type == MKSectionTypeSymbolStubs) ? 50 : 0;
+    return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -87,33 +85,36 @@
     
     // Verify that a stub size was specified in the load command.
     if (_stubSize == 0) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"No stub size specified."];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"No stub size specified in load command: %@", [(MKNode*)sectionLoadCommand nodeDescription]];
         [self release]; return nil;
     }
     
-    NSMutableArray<MKStub*> *stubs = [[NSMutableArray alloc] init];
-    
-    mk_vm_offset_t offset = 0;
-    
-    // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
-    while ((mk_vm_size_t)offset < self.nodeSize)
+    // Load Stubs
     {
-        NSError *e = nil;
-        MKStub *stub = [[MKStub alloc] initWithOffset:offset fromParent:self error:&e];
-        if (stub == nil) {
-            MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(pointers), e, @"Could not load stub pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
-            break;
+        NSMutableArray<MKStub*> *stubs = [[NSMutableArray alloc] init];
+        mk_vm_offset_t offset = 0;
+        
+        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
+        while ((mk_vm_size_t)offset < self.nodeSize)
+        {
+            NSError *stubError = nil;
+            
+            MKStub *stub = [[MKStub alloc] initWithOffset:offset fromParent:self error:&stubError];
+            if (stub == nil) {
+                MK_PUSH_WARNING_WITH_ERROR(stubs, MK_EINTERNAL_ERROR, stubError, @"Could not parse stub at offset [%" MK_VM_PRIuOFFSET "].", offset);
+                break;
+            }
+            
+            [stubs addObject:stub];
+            [stub release];
+            
+            // SAFE - All string nodes must be within the size of this node.
+            offset += stub.nodeSize;
         }
         
-        [stubs addObject:stub];
-        [stub release];
-        
-        // Safe.  All string nodes must be within the size of this node.
-        offset += stub.nodeSize;
+        _stubs = [stubs copy];
+        [stubs release];
     }
-    
-    _stubs = [stubs copy];
-    [stubs release];
     
     return self;
 }
@@ -127,14 +128,42 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+{
+    for (MKStub *stub in self.stubs) {
+        mk_vm_range_t range = mk_vm_range_make(stub.nodeVMAddress, stub.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            MKOptional *child = [stub childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
+        }
+    }
+    
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *stubs = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(stubs)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKStub.class]]
+    ];
+    stubs.description = @"Stubs";
+    stubs.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stubs) description:@"Stubs"]
+        stubs.build
     ]];
 }
 

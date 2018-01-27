@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachOFieldType.h
+//! @file       MKNodeFieldVMProtectionType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,9 +25,32 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldMachOFileType.h>
-#import <MachOKit/MKNodeFieldMachOFlagsType.h>
-#import <MachOKit/MKNodeFieldVersionType.h>
-#import <MachOKit/MKNodeFieldVMProtectionType.h>
-#import <MachOKit/MKNodeFieldSegmentFlagsType.h>
-#import <MachOKit/MKNodeFieldSectionFlagsType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldOptionSetType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+//! @name       VM Protection Levels
+//! @relates    MKNodeFieldVMProtectionType
+//
+typedef NS_OPTIONS(vm_prot_t, MKVMProtection) {
+    MKVMProtectionNone                      = VM_PROT_NONE,
+    MKVMProtectionNoneRead                  = VM_PROT_READ,
+    MKVMProtectionNoneWrite                 = VM_PROT_WRITE,
+    MKVMProtectionNoneExecute               = VM_PROT_EXECUTE,
+};
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldVMProtectionType : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

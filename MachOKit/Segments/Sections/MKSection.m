@@ -32,18 +32,8 @@
 #import "MKLCSegment.h"
 #import "MKLCSegment64.h"
 
-#import <objc/runtime.h>
-
 //----------------------------------------------------------------------------//
 @implementation MKSection
-
-@synthesize name = _name;
-@synthesize loadCommand = _loadCommand;
-@synthesize alignment = _alignment;
-@synthesize fileOffset = _fileOffset;
-@synthesize vmAddress = _vmAddress;
-@synthesize size = _size;
-@synthesize flags = _flags;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (id*)_subclassesCache
@@ -54,7 +44,6 @@
 {
 #pragma unused (sectionLoadCommand)
 #pragma unused (segment)
-    
     return (self == MKSection.class) ? 10 : 0;
 }
 
@@ -67,14 +56,17 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Creating a Section
+#pragma mark -  Creating a Section
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)sectionWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error
 {
     Class sectionClass = [self classForSectionLoadCommand:sectionLoadCommand inSegment:segment];
-    NSAssert(sectionClass, @"");
+    if (sectionClass == NULL) {
+        NSString *reason = [NSString stringWithFormat:@"No section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]];
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
+    }
     
     return [[[sectionClass alloc] initWithLoadCommand:sectionLoadCommand inSegment:segment error:error] autorelease];
 }
@@ -82,8 +74,9 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error
 {
-    NSParameterAssert(sectionLoadCommand);
-    NSParameterAssert(segment);
+    NSParameterAssert(sectionLoadCommand != nil);
+    NSParameterAssert(segment != nil);
+    NSError *arithmeticError = nil;
     mk_error_t err;
     
     self = [super initWithParent:segment error:error];
@@ -100,7 +93,7 @@
     
     // Verify that this section is fully within it's segment's VM memory.
     if ((err = mk_vm_range_contains_range(mk_vm_range_make(segment.vmAddress, segment.vmSize), mk_vm_range_make(_vmAddress, _size), false))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Section %@ is not within segment %@", sectionLoadCommand, segment];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Section [%@] is not within segment: %@.", sectionLoadCommand, segment.nodeDescription];
         [self release]; return nil;
     }
     
@@ -110,7 +103,7 @@
     // zero-fill memory of its enclosing segment and has no corresponding
     // memory in the file.
     if (!(self.type == S_ZEROFILL) && (err = mk_vm_range_contains_range(mk_vm_range_make(segment.fileOffset, segment.fileSize), mk_vm_range_make(_fileOffset, _size), false))) {
-        MK_PUSH_WARNING(MK_PROPERTY(fileOffset), MK_ENOT_FOUND, @"File offset %" MK_VM_PRIxADDR " is not within segment %@", _fileOffset, segment);
+        MK_PUSH_WARNING(fileOffset, MK_ENOT_FOUND, @"File offset [%" MK_VM_PRIxADDR "] is not within segment: %@.", _fileOffset, segment.nodeDescription);
     }
     
     // Determine the context address of this section.
@@ -124,7 +117,8 @@
             mk_vm_offset_t slide = (mk_vm_offset_t)segment.macho.slide;
             
             if ((err = mk_vm_address_apply_offset(_nodeContextAddress, slide, &_nodeContextAddress))) {
-                MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                arithmeticError = MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(err, _nodeContextAddress, slide);
+                MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Could not determine the context address."];
                 [self release]; return nil;
             }
         }
@@ -136,12 +130,13 @@
     }
     else
     {
-        // Safe.  File range check would have failed if this could wrap around.
+        // SAFE - File range check would have failed if this could wrap around.
         _nodeContextAddress = _fileOffset - segment.fileOffset;
         _nodeContextSize = _size;
         
         if ((err = mk_vm_address_add(_nodeContextAddress, segment.nodeContextAddress, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, _nodeContextAddress, segment.nodeContextAddress);
+            arithmeticError = MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(err, _nodeContextAddress, segment.nodeContextAddress);
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:arithmeticError description:@"Could not determine the context address."];
             [self release]; return nil;
         }
     }
@@ -149,26 +144,26 @@
     // This should have already been verified at the segment level but we'll
     // verify again.
     if ([segment.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_size] == NO) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Section memory not available for %@", sectionLoadCommand];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Section data does not exist in the memory map."];
         [self release]; return nil;
     }
     
     // Emit a warning if the segname of the section load command does not match
     // our parent segment.
     if ([[sectionLoadCommand segname] isEqualToString:segment.name] == NO) {
-        MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Segment name for section %@ does not match parent segment %@", sectionLoadCommand, segment);
+        MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Segment name for section [%@] does not match the parent segment: %@.", sectionLoadCommand, segment.nodeDescription);
     }
     
     return self;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithParent:(MKNode *)parent error:(NSError **)error
+- (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
-#pragma unused (parent)
-#pragma unused (error)
+#pragma unused(parent)
+#pragma unused(error)
     // TODO - We could actually provide an implementation of this method.
-    @throw [NSException exceptionWithName:NSGenericException reason:@"Currently unavailable" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-initWithParent:error: unavailable." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -181,19 +176,30 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Flags
+#pragma mark -  Section Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize name = _name;
+@synthesize loadCommand = _loadCommand;
+@synthesize alignment = _alignment;
+@synthesize fileOffset = _fileOffset;
+@synthesize vmAddress = _vmAddress;
+@synthesize size = _size;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKSectionType)type
 { return _flags & SECTION_TYPE; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKSectionAttributes)attributes
-{ return _flags & SECTION_ATTRIBUTES; }
+- (MKSectionUserAttributes)userAttributes
+{ return _flags & SECTION_ATTRIBUTES_USR; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKSectionSystemAttributes)systemAttributes
+{ return _flags & SECTION_ATTRIBUTES_SYS; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize nodeSize = _nodeContextSize;
@@ -208,27 +214,86 @@
         case MKNodeVMAddress:
             return _vmAddress;
             break;
-        default:
-            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported node address type." userInfo:nil];
+        default: {
+            NSString *reason = [NSString stringWithFormat:@"Invalid node address type [%" PRIuPTR "].", type];
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
+        }
     }
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:MKNodeFieldTypeString.sharedInstance
+    ];
+    name.description = @"Section Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *alignment = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(alignment)
+        type:MKNodeFieldTypeDoubleWord.sharedInstance
+    ];
+    alignment.description = @"Alignment";
+    alignment.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *fileOffset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(fileOffset)
+        type:MKNodeFieldTypeAddress.sharedInstance
+    ];
+    fileOffset.description = @"File offset";
+    fileOffset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *vmAddress = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(vmAddress)
+        type:MKNodeFieldTypeAddress.sharedInstance
+    ];
+    vmAddress.description = @"VM Address";
+    vmAddress.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(size)
+        type:MKNodeFieldTypeSize.sharedInstance
+    ];
+    size.description = @"Size";
+    size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(type)
+        type:MKNodeFieldSectionType.sharedInstance
+    ];
+    type.description = @"Section Type";
+    type.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *userAttributes = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(userAttributes)
+        type:MKNodeFieldSectionUserAttributesType.sharedInstance
+    ];
+    userAttributes.description = @"User Attributes";
+    userAttributes.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *systemAttributes = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(systemAttributes)
+        type:MKNodeFieldSectionUserAttributesType.sharedInstance
+    ];
+    systemAttributes.description = @"System Attributes";
+    systemAttributes.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Section Name"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(alignment) description:@"Alignment"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(fileOffset) description:@"File offset"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(vmAddress) description:@"VM Address"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(size) description:@"Size"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(type) description:@"Section Type"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(attributes) description:@"Section Attributes"],
+        name.build,
+        alignment.build,
+        fileOffset.build,
+        vmAddress.build,
+        size.build,
+        type.build,
+        userAttributes.build,
+        systemAttributes.build
     ]];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - NSObject
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

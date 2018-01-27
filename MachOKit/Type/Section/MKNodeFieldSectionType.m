@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDataSection.m
+//|             MKNodeFieldSectionType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -23,92 +23,75 @@
 //| CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 //| TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-//----------------------------------------------------------------------------//
+//----------------------------------------------------------------------------/
 
-#import "MKDataSection.h"
+#import "MKNodeFieldSectionType.h"
 #import "MKInternal.h"
-#import "MKNode+MachO.h"
-#import "MKOffsetNode+AddressBasedInitialization.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDataSection
+@implementation MKNodeFieldSectionType
+
+static NSDictionary *s_Types = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldSectionType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
++ (void)initialize
 {
-#pragma unused (segment)
-    // Contrary to what the name of this class may imply, it can handle more
-    // than just the __DATA,__data section.  While not a perfect heuristic,
-    // a section with the S_REGULAR and no attributes implies a section that
-    // contains blobs of data which may be referenced from elsewhere.
-    if (sectionLoadCommand.flags == S_REGULAR)
-        return 20;
+    if (s_Types != nil && s_Formatter != nil)
+        return;
     
-    return 0;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_children release];
+    s_Types = [@{
+        @(S_REGULAR): @"S_REGULAR",
+        @(S_ZEROFILL): @"S_ZEROFILL",
+        @(S_CSTRING_LITERALS): @"S_CSTRING_LITERALS",
+        @(S_4BYTE_LITERALS): @"S_4BYTE_LITERALS",
+        @(S_8BYTE_LITERALS): @"S_8BYTE_LITERALS",
+        @(S_LITERAL_POINTERS): @"S_LITERAL_POINTERS",
+        @(S_NON_LAZY_SYMBOL_POINTERS): @"S_NON_LAZY_SYMBOL_POINTERS",
+        @(S_LAZY_SYMBOL_POINTERS): @"S_LAZY_SYMBOL_POINTERS",
+        @(S_SYMBOL_STUBS): @"S_SYMBOL_STUBS",
+        @(S_MOD_INIT_FUNC_POINTERS): @"S_MOD_INIT_FUNC_POINTERS",
+        @(S_MOD_TERM_FUNC_POINTERS): @"S_MOD_TERM_FUNC_POINTERS",
+        @(S_COALESCED): @"S_COALESCED",
+        @(S_GB_ZEROFILL): @"S_GB_ZEROFILL",
+        @(S_INTERPOSING): @"S_INTERPOSING",
+        @(S_16BYTE_LITERALS): @"S_16BYTE_LITERALS",
+        @(S_DTRACE_DOF): @"S_DTRACE_DOF",
+        @(S_LAZY_DYLIB_SYMBOL_POINTERS): @"S_LAZY_DYLIB_SYMBOL_POINTERS",
+        @(S_THREAD_LOCAL_REGULAR): @"S_THREAD_LOCAL_REGULAR",
+        @(S_THREAD_LOCAL_ZEROFILL): @"S_THREAD_LOCAL_ZEROFILL",
+        @(S_THREAD_LOCAL_VARIABLES): @"S_THREAD_LOCAL_VARIABLES",
+        @(S_THREAD_LOCAL_VARIABLE_POINTERS): @"S_THREAD_LOCAL_VARIABLE_POINTERS",
+        @(S_THREAD_LOCAL_INIT_FUNCTION_POINTERS): @"S_THREAD_LOCAL_INIT_FUNCTION_POINTERS"
+    } retain];
     
-    [super dealloc];
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKPointer
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
-{
-    __block MKOptional *child = nil;
-    
-    [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
-        if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value)
-            *stop = YES;
-        else
-            child = nil;
-    }];
-    
-    if (child)
-        return child;
-    else
-        return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
-{
-    if (_children == nil)
-        _children = [[NSMutableDictionary alloc] init];
-    
-    MKOffsetNode *child = _children[@(address)];
-    if (child == nil && targetClass) {
-        NSError *error = nil;
-        
-        child = [[[targetClass alloc] initWithVMAddress:address inImage:self.macho error:&error] autorelease];
-        if (child)
-            _children[@(address)] = child;
-        else if (error)
-            return [MKOptional optionalWithError:error];
-    }
-    
-    if (child)
-        return [MKOptional optionalWithValue:child];
-    else
-        return [super childNodeAtVMAddress:address targetClass:targetClass];
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"SECTION_TYPE";
+    formatter.elements = s_Types;
+    s_Formatter = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
+#pragma mark -  MKNodeFieldEnumerationType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    // MKDataSection does not describe it's children - they are not its concern.
-    return [super layout];
-}
+- (MKNodeFieldEnumerationElements*)elements
+{ return s_Types; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Segment Type"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end

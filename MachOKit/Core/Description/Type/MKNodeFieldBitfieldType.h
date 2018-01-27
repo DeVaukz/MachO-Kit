@@ -39,7 +39,7 @@ typedef NSArray<NSNumber*/*Mask*/> MKNodeFieldBitfieldMasks;
 
 @property (nonatomic, readonly) MKNodeFieldBitfieldMasks *bits;
 
-- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask;
+- (nullable id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask;
 
 //! The bitshift to apply to the masked bits.  A negative number specifies
 //! a right shift.  A positive number specifies a left shift.

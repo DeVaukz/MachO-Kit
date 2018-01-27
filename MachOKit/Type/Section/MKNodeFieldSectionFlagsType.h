@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKMachOFieldType.h
+//! @file       MKNodeFieldSectionFlagsType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,9 +25,23 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldMachOFileType.h>
-#import <MachOKit/MKNodeFieldMachOFlagsType.h>
-#import <MachOKit/MKNodeFieldVersionType.h>
-#import <MachOKit/MKNodeFieldVMProtectionType.h>
-#import <MachOKit/MKNodeFieldSegmentFlagsType.h>
-#import <MachOKit/MKNodeFieldSectionFlagsType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldBitfieldType.h>
+
+#import <MachOKit/MKNodeFieldSectionType.h>
+#import <MachOKit/MKNodeFieldSectionUserAttributesType.h>
+#import <MachOKit/MKNodeFieldSectionSystemAttributesType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldSectionFlagsType : MKNodeFieldTypeDoubleWord <MKNodeFieldBitfieldType>
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

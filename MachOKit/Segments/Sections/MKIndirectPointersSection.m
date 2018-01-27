@@ -38,9 +38,13 @@
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
+    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LAZY_SYMBOL_POINTERS)
+        return 50;
     
-    MKSectionType type = [sectionLoadCommand flags] & SECTION_TYPE;
-    return (type == MKSectionTypeLazySymbolPointers || type == MKSectionTypeNonLazySymbolPointers) ? 50 : 0;
+    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_NON_LAZY_SYMBOL_POINTERS)
+        return 50;
+    
+    return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -51,28 +55,32 @@
     
     _indirectSymbolIndex = [sectionLoadCommand reserved1];
     
-    NSMutableArray<MKIndirectPointer*> *pointers = [[NSMutableArray alloc] init];
-    mk_vm_offset_t offset = 0;
-    
-    // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
-    while ((mk_vm_size_t)offset < self.nodeSize)
+    // Load pointers
     {
-        NSError *e = nil;
-        MKIndirectPointer *pointer = [[MKIndirectPointer alloc] initWithOffset:offset fromParent:self error:&e];
-        if (pointer == nil) {
-            MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(pointers), e, @"Could not load pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
-            break;
+        NSMutableArray<MKIndirectPointer*> *pointers = [[NSMutableArray alloc] init];
+        mk_vm_offset_t offset = 0;
+        
+        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
+        while ((mk_vm_size_t)offset < self.nodeSize)
+        {
+            NSError *pointerError = nil;
+            
+            MKIndirectPointer *pointer = [[MKIndirectPointer alloc] initWithOffset:offset fromParent:self error:&pointerError];
+            if (pointer == nil) {
+                MK_PUSH_WARNING_WITH_ERROR(pointers, MK_EINTERNAL_ERROR, pointerError, @"Could not parse pointer at offset [%" MK_VM_PRIuOFFSET "].", offset);
+                break;
+            }
+            
+            [pointers addObject:pointer];
+            [pointer release];
+            
+            // SAFE - All pointers must be within the size of this node.
+            offset += pointer.nodeSize;
         }
         
-        [pointers addObject:pointer];
-        [pointer release];
-        
-        // Safe.  All pointers must be within the size of this node.
-        offset += pointer.nodeSize;
+        _pointers = [pointers copy];
+        [pointers release];
     }
-    
-    _pointers = [pointers copy];
-    [pointers release];
     
     return self;
 }
@@ -86,14 +94,42 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+{
+    for (MKIndirectPointer *pointer in self.pointers) {
+        mk_vm_range_t range = mk_vm_range_make(pointer.nodeVMAddress, pointer.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            MKOptional *child = [pointer childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
+        }
+    }
+    
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *pointers = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(pointers)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKIndirectPointer.class]]
+    ];
+    pointers.description = @"Pointers";
+    pointers.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(pointers) description:@"Pointers"]
+        pointers.build
     ]];
 }
 

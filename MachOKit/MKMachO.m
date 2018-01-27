@@ -310,6 +310,14 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    // SECTIONS
+    MKNodeFieldBuilder *sections = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sections)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:nil]
+    ];
+    sections.description = @"Sections";
+    sections.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    
     // FUNCTION STARTS
     MKNodeFieldBuilder *functionStarts = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(functionStarts)
@@ -349,6 +357,7 @@
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(loadCommands) description:@"Load Commands"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
         [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
+        sections.build,
         functionStarts.build,
         bindingsInfo.build,
         weakBindingsInfo.build,

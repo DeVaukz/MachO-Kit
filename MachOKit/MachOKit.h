@@ -77,7 +77,6 @@
 
 #import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKMachO.h>
-#import <MachOKit/MKMachO+Segments.h>
 #import <MachOKit/MKMachO+Symbols.h>
 #import <MachOKit/MKMachHeader.h>
 #import <MachOKit/MKMachHeader64.h>
@@ -126,13 +125,14 @@
     #import <MachOKit/MKLCBuildVersion.h>
 #import <MachOKit/MKMachO+Libraries.h>
     #import <MachOKit/MKDependentLibrary.h>
-#import <MachOKit/MKSegment.h>
-#import <MachOKit/MKSection.h>
-    #import <MachOKit/MKCStringSection.h>
-    #import <MachOKit/MKPointerListSection.h>
-    #import <MachOKit/MKDataSection.h>
-    #import <MachOKit/MKStubsSection.h>
-    #import <MachOKit/MKIndirectPointersSection.h>
+#import <MachOKit/MKMachO+Segments.h>
+    #import <MachOKit/MKSegment.h>
+    #import <MachOKit/MKSection.h>
+        #import <MachOKit/MKCStringSection.h>
+        #import <MachOKit/MKPointerListSection.h>
+        #import <MachOKit/MKDataSection.h>
+        #import <MachOKit/MKStubsSection.h>
+        #import <MachOKit/MKIndirectPointersSection.h>
 #import <MachOKit/MKMachO+Functions.h>
     #import <MachOKit/MKFunctionStarts.h>
     #import <MachOKit/MKFunctionStartsContext.h>

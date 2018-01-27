@@ -27,7 +27,6 @@
 
 #import "MKCStringSection.h"
 #import "MKInternal.h"
-#import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKCStringSection
@@ -50,29 +49,32 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
     
-    NSMutableArray<MKCString*> *strings = [[NSMutableArray alloc] init];
-    
-    mk_vm_offset_t offset = 0;
-    
-    // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
-    while ((mk_vm_size_t)offset < self.nodeSize)
+    // Load Strings
     {
-        NSError *e = nil;
-        MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&e];
-        if (string == nil) {
-            MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(strings), e, @"Could not load CString at offset %" MK_VM_PRIiOFFSET ".", offset);
-            break;
+        NSMutableArray<MKCString*> *strings = [[NSMutableArray alloc] init];
+        mk_vm_offset_t offset = 0;
+        
+        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
+        while ((mk_vm_size_t)offset < self.nodeSize)
+        {
+            NSError *stringError = nil;
+            
+            MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&stringError];
+            if (string == nil) {
+                MK_PUSH_WARNING_WITH_ERROR(strings, MK_EINTERNAL_ERROR, stringError, @"Could not parse string at offset [%" MK_VM_PRIuOFFSET "].", offset);
+                break;
+            }
+            
+            [strings addObject:string];
+            [string release];
+            
+            // SAFE - All string nodes must be within the size of this node.
+            offset += string.nodeSize;
         }
         
-        [strings addObject:string];
-        [string release];
-        
-        // Safe.  All string nodes must be within the size of this node.
-        offset += string.nodeSize;
+        _strings = [strings copy];
+        [strings release];
     }
-    
-    _strings = [strings copy];
-    [strings release];
     
     return self;
 }
@@ -86,7 +88,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -107,7 +109,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

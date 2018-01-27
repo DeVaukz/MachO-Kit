@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKDataSection.h
+//! @file       MKNodeFieldSegmentFlagsType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,15 +28,40 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKSection.h>
+#include <mach-o/loader.h>
+
+#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldOptionSetType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKDataSection : MKSection {
-@package
-    NSMutableDictionary<NSNumber*, __kindof MKOffsetNode*> *_children;
-}
+//! @name       Segment Flags
+//! @relates    MKNodeFieldSegmentFlagsType
+//!
+//
+typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
+    //! The file contents for this segment is for the high part of the VM
+    //! space, the low part is zero filled (for stacks in core files).
+    MKSegmentHighVM                             = SG_HIGHVM,
+    //! This segment is the VM that is allocated by a fixed VM library, for
+    //! overlap checking in the link editor.
+    MKSegmentFixedVM                            = SG_FVMLIB,
+    //! This segment has nothing that was relocated in it and nothing
+    //! relocated to it, that is it maybe safely replaced without relocation.
+    MKSegmentNoRelocations                      = SG_NORELOC,
+    //! This segment is protected.  If the segment starts at file offset 0,
+    //! the first page of the segment is not protected.  All other pages of
+    //! the segment are protected.
+    MKSegmentProtectedV1                        = SG_PROTECTED_VERSION_1,
+};
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldSegmentFlagsType : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
+
++ (instancetype)sharedInstance;
 
 @end
 

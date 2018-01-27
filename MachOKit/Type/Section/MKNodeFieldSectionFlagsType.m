@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDataSection.m
+//|             MKNodeFieldSectionFlagsType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,90 +25,94 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDataSection.h"
+#import "MKNodeFieldSectionFlagsType.h"
 #import "MKInternal.h"
-#import "MKNode+MachO.h"
-#import "MKOffsetNode+AddressBasedInitialization.h"
+#import "MKNodeDescription.h"
+#import "MKNodeFieldSectionType.h"
+#import "MKNodeFieldSectionUserAttributesType.h"
+#import "MKNodeFieldSectionSystemAttributesType.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDataSection
+@implementation MKNodeFieldSectionFlagsType
+
+static MKNodeFieldBitfieldMasks *s_Bits = nil;
+static MKBitfieldFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldSectionFlagsType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
++ (void)initialize
 {
-#pragma unused (segment)
-    // Contrary to what the name of this class may imply, it can handle more
-    // than just the __DATA,__data section.  While not a perfect heuristic,
-    // a section with the S_REGULAR and no attributes implies a section that
-    // contains blobs of data which may be referenced from elsewhere.
-    if (sectionLoadCommand.flags == S_REGULAR)
-        return 20;
+    if (s_Bits != nil)
+        return;
     
-    return 0;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_children release];
+    s_Bits = [[NSArray alloc] initWithObjects:
+        @((uint32_t)SECTION_TYPE),
+        @((uint32_t)SECTION_ATTRIBUTES_USR),
+        @((uint32_t)SECTION_ATTRIBUTES_SYS),
+    nil];
     
-    [super dealloc];
+    MKBitfieldFormatterMask *type = [MKBitfieldFormatterMask new];
+    type.mask = @((uint32_t)SECTION_TYPE);
+    type.formatter = MKNodeFieldSectionType.sharedInstance.formatter;
+    
+    MKBitfieldFormatterMask *userAttributes = [MKBitfieldFormatterMask new];
+    userAttributes.mask = @((uint32_t)SECTION_ATTRIBUTES_USR);
+    userAttributes.formatter = MKNodeFieldSectionUserAttributesType.sharedInstance.formatter;
+    userAttributes.ignoreZero = YES;
+    
+    MKBitfieldFormatterMask *systemAttributes = [MKBitfieldFormatterMask new];
+    systemAttributes.mask = @((uint32_t)SECTION_ATTRIBUTES_SYS);
+    systemAttributes.formatter = MKNodeFieldSectionSystemAttributesType.sharedInstance.formatter;
+    systemAttributes.ignoreZero = YES;
+    
+    NSArray *bits = [[NSArray alloc] initWithObjects:type, userAttributes, systemAttributes, nil];
+    
+    MKBitfieldFormatter *formatter = [MKBitfieldFormatter new];
+    formatter.bits = bits;
+    s_Formatter = formatter;
+    
+    [bits release];
+    [systemAttributes release];
+    [userAttributes release];
+    [type release];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKPointer
+#pragma mark -  MKNodeFieldBitfieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKNodeFieldBitfieldMasks*)bits
+{ return s_Bits; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
 {
-    __block MKOptional *child = nil;
-    
-    [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
-        if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value)
-            *stop = YES;
-        else
-            child = nil;
-    }];
-    
-    if (child)
-        return child;
+    if ([mask isEqual:@((uint32_t)SECTION_TYPE)])
+        return MKNodeFieldSectionType.sharedInstance;
+    else if ([mask isEqual:@((uint32_t)SECTION_ATTRIBUTES_USR)])
+        return MKNodeFieldSectionUserAttributesType.sharedInstance;
+    else if ([mask isEqual:@((uint32_t)SECTION_ATTRIBUTES_SYS)])
+        return MKNodeFieldSectionSystemAttributesType.sharedInstance;
     else
-        return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+        return nil;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
-{
-    if (_children == nil)
-        _children = [[NSMutableDictionary alloc] init];
-    
-    MKOffsetNode *child = _children[@(address)];
-    if (child == nil && targetClass) {
-        NSError *error = nil;
-        
-        child = [[[targetClass alloc] initWithVMAddress:address inImage:self.macho error:&error] autorelease];
-        if (child)
-            _children[@(address)] = child;
-        else if (error)
-            return [MKOptional optionalWithError:error];
-    }
-    
-    if (child)
-        return [MKOptional optionalWithValue:child];
-    else
-        return [super childNodeAtVMAddress:address targetClass:targetClass];
-}
+- (int)shiftForMask:(__unused NSNumber*)mask
+{ return 0; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
+#pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    // MKDataSection does not describe it's children - they are not its concern.
-    return [super layout];
-}
+- (NSString*)name
+{ return @"Section Flags"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end

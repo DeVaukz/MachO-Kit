@@ -65,17 +65,18 @@
         
         while (offset < self.nodeSize)
         {
-            NSError *e = nil;
-            MKPointerNode *pointer = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:targetClass error:&e];
+            NSError *pointerError = nil;
+            
+            MKPointerNode *pointer = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:targetClass error:&pointerError];
             if (pointer == nil) {
-                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load pointer at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_WARNING_WITH_ERROR(references, MK_EINTERNAL_ERROR, pointerError, @"Could not parse pointer at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
             [pointers addObject:pointer];
             [pointer release];
             
-            // Safe.  All pointer nodes must be within the size of this node.
+            // SAFE - All pointer nodes must be within the size of this node.
             offset += pointer.nodeSize;
         }
         
@@ -95,7 +96,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -116,14 +117,21 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *elements = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(elements)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKPointerNode.class]]
+    ];
+    elements.description = @"Element List";
+    elements.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(elements) description:@"Element List"]
+        elements.build
     ]];
 }
 

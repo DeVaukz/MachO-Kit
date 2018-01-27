@@ -403,6 +403,14 @@
 		D09145AE1E51426400959648 /* MKNodeFieldBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = D09145AC1E51426400959648 /* MKNodeFieldBuilder.m */; };
 		D09145B11E51431D00959648 /* NSFormatter+MKNodeField.h in Headers */ = {isa = PBXBuildFile; fileRef = D09145AF1E51431D00959648 /* NSFormatter+MKNodeField.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09145B21E51431D00959648 /* NSFormatter+MKNodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = D09145B01E51431D00959648 /* NSFormatter+MKNodeField.m */; };
+		D096B037201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.h in Headers */ = {isa = PBXBuildFile; fileRef = D096B035201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D096B038201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.m in Sources */ = {isa = PBXBuildFile; fileRef = D096B036201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.m */; };
+		D096B049201C2B77003DA008 /* MKNodeFieldSectionType.h in Headers */ = {isa = PBXBuildFile; fileRef = D096B047201C2B77003DA008 /* MKNodeFieldSectionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D096B04A201C2B77003DA008 /* MKNodeFieldSectionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D096B048201C2B77003DA008 /* MKNodeFieldSectionType.m */; };
+		D096B04D201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h in Headers */ = {isa = PBXBuildFile; fileRef = D096B04B201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D096B04E201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m in Sources */ = {isa = PBXBuildFile; fileRef = D096B04C201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m */; };
+		D096B054201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.h in Headers */ = {isa = PBXBuildFile; fileRef = D096B052201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D096B055201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m in Sources */ = {isa = PBXBuildFile; fileRef = D096B053201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m */; };
 		D097ABCD1C70F8E0000F62C4 /* MKMachO+Segments.h in Headers */ = {isa = PBXBuildFile; fileRef = D097ABCB1C70F8E0000F62C4 /* MKMachO+Segments.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D097ABCE1C70F8E0000F62C4 /* MKMachO+Segments.m in Sources */ = {isa = PBXBuildFile; fileRef = D097ABCC1C70F8E0000F62C4 /* MKMachO+Segments.m */; };
 		D09959F71A6A5F14007134CE /* MKMachO+Symbols.h in Headers */ = {isa = PBXBuildFile; fileRef = D09959F51A6A5F14007134CE /* MKMachO+Symbols.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -772,6 +780,10 @@
 		D0F7EBAC1A63413400FA834F /* memory_map_self.h in Headers */ = {isa = PBXBuildFile; fileRef = D0F7EBAA1A63413400FA834F /* memory_map_self.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0F7EBAF1A63559600FA834F /* data_model_spec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F7EBAE1A63559600FA834F /* data_model_spec.m */; };
 		D0F7EBB31A63592C00FA834F /* memory_map_spec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0F7EBB21A63592C00FA834F /* memory_map_spec.m */; };
+		D0FF4F27201B05250095106A /* MKNodeFieldSegmentFlagsType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FF4F25201B05250095106A /* MKNodeFieldSegmentFlagsType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0FF4F28201B05250095106A /* MKNodeFieldSegmentFlagsType.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F26201B05250095106A /* MKNodeFieldSegmentFlagsType.m */; };
+		D0FF4F39201B0B230095106A /* MKNodeFieldVMProtectionType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FF4F37201B0B230095106A /* MKNodeFieldVMProtectionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */; };
 		D0FF4F3D201B0CD30095106A /* MKNodeFieldTypeSize.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FF4F3E201B0CD30095106A /* MKNodeFieldTypeSize.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */; };
 /* End PBXBuildFile section */
@@ -1287,6 +1299,14 @@
 		D09145AC1E51426400959648 /* MKNodeFieldBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldBuilder.m; sourceTree = "<group>"; };
 		D09145AF1E51431D00959648 /* NSFormatter+MKNodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFormatter+MKNodeField.h"; sourceTree = "<group>"; };
 		D09145B01E51431D00959648 /* NSFormatter+MKNodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFormatter+MKNodeField.m"; sourceTree = "<group>"; };
+		D096B035201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSectionUserAttributesType.h; sourceTree = "<group>"; };
+		D096B036201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSectionUserAttributesType.m; sourceTree = "<group>"; };
+		D096B047201C2B77003DA008 /* MKNodeFieldSectionType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSectionType.h; sourceTree = "<group>"; };
+		D096B048201C2B77003DA008 /* MKNodeFieldSectionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSectionType.m; sourceTree = "<group>"; };
+		D096B04B201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSectionFlagsType.h; sourceTree = "<group>"; };
+		D096B04C201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSectionFlagsType.m; sourceTree = "<group>"; };
+		D096B052201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSectionSystemAttributesType.h; sourceTree = "<group>"; };
+		D096B053201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSectionSystemAttributesType.m; sourceTree = "<group>"; };
 		D097ABCB1C70F8E0000F62C4 /* MKMachO+Segments.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMachO+Segments.h"; sourceTree = "<group>"; };
 		D097ABCC1C70F8E0000F62C4 /* MKMachO+Segments.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMachO+Segments.m"; sourceTree = "<group>"; };
 		D09959F51A6A5F14007134CE /* MKMachO+Symbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMachO+Symbols.h"; sourceTree = "<group>"; };
@@ -1546,6 +1566,10 @@
 		D0F7EBAA1A63413400FA834F /* memory_map_self.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memory_map_self.h; sourceTree = "<group>"; };
 		D0F7EBAE1A63559600FA834F /* data_model_spec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = data_model_spec.m; sourceTree = "<group>"; };
 		D0F7EBB21A63592C00FA834F /* memory_map_spec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = memory_map_spec.m; sourceTree = "<group>"; };
+		D0FF4F25201B05250095106A /* MKNodeFieldSegmentFlagsType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSegmentFlagsType.h; sourceTree = "<group>"; };
+		D0FF4F26201B05250095106A /* MKNodeFieldSegmentFlagsType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSegmentFlagsType.m; sourceTree = "<group>"; };
+		D0FF4F37201B0B230095106A /* MKNodeFieldVMProtectionType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldVMProtectionType.h; sourceTree = "<group>"; };
+		D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldVMProtectionType.m; sourceTree = "<group>"; };
 		D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeSize.h; sourceTree = "<group>"; };
 		D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeSize.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1877,6 +1901,11 @@
 				D06D59712013BF6500A99173 /* MKNodeFieldMachOFlagsType.m */,
 				D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */,
 				D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */,
+				D0FF4F37201B0B230095106A /* MKNodeFieldVMProtectionType.h */,
+				D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */,
+				D0FF4F25201B05250095106A /* MKNodeFieldSegmentFlagsType.h */,
+				D0FF4F26201B05250095106A /* MKNodeFieldSegmentFlagsType.m */,
+				D096B051201D0DE5003DA008 /* Section */,
 			);
 			path = Type;
 			sourceTree = "<group>";
@@ -2348,6 +2377,21 @@
 			path = Recipe;
 			sourceTree = "<group>";
 		};
+		D096B051201D0DE5003DA008 /* Section */ = {
+			isa = PBXGroup;
+			children = (
+				D096B04B201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h */,
+				D096B04C201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m */,
+				D096B047201C2B77003DA008 /* MKNodeFieldSectionType.h */,
+				D096B048201C2B77003DA008 /* MKNodeFieldSectionType.m */,
+				D096B035201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.h */,
+				D096B036201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.m */,
+				D096B052201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.h */,
+				D096B053201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m */,
+			);
+			path = Section;
+			sourceTree = "<group>";
+		};
 		D09959EC1A6A29B8007134CE /* Fat */ = {
 			isa = PBXGroup;
 			children = (
@@ -2817,6 +2861,7 @@
 				D00EA1AD1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h in Headers */,
 				D01C75051CA743EE00648CA6 /* MKBindSetTypeImmediate.h in Headers */,
 				D0539BB01A23D36B00D3A5F0 /* MKLCFunctionStarts.h in Headers */,
+				D096B049201C2B77003DA008 /* MKNodeFieldSectionType.h in Headers */,
 				D09145921E5121DD00959648 /* MKHexNumberFormatter.h in Headers */,
 				D010F70C1CB86EF0004025F5 /* MKObjCProtocolListSection.h in Headers */,
 				D061B1731FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h in Headers */,
@@ -2834,6 +2879,7 @@
 				D0995A271A6C914D007134CE /* MKFatArch.h in Headers */,
 				D0BC78B61B71C44100467975 /* MKDSCLocalSymbolsHeader.h in Headers */,
 				D0C3B2DC19F37ACF00CAFE58 /* MKLoadCommand.h in Headers */,
+				D096B054201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.h in Headers */,
 				D01717A71A9960A700F234EF /* indirect_symbol_table_internal.h in Headers */,
 				D0B9F6CD1E58099900D0B35A /* MKNodeFieldTypeWord.h in Headers */,
 				D0E3FD301A58F608007B2771 /* data_model.h in Headers */,
@@ -2867,6 +2913,7 @@
 				D0BD11111B6DCB76009AEB8F /* MKDSCMapping.h in Headers */,
 				D010F7101CB86F6B004025F5 /* MKObjCImageInfoSection.h in Headers */,
 				D0A1D85E19E4EE840095870C /* _mach_lcstr.h in Headers */,
+				D096B037201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.h in Headers */,
 				D090A2971C78E17C0025B096 /* MKRebaseDoRebaseULEBTimesSkippingULEB.h in Headers */,
 				D017317D1C687967007CB0A1 /* MKDSCSlideInfoPage.h in Headers */,
 				D066184C1CBB11E4006979A1 /* MKObjCClassIVarList.h in Headers */,
@@ -3000,6 +3047,7 @@
 				D0A1D8C819E4EEB80095870C /* load_command_id_dylinker.h in Headers */,
 				D09145AD1E51426400959648 /* MKNodeFieldBuilder.h in Headers */,
 				D0A1D8C019E4EEB80095870C /* load_command_encryption_info.h in Headers */,
+				D096B04D201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h in Headers */,
 				D090E3881DDD3AE0003FA797 /* NSArray+MKTests.h in Headers */,
 				D0A1D85719E4EE580095870C /* load_command.h in Headers */,
 				D00205461E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.h in Headers */,
@@ -3071,6 +3119,7 @@
 				D082FD2D2007180600E6C3E5 /* MKNodeFieldCPUSubTypeI386.h in Headers */,
 				D0539BAC1A23D2E700D3A5F0 /* MKLCVersionMiniPhoneOS.h in Headers */,
 				D01C74ED1CA7360600648CA6 /* MKBindCommand.h in Headers */,
+				D0FF4F39201B0B230095106A /* MKNodeFieldVMProtectionType.h in Headers */,
 				D010F6F81CB848C0004025F5 /* architecture.h in Headers */,
 				D0A1D84E19E4EE480095870C /* memory_object.h in Headers */,
 				D0BD11171B6DE152009AEB8F /* MKNode+SharedCache.h in Headers */,
@@ -3107,6 +3156,7 @@
 				D0539BEC1A252C9500D3A5F0 /* MKMachHeader.h in Headers */,
 				D066186B1CBB3522006979A1 /* MKObjCProtocol.h in Headers */,
 				D0539BD41A23F83A00D3A5F0 /* MKVersion.h in Headers */,
+				D0FF4F27201B05250095106A /* MKNodeFieldSegmentFlagsType.h in Headers */,
 				D0BC78BC1B71CCB700467975 /* MKSharedCache+Symbols.h in Headers */,
 				D0A1D8B219E4EEB80095870C /* load_command_code_signature.h in Headers */,
 				D030305C1A23D0C700288B3E /* MKLCEncryptionInfo.h in Headers */,
@@ -3495,6 +3545,9 @@
 				D06618511CBB2813006979A1 /* MKObjCElementList.m in Sources */,
 				D0A92F3D2002D9530001C18D /* MKNodeFieldCPUType.m in Sources */,
 				D0A1D8B919E4EEB80095870C /* load_command_dyld_info.c in Sources */,
+				D096B04A201C2B77003DA008 /* MKNodeFieldSectionType.m in Sources */,
+				D0FF4F28201B05250095106A /* MKNodeFieldSegmentFlagsType.m in Sources */,
+				D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */,
 				D010F7191CB87055004025F5 /* MKObjCSelectorReferencesSection.m in Sources */,
 				D06D59AB20151F7500A99173 /* MKBooleanFormatter.m in Sources */,
 				D010F6F61CB848C0004025F5 /* architecture.c in Sources */,
@@ -3547,6 +3600,7 @@
 				D0B9F6E91E5947EF00D0B35A /* MKNodeFieldTypeCollection.m in Sources */,
 				D0A1D8D119E4EEB80095870C /* load_command_prebind_cksum.c in Sources */,
 				D0E8B8151CB8AE1100237EA1 /* MKObjCImageInfo.m in Sources */,
+				D096B055201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m in Sources */,
 				D00E88F42008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.m in Sources */,
 				D01C74EE1CA7360600648CA6 /* MKBindCommand.m in Sources */,
 				D010F7291CB87190004025F5 /* MKObjCIVarSection.m in Sources */,
@@ -3615,9 +3669,11 @@
 				D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */,
 				D06D596F2013BB6700A99173 /* MKNodeFieldMachOFileType.m in Sources */,
 				D0B16D641CA8968900E2116C /* MKStringTable.m in Sources */,
+				D096B04E201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m in Sources */,
 				D0539BA91A23D28400D3A5F0 /* MKLCVersionMinMacOSX.m in Sources */,
 				D060FA7F1A1877B1002A010C /* _MKFileMemoryMap.m in Sources */,
 				D06D59BF20155DFD00A99173 /* MKNodeFieldTypeString.m in Sources */,
+				D096B038201C23B0003DA008 /* MKNodeFieldSectionUserAttributesType.m in Sources */,
 				D0A1D8C319E4EEB80095870C /* load_command_function_starts.c in Sources */,
 				D01C74D31CA6596500648CA6 /* MKFixup.m in Sources */,
 				D0672B481A535DFB00D44610 /* MKNode+MachO.m in Sources */,
