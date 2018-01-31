@@ -60,11 +60,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) cpu_type_t cputype;
 //! Machine specifier.
 @property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-//! Offset to the Mach-O image identified by the slice.
+//! Offset to the Mach-O identified by the slice.
 @property (nonatomic, readonly) uint32_t offset;
-//! The size of this slice.
+//! The size of the slice.
 @property (nonatomic, readonly) uint32_t size;
-//! The alignment of this slice.
+//! The alignment of the slice.
 @property (nonatomic, readonly) uint32_t align;
 
 @end

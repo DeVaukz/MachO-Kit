@@ -27,7 +27,6 @@
 
 #import "MKFatBinary.h"
 #import "MKInternal.h"
-
 #import "MKFatArch.h"
 
 #include <mach-o/fat.h>
@@ -42,7 +41,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithMemoryMap:(MKMemoryMap*)memoryMap error:(NSError**)error
 {
-    NSParameterAssert(memoryMap);
+    NSParameterAssert(memoryMap != nil);
     
     self = [super initWithParent:nil error:error];
     if (self == nil) return nil;
@@ -50,15 +49,19 @@
     _memoryMap = [memoryMap retain];
     
     struct fat_header header;
-    if ([self.memoryMap copyBytesAtOffset:0 fromAddress:0 into:&header length:sizeof(header) requireFull:YES error:error] < sizeof(header))
-    { [self release]; return nil; }
+    NSError *memoryMapError = nil;
+    
+    if ([self.memoryMap copyBytesAtOffset:0 fromAddress:0 into:&header length:sizeof(header) requireFull:YES error:&memoryMapError] < sizeof(header)) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read FAT header."];
+        [self release]; return nil;
+    }
     
     _magic = MKSwapLValue32(header.magic, self.dataModel);
     _nfat_arch = MKSwapLValue32(header.nfat_arch, self.dataModel);
     
     // Check for the proper magic value
     if (_magic != FAT_MAGIC) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Bad magic 0x%" PRIx32 "", _magic];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Bad FAT magic [0x%" PRIx32 "].", _magic];
         [self release]; return nil;
     }
     
@@ -70,18 +73,18 @@
         // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
         while ((mk_vm_size_t)offset < sizeof(struct fat_arch) * _nfat_arch)
         {
-            NSError *e = nil;
-            MKFatArch *arch = [[MKFatArch alloc] initWithOffset:offset fromParent:self error:&e];
+            NSError *architectureError = nil;
+            MKFatArch *arch = [[MKFatArch alloc] initWithOffset:offset fromParent:self error:&architectureError];
             
             if (arch == nil) {
-                MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(pointers), e, @"Could not load architecture at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_WARNING_WITH_ERROR(architectures, MK_EINTERNAL_ERROR, architectureError, @"Could not parse architecture at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
             [architectures addObject:arch];
             [arch release];
             
-            // Safe.  Architecture node size is constant.
+            // SAFE - Architecture node size is constant.
             offset += arch.nodeSize;
         }
         
@@ -106,7 +109,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -119,7 +122,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return sizeof(struct fat_header) + sizeof(struct fat_arch) * self.architectures.count; }
+{ return sizeof(struct fat_header) + sizeof(struct fat_arch) * self.nfat_arch; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
