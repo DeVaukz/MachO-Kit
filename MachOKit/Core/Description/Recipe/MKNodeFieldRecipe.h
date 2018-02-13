@@ -32,4 +32,5 @@
 #import <MachOKit/MKNodeFieldOperationReadKeyPath.h>
 
 #import <MachOKit/MKNodeFieldDataOperationExtractSubrange.h>
+#import <MachOKit/MKNodeFieldDataOperationExtractDynamicSubrange.h>
 #import <MachOKit/MKNodeFieldDataOperationExtractChildNodeData.h>

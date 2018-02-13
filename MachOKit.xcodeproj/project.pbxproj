@@ -426,6 +426,8 @@
 		D0995A271A6C914D007134CE /* MKFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A251A6C914D007134CE /* MKFatArch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A261A6C914D007134CE /* MKFatArch.m */; };
 		D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */; };
+		D09A195E203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h in Headers */ = {isa = PBXBuildFile; fileRef = D09A195C203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D09A195F203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m in Sources */ = {isa = PBXBuildFile; fileRef = D09A195D203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m */; };
 		D09F6C511A14847700AB21E3 /* MKMemoryMap.h in Headers */ = {isa = PBXBuildFile; fileRef = D09F6C4F1A14847700AB21E3 /* MKMemoryMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09F6C521A14847700AB21E3 /* MKMemoryMap.m in Sources */ = {isa = PBXBuildFile; fileRef = D09F6C501A14847700AB21E3 /* MKMemoryMap.m */; };
 		D0A0D2311DE22C16003F0A08 /* MKPointerListSection.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A0D22F1DE22C16003F0A08 /* MKPointerListSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1322,6 +1324,8 @@
 		D0995A251A6C914D007134CE /* MKFatArch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKFatArch.h; sourceTree = "<group>"; };
 		D0995A261A6C914D007134CE /* MKFatArch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFatArch.m; sourceTree = "<group>"; };
 		D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFatSpec.m; sourceTree = "<group>"; };
+		D09A195C203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldDataOperationExtractDynamicSubrange.h; sourceTree = "<group>"; };
+		D09A195D203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldDataOperationExtractDynamicSubrange.m; sourceTree = "<group>"; };
 		D09F6C4F1A14847700AB21E3 /* MKMemoryMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKMemoryMap.h; sourceTree = "<group>"; };
 		D09F6C501A14847700AB21E3 /* MKMemoryMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMemoryMap.m; sourceTree = "<group>"; };
 		D0A0D22F1DE22C16003F0A08 /* MKPointerListSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPointerListSection.h; sourceTree = "<group>"; };
@@ -2371,6 +2375,8 @@
 				D09145A71E51320900959648 /* MKNodeFieldOperationReadKeyPath.m */,
 				D00205441E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.h */,
 				D00205451E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.m */,
+				D09A195C203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h */,
+				D09A195D203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m */,
 				D0E30A831E623D2F0005A882 /* MKNodeFieldDataOperationExtractChildNodeData.h */,
 				D0E30A841E623D2F0005A882 /* MKNodeFieldDataOperationExtractChildNodeData.m */,
 			);
@@ -2848,6 +2854,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D09A195E203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h in Headers */,
 				D0CF9D78200DC13900B508C4 /* MKFunction.h in Headers */,
 				D01C751D1CA74B9000648CA6 /* MKBindDoBindAddAddressImmediateScaled.h in Headers */,
 				D010F7041CB86D66004025F5 /* MKObjCClassListSection.h in Headers */,
@@ -3507,6 +3514,7 @@
 				D01C74F61CA7398200648CA6 /* MKBindSetDylibOrdinalImmediate.m in Sources */,
 				D0E2D1FB1CA7904E00CC2DF8 /* MKMachO+Libraries.m in Sources */,
 				D0539BED1A252C9500D3A5F0 /* MKMachHeader.m in Sources */,
+				D09A195F203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m in Sources */,
 				D03030511A23CF3200288B3E /* MKLCCodeSignature.m in Sources */,
 				D0B16D561CA884E000E2116C /* MKExportTrieNode.m in Sources */,
 				D0B16D521CA87EE800E2116C /* MKExportsInfo.m in Sources */,

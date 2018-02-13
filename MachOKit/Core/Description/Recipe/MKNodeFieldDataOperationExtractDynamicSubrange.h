@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldDataRecipe.h
+//! @file       MKNodeFieldDataOperationExtractDynamicSubrange.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,20 +28,11 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-@class MKNodeField;
-@class MKBackedNode;
-
-NS_ASSUME_NONNULL_BEGIN
+#import <MachOKit/MKNodeFieldDataRecipe.h>
 
 //----------------------------------------------------------------------------//
-@protocol MKNodeFieldDataRecipe <NSObject>
+@interface MKNodeFieldDataOperationExtractDynamicSubrange : NSObject <MKNodeFieldDataRecipe>
 
-- (nullable NSNumber*)address:(NSUInteger)type ofField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
-
-- (nullable NSNumber*)sizeOfField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
-
-- (nullable NSData*)dataForField:(MKNodeField*)field ofNode:(MKBackedNode*)input;
++ (instancetype)sharedInstance;
 
 @end
-
-NS_ASSUME_NONNULL_END

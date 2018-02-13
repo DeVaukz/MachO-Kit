@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldDataOperationExtractSubrange.m
+//|             MKNodeFieldDataOperationExtractDynamicSubrange.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,63 +25,65 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldDataOperationExtractSubrange.h"
+#import "MKNodeFieldDataOperationExtractDynamicSubrange.h"
 #import "MKInternal.h"
 #import "MKBackedNode.h"
 
+#include <objc/message.h>
+
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldDataOperationExtractSubrange
+@implementation MKBackedNode (DynamicSubrange)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size
+- (mk_vm_offset_t)offsetOfField:(MKNodeField*)field
 {
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _offset = offset;
-    _size = size;
-    
-    return self;
+    NSString *reason = [NSString stringWithFormat:@"Requesting offset for unhandled field: %@.", field.name];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset type:(id<MKNodeFieldNumericType>)type
+- (mk_vm_size_t)sizeOfField:(MKNodeField*)field
 {
-    NSParameterAssert(type != nil);
-    
-    self = [super init];
-    if (self == nil) return nil;
-    
-    _offset = offset;
-    _type = [type retain];
-    
-    return self;
+    NSString *reason = [NSString stringWithFormat:@"Requesting size for unhandled field: %@.", field.name];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)init
-{ return [self initWithOffset:0 size:0]; }
+@end
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_type release];
-    
-    [super dealloc];
-}
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldDataOperationExtractDynamicSubrange
+
+MKMakeSingletonInitializer(MKNodeFieldDataOperationExtractDynamicSubrange)
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldDataRecipe
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSNumber*)address:(NSUInteger)type ofField:(__unused MKNodeField*)field ofNode:(MKBackedNode*)input
+- (mk_vm_offset_t)_offsetOfField:(MKNodeField*)field ofNode:(MKBackedNode*)input
+{
+    NSString *getterMethod = [[NSString alloc] initWithFormat:@"%@FieldOffset", field.name];
+    SEL getterSEL = NSSelectorFromString(getterMethod);
+    [getterMethod release];
+    
+    if ([input respondsToSelector:getterSEL]) {
+        return ((mk_vm_offset_t (*)(id, SEL))objc_msgSend)(input, getterSEL);
+    } else {
+        return [input offsetOfField:field];
+    }
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSNumber*)address:(NSUInteger)type ofField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
     mk_error_t err;
     mk_vm_address_t address;
+    mk_vm_offset_t offset = [self _offsetOfField:field ofNode:input];
     
     // Calculate the address.
-    if ((err = mk_vm_address_apply_offset([input nodeAddress:type], _offset, &address))) {
+    if ((err = mk_vm_address_apply_offset([input nodeAddress:type], offset, &address))) {
         return nil;
     }
     
@@ -89,19 +91,24 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSNumber*)sizeOfField:(__unused MKNodeField*)field ofNode:(MKBackedNode*)input
+- (NSNumber*)sizeOfField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    if (_type)
-        return @([_type sizeForNode:input]);
-    else
-        return @(_size);
+    NSString *getterMethod = [[NSString alloc] initWithFormat:@"%@FieldSize", field.name];
+    SEL getterSEL = NSSelectorFromString(getterMethod);
+    [getterMethod release];
+    
+    if ([input respondsToSelector:getterSEL]) {
+        return @( ((mk_vm_size_t (*)(id, SEL))objc_msgSend)(input, getterSEL) );
+    } else {
+        return @( [input sizeOfField:field] );
+    }
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSData*)dataForField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
     NSRange fieldDataRange = NSMakeRange(
-        (NSUInteger)_offset,
+        (NSUInteger)[self _offsetOfField:field ofNode:input],
         [[self sizeOfField:field ofNode:input] unsignedIntegerValue]
     );
     
