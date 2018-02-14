@@ -43,6 +43,18 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_stringFormatter
+{
+    static MKStringFormatter *s_StringFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_StringFormatter = [MKStringFormatter new];
+    });
+    
+    return s_StringFormatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_booleanFormatter
 {
     static MKBooleanFormatter *s_BooleanFormatter = nil;

@@ -427,6 +427,8 @@
 		D0995A271A6C914D007134CE /* MKFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = D0995A251A6C914D007134CE /* MKFatArch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A261A6C914D007134CE /* MKFatArch.m */; };
 		D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */; };
+		D09A195A2030FC440053181B /* MKStringFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D09A19582030FC440053181B /* MKStringFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D09A195B2030FC440053181B /* MKStringFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D09A19592030FC440053181B /* MKStringFormatter.m */; };
 		D09A195E203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h in Headers */ = {isa = PBXBuildFile; fileRef = D09A195C203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09A195F203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m in Sources */ = {isa = PBXBuildFile; fileRef = D09A195D203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m */; };
 		D09F6C511A14847700AB21E3 /* MKMemoryMap.h in Headers */ = {isa = PBXBuildFile; fileRef = D09F6C4F1A14847700AB21E3 /* MKMemoryMap.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1326,6 +1328,8 @@
 		D0995A251A6C914D007134CE /* MKFatArch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKFatArch.h; sourceTree = "<group>"; };
 		D0995A261A6C914D007134CE /* MKFatArch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFatArch.m; sourceTree = "<group>"; };
 		D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKFatSpec.m; sourceTree = "<group>"; };
+		D09A19582030FC440053181B /* MKStringFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKStringFormatter.h; sourceTree = "<group>"; };
+		D09A19592030FC440053181B /* MKStringFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKStringFormatter.m; sourceTree = "<group>"; };
 		D09A195C203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldDataOperationExtractDynamicSubrange.h; sourceTree = "<group>"; };
 		D09A195D203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldDataOperationExtractDynamicSubrange.m; sourceTree = "<group>"; };
 		D09F6C4F1A14847700AB21E3 /* MKMemoryMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKMemoryMap.h; sourceTree = "<group>"; };
@@ -2351,6 +2355,8 @@
 				D0E30A701E612C430005A882 /* MKFormatterChain.m */,
 				D0E30A791E613A870005A882 /* MKObjectFormatter.h */,
 				D0E30A7A1E613A870005A882 /* MKObjectFormatter.m */,
+				D09A19582030FC440053181B /* MKStringFormatter.h */,
+				D09A19592030FC440053181B /* MKStringFormatter.m */,
 				D06D59A820151F7500A99173 /* MKBooleanFormatter.h */,
 				D06D59A920151F7500A99173 /* MKBooleanFormatter.m */,
 				D09145901E5121DD00959648 /* MKHexNumberFormatter.h */,
@@ -3124,6 +3130,7 @@
 				D01E7C7F1FFF49E400E745F7 /* MKRegularExport.h in Headers */,
 				D0672B1E1A4FBC0300D44610 /* MKSegment.h in Headers */,
 				D03030141A22FCBD00288B3E /* MKLCIDDylib.h in Headers */,
+				D09A195A2030FC440053181B /* MKStringFormatter.h in Headers */,
 				D01717CB1A99B30400F234EF /* macho_image_internal.h in Headers */,
 				D0A1D8CA19E4EEB80095870C /* load_command_load_dylib.h in Headers */,
 				D01C75011CA73FEB00648CA6 /* MKBindSetSymbolAndFlags.h in Headers */,
@@ -3512,6 +3519,7 @@
 				D0B9F6D61E580B8000D0B35A /* MKNodeFieldTypeQuadWord.m in Sources */,
 				D0E30A7C1E613A870005A882 /* MKObjectFormatter.m in Sources */,
 				D0A1D8E719E4EEB80095870C /* load_command_sub_library.c in Sources */,
+				D09A195B2030FC440053181B /* MKStringFormatter.m in Sources */,
 				D061B1771FF8BD7C004A3047 /* MKAddressedNode.m in Sources */,
 				D03030291A23BA1100288B3E /* MKLCSubFramework.m in Sources */,
 				D01C75021CA73FEB00648CA6 /* MKBindSetSymbolAndFlags.m in Sources */,

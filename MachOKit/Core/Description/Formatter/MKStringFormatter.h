@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       NSFormatter+MKNodeField.h
+//! @file       MKStringFormatter.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -27,37 +27,13 @@
 
 @import Foundation;
 
-#import <MachOKit/MKFormatterChain.h>
-#import <MachOKit/MKObjectFormatter.h>
-#import <MachOKit/MKStringFormatter.h>
-#import <MachOKit/MKBooleanFormatter.h>
-#import <MachOKit/MKHexNumberFormatter.h>
-#import <MachOKit/MKEnumerationFormatter.h>
-#import <MachOKit/MKOptionSetFormatter.h>
-#import <MachOKit/MKBitfieldFormatter.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface NSFormatter (MKNodeField)
-
-+ (NSFormatter*)mk_objectFormatter;
-+ (NSFormatter*)mk_stringFormatter;
-
-+ (NSFormatter*)mk_booleanFormatter;
-
-+ (NSFormatter*)mk_decimalNumberFormatter;
-
-+ (NSFormatter*)mk_hexFormatter;
-+ (NSFormatter*)mk_uppercaseHexFormatter;
-
-+ (NSFormatter*)mk_hexCompactFormatter;
-+ (NSFormatter*)mk_uppercaseHexCompactFormatter;
-
-+ (NSFormatter*)mk_AddressFormatter;
-+ (NSFormatter*)mk_SizeFormatter;
-+ (NSFormatter*)mk_OffsetFormatter;
-
+//! An \c NSFormatter subclass that adds quotation marks around the input
+//! string.
+//
+@interface MKStringFormatter : NSFormatter
 @end
 
 NS_ASSUME_NONNULL_END
