@@ -29,11 +29,12 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeFieldType.h>
+#import <MachOKit/MKNodeFieldContainerType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@protocol MKNodeFieldCollectionType <MKNodeFieldType>
+@protocol MKNodeFieldCollectionType <MKNodeFieldContainerType>
 
 @property (nonatomic, readonly, nullable) id<MKNodeFieldType> elementType;
 
