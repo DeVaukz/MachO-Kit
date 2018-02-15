@@ -65,7 +65,12 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"Node"; }
+{
+    if ([self.nodeClass isSubclassOfClass:MKNode.class])
+        return self.class.description;
+    else
+        return @"Node";
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter

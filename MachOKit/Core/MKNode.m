@@ -33,6 +33,7 @@
 
 _mk_internal const char * const AssociatedDelegate = "AssociatedDelegate";
 _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
+_mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 
 //----------------------------------------------------------------------------//
 @implementation MKNode
@@ -242,7 +243,52 @@ _mk_internal const char * const AssociatedWarnings = "AssociatedWarnings";
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)description
+{
+    NSString *cachedDescription = objc_getAssociatedObject(self, AssociatedDescription);
+    if (cachedDescription)
+        return cachedDescription;
+    
+    @synchronized(self)
+    {
+        // Make sure another thread did not beat us.
+        cachedDescription = objc_getAssociatedObject(self, AssociatedDescription);
+        if (cachedDescription)
+            return cachedDescription;
+        
+        NSString *className = NSStringFromClass(self);
+        NSMutableString *description = [NSMutableString new];
+        
+        /* Split the camel case class name into words. */
+        for (NSUInteger i = [className hasPrefix:@"MK"] ? 2 : 0; i < className.length; i++) {
+            unichar character = [className characterAtIndex:i];
+            
+            if (description.length == 0) {
+                CFStringAppendCharacters((CFMutableStringRef)description, &character, 1);
+                continue;
+            }
+            
+            if ([[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:character]) {
+                [description appendString:@" "];
+            }
+            
+            CFStringAppendCharacters((CFMutableStringRef)description, &character, 1);
+        }
+        
+        cachedDescription = [description copy];
+        
+        objc_setAssociatedObject(self, AssociatedDescription, cachedDescription, OBJC_ASSOCIATION_RETAIN);
+        
+        [cachedDescription release];
+        [description release];
+    }
+    
+    return cachedDescription;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)debugDescription
 { return [self.layout textualDescriptionForNode:self traversalDepth:NSUIntegerMax]; }
 
 @end
+
