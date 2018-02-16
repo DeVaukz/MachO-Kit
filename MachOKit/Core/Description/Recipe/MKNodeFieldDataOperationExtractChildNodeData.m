@@ -41,8 +41,11 @@ MKMakeSingletonInitializer(MKNodeFieldDataOperationExtractChildNodeData)
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSNumber*)address:(NSUInteger)type ofField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input];
-    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Field value must be an MKBackedNode.");
+    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input].value;
+    if (childNode == nil)
+        return nil;
+    
+    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Value of field [%@] must be an MKBackedNode.", field.name);
     
     @try {
         return @([childNode nodeAddress:type]);
@@ -52,10 +55,13 @@ MKMakeSingletonInitializer(MKNodeFieldDataOperationExtractChildNodeData)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSNumber*)sizeOfField:(__unused MKNodeField*)field ofNode:(MKBackedNode*)input
+- (NSNumber*)sizeOfField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input];
-    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Field value must be an MKBackedNode.");
+    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input].value;
+    if (childNode == nil)
+        return nil;
+    
+    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Value of field [%@] must be an MKBackedNode.", field.name);
     
     return @([childNode nodeSize]);
 }
@@ -63,8 +69,11 @@ MKMakeSingletonInitializer(MKNodeFieldDataOperationExtractChildNodeData)
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSData*)dataForField:(MKNodeField*)field ofNode:(MKBackedNode*)input
 {
-    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input];
-    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Field value must be an MKBackedNode.");
+    MKBackedNode *childNode = [field.valueRecipe valueForField:field ofNode:input].value;
+    if (childNode == nil)
+        return nil;
+    
+    NSAssert([childNode isKindOfClass:MKBackedNode.class], @"Value of field [%@] must be an MKBackedNode.", field.name);
     
     return childNode.data;
 }

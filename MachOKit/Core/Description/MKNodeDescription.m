@@ -153,7 +153,7 @@
         
         for (MKNodeField *field in fields)
         @autoreleasepool {
-            id value = [field.valueRecipe valueForField:field ofNode:node];
+            id value = [field.valueRecipe valueForField:field ofNode:node].value;
             
             [retValue appendFormat:@"\t%@ = %@\n", field.name, [describeValue(value, field) stringByReplacingOccurrencesOfString:@"\n" withString:@"\n\t"]];
         }

@@ -27,6 +27,7 @@
 
 #import "MKNodeField.h"
 #import "MKInternal.h"
+#import "MKOptional.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
@@ -85,7 +86,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)formattedDescriptionForNode:(MKNode*)node
 {
-    id value = [self.valueRecipe valueForField:self ofNode:node];
+    id value = [self.valueRecipe valueForField:self ofNode:node].value;
     NSFormatter *formatter = self.valueFormatter;
     
     if (formatter)

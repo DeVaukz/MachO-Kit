@@ -28,15 +28,16 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-@class MKNode;
+@class MKOptional;
 @class MKNodeField;
+@class MKNode;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldValueRecipe <NSObject>
 
-- (nullable id)valueForField:(MKNodeField*)field ofNode:(MKNode*)input;
+- (MKOptional*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input;
 
 @end
 

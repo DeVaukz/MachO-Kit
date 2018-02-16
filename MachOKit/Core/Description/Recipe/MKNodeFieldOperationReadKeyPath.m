@@ -27,6 +27,8 @@
 
 #import "MKNodeFieldOperationReadKeyPath.h"
 #import "MKInternal.h"
+#import "MKOptional.h"
+#import "MKNode.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldOperationReadKeyPath
@@ -44,7 +46,9 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
-{ return [self initWithKeyPath:nil]; }
+{
+    return [self initWithKeyPath:nil];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
@@ -59,12 +63,16 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id)valueForField:(__unused MKNodeField*)field ofNode:(MKNode*)input
+- (MKOptional*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input
 {
-    if (_keyPath)
-        return [input valueForKeyPath:_keyPath];
+    NSString *keyPath = _keyPath ?: field.name;
+    
+    id value = [input valueForKeyPath:keyPath];
+    
+    if ([value isKindOfClass:MKOptional.class])
+        return value;
     else
-        return nil;
+        return [MKOptional optionalWithValue:value];
 }
 
 @end
