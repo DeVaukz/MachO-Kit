@@ -79,7 +79,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSDictionary*)elements
+- (MKNodeFieldEnumerationElements*)elements
 { return s_CPUTypes; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -88,7 +88,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"cpu_type_t"; }
+{ return @"CPU Type"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter

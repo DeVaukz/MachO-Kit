@@ -165,7 +165,7 @@ static MKNodeFieldBitfieldMasks *s_Bits = nil;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"cpu_subtype_t"; }
+{ return @"CPU Subtype"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
