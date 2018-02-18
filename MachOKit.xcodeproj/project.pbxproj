@@ -256,6 +256,8 @@
 		D0590CDF1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.h in Headers */ = {isa = PBXBuildFile; fileRef = D0590CDD1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0590CE21A742B3300CF9FD0 /* MKLCLoadUpwardDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = D0590CDE1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.m */; };
 		D05AD6FD1C08261C00D832C7 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D83C19E4EE170095870C /* core.c */; };
+		D05E7EB620389F84000C72B7 /* MKNodeFieldTypeOffset.h in Headers */ = {isa = PBXBuildFile; fileRef = D05E7EB420389F84000C72B7 /* MKNodeFieldTypeOffset.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D05E7EB720389F84000C72B7 /* MKNodeFieldTypeOffset.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */; };
 		D060FA7E1A1877B1002A010C /* _MKFileMemoryMap.h in Headers */ = {isa = PBXBuildFile; fileRef = D060FA7C1A1877B1002A010C /* _MKFileMemoryMap.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		D060FA7F1A1877B1002A010C /* _MKFileMemoryMap.m in Sources */ = {isa = PBXBuildFile; fileRef = D060FA7D1A1877B1002A010C /* _MKFileMemoryMap.m */; };
 		D061B1541FF70208004A3047 /* MKExportTrieTerminalNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1521FF70208004A3047 /* MKExportTrieTerminalNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1162,6 +1164,8 @@
 		D0590CCD1A74286F00CF9FD0 /* load_command_load_upward_dylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load_command_load_upward_dylib.h; sourceTree = "<group>"; };
 		D0590CDD1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKLCLoadUpwardDylib.h; sourceTree = "<group>"; };
 		D0590CDE1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCLoadUpwardDylib.m; sourceTree = "<group>"; };
+		D05E7EB420389F84000C72B7 /* MKNodeFieldTypeOffset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeOffset.h; sourceTree = "<group>"; };
+		D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeOffset.m; sourceTree = "<group>"; };
 		D060FA7C1A1877B1002A010C /* _MKFileMemoryMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MKFileMemoryMap.h; sourceTree = "<group>"; };
 		D060FA7D1A1877B1002A010C /* _MKFileMemoryMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MKFileMemoryMap.m; sourceTree = "<group>"; };
 		D061B1521FF70208004A3047 /* MKExportTrieTerminalNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKExportTrieTerminalNode.h; sourceTree = "<group>"; };
@@ -2557,6 +2561,8 @@
 				D0DC9CF11E69429900AD0FC1 /* MKNodeFieldTypeAddress.m */,
 				D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */,
 				D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */,
+				D05E7EB420389F84000C72B7 /* MKNodeFieldTypeOffset.h */,
+				D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */,
 				D0E30A751E612F0E0005A882 /* MKNodeFieldTypeEnumeration.h */,
 				D0E30A761E612F0E0005A882 /* MKNodeFieldTypeEnumeration.m */,
 				D0E30A871E6289AB0005A882 /* MKNodeFieldTypeOptionSet.h */,
@@ -3187,6 +3193,7 @@
 				D0302FFF1A22DB1B00288B3E /* MKNodeDescription.h in Headers */,
 				D091459C1E5122C500959648 /* MKNodeFieldValueRecipe.h in Headers */,
 				D08E5ECC1B771E1E009185FE /* MKDSCDylibInfos.h in Headers */,
+				D05E7EB620389F84000C72B7 /* MKNodeFieldTypeOffset.h in Headers */,
 				D0B9F6D81E58102A00D0B35A /* MKFieldType.h in Headers */,
 				D0995A0F1A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */,
 				D0A9EAB21A8FD70C00280D38 /* section_internal.h in Headers */,
@@ -3567,6 +3574,7 @@
 				D0A1D8B919E4EEB80095870C /* load_command_dyld_info.c in Sources */,
 				D096B04A201C2B77003DA008 /* MKNodeFieldSectionType.m in Sources */,
 				D0FF4F28201B05250095106A /* MKNodeFieldSegmentFlagsType.m in Sources */,
+				D05E7EB720389F84000C72B7 /* MKNodeFieldTypeOffset.m in Sources */,
 				D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */,
 				D010F7191CB87055004025F5 /* MKObjCSelectorReferencesSection.m in Sources */,
 				D06D59AB20151F7500A99173 /* MKBooleanFormatter.m in Sources */,
