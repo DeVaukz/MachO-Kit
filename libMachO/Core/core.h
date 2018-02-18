@@ -76,7 +76,7 @@
 //! An invalid size value.
 #define MK_VM_SIZE_INVALID MK_VM_SIZE_MAX
 //! An invalid offset value.
-#define MK_VM_OFFSET_INVALID UINT64_MAX
+#define MK_VM_OFFSET_INVALID MK_VM_OFF_MAX
 
 //! Print formatter for the \ref mk_vm_address_t type.
 #define MK_VM_PRIxADDR PRIx64
@@ -108,7 +108,11 @@
 #endif
 
 //! Architecture-independent VM offset type.
-typedef uint64_t mk_vm_offset_t;
+#if MK_HAVE_MACH_VM
+	typedef mach_vm_offset_t mk_vm_offset_t;
+#else
+	typedef uint64_t mk_vm_offset_t;
+#endif
 
 //! Architecture-independent VM slide type.
 typedef int64_t mk_vm_slide_t;
