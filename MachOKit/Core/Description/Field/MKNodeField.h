@@ -42,26 +42,35 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     MKNodeFieldOptionNone                                       = 0,
-/* Formating Options */
-    //! Hint to use the \c valueFormatter of the field to format each
-    //! value of the collection (instead of the collection as a whole).
-    //! Only applicable to fields of a collection type.
-    MKNodeFieldOptionFormatCollectionValues                     = (1U << 1),
+    //! Hint to treat the field as a if it were a leaf when building a
+    //! recursive description.  If the type of the field is a container
+    //! (e.g, a node or collection type), it will be formatted as if it
+    //! were a non-container type (a value type), using the \c valueFormatter
+    //! if available.  The container's contents will *not* be enumerated.
+    //! Only applicable to container type fields.
+    MKNodeFieldOptionIgnoreContainerContents                    = (1U << 1),
+    MKNodeFieldOptionFormatCollectionValues                     = MKNodeFieldOptionIgnoreContainerContents,
+    //! Hint to merge the contents of the field with the other fields of
+    //! the node.  Wherever the field would have appeared, it's contents
+    //! appear instead.
+    //! Only applicable to container type fields.
+    MKNodeFieldOptionMergeContainerContents                     = (1U << 2),
+    MKNodeFieldOptionMergeWithParent                            = MKNodeFieldOptionMergeContainerContents,
 /* Display Options */
-    //! Hint to display the contents of the field alongside its parent.
-    //! Only applicable to fields of a node or collection of node type.
-    MKNodeFieldOptionMergeWithParent                            = (1U << 5),
     //! Hint to display the field as a child of the node, rather than as a
     //! detail of the node.
-    //! Only applicable to node type fields.
     MKNodeFieldOptionDisplayAsChild                             = (1U << 6),
     //! Hint to treat the field as a detail of the node, rather than as a
     //! child of the node.
-    //! Only applicable to node type fields.
     MKNodeFieldOptionDisplayAsDetail                            = (1U << 7),
+    //! Hint to display the contents of a collection field as a child
+    //! of the field.  Only applicable to container type fields.
+    MKNodeFieldOptionDisplayContainerContentsAsChild            = (1U << 8),
+    MKNodeFieldOptionDisplayCollectionContentsAsChild           = MKNodeFieldOptionDisplayContainerContentsAsChild,
     //! Hint to display the contents of a collection field as a detail
-    //! od the field.  Only applicable to fields of a collection type.
-    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = (1U << 8)
+    //! of the field.  Only applicable to container type fields.
+    MKNodeFieldOptionDisplayContainerContentsAsDetail           = (1U << 9),
+    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = MKNodeFieldOptionDisplayContainerContentsAsDetail
 };
 
 
