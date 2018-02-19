@@ -77,7 +77,7 @@
             _header = [[MKMachHeader64 alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         default:
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Mach-O magic: 0x%" PRIx32 ".", magic];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Bad Mach-O magic: 0x%" PRIx32 ".", magic];
             [self release]; return nil;
     }
     
@@ -103,7 +103,7 @@
         case MH_DYLIB:
             break;
         default:
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unsupported file type: %" PRIx32 ".", _header.filetype];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unsupported file type: %" PRIx32 ".", _header.filetype];
             [self release]; return nil;
     }
     
@@ -196,7 +196,7 @@
 - (instancetype)initWithParent:(MKBackedNode*)parent error:(NSError**)error
 {
     MKMemoryMap *mapping = parent.memoryMap;
-    NSParameterAssert(mapping);
+    NSParameterAssert(mapping != nil);
     
     self = [self initWithName:NULL flags:0 atAddress:0 inMapping:mapping error:error];
     if (!self) return nil;

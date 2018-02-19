@@ -71,13 +71,13 @@
         
         // First 4 bytes must == 'dyld'
         if (strncmp(&magic[0], "dyld", 4)) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Shared Cache magic: %s", magic];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Bad Shared Cache magic: %s", magic];
             [self release]; return nil;
         }
         
         // TODO - Support parsing shared cache v0.
         if (strncmp(&magic[5], "v1", 2)) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Shared Cache version: %s", magic];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unknown Shared Cache version: %s", magic];
             [self release]; return nil;
         }
         
@@ -135,7 +135,7 @@
             _cpuSubtype = CPU_SUBTYPE_ARM_ALL; //TODO - Find a better value
             sharedRegionBase = SHARED_REGION_BASE_ARM;
         } else {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Unknown Shared Cache architecture: %s", magic];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unknown Shared Cache architecture: %s", magic];
             [self release]; return nil;
         }
     }

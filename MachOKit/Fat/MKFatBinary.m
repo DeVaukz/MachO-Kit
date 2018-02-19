@@ -61,7 +61,7 @@
     
     // Check for the proper magic value
     if (_magic != FAT_MAGIC) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Bad FAT magic [0x%" PRIx32 "].", _magic];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVAL description:@"Bad FAT magic [0x%" PRIx32 "].", _magic];
         [self release]; return nil;
     }
     
