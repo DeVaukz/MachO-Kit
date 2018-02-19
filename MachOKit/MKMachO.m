@@ -31,6 +31,7 @@
 #import "MKMachHeader64.h"
 #import "MKLoadCommand.h"
 #import "MKLCSegment.h"
+
 #include "core_internal.h"
 
 #include <objc/runtime.h>
@@ -272,6 +273,10 @@
 
 @synthesize header = _header;
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_architecture_t)architecture
+{ return mk_architecture_create(self.header.cputype, self.header.cpusubtype); }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - Load Commands
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -308,60 +313,41 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSData*)data
+{ return nil; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    // SECTIONS
-    MKNodeFieldBuilder *sections = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(sections)
-        type:[MKNodeFieldTypeCollection typeWithCollectionType:nil]
+    MKNodeFieldBuilder *header = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(header)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKMachHeader.class]
     ];
-    sections.description = @"Sections";
-    sections.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    header.description = @"Mach Header";
+    header.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
     
-    // FUNCTION STARTS
-    MKNodeFieldBuilder *functionStarts = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(functionStarts)
-        type:nil
+    MKNodeFieldBuilder *loadCommands = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(loadCommands)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKLoadCommand.class]]
     ];
-    functionStarts.description = @"Function Starts";
-    functionStarts.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
+    loadCommands.description = @"Load Commands";
+    loadCommands.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayContainerContentsAsChild;
     
-    // BINDINGS
-    MKNodeFieldBuilder *bindingsInfo = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(bindingsInfo)
-        type:nil
-    ];
-    bindingsInfo.description = @"Binding Info";
-    bindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
-    
-    // WEAK BINDINGS
-    MKNodeFieldBuilder *weakBindingsInfo = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(weakBindingsInfo)
-        type:nil
-    ];
-    weakBindingsInfo.description = @"Weak Binding Info";
-    weakBindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
-    
-    // LAZY BINDINGS
-    MKNodeFieldBuilder *lazyBindingsInfo = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(lazyBindingsInfo)
-        type:nil
-    ];
-    lazyBindingsInfo.description = @"Lazy Binding Info";
-    lazyBindingsInfo.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeWithParent;
-	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Image Path"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(slide) description:@"Slide"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(header) description:@"Mach-O Header"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(loadCommands) description:@"Load Commands"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(stringTable) description:@"String Table"],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbolTable) description:@"Symbol Table"],
-        sections.build,
-        functionStarts.build,
-        bindingsInfo.build,
-        weakBindingsInfo.build,
-        lazyBindingsInfo.build,
+        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Image Path"],
+        //[MKNodeField nodeFieldWithProperty:MK_PROPERTY(slide) description:@"Slide"],
+        header.build,
+        loadCommands.build,
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wobjc-method-access"
+        [[self.class _sectionsFieldBuilder] build],
+        [[self.class _functionStartsFieldBuilder] build],
+        [[self.class _rebaseInfoFieldBuilder] build],
+        [[self.class _bindingsInfoFieldBuilder] build],
+        [[self.class _weakBindingsInfoFieldBuilder] build],
+        [[self.class _lazyBindingsInfoFieldBuilder] build],
+		[[self.class _exportsInfoFieldBuilder] build],
+    #pragma clang diagnostic pop
     ]];
 }
 
@@ -371,7 +357,31 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"<%@ %p; address = 0x%" MK_VM_PRIxADDR ">", NSStringFromClass(self.class), self, self.nodeContextAddress]; }
+{
+    NSString *kind;
+    switch (self.header.filetype)
+    {
+        case MH_EXECUTE:
+            kind = @"Executable";
+            break;
+        case MH_DYLIB:
+            kind = @"Shared Library";
+            break;
+        default:
+            kind = @"Mach-O Image";
+            break;
+    }
+    
+    char architecture[50];
+    size_t descriptionLen = mk_architecture_copy_description(self.architecture, architecture, sizeof(architecture));
+    NSString *arch = [[[NSString alloc] initWithBytes:(void*)architecture length:descriptionLen encoding:NSASCIIStringEncoding] autorelease];
+    
+    return [NSString stringWithFormat:@"%@ (%@)", kind, arch];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)debugDescription
+{ return [self.layout textualDescriptionForNode:self traversalDepth:0]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - mk_context_t

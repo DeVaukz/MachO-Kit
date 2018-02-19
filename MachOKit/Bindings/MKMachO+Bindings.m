@@ -102,4 +102,47 @@
     return _lazyBindingsInfo;
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_bindingsInfoFieldBuilder
+{
+    MKNodeFieldBuilder *bindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(bindingsInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKBindingsInfo.class]
+    ];
+    bindingsInfo.description = @"Binding Info";
+    bindingsInfo.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return bindingsInfo;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_weakBindingsInfoFieldBuilder
+{
+    MKNodeFieldBuilder *weakBindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weakBindingsInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKWeakBindingsInfo.class]
+    ];
+    weakBindingsInfo.description = @"Weak Binding Info";
+    weakBindingsInfo.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return weakBindingsInfo;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_lazyBindingsInfoFieldBuilder
+{
+    MKNodeFieldBuilder *lazyBindingsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(lazyBindingsInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKLazyBindingsInfo.class]
+    ];
+    lazyBindingsInfo.description = @"Lazy Binding Info";
+    lazyBindingsInfo.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return lazyBindingsInfo;
+}
+
 @end

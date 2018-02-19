@@ -58,4 +58,21 @@
     return _exportsInfo;
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_exportsInfoFieldBuilder
+{
+    MKNodeFieldBuilder *exportsInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(exportsInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKExportsInfo.class]
+    ];
+    exportsInfo.description = @"Export Info";
+    exportsInfo.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return exportsInfo;
+}
+
 @end

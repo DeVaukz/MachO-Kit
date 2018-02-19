@@ -175,4 +175,21 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_sectionsFieldBuilder
+{
+    MKNodeFieldBuilder *sections = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sections)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]]
+    ];
+    sections.description = @"Sections";
+    sections.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeContainerContents;
+    
+    return sections;
+}
+
 @end

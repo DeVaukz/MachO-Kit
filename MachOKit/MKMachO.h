@@ -137,6 +137,9 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 //! The header of this image.
 @property (nonatomic, readonly) MKMachHeader *header;
 
+//! The architecture of this image.
+@property (nonatomic, readonly) mk_architecture_t architecture;
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Load Commands
 //! @name       Load Commands
@@ -157,4 +160,3 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 @end
 
 NS_ASSUME_NONNULL_END
-

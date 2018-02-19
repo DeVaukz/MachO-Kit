@@ -58,4 +58,21 @@
     return _rebaseInfo;
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_rebaseInfoFieldBuilder
+{
+    MKNodeFieldBuilder *rebaseInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(rebaseInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKRebaseInfo.class]
+    ];
+    rebaseInfo.description = @"Rebase Info";
+    rebaseInfo.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return rebaseInfo;
+}
+
 @end

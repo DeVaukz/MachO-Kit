@@ -58,4 +58,21 @@
     return _functionStarts;
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_functionStartsFieldBuilder
+{
+    MKNodeFieldBuilder *functionStarts = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(functionStarts)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKFunctionStarts.class]
+    ];
+    functionStarts.description = @"Function Starts";
+    functionStarts.options = MKNodeFieldOptionDisplayAsChild;
+    
+    return functionStarts;
+}
+
 @end
