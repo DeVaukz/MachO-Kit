@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! at the provided \a fileURL.
 + (nullable instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error;
 
-#if (TARGET_OS_MAC && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 //! Creates and returns an \ref MKMemoryMap for the contents of another
 //! task's memory.
 + (nullable instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error;
@@ -71,8 +71,8 @@ NS_ASSUME_NONNULL_BEGIN
 //! Converts the address at (\a address + \a offset) into an address
 //! accessible from the current process and invokes the \a handler.
 //!
-//! This method is abstract and must be implemented by subclasses.  Your
-//!	implementation should be reentrant.
+//! This method is abstract and must be implemented by subclasses.
+//! Your implementation should be reentrant.
 //!
 //! @param  offset
 //!         An offset to be added to \a address prior to conversion.

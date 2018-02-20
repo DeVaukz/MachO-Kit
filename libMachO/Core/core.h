@@ -38,7 +38,7 @@
 #include "base.h"
 
 #include <mach/mach.h>
-#if (TARGET_OS_MAC && !TARGET_OS_IPHONE)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 #   include <mach/mach_vm.h>
 #   define MK_HAVE_MACH_VM 1
 #endif

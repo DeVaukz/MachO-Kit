@@ -35,7 +35,7 @@
 
 #ifndef _memory_map_task_h
 #define _memory_map_task_h
-#if TARGET_OS_MAC && !(TARGET_OS_EMBEDDED || TARGET_OS_SIMULATOR)
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 
 //! @addtogroup MEMORY_MAP_TASK
 //! @{
