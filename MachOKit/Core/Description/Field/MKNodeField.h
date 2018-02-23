@@ -70,7 +70,15 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     //! Hint to display the contents of a collection field as a detail
     //! of the field.  Only applicable to container type fields.
     MKNodeFieldOptionDisplayContainerContentsAsDetail           = (1U << 9),
-    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = MKNodeFieldOptionDisplayContainerContentsAsDetail
+    MKNodeFieldOptionDisplayCollectionContentsAsDetail          = MKNodeFieldOptionDisplayContainerContentsAsDetail,
+/* Address and Data Display Options */
+    //! Hint to not display the address of the field.
+    MKNodeFieldOptionHideAddress                                = (1U << 10),
+    //! Hint to not display the raw data of the field.
+    MKNodeFieldOptionHideData                                   = (1U << 11),
+    //! Combination of \c MKNodeFieldOptionHideAddress and
+    // \c MKNodeFieldOptionHideData.
+    MKNodeFieldOptionHideAddressAndData                         = MKNodeFieldOptionHideAddress | MKNodeFieldOptionHideData
 };
 
 
