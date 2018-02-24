@@ -76,7 +76,7 @@
         type:MKNodeFieldTypeAddress.sharedInstance
     ];
     address.description = @"Address";
-    address.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    address.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         address.build

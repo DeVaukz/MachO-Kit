@@ -167,14 +167,14 @@
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFunctionOffset.class]]
     ];
     offsets.description = @"Offsets";
-    offsets.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    offsets.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayContainerContentsAsDetail;
     
     MKNodeFieldBuilder *functions = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(functions)
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFunction.class]]
     ];
     functions.description = @"Functions";
-    functions.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    functions.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayContainerContentsAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         offsets.build,
