@@ -97,15 +97,22 @@
 { return 1 + _countULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)countFieldSize
+{ return _countULEBSize; }
+- (mk_vm_offset_t)countFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *count = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(count)
-        type:MKNodeFieldTypeUnsignedByte.sharedInstance
-        offset:1
-        size:_countULEBSize
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
     ];
     count.description = @"Rebase Count";
+    count.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     count.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

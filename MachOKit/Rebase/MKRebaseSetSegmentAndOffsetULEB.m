@@ -93,6 +93,14 @@
 { return 1 + _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)offsetFieldSize
+{ return _offsetULEBSize; }
+- (mk_vm_offset_t)offsetFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *segmentIndex = [MKNodeFieldBuilder
@@ -105,10 +113,9 @@
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(offset)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-		offset:1
-		size:_offsetULEBSize
     ];
     offset.description = @"Offset";
+    offset.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     offset.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

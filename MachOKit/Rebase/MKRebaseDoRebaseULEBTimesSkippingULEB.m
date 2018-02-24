@@ -114,31 +114,40 @@
 { return 1 + _countULEBSize + _skipULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)countFieldSize
+{ return _countULEBSize; }
+- (mk_vm_offset_t)countFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)skipFieldSize
+{ return _skipULEBSize; }
+- (mk_vm_offset_t)skipFieldOffset
+{
+    return 1
+        + _countULEBSize;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-	mk_vm_offset_t offset = 1;
-	
     MKNodeFieldBuilder *count = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(count)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-        offset:offset
-        size:_countULEBSize
     ];
     count.description = @"Rebase Count";
+    count.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     count.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	offset += _countULEBSize;
 	
     MKNodeFieldBuilder *skip = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(skip)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-		offset:offset
-		size:_skipULEBSize
     ];
     skip.description = @"Skip";
+    skip.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     skip.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	//offset += _skipULEBSize;
 	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         count.build,
