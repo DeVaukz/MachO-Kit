@@ -131,8 +131,8 @@
         type:[MKNodeFieldTypeNode typeWithNodeType:MKCString.class]
     ];
     symbolName.description = @"Symbol Name";
-    symbolName.options = MKNodeFieldOptionDisplayAsDetail;
     symbolName.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
+    symbolName.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         symbolFlags.build,

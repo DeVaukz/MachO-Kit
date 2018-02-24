@@ -177,11 +177,11 @@
 		type:[MKNodeFieldTypeNode typeWithNodeType:MKDependentLibrary.class]
 	];
 	sourceLibrary.description = @"Library";
-	sourceLibrary.options = MKNodeFieldOptionDisplayAsDetail;
+	sourceLibrary.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
 	
 	MKNodeFieldBuilder *symbolName = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(symbolName)
-		type:nil /* TODO ? */
+		type:MKNodeFieldTypeString.sharedInstance
 	];
 	symbolName.description = @"Symbol Name";
 	symbolName.options = MKNodeFieldOptionDisplayAsDetail;
@@ -208,21 +208,21 @@
 		type:[MKNodeFieldTypeNode typeWithNodeType:MKSegment.class]
 	];
 	segment.description = @"Segment";
-	segment.options = MKNodeFieldOptionDisplayAsDetail;
+	segment.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
 	
 	MKNodeFieldBuilder *section = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(section)
-		type:nil
+		type:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]
 	];
 	section.description = @"Section";
-	section.options = MKNodeFieldOptionDisplayAsDetail;
+	section.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
 	
 	MKNodeFieldBuilder *address = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(address)
 		type:MKNodeFieldTypeAddress.sharedInstance
 	];
 	address.description = @"Address";
-	address.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+	address.options = MKNodeFieldOptionDisplayAsDetail;
 	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         type.build,
