@@ -39,9 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
     mk_vm_address_t _address;
 }
 
-- (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_UNAVAILABLE;
-
 - (nullable instancetype)initWithContext:(struct MKFunctionStartsContext*)context error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
+- (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_UNAVAILABLE;
 
 //! The VM address of the function.
 @property (nonatomic, readonly) mk_vm_address_t address;

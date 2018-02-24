@@ -44,10 +44,10 @@
     self = [super initWithSize:size offset:offset inImage:image error:error];
     if (self == nil) return nil;
     
-    // Parse the Function Offsets
+    // Parse the function offsets
     @autoreleasepool
     {
-        NSMutableArray<MKFunctionOffset*> *offsets = [[NSMutableArray alloc] initWithCapacity:size/3];
+        NSMutableArray<MKFunctionOffset*> *offsets = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size/3];
         mk_vm_offset_t offset = 0;
         
         while (offset < self.nodeSize)
@@ -74,14 +74,17 @@
     // Determine the function addresses
     @autoreleasepool
     {
-        NSMutableArray<MKFunction*> *functions = [[NSMutableArray alloc] initWithCapacity:size/3];
+        NSMutableArray<MKFunction*> *functions = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size/3];
         
         mk_error_t err;
         NSError *functionError = nil;
         struct MKFunctionStartsContext context = { 0, .info = self };
         
-        // TODO - Verify that this is the correct starting address.
+        // The initial offset is the delta from the start of __TEXT
         context.address = self.macho.nodeVMAddress;
+        
+        // TODO - Thumb needs some special handling.  See FunctionStartsAtom<A>::encode()
+        // <https://opensource.apple.com/source/ld64/ld64-274.2/src/ld/LinkEdit.hpp.auto.html>
         
         for (MKFunctionOffset *offset in _offsets) {
             context.offset = offset;
@@ -122,10 +125,7 @@
     // Find LC_FUNCTION_STARTS
     MKLCFunctionStarts *functionStartsLoadCommand = nil;
     {
-        NSMutableArray<MKLCFunctionStarts*> *commands = [[NSMutableArray alloc] initWithCapacity:1];
-        
-        NSArray *functionStartsCommands = [image loadCommandsOfType:LC_FUNCTION_STARTS];
-        if (functionStartsCommands) [commands addObjectsFromArray:functionStartsCommands];
+        NSArray<MKLCFunctionStarts*> *commands = [image loadCommandsOfType:LC_FUNCTION_STARTS];
         
         if (commands.count > 1)
             MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_FUNCTION_STARTS load commands.  Ignoring %@.", commands.lastObject);
@@ -136,7 +136,6 @@
         }
         
         functionStartsLoadCommand = [[commands.firstObject retain] autorelease];
-        [commands release];
     }
     
     return [self initWithSize:functionStartsLoadCommand.datasize offset:functionStartsLoadCommand.dataoff inImage:image error:error];

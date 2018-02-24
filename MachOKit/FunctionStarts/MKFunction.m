@@ -89,8 +89,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"0x%" PRIX64, self.address];
-}
+{ return [NSString stringWithFormat:@"0x%" PRIX64, self.address]; }
 
 @end

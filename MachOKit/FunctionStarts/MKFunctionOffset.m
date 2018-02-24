@@ -91,8 +91,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"+%" PRIu64, self.offset];
-}
+{ return [NSString stringWithFormat:@"+%" PRIu64, self.offset]; }
 
 @end
