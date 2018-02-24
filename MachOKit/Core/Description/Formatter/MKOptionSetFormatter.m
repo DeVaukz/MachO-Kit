@@ -186,7 +186,7 @@
     value &= (~maskedBits);
     
     for (unsigned i=0; i<bits; i++) {
-        if (value & (1<<i)) {
+        if (value & ((uint64_t)1 << i)) {
             if (retValue.length != 0) [retValue appendString:@" "];
             [retValue appendFormat:@"(1<<%u)", i];
         }

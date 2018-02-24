@@ -199,6 +199,7 @@
 		D03D193E1C72F0C1006A2CEB /* MKMachO+Rebase.m in Sources */ = {isa = PBXBuildFile; fileRef = D03D193C1C72F0C1006A2CEB /* MKMachO+Rebase.m */; };
 		D03D19411C72F7C4006A2CEB /* MKRebaseInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D193F1C72F7C4006A2CEB /* MKRebaseInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D19421C72F7C4006A2CEB /* MKRebaseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D03D19401C72F7C4006A2CEB /* MKRebaseInfo.m */; };
+		D03EFF3A203E93B400040928 /* MKFormatterSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D03EFF2A203E939400040928 /* MKFormatterSpec.m */; };
 		D04269E51DD931E40091AB2A /* MKPtr.h in Headers */ = {isa = PBXBuildFile; fileRef = D04269E31DD931E40091AB2A /* MKPtr.h */; };
 		D04269E61DD931E40091AB2A /* MKPtr.m in Sources */ = {isa = PBXBuildFile; fileRef = D04269E41DD931E40091AB2A /* MKPtr.m */; };
 		D04269F71DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.h in Headers */ = {isa = PBXBuildFile; fileRef = D04269F51DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1112,6 +1113,7 @@
 		D03D193C1C72F0C1006A2CEB /* MKMachO+Rebase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMachO+Rebase.m"; sourceTree = "<group>"; };
 		D03D193F1C72F7C4006A2CEB /* MKRebaseInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRebaseInfo.h; sourceTree = "<group>"; };
 		D03D19401C72F7C4006A2CEB /* MKRebaseInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRebaseInfo.m; sourceTree = "<group>"; };
+		D03EFF2A203E939400040928 /* MKFormatterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKFormatterSpec.m; sourceTree = "<group>"; };
 		D04269E31DD931E40091AB2A /* MKPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPtr.h; sourceTree = "<group>"; };
 		D04269E41DD931E40091AB2A /* MKPtr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKPtr.m; sourceTree = "<group>"; };
 		D04269F51DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKOffsetNode+AddressBasedInitialization.h"; sourceTree = "<group>"; };
@@ -1928,6 +1930,7 @@
 			isa = PBXGroup;
 			children = (
 				D0302FFA1A21C84500288B3E /* MKMemoryMapSpec.m */,
+				D03EFF2A203E939400040928 /* MKFormatterSpec.m */,
 				D0302FF81A21BD6E00288B3E /* MKDataModelSpec.m */,
 				D0BD11011B6C854E009AEB8F /* MKSharedCacheSpec.m */,
 				D0995A2D1A6CAAD9007134CE /* MKFatSpec.m */,
@@ -3821,6 +3824,7 @@
 				D0F7EBAF1A63559600FA834F /* data_model_spec.m in Sources */,
 				D0A3BB541A68DEF200D663A0 /* macho_image_spec.m in Sources */,
 				D08AD76B1E07B95E001F6A2F /* NSArray+MKTests.m in Sources */,
+				D03EFF3A203E93B400040928 /* MKFormatterSpec.m in Sources */,
 				D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */,
 				D0302FF91A21BD6E00288B3E /* MKDataModelSpec.m in Sources */,
 				D0A4A63F19CEB65B00B83A93 /* MKMachOSpec.m in Sources */,

@@ -31,27 +31,6 @@
 @implementation MKEnumerationFormatter
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)enumerationFormatterWithName:(NSString*)name fallbackFormatter:(NSFormatter*)formatter elements:(NSDictionary*)elements
-{
-    MKEnumerationFormatter *retValue = [self new];
-    retValue.elements = elements;
-    retValue.name = name;
-    retValue.fallbackFormatter = formatter;
-    
-    return [retValue autorelease];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)enumerationFormatterWithName:(NSString*)name elements:(NSDictionary*)elements
-{
-    MKEnumerationFormatter *retValue = [self new];
-    retValue.elements = elements;
-    retValue.name = name;
-    
-    return [retValue autorelease];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)enumerationFormatterWithElements:(NSDictionary*)elements
 {
     MKEnumerationFormatter *retValue = [self new];

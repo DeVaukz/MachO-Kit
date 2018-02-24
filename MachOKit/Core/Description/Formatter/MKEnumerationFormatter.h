@@ -39,10 +39,6 @@ typedef NSDictionary<id<NSCopying>, NSString*> MKEnumerationFormatterElements;
     NSFormatter *_fallbackFormatter;
 }
 
-+ (instancetype)enumerationFormatterWithName:(nullable NSString*)name fallbackFormatter:(nullable NSFormatter*)formatter elements:(nullable MKEnumerationFormatterElements*)elements;
-
-+ (instancetype)enumerationFormatterWithName:(nullable NSString*)name elements:(nullable MKEnumerationFormatterElements*)elements;
-
 + (instancetype)enumerationFormatterWithElements:(nullable MKEnumerationFormatterElements*)elements;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
