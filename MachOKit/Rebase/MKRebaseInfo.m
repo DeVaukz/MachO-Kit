@@ -192,14 +192,14 @@
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKRebaseCommand.class]]
     ];
     commands.description = @"Commands";
-    commands.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    commands.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayContainerContentsAsDetail;
     
     MKNodeFieldBuilder *fixups = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(fixups)
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKFixup.class]]
     ];
     fixups.description = @"Fixups";
-    fixups.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    fixups.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionDisplayContainerContentsAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         commands.build,

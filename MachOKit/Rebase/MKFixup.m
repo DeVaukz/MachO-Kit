@@ -123,21 +123,21 @@
         type:[MKNodeFieldTypeNode typeWithNodeType:MKSegment.class]
     ];
     segment.description = @"Segment";
-    segment.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    segment.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
     
     MKNodeFieldBuilder *section = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(section)
-        type:nil
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]
     ];
     section.description = @"Section";
-    section.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    section.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
     
     MKNodeFieldBuilder *address = [MKNodeFieldBuilder
        builderWithProperty:MK_PROPERTY(address)
        type:MKNodeFieldTypeAddress.sharedInstance
     ];
     address.description = @"Address";
-    address.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    address.options = MKNodeFieldOptionDisplayAsDetail;
     
     MKNodeFieldBuilder *type = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(type)
@@ -148,7 +148,7 @@
         }]
     ];
     type.description = @"Type";
-    type.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    type.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         segment.build,
