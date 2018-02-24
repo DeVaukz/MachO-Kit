@@ -62,15 +62,22 @@
 { return _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)offsetFieldSize
+{ return _offsetULEBSize; }
+- (mk_vm_offset_t)offsetFieldOffset
+{
+    return 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(offset)
         type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-        offset:0
-        size:_offsetULEBSize
     ];
     offset.description = @"Offset";
+    offset.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     offset.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
