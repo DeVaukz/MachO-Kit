@@ -1,13 +1,21 @@
 Mach-O Kit
 ==========
 
-Mach-O Kit is an Objective-C framework for parsing Mach-O binaries and related files used by Darwin platforms (macOS, iOS, tvOS, and watchOS).  The project also includes a lightweight C library - libMachO - for parsing Mach-O images loaded in the current process.
+Mach-O Kit is an Objective-C framework for parsing Mach-O binaries used by Darwin platforms (macOS, iOS, tvOS, and watchOS).  The project also includes a lightweight C library - libMachO - for parsing Mach-O images loaded in the current process.
 
 Mach-O Kit is designed to be easy to use while still exposing all the details of the parsed Mach-O file (if you need them).  It can serve as the foundation for anything that needs to read Mach-O files - from a one-off command line tool up to a fully featured interactive disassembler.  Most importantly, Mach-O Kit is designed to be safe.  Every read operation and its returned data is extensively error checked so that parsing a malformed Mach-O file (even a malicious one) does not crash your program.
 
 ## Getting Started
 
 Mach-O Kit supports 32/64 bit OS X 10.10+, iOS 8.0+, and tvOS 9.0+.
+
+### Obtaining Mach-O Kit
+
+***Use a recursive git clone***.
+
+```
+git clone --recursive https://github.com/DeVaukz/MachO-Kit
+```
 
 ### Installation
 
@@ -74,7 +82,7 @@ Most classes in Mach-O Kit print verbose debug descriptions.  `MKLoadCommand` is
 If you just want to inspect the libraries that a Mach-O binary links against, `MKLoadCommand` includes a `dependentLibraries` property that returns an array of `MKDependentLibrary` instances.  `MKDependentLibrary` provides a slightly higher level interface than inspecting the load commands directly.
 
 ```
-# Prints the names of all the libraries Foundation links against
+# Prints the names of all the libraries that Foundation links against
 for library in macho.dependentLibraries {
 	print(library.value!.name)
 }
@@ -105,7 +113,7 @@ for (_, section) in macho.sections {
 
 ## Status
 
-Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and Frameworks), and bundles.  Parsing for the following are fully implemented or partially implemented:
+Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and frameworks), and bundles.  Parsing for the following are fully implemented or partially implemented:
 
 * Containers
     * FAT Binary ✔
@@ -144,6 +152,7 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
     * Segment Split Info
     * Data in Code Entries
     * Symbols (*incomplete - needs to be reworked*)
+    * Indirect Symbols
 * ObjC Metadata
     * Image Info ✔
     * Classes ✔
