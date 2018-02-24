@@ -89,20 +89,30 @@
 { return _prefix.nodeSize + _offsetULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)offsetFieldSize
+{ return _offsetULEBSize; }
+- (mk_vm_offset_t)offsetFieldOffset
+{
+    return 0
+        + self.prefix.nodeSize;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
 	MKNodeFieldBuilder *prefix = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(prefix)
-		type:nil /* TODO ? */
+		type:[MKNodeFieldTypeNode typeWithNodeType:MKCString.class]
 	];
 	prefix.description = @"Node Label";
-	prefix.options = MKNodeFieldOptionDisplayAsDetail;
+	prefix.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents;
 	
 	MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(offset)
 		type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
 	];
-	offset.description = @"Next Node";
+	offset.description = @"Next Node Offset";
+    offset.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
 	offset.options = MKNodeFieldOptionDisplayAsDetail;
 	
 	return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

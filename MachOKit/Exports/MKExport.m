@@ -180,7 +180,7 @@
 	
 	MKNodeFieldBuilder *name = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(name)
-		type:nil /* TODO ? */
+		type:MKNodeFieldTypeString.sharedInstance
 	];
 	name.description = @"Name";
 	name.options = MKNodeFieldOptionDisplayAsDetail;

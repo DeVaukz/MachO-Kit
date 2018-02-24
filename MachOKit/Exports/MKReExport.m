@@ -101,11 +101,27 @@
 		builderWithProperty:MK_PROPERTY(sourceLibraryOrdinal)
 		type:MKNodeFieldTypeQuadWord.sharedInstance
 	];
-	sourceLibraryOrdinal.description = @"Library Ordinal";
+	sourceLibraryOrdinal.description = @"Source Library Ordinal";
 	sourceLibraryOrdinal.options = MKNodeFieldOptionDisplayAsDetail;
 	
+    MKNodeFieldBuilder *sourceLibrary = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sourceLibrary)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKDependentLibrary.class]
+    ];
+    sourceLibrary.description = @"Source Library";
+    sourceLibrary.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents;
+    
+    MKNodeFieldBuilder *importedName = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(importedName)
+        type:MKNodeFieldTypeString.sharedInstance
+    ];
+    importedName.description = @"Imported Name";
+    importedName.options = MKNodeFieldOptionDisplayAsDetail;
+    
 	return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-		sourceLibraryOrdinal.build
+		sourceLibraryOrdinal.build,
+        sourceLibrary.build,
+        importedName.build
 	]];
 }
 
@@ -116,12 +132,10 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-	NSString *sourceLibraryName = [[self.sourceLibrary.name stringByDeletingPathExtension] lastPathComponent];
-	
 	if (self.importedName)
-		return [NSString stringWithFormat:@"[re-export] %@ (%@ from %@)", self.name, self.importedName, sourceLibraryName];
+		return [NSString stringWithFormat:@"[re-export] %@ (%@ from %@)", self.name, self.importedName, self.sourceLibrary];
 	else
-		return [NSString stringWithFormat:@"[re-export] %@ (from %@)", self.name, sourceLibraryName];
+		return [NSString stringWithFormat:@"[re-export] %@ (from %@)", self.name, self.sourceLibrary];
 }
 
 @end

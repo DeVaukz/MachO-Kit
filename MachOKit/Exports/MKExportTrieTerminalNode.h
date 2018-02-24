@@ -41,6 +41,9 @@ NS_ASSUME_NONNULL_BEGIN
 	uint64_t _offset;
 	uint64_t _resolver;
 	MKCString *_importedName;
+    size_t _flagsULEBSize;
+    size_t _offsetULEBSize;
+    size_t _resolverULEBSize;
 }
 
 //!

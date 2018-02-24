@@ -84,7 +84,10 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-	return [NSString stringWithFormat:@"0x%.8" PRIX64 "  %@", self.address, self.name];
+    if (self.options & EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION)
+        return [NSString stringWithFormat:@"0x%.8" PRIX64 "  %@ [weak_def]", self.address, self.name];
+    else
+        return [NSString stringWithFormat:@"0x%.8" PRIX64 "  %@", self.address, self.name];
 }
 
 @end

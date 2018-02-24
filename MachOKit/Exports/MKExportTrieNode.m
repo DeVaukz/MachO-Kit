@@ -119,18 +119,19 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
     if (self == nil) return nil;
 	
     mk_error_t err;
+    
+    offset = 0;
 	
     // Read terminal information size
 	{
 		NSError *terminalSizeError = nil;
-		size_t ulebSize;
 		
-		if (ReadTerminalSize(&_terminalInformationSize, &ulebSize, 0, self, &terminalSizeError) == false) {
+		if (ReadTerminalSize(&_terminalInformationSize, &_terminalInformationSizeULEBSize, 0, self, &terminalSizeError) == false) {
 			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:terminalSizeError description:@"Could not read terminal size."];
 			[self release]; return nil;
 		}
 		
-		offset = ulebSize;
+		offset += _terminalInformationSizeULEBSize;
 	}
 	
 	// Parse terminal information.
@@ -207,15 +208,32 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 @synthesize nodeSize = _nodeSize;
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)terminalInformationSizeFieldSize
+{ return _terminalInformationSizeULEBSize; }
+- (mk_vm_offset_t)terminalInformationSizeFieldOffset
+{
+    return 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)childCountFieldSize
+{ return [MKNodeFieldTypeUnsignedByte.sharedInstance sizeForNode:self]; }
+- (mk_vm_offset_t)childCountFieldOffset
+{
+    return 0
+        + _terminalInformationSizeULEBSize
+        + _terminalInformationSize;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
 	MKNodeFieldBuilder *terminalInformationSize = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(terminalInformationSize)
 		type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-        offset:0
-        size:_terminalInformationSize
 	];
 	terminalInformationSize.description = @"Terminal Size";
+    terminalInformationSize.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
 	terminalInformationSize.options = MKNodeFieldOptionDisplayAsDetail;
 	
 	MKNodeFieldBuilder *childCount = [MKNodeFieldBuilder
@@ -223,6 +241,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 		type:MKNodeFieldTypeUnsignedByte.sharedInstance
 	];
 	childCount.description = @"Child Count";
+    childCount.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
 	childCount.options = MKNodeFieldOptionDisplayAsDetail;
 	
 	MKNodeFieldBuilder *branches = [MKNodeFieldBuilder
@@ -230,7 +249,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 		type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKExportTrieBranch.class]]
 	];
 	branches.description = @"Branches";
-	branches.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+	branches.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
 	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
 		terminalInformationSize.build,

@@ -42,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
     uint64_t _terminalInformationSize;
 	NSArray<MKExportTrieBranch*> *_branches;
 	uint8_t _childCount;
+    size_t _terminalInformationSizeULEBSize;
 }
 
 //! Searches the subclasses of \ref MKExportTrieNode that is most suitable for
