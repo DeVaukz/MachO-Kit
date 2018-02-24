@@ -100,15 +100,22 @@
 { return 1 + _ordinalULEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)ordinalFieldSize
+{ return _ordinalULEBSize; }
+- (mk_vm_offset_t)ordinalFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *ordinal = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(ordinal)
         type:MKNodeFieldTypeQuadWord.sharedInstance
-        offset:1
-        size:_ordinalULEBSize
     ];
     ordinal.description = @"Dylib Ordinal";
+    ordinal.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     ordinal.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

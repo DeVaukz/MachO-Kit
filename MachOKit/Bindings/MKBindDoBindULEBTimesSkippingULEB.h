@@ -35,11 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 @interface MKBindDoBindULEBTimesSkippingULEB : MKBindCommand <MKBindCommandOffsetAdjusting> {
-    @package
+@package
     uint64_t _count;
     uint64_t _skip;
-	size_t _countULEBSize;
-	size_t _skipULEBSize;
+    size_t _countULEBSize;
+    size_t _skipULEBSize;
 }
 
 //!

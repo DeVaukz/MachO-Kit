@@ -92,15 +92,22 @@
 { return 1 + _addendSLEBSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)addendFieldSize
+{ return _addendSLEBSize; }
+- (mk_vm_offset_t)addendFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *addend = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(addend)
         type:MKNodeFieldTypeQuadWord.sharedInstance
-        offset:1
-        size:_addendSLEBSize
     ];
     addend.description = @"Addend";
+    addend.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     addend.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

@@ -106,6 +106,14 @@
 { return 1 + _symbolName.nodeSize; }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)symbolNameFieldSize
+{ return self.symbolName.nodeSize; }
+- (mk_vm_offset_t)symbolNameFieldOffset
+{
+    return 1;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
@@ -120,12 +128,11 @@
     
     MKNodeFieldBuilder *symbolName = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(symbolName)
-        type:nil /* TODO ? */
-        offset:1
-        size:self.symbolName.nodeSize
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKCString.class]
     ];
     symbolName.description = @"Symbol Name";
     symbolName.options = MKNodeFieldOptionDisplayAsDetail;
+    symbolName.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         symbolFlags.build,
