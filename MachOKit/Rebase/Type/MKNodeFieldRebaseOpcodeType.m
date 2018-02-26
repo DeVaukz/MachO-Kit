@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKRebaseSetTypeImmediate.m
+//|             MKNodeFieldRebaseOpcodeType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,72 +25,61 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKRebaseSetTypeImmediate.h"
+#import "MKNodeFieldRebaseOpcodeType.h"
 #import "MKInternal.h"
+#import "MKRebaseCommand.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKRebaseSetTypeImmediate
+@implementation MKNodeFieldRebaseOpcodeType
+
+static NSDictionary *s_Elements = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldRebaseOpcodeType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint8_t)opcode
-{ return REBASE_OPCODE_SET_TYPE_IMM; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Performing Rebasing
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
++ (void)initialize
 {
-#pragma unused(rebase)
-#pragma unused(error)
-	rebaseContext->type = self.type;
-	
-	return YES;
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Rebase Command Values
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)type
-{ return _data & REBASE_IMMEDIATE_MASK; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	MKNode
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return 1; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(type)
-        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldRebaseType.sharedInstance mask:@((uint8_t)REBASE_IMMEDIATE_MASK) name:nil]
-        offset:0
-        size:sizeof(uint8_t)
-    ];
-    type.description = @"Type";
-    type.options = MKNodeFieldOptionDisplayAsDetail;
-    type.formatter = [MKComboFormatter comboFormatterWithStyle:MKComboFormatterStyleRawAndRefinedValue2
-                                             rawValueFormatter:MKNodeFieldTypeUnsignedByte.sharedInstance.formatter
-                                         refinedValueFormatter:type.formatter];
+    if (s_Elements != nil && s_Formatter != nil)
+        return;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        type.build
-    ]];
+    // TODO - Derive these from the MKRebaseCommand subclasses?
+    s_Elements = [@{
+        @(REBASE_OPCODE_DONE): @"REBASE_OPCODE_DONE",
+        @(REBASE_OPCODE_SET_TYPE_IMM): @"REBASE_OPCODE_SET_TYPE_IMM",
+        @(REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB): @"REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB",
+        @(REBASE_OPCODE_ADD_ADDR_ULEB): @"REBASE_OPCODE_ADD_ADDR_ULEB",
+        @(REBASE_OPCODE_ADD_ADDR_IMM_SCALED): @"REBASE_OPCODE_ADD_ADDR_IMM_SCALED",
+        @(REBASE_OPCODE_DO_REBASE_IMM_TIMES): @"REBASE_OPCODE_DO_REBASE_IMM_TIMES",
+        @(REBASE_OPCODE_DO_REBASE_ULEB_TIMES): @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES",
+        @(REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB): @"REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB",
+        @(REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB): @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB"
+    } retain];
+    
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"Rebase Opcode";
+    formatter.elements = s_Elements;
+    s_Formatter = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	NSObject
+#pragma mark -  MKNodeFieldEnumerationType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return [NSString stringWithFormat:@"REBASE_OPCODE_SET_TYPE_IMM(%" PRIu8 ")", self.type]; }
+- (MKNodeFieldEnumerationElements*)elements
+{ return s_Elements; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Rebase Opcode"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end

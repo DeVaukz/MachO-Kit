@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKRebaseSetTypeImmediate.m
+//|             MKNodeFieldRebaseType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,72 +25,54 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKRebaseSetTypeImmediate.h"
+#import "MKNodeFieldRebaseType.h"
 #import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKRebaseSetTypeImmediate
+@implementation MKNodeFieldRebaseType
+
+static NSDictionary *s_Elements = nil;
+static MKEnumerationFormatter *s_Formatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldRebaseType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint8_t)opcode
-{ return REBASE_OPCODE_SET_TYPE_IMM; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Performing Rebasing
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)rebase:(void (^)(void))rebase withContext:(struct MKRebaseContext*)rebaseContext error:(NSError**)error
++ (void)initialize
 {
-#pragma unused(rebase)
-#pragma unused(error)
-	rebaseContext->type = self.type;
-	
-	return YES;
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Rebase Command Values
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)type
-{ return _data & REBASE_IMMEDIATE_MASK; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	MKNode
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return 1; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(type)
-        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldRebaseType.sharedInstance mask:@((uint8_t)REBASE_IMMEDIATE_MASK) name:nil]
-        offset:0
-        size:sizeof(uint8_t)
-    ];
-    type.description = @"Type";
-    type.options = MKNodeFieldOptionDisplayAsDetail;
-    type.formatter = [MKComboFormatter comboFormatterWithStyle:MKComboFormatterStyleRawAndRefinedValue2
-                                             rawValueFormatter:MKNodeFieldTypeUnsignedByte.sharedInstance.formatter
-                                         refinedValueFormatter:type.formatter];
+    if (s_Elements != nil && s_Formatter != nil)
+        return;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        type.build
-    ]];
+    s_Elements = [@{
+        @(REBASE_TYPE_POINTER): @"REBASE_TYPE_POINTER",
+        @(REBASE_TYPE_TEXT_ABSOLUTE32): @"REBASE_TYPE_TEXT_ABSOLUTE32",
+        @(REBASE_TYPE_TEXT_PCREL32): @"REBASE_TYPE_TEXT_PCREL32"
+    } retain];
+    
+    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
+    formatter.name = @"REBASE_TYPE";
+    formatter.elements = s_Elements;
+    s_Formatter = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	NSObject
+#pragma mark -  MKNodeFieldEnumerationType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return [NSString stringWithFormat:@"REBASE_OPCODE_SET_TYPE_IMM(%" PRIu8 ")", self.type]; }
+- (MKNodeFieldEnumerationElements*)elements
+{ return s_Elements; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"Rebase Type"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatter; }
 
 @end

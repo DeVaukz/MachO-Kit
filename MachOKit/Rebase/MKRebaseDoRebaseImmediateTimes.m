@@ -83,7 +83,9 @@
 {
     MKNodeFieldBuilder *count = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(count)
-        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)REBASE_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     count.description = @"Rebase Count";
     count.options = MKNodeFieldOptionDisplayAsDetail;

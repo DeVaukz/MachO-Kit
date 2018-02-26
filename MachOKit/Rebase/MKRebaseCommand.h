@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKRebaseFieldType.h>
 #import <MachOKit/MKRebaseContext.h>
 
 @class MKRebaseInfo;

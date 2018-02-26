@@ -141,11 +141,7 @@
     
     MKNodeFieldBuilder *type = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(type)
-        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil elements:@{
-            @(REBASE_TYPE_POINTER): @"REBASE_TYPE_POINTER",
-            @(REBASE_TYPE_TEXT_ABSOLUTE32): @"REBASE_TYPE_TEXT_ABSOLUTE32",
-            @(REBASE_TYPE_TEXT_PCREL32): @"REBASE_TYPE_TEXT_PCREL32"
-        }]
+        type:MKNodeFieldRebaseType.sharedInstance
     ];
     type.description = @"Type";
     type.options = MKNodeFieldOptionDisplayAsDetail;
