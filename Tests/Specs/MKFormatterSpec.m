@@ -28,6 +28,91 @@
 SpecBegin(MKFormatter)
 
 //----------------------------------------------------------------------------//
+describe(@"MKComboFormatter", ^{
+    NSFormatter *rawValueFormatter = NSFormatter.mk_decimalNumberFormatter;
+    MKEnumerationFormatter *refinedValueFormatter = [MKEnumerationFormatter new];
+    refinedValueFormatter.elements =  @{
+        @(1): @"ONE",
+        @(2): @"TWO",
+        @(3): @"THREE"
+    };
+    
+    describe(@"with the RefinedValue style", ^{
+        MKComboFormatter *formatter = [MKComboFormatter new];
+        formatter.rawValueFormatter = rawValueFormatter;
+        formatter.refinedValueFormatter = refinedValueFormatter;
+        formatter.style = MKComboFormatterStyleRefinedValue;
+        
+        it(@"should format a value that is formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(1)]).to.equal(@"ONE");
+        });
+        
+        it(@"should format a value that is not formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(0)]).to.beNil();
+        });
+    });
+    
+    describe(@"with the RawAndRefinedValue1 style", ^{
+        MKComboFormatter *formatter = [MKComboFormatter new];
+        formatter.rawValueFormatter = rawValueFormatter;
+        formatter.refinedValueFormatter = refinedValueFormatter;
+        formatter.style = MKComboFormatterStyleRawAndRefinedValue1;
+        
+        it(@"should format a value that is formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(2)]).to.equal(@"2 TWO");
+        });
+        
+        it(@"should format a value that is not formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(0)]).to.equal(@"0");
+        });
+    });
+    
+    describe(@"with the RawAndRefinedValue2 style", ^{
+        MKComboFormatter *formatter = [MKComboFormatter new];
+        formatter.rawValueFormatter = rawValueFormatter;
+        formatter.refinedValueFormatter = refinedValueFormatter;
+        formatter.style = MKComboFormatterStyleRawAndRefinedValue2;
+        
+        it(@"should format a value that is formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(3)]).to.equal(@"3 (THREE)");
+        });
+        
+        it(@"should format a value that is not formatted by the refinedValueFormatter", ^{
+            expect([formatter stringForObjectValue:@(0)]).to.equal(@"0");
+        });
+    });
+    
+    it(@"should conform to NSCopying", ^{
+        MKComboFormatter *formatter = [MKComboFormatter new];
+        formatter.rawValueFormatter = rawValueFormatter;
+        formatter.refinedValueFormatter = refinedValueFormatter;
+        formatter.style = MKComboFormatterStyleRefinedValue;
+        
+        MKComboFormatter *copy = [formatter copy];
+        
+        //expect(copy.rawValueFormatter).to.equal(formatter.rawValueFormatter);
+        //expect(copy.refinedValueFormatter).to.equal(formatter.refinedValueFormatter);
+        expect(copy.style).to.equal(formatter.style);
+    });
+    
+    it(@"should conform to NSCoding", ^{
+        MKComboFormatter *formatter = [MKComboFormatter new];
+        formatter.rawValueFormatter = rawValueFormatter;
+        formatter.refinedValueFormatter = refinedValueFormatter;
+        formatter.style = MKComboFormatterStyleRefinedValue;
+        
+        NSData *archivedData = [NSKeyedArchiver archivedDataWithRootObject:formatter];
+        MKComboFormatter *copy = [NSKeyedUnarchiver unarchiveObjectWithData:archivedData];
+        
+        //expect(copy.rawValueFormatter).to.equal(formatter.rawValueFormatter);
+        //expect(copy.refinedValueFormatter).to.equal(formatter.refinedValueFormatter);
+        expect(copy.style).to.equal(formatter.style);
+    });
+});
+
+
+
+//----------------------------------------------------------------------------//
 describe(@"MKEnumerationFormatter", ^{
     
     MKEnumerationFormatterElements *elements = @{

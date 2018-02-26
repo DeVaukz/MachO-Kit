@@ -199,6 +199,8 @@
 		D03D193E1C72F0C1006A2CEB /* MKMachO+Rebase.m in Sources */ = {isa = PBXBuildFile; fileRef = D03D193C1C72F0C1006A2CEB /* MKMachO+Rebase.m */; };
 		D03D19411C72F7C4006A2CEB /* MKRebaseInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D03D193F1C72F7C4006A2CEB /* MKRebaseInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03D19421C72F7C4006A2CEB /* MKRebaseInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D03D19401C72F7C4006A2CEB /* MKRebaseInfo.m */; };
+		D03EF5EF2040C75200B8022C /* MKComboFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D03EF5ED2040C75200B8022C /* MKComboFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D03EF5F02040C75200B8022C /* MKComboFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D03EF5EE2040C75200B8022C /* MKComboFormatter.m */; };
 		D03EFF3A203E93B400040928 /* MKFormatterSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D03EFF2A203E939400040928 /* MKFormatterSpec.m */; };
 		D04269E51DD931E40091AB2A /* MKPtr.h in Headers */ = {isa = PBXBuildFile; fileRef = D04269E31DD931E40091AB2A /* MKPtr.h */; };
 		D04269E61DD931E40091AB2A /* MKPtr.m in Sources */ = {isa = PBXBuildFile; fileRef = D04269E41DD931E40091AB2A /* MKPtr.m */; };
@@ -1115,6 +1117,8 @@
 		D03D193C1C72F0C1006A2CEB /* MKMachO+Rebase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMachO+Rebase.m"; sourceTree = "<group>"; };
 		D03D193F1C72F7C4006A2CEB /* MKRebaseInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKRebaseInfo.h; sourceTree = "<group>"; };
 		D03D19401C72F7C4006A2CEB /* MKRebaseInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKRebaseInfo.m; sourceTree = "<group>"; };
+		D03EF5ED2040C75200B8022C /* MKComboFormatter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKComboFormatter.h; sourceTree = "<group>"; };
+		D03EF5EE2040C75200B8022C /* MKComboFormatter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKComboFormatter.m; sourceTree = "<group>"; };
 		D03EFF2A203E939400040928 /* MKFormatterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKFormatterSpec.m; sourceTree = "<group>"; };
 		D04269E31DD931E40091AB2A /* MKPtr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKPtr.h; sourceTree = "<group>"; };
 		D04269E41DD931E40091AB2A /* MKPtr.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKPtr.m; sourceTree = "<group>"; };
@@ -2364,6 +2368,8 @@
 				D09145B01E51431D00959648 /* NSFormatter+MKNodeField.m */,
 				D0E30A6F1E612C430005A882 /* MKFormatterChain.h */,
 				D0E30A701E612C430005A882 /* MKFormatterChain.m */,
+				D03EF5ED2040C75200B8022C /* MKComboFormatter.h */,
+				D03EF5EE2040C75200B8022C /* MKComboFormatter.m */,
 				D0E30A791E613A870005A882 /* MKObjectFormatter.h */,
 				D0E30A7A1E613A870005A882 /* MKObjectFormatter.m */,
 				D09A19582030FC440053181B /* MKStringFormatter.h */,
@@ -3018,6 +3024,7 @@
 				D046E57A199B3EBD00371953 /* internal.h in Headers */,
 				D066185E1CBB2F12006979A1 /* MKObjCClassMethod.h in Headers */,
 				D05068E41C6AF4E400B59181 /* MKDSCSlidPointer.h in Headers */,
+				D03EF5EF2040C75200B8022C /* MKComboFormatter.h in Headers */,
 				D0C3B2F019F463EA00CAFE58 /* MKNode.h in Headers */,
 				D0B16D481CA8503800E2116C /* MKWeakBindingsInfo.h in Headers */,
 				D02C80911F907F8C00EB9393 /* load_command_note.h in Headers */,
@@ -3695,6 +3702,7 @@
 				D030304D1A23CEB200288B3E /* MKLCRPath.m in Sources */,
 				D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */,
 				D0A1D84D19E4EE480095870C /* memory_object.c in Sources */,
+				D03EF5F02040C75200B8022C /* MKComboFormatter.m in Sources */,
 				D0A1D8F119E4EEB80095870C /* load_command_version_min_macosx.c in Sources */,
 				D0BC7C171A2D975D0011517D /* MKBackedNode.m in Sources */,
 				D0539BBD1A23D4F600D3A5F0 /* MKLCDataInCode.m in Sources */,

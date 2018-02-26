@@ -28,6 +28,7 @@
 @import Foundation;
 
 #import <MachOKit/MKFormatterChain.h>
+#import <MachOKit/MKComboFormatter.h>
 #import <MachOKit/MKObjectFormatter.h>
 #import <MachOKit/MKStringFormatter.h>
 #import <MachOKit/MKBooleanFormatter.h>
