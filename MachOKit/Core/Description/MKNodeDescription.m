@@ -63,6 +63,10 @@
     [super dealloc];
 }
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Working with Fields
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)fields
 { return _fields ?: @[]; }
@@ -79,6 +83,18 @@
     }
     
     return retValue;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeField*)fieldWithName:(NSString*)name searchAllFields:(BOOL)searchAllFields
+{
+    for (MKNodeField *field in searchAllFields ? self.allFields : self.fields)
+    {
+        if ([field.name isEqualToString:name])
+            return field;
+    }
+    
+    return nil;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
