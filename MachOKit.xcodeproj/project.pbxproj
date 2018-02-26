@@ -645,6 +645,8 @@
 		D0A3BBE11A68ECBF00D663A0 /* load_command_version_min_iphoneos.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D8A519E4EEB80095870C /* load_command_version_min_iphoneos.c */; };
 		D0A3BBE21A68ECBF00D663A0 /* load_command_version_min_macosx.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D8A819E4EEB80095870C /* load_command_version_min_macosx.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A3BBE31A68ECBF00D663A0 /* load_command_version_min_macosx.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D8A719E4EEB80095870C /* load_command_version_min_macosx.c */; };
+		D0A42F38203BF21C00C9C464 /* MKNodeFieldTypeBitfield.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A42F36203BF21C00C9C464 /* MKNodeFieldTypeBitfield.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0A42F39203BF21C00C9C464 /* MKNodeFieldTypeBitfield.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A42F37203BF21C00C9C464 /* MKNodeFieldTypeBitfield.m */; };
 		D0A4A63F19CEB65B00B83A93 /* MKMachOSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0A4A63E19CEB65B00B83A93 /* MKMachOSpec.m */; };
 		D0A92F3B2002D9530001C18D /* MKNodeFieldCPUType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A92F372002D9530001C18D /* MKNodeFieldCPUType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A92F3C2002D9530001C18D /* MKNodeFieldCPUSubType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A92F382002D9530001C18D /* MKNodeFieldCPUSubType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1446,6 +1448,8 @@
 		D0A1E91F1B69F3080061843F /* MKDSCMappingInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDSCMappingInfo.m; sourceTree = "<group>"; };
 		D0A3BB531A68DEF200D663A0 /* macho_image_spec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = macho_image_spec.m; sourceTree = "<group>"; };
 		D0A3BB741A68EB9D00D663A0 /* libMachO.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachO.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D0A42F36203BF21C00C9C464 /* MKNodeFieldTypeBitfield.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeBitfield.h; sourceTree = "<group>"; };
+		D0A42F37203BF21C00C9C464 /* MKNodeFieldTypeBitfield.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeBitfield.m; sourceTree = "<group>"; };
 		D0A4A63E19CEB65B00B83A93 /* MKMachOSpec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMachOSpec.m; sourceTree = "<group>"; };
 		D0A92F372002D9530001C18D /* MKNodeFieldCPUType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldCPUType.h; sourceTree = "<group>"; };
 		D0A92F382002D9530001C18D /* MKNodeFieldCPUSubType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldCPUSubType.h; sourceTree = "<group>"; };
@@ -2570,6 +2574,8 @@
 				D0E30A761E612F0E0005A882 /* MKNodeFieldTypeEnumeration.m */,
 				D0E30A871E6289AB0005A882 /* MKNodeFieldTypeOptionSet.h */,
 				D0E30A881E6289AB0005A882 /* MKNodeFieldTypeOptionSet.m */,
+				D0A42F36203BF21C00C9C464 /* MKNodeFieldTypeBitfield.h */,
+				D0A42F37203BF21C00C9C464 /* MKNodeFieldTypeBitfield.m */,
 				D06D59BC20155DFD00A99173 /* MKNodeFieldTypeString.h */,
 				D06D59BD20155DFD00A99173 /* MKNodeFieldTypeString.m */,
 				D06D59C22015613600A99173 /* MKNodeFieldTypeDate.h */,
@@ -3199,6 +3205,7 @@
 				D05E7EB620389F84000C72B7 /* MKNodeFieldTypeOffset.h in Headers */,
 				D0B9F6D81E58102A00D0B35A /* MKFieldType.h in Headers */,
 				D0995A0F1A6B8DC9007134CE /* MKIndirectSymbol.h in Headers */,
+				D0A42F38203BF21C00C9C464 /* MKNodeFieldTypeBitfield.h in Headers */,
 				D0A9EAB21A8FD70C00280D38 /* section_internal.h in Headers */,
 				D0A1D8BE19E4EEB80095870C /* load_command_dylib_code_sign_drs.h in Headers */,
 				D082FD1C20070E9200E6C3E5 /* MKNodeFieldBitfieldType.h in Headers */,
@@ -3614,6 +3621,7 @@
 				D09145931E5121DD00959648 /* MKHexNumberFormatter.m in Sources */,
 				D0A1D8C719E4EEB80095870C /* load_command_id_dylinker.c in Sources */,
 				D0FF4F3E201B0CD30095106A /* MKNodeFieldTypeSize.m in Sources */,
+				D0A42F39203BF21C00C9C464 /* MKNodeFieldTypeBitfield.m in Sources */,
 				D0CAF8E219E638B700C833F0 /* MachOKit.m in Sources */,
 				D0A1D84719E4EE320095870C /* logging.c in Sources */,
 				D0590CCE1A74286F00CF9FD0 /* load_command_load_upward_dylib.c in Sources */,

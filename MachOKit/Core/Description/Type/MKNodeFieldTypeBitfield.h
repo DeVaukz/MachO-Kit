@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldTypeBitfield.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,30 +25,45 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <machOKit/MKNodeFieldContainerType.h>
-#import <MachOKit/MKNodeFieldBooleanType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldStringType.h>
-#import <MachOKit/MKNodeFieldDateType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeBoolean.h>
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeSize.h>
-#import <MachOKit/MKNodeFieldTypeOffset.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeBitfield.h>
-#import <MachOKit/MKNodeFieldTypeString.h>
-#import <MachOKit/MKNodeFieldTypeDate.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
+#import <MachOKit/MKNodeFieldBitfieldType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldTypeBitfieldMask : NSObject <NSCopying> {
+@package
+    id<MKNodeFieldNumericType> _type;
+    NSNumber *_mask;
+    int _shift;
+}
+
+@property (nonatomic, strong, nullable) id<MKNodeFieldNumericType> type;
+@property (nonatomic, strong, nullable) NSNumber *mask;
+@property (nonatomic, readwrite) int shift;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldTypeBitfield : NSObject <MKNodeFieldBitfieldType> {
+@package
+    id<MKNodeFieldNumericType> _underlyingType;
+    NSArray<MKNodeFieldTypeBitfieldMask*> *_bits;
+    NSString *_name;
+    NSFormatter *_formatter;
+}
+
++ (instancetype)bitfieldWithType:(id<MKNodeFieldNumericType>)underlyingType bits:(NSArray<MKNodeFieldTypeBitfieldMask*> *)bits name:(nullable NSString*)name;
++ (instancetype)bitfieldWithType:(id<MKNodeFieldNumericType>)underlyingType mask:(NSNumber*)mask name:(nullable NSString*)name;
+
+- (instancetype)initWithType:(id<MKNodeFieldNumericType>)underlyingType bits:(NSArray<MKNodeFieldTypeBitfieldMask*> *)bits name:(nullable NSString*)name;
+
+- (instancetype)init NS_UNAVAILABLE;
+
+@end
+
+NS_ASSUME_NONNULL_END
