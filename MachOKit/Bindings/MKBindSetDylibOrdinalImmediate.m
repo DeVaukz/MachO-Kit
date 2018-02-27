@@ -86,7 +86,9 @@
 {
     MKNodeFieldBuilder *ordinal = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(ordinal)
-        type:MKNodeFieldTypeQuadWord.sharedInstance
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     ordinal.description = @"Dylib Ordinal";
     ordinal.options = MKNodeFieldOptionDisplayAsDetail;

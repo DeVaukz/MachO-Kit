@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKBindingsFieldType.h>
 #import <MachOKit/MKBindContext.h>
 
 @class MKSegment;
@@ -52,31 +53,6 @@ typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
 
 
 //----------------------------------------------------------------------------//
-//! @name       Bind Options
-//! @relates    MKBindAction
-//!
-//
-typedef NS_OPTIONS(uint8_t, MKBindOptions) {
-    MKBindOptionWeakImport                = BIND_SYMBOL_FLAGS_WEAK_IMPORT,
-    MKBindOptionNonWeakDefinition         = BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION
-};
-
-
-
-//----------------------------------------------------------------------------//
-//! @name       Bind Types
-//! @relates    MKBindAction
-//!
-//
-typedef NS_ENUM(uint8_t, MKBindType) {
-    MKBindTypePointer                     = BIND_TYPE_POINTER,
-    MKBindTypeTextAbsolute32              = BIND_TYPE_TEXT_ABSOLUTE32,
-    MKBindTypeTextPcrel32                 = BIND_TYPE_TEXT_PCREL32
-};
-
-
-
-//----------------------------------------------------------------------------//
 @interface MKBindAction : MKAddressedNode {
 @package
 	mk_vm_offset_t _nodeOffset;
@@ -87,7 +63,7 @@ typedef NS_ENUM(uint8_t, MKBindType) {
     MKOptional<MKSection*> *_section;
     mk_vm_offset_t _offset;
     int64_t _addend;
-    MKBindOptions _symbolOptions;
+    MKBindSymbolFlags _symbolOptions;
     MKBindType _type;
 }
 
@@ -108,7 +84,7 @@ typedef NS_ENUM(uint8_t, MKBindType) {
 @property (nonatomic, readonly) NSString *symbolName;
 
 //!
-@property (nonatomic, readonly) MKBindOptions symbolFlags;
+@property (nonatomic, readonly) MKBindSymbolFlags symbolFlags;
 
 //!
 @property (nonatomic, readonly) int64_t addend;

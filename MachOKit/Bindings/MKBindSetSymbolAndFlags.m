@@ -118,13 +118,16 @@
 {
     MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(symbolFlags)
-        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
-            @((uint8_t)BIND_SYMBOL_FLAGS_WEAK_IMPORT): @"BIND_SYMBOL_FLAGS_WEAK_IMPORT",
-            @((uint8_t)BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION): @"BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION"
-        }]
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldBindSymbolFlagsType.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     symbolFlags.description = @"Symbol Flags";
     symbolFlags.options = MKNodeFieldOptionDisplayAsDetail;
+    symbolFlags.formatter = [MKComboFormatter comboFormatterWithStyle:MKComboFormatterStyleRawAndRefinedValue2
+                                                    rawValueFormatter:MKNodeFieldTypeUnsignedByte.sharedInstance.formatter
+                                                refinedValueFormatter:MKNodeFieldBindSymbolFlagsType.sharedInstance.formatter];
+    [(MKOptionSetFormatter*)[(MKComboFormatter*)symbolFlags.formatter refinedValueFormatter] setZeroBehavior:MKOptionSetFormatterZeroBehaviorNil];
     
     MKNodeFieldBuilder *symbolName = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(symbolName)

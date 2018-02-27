@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKBindingsFieldType.h>
 #import <MachOKit/MKBindContext.h>
 
 @class MKBindingsInfo;

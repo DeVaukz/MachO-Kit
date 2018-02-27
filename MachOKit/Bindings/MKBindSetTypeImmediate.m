@@ -78,10 +78,15 @@
 {
     MKNodeFieldBuilder *type = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(type)
-        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldBindType.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     type.description = @"Type";
     type.options = MKNodeFieldOptionDisplayAsDetail;
+    type.formatter = [MKComboFormatter comboFormatterWithStyle:MKComboFormatterStyleRawAndRefinedValue2
+                                             rawValueFormatter:MKNodeFieldTypeUnsignedByte.sharedInstance.formatter
+                                         refinedValueFormatter:type.formatter];
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         type.build

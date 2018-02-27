@@ -78,7 +78,7 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (uint8_t)scale
-{ return _data & REBASE_IMMEDIATE_MASK; }
+{ return _data & BIND_IMMEDIATE_MASK; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (uint64_t)derivedOffset
@@ -97,7 +97,9 @@
 {
     MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(scale)
-        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     scale.description = @"Scale";
     scale.options = MKNodeFieldOptionDisplayAsDetail;

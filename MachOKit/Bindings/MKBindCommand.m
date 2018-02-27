@@ -166,25 +166,11 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    // TODO - Derive these from the subclasses?
     MKNodeFieldBuilder *opcode = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(opcode)
-        type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeByte.sharedInstance name:nil elements:@{
-            @(BIND_OPCODE_DONE): @"BIND_OPCODE_DONE",
-            @(BIND_OPCODE_SET_DYLIB_ORDINAL_IMM): @"BIND_OPCODE_SET_DYLIB_ORDINAL_IMM",
-            @(BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB): @"BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB",
-            @(BIND_OPCODE_SET_DYLIB_SPECIAL_IMM): @"BIND_OPCODE_SET_DYLIB_SPECIAL_IMM",
-            @(BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM): @"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM",
-            @(BIND_OPCODE_SET_TYPE_IMM): @"BIND_OPCODE_SET_TYPE_IMM",
-            @(BIND_OPCODE_SET_ADDEND_SLEB): @"BIND_OPCODE_SET_ADDEND_SLEB",
-            @(BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB): @"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB",
-            @(BIND_OPCODE_ADD_ADDR_ULEB): @"BIND_OPCODE_ADD_ADDR_ULEB",
-            @(BIND_OPCODE_DO_BIND): @"BIND_OPCODE_DO_BIND",
-            @(BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB): @"BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB",
-            @(BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED): @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED",
-            @(BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB): @"BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB"
-        }]
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldBindOpcodeType.sharedInstance mask:@((uint8_t)BIND_OPCODE_MASK) name:nil]
         offset:0
+        size:sizeof(uint8_t)
     ];
     opcode.description = @"Opcode";
     opcode.options = MKNodeFieldOptionDisplayAsDetail;

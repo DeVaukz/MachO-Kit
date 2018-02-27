@@ -113,7 +113,9 @@
 {
     MKNodeFieldBuilder *segmentIndex = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(segmentIndex)
-        type:nil
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+        offset:0
+        size:sizeof(uint8_t)
     ];
     segmentIndex.description = @"Segment Index";
     segmentIndex.options = MKNodeFieldOptionDisplayAsDetail;

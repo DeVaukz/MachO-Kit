@@ -147,7 +147,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
 {
-	// SAFE - _nodeOffset comes from the rebase commands, which are within the MKRebaseInfo.
+	// SAFE - _nodeOffset comes from the rebase commands, which are within the MKBindingsInfo.
 	return [(MKBackedNode*)self.parent nodeAddress:type] + _nodeOffset;
 }
 
@@ -156,11 +156,7 @@
 {
 	MKNodeFieldBuilder *type = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(type)
-		type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil elements:@{
-			@(BIND_TYPE_POINTER): @"BIND_TYPE_POINTER",
-			@(BIND_TYPE_TEXT_ABSOLUTE32): @"BIND_TYPE_TEXT_ABSOLUTE32",
-			@(BIND_TYPE_TEXT_PCREL32): @"BIND_TYPE_TEXT_PCREL32"
-		}]
+		type:MKNodeFieldBindType.sharedInstance
 	];
 	type.description = @"Type";
 	type.options = MKNodeFieldOptionDisplayAsDetail;
@@ -188,10 +184,7 @@
 	
 	MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(symbolFlags)
-		type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedByte.sharedInstance name:nil options:@{
-			@((uint8_t)BIND_SYMBOL_FLAGS_WEAK_IMPORT): @"BIND_SYMBOL_FLAGS_WEAK_IMPORT",
-			@((uint8_t)BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION): @"BIND_SYMBOL_FLAGS_NON_WEAK_DEFINITION"
-		}]
+		type:MKNodeFieldBindSymbolFlagsType.sharedInstance
 	];
 	symbolFlags.description = @"Symbol Flags";
 	symbolFlags.options = MKNodeFieldOptionDisplayAsDetail;
