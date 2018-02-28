@@ -150,7 +150,7 @@
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKCString.class]]
     ];
     strings.description = @"Strings";
-    strings.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionDisplayCollectionContentsAsDetail;
+    strings.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         strings.build

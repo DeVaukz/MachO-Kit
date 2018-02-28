@@ -347,6 +347,9 @@
         [[self.class _weakBindingsInfoFieldBuilder] build],
         [[self.class _lazyBindingsInfoFieldBuilder] build],
 		[[self.class _exportsInfoFieldBuilder] build],
+        [[self.class _stringTableFieldBuilder] build],
+        [[self.class _symbolTableFieldBuilder] build],
+        [[self.class _indirectSymbolTableFieldBuilder] build],
     #pragma clang diagnostic pop
     ]];
 }

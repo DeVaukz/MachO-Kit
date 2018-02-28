@@ -44,10 +44,17 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Symbol Table
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! The link-edit string table for this Mach-O image.
-@property (nonatomic, readonly, nullable) MKStringTable *stringTable;
-@property (nonatomic, readonly, nullable) MKSymbolTable *symbolTable;
-@property (nonatomic, readonly, nullable) MKIndirectSymbolTable *indirectSymbolTable;
+//! The link-edit string table.  The returned optional may contain a \c nil
+//! value and a \c nil error if the image has no string table.
+@property (nonatomic, readonly) MKOptional<MKStringTable*> *stringTable;
+
+//! The link-edit symbol table.  The returned optional may contain a \c nil
+//! value and a \c nil error if the image has no symbol table.
+@property (nonatomic, readonly) MKOptional<MKSymbolTable*> *symbolTable;
+
+//! The indirect symbol table.  The returned optional may contain a \c nil
+//! value and a \c nil error if the image has no indirect symbol table.
+@property (nonatomic, readonly) MKOptional<MKIndirectSymbolTable*> *indirectSymbolTable;
 
 @end
 

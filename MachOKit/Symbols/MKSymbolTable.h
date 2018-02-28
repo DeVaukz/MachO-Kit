@@ -30,7 +30,6 @@
 
 #import <MachOKit/MKLinkEditNode.h>
 
-@class MKMachOImage;
 @class MKSymbol;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -49,13 +48,13 @@ NS_ASSUME_NONNULL_BEGIN
     NSRange _undefinedSymbols;
 }
 
-//! Initializes the receiver with the provided \ref MKMachOImage.
+//! Initializes the receiver with the provided Mach-O.
 - (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
 
-//! An array of \ref MKSymbol instances, each representing an entry in the
+//! An array of \ref MKSymbol instances, each corresponding to an entry in the
 //! symbol table.  The order of this array matches the ordering of the
-//! symbol structures in the Mach-O image.
-@property (nonatomic, readonly) NSArray<MKSymbol*> *symbols;
+//! symbol structures in the Mach-O.
+@property (nonatomic, readonly) NSArray<__kindof MKSymbol*> *symbols;
 
 //! The range of indexes in the \ref symbols array which correspond to
 //! local symbols.  These symbols are typically included for debugging.

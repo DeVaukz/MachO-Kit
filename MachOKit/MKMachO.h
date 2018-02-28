@@ -94,9 +94,9 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     // Exports //
     MKOptional<MKExportsInfo*> *_exportsInfo;
     // Symbols //
-    MKStringTable *_stringTable;
-    MKSymbolTable *_symbolTable;
-    MKIndirectSymbolTable *_indirectSymbolTable;
+    MKOptional<MKStringTable*> *_stringTable;
+    MKOptional<MKSymbolTable*> *_symbolTable;
+    MKOptional<MKIndirectSymbolTable*> *_indirectSymbolTable;
 }
 
 - (nullable instancetype)initWithName:(nullable const char*)name flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;

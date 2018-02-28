@@ -54,7 +54,7 @@
     }
     
     // Lookup the symbol referenced by the index.
-    MKSymbolTable *symbolTable = image.symbolTable;
+    MKSymbolTable *symbolTable = image.symbolTable.value;
     if (_index < symbolTable.symbols.count)
         _target = [symbolTable.symbols[_index] retain];
     

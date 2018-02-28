@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKSymbolTable.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKMachO.h"
 #import "MKLCSymtab.h"
 #import "MKLCDysymtab.h"
@@ -70,32 +70,32 @@
     // A size of 0 is valid; but we don't need to do anything else.
     // TODO - What if the address/offset is 0?  Is that an error?  Does it
     // occur in valid Mach-O images?
-    if (self.nodeSize == 0)
+    if (self.nodeSize == 0) {
+        // Still need to assign a value to the symbols array.
+        _symbols = [@[] retain];
         return self;
+    }
     
     // Load Symbols
+    @autoreleasepool
     {
-        NSMutableArray<MKSymbol*> *symbols = [[NSMutableArray alloc] init];
+        NSMutableArray<__kindof MKSymbol*> *symbols = [[NSMutableArray alloc] init];
         mk_vm_offset_t offset = 0;
         
         // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
         while ((mk_vm_size_t)offset < self.nodeSize)
         {
-            NSError *e = nil;
-            MKSymbol *symbol = [MKSymbol symbolWithOffset:offset fromParent:self error:&e];
+            NSError *symbolError = nil;
             
-            // If we failed, try creating a regular MKsymbol.
-            if (symbol == nil)
-                symbol = [[[MKSymbol alloc] initWithOffset:offset fromParent:self error:&e] autorelease];
-            
+            MKSymbol *symbol = [MKSymbol symbolAtOffset:offset fromParent:self error:&symbolError];
             if (symbol == nil) {
-                MK_PUSH_UNDERLYING_WARNING(MK_PROPERTY(pointers), e, @"Could not load symbol at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_WARNING_WITH_ERROR(symbols, MK_EINTERNAL_ERROR, symbolError, @"Could not parse symbol at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
             [symbols addObject:symbol];
             
-            // Safe.  All symbol nodes must be within the size of this node.
+            // SAFE - All symbol nodes must be within the size of this node.
             offset += symbol.nodeSize;
         }
         
@@ -109,32 +109,44 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error
 {
-    NSAssert([image isKindOfClass:MKMachOImage.class], @"The parent of this node must be an MKMachOImage.");
+    NSParameterAssert(image.dataModel != nil);
     
     // Find LC_SYMTAB
     MKLCSymtab *symtabLoadCommand = nil;
     {
         NSArray *commands = [image loadCommandsOfType:LC_SYMTAB];
         if (commands.count > 1)
-            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_SYMTAB.  Ignoring %@", commands.lastObject);
+            MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_SYMTAB load commands.  Ignoring %@.", commands.lastObject);
         
         if (commands.count == 0) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image load commands does not contain LC_SYMTAB."];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not contain a LC_SYMTAB load command."];
             [self release]; return nil;
         }
         
-        symtabLoadCommand = commands.firstObject;
+        symtabLoadCommand = [[commands.firstObject retain] autorelease];
     }
     
-    mk_vm_size_t size;
-    if (image.dataModel.pointerSize == 8)
-        size = symtabLoadCommand.nsyms * sizeof(struct nlist_64);
-    else if (image.dataModel.pointerSize == 4)
-        size = symtabLoadCommand.nsyms * sizeof(struct nlist);
-    else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported data model." userInfo:nil];
+    // Determine the symbol table entry size
+    size_t nlistSize;
+    {
+        size_t pointerSize = image.dataModel.pointerSize;
+        
+        switch (pointerSize) {
+            case 8:
+                nlistSize = sizeof(struct nlist_64);
+                break;
+            case 4:
+                nlistSize = sizeof(struct nlist);
+                break;
+            default:
+            {
+                NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+                @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
+            }
+        }
+    }
     
-    return [self initWithSize:size offset:(mk_vm_offset_t)symtabLoadCommand.symoff inImage:image error:error];
+    return [self initWithSize:(symtabLoadCommand.nsyms * nlistSize) offset:(mk_vm_offset_t)symtabLoadCommand.symoff inImage:image error:error];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -145,19 +157,56 @@
 - (void)dealloc
 {
     [_symbols release];
+    
     [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKPointer
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+{
+    for (MKSymbol *symbol in self.symbols) {
+        mk_vm_range_t range = mk_vm_range_make(symbol.nodeVMAddress, symbol.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            MKOptional *child = [symbol childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
+        }
+    }
+    
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *symbols = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(symbols)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKSymbol.class]]
+    ];
+    symbols.description = @"Symbols";
+    symbols.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(symbols) description:@"Symbols"]
+        symbols.build
     ]];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  NSObject
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)description
+{ return @"Symbol Table"; }
 
 @end

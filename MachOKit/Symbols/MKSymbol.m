@@ -27,10 +27,12 @@
 
 #import "MKSymbol.h"
 #import "MKInternal.h"
-#import "MKMachO.h"
+#import "MKCString.h"
+#import "MKMachO+Segments.h"
+#import "MKSection.h"
 #import "MKMachO+Symbols.h"
-#import "MKDataModel.h"
 #import "MKStringTable.h"
+#import "MKSymbolTable.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKSymbol
@@ -40,23 +42,17 @@
 { static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithNList:(struct nlist_64)nlist parent:(MKBackedNode*)parent
++ (uint32_t)canInstantiateWithEntry:(struct nlist_64)nlist
 {
 #pragma unused (nlist)
-#pragma unused (parent)
-    
     return (self == MKSymbol.class) ? 10 : 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (Class)classForSymbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
++ (Class)classForEntry:(struct nlist_64)nlist
 {
-    struct nlist_64 entry;
-    if (!ReadNList(&entry, offset, parent, error))
-    { return nil; }
-    
     return [self bestSubclassWithRanking:^(Class cls) {
-        return [cls canInstantiateWithNList:entry parent:parent];
+        return [cls canInstantiateWithEntry:nlist];
     }];
 }
 
@@ -65,45 +61,62 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *parent, NSError **error)
+bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *node, NSError **error)
 {
-    MKMachOImage *image = parent.macho;
+    NSCParameterAssert(node.dataModel != nil);
     
-    if (image.dataModel.pointerSize == 8)
+    id<MKDataModel> dataModel = node.dataModel;
+    size_t pointerSize = dataModel.pointerSize;
+    
+    if (pointerSize == 8)
     {
         struct nlist_64 entry;
-        if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&entry length:sizeof(entry) requireFull:YES error:error] < sizeof(entry))
-        { return false; }
+        if ([node.memoryMap copyBytesAtOffset:offset fromAddress:node.nodeContextAddress into:&entry length:sizeof(entry) requireFull:YES error:error] < sizeof(entry))
+            return false;
         
-        result->n_un.n_strx = MKSwapLValue32(entry.n_un.n_strx, image.dataModel);
+        result->n_un.n_strx = MKSwapLValue32(entry.n_un.n_strx, dataModel);
         result->n_type = entry.n_type;
         result->n_sect = entry.n_sect;
-        result->n_desc = MKSwapLValue16(entry.n_desc, image.dataModel);
-        result->n_value = MKSwapLValue64(entry.n_value, image.dataModel);
+        result->n_desc = MKSwapLValue16(entry.n_desc, dataModel);
+        result->n_value = MKSwapLValue64(entry.n_value, dataModel);
     }
-    else if (image.dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
         struct nlist entry;
-        if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&entry length:sizeof(entry) requireFull:YES error:error] < sizeof(entry))
-        { return false; }
+        if ([node.memoryMap copyBytesAtOffset:offset fromAddress:node.nodeContextAddress into:&entry length:sizeof(entry) requireFull:YES error:error] < sizeof(entry))
+            return false;
         
-        result->n_un.n_strx = MKSwapLValue32(entry.n_un.n_strx, image.dataModel);
+        result->n_un.n_strx = MKSwapLValue32(entry.n_un.n_strx, dataModel);
         result->n_type = entry.n_type;
         result->n_sect = entry.n_sect;
-        result->n_desc = (uint16_t)MKSwapLValue16s(entry.n_desc, image.dataModel);
-        result->n_value = (uint64_t)MKSwapLValue32(entry.n_value, image.dataModel);
+        result->n_desc = (uint16_t)MKSwapLValue16s(entry.n_desc, dataModel);
+        result->n_value = (uint64_t)MKSwapLValue32(entry.n_value, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported data model." userInfo:nil];
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
+    }
     
     return true;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)symbolWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
++ (instancetype)symbolAtOffset:(mk_vm_offset_t)offset fromParent:(MKSymbolTable*)parent error:(NSError**)error
 {
-    Class symbolClass = [self classForSymbolWithOffset:offset fromParent:parent error:error];
-    NSAssert(symbolClass, @"");
+    NSError *memoryMapError = nil;
+    struct nlist_64 nlist;
+    
+    if (ReadNList(&nlist, offset, parent, &memoryMapError) == false) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read nlist at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
+        return nil;
+    }
+    
+    Class symbolClass = [self classForEntry:nlist];
+    if (symbolClass == NULL) {
+        NSString *reason = [NSString stringWithFormat:@"No class for symbol table entry."];
+        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
+    }
     
     return [[[symbolClass alloc] initWithOffset:offset fromParent:parent error:error] autorelease];
 }
@@ -114,15 +127,24 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *par
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    struct nlist_64 entry;
-    if (!ReadNList(&entry, offset, parent, error))
-    { [self release]; return nil; }
+    // Read the nlist
+    {
+        NSError *nlistError = nil;
+        struct nlist_64 entry;
+        
+        if (!ReadNList(&entry, offset, parent, &nlistError)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:nlistError description:@"Could not read nlist."];
+            [self release]; return nil;
+        }
+        
+        // These have already been byte-swapped
+        _strx = entry.n_un.n_strx;
+        _type = entry.n_type;
+        _sect = entry.n_sect;
+        _desc = entry.n_desc;
+        _value = entry.n_value;
+    }
     
-    _strx = entry.n_un.n_strx;
-    _type = entry.n_type;
-    _sect = entry.n_sect;
-    _desc = entry.n_desc;
-    _value = entry.n_value;
     
     MKMachOImage *image = self.macho;
     
@@ -132,20 +154,38 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *par
     // have a zero string index.
     while (_strx != 0)
     {
-        MKStringTable *stringTable = image.stringTable;
-        if (stringTable == nil) {
-            MK_PUSH_WARNING(name, MK_ENOT_FOUND, @"Mach-O image %@ does not have a string table.", image);
+        MKOptional<MKStringTable*> *stringTable = image.stringTable;
+        if (stringTable.value == nil) {
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:stringTable.error description:@"Could not load the string table."];
+            _name = [[MKOptional alloc] initWithError:error];
             break;
         }
         
-        MKCString *string = stringTable.strings[@(_strx)];
+        MKCString *string = stringTable.value.strings[@(_strx)];
         if (string == nil) {
-            MK_PUSH_WARNING(name, MK_ENOT_FOUND, @"String table does not have an entry for index %" PRIi32 "", _strx);
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"String table does not have an entry for index [%" PRIu32 "].", _strx];
+            _name = [[MKOptional alloc] initWithError:error];
             break;
         }
         
-        _name = [string retain];
+        _name = [[MKOptional alloc] initWithValue:string];
         break;
+    }
+    
+    // Lookup the section.
+    if (_sect != NO_SECT)
+    {
+        MKSection *section = image.sections[@(_sect - 1)];
+        if (section) {
+            _section = [[MKOptional alloc] initWithValue:section];
+        } else {
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No section at index [%" PRIu8 "].", _sect];
+            _section = [[MKOptional alloc] initWithError:error];
+        }
+    }
+    else
+    {
+        _section = [MKOptional new];
     }
     
     return self;
@@ -154,19 +194,14 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *par
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_section release];
     [_name release];
     
     [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Acessing Symbol Metadata
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-@synthesize name = _name;
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - nlist Values
+#pragma mark -  nlist Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize strx = _strx;
@@ -176,23 +211,91 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *par
 @synthesize value = _value;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return self.macho.dataModel.pointerSize == 8 ? sizeof(struct nlist_64) : sizeof(struct nlist); }
+{ return self.dataModel.pointerSize == 8 ? sizeof(struct nlist_64) : sizeof(struct nlist); }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_strxFieldBuilder
+{
+    MKNodeFieldBuilder *strx = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(strx)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(struct nlist, n_un.n_strx)
+        size:sizeof(uint32_t)
+    ];
+    strx.description = @"String Table Index";
+    strx.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return strx;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_typeFieldBuilder
+{
+    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(type)
+        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+        offset:offsetof(struct nlist, n_type)
+        size:sizeof(uint8_t)
+    ];
+    type.description = @"Type";
+    type.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return type;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_sectFieldBuilder
+{
+    MKNodeFieldBuilder *sect = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(sect)
+        type:MKNodeFieldTypeUnsignedByte.sharedInstance
+        offset:offsetof(struct nlist, n_sect)
+        size:sizeof(uint8_t)
+    ];
+    sect.description = @"Section Index";
+    sect.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return sect;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_descFieldBuilder
+{
+    MKNodeFieldBuilder *desc = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(desc)
+        type:MKNodeFieldTypeUnsignedWord.sharedInstance
+        offset:offsetof(struct nlist, n_desc)
+        size:sizeof(uint16_t)
+    ];
+    desc.description = @"Description";
+    desc.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return desc;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *value = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(value)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+        offset:offsetof(struct nlist, n_value)
+        size:self.dataModel.pointerSize
+    ];
+    value.description = @"Value";
+    value.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(name) description:@"Symbol Name"],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(strx) description:@"String Table Index" offset:offsetof(struct nlist, n_un.n_strx) size:sizeof(uint32_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(type) description:@"Type" offset:offsetof(struct nlist, n_type) size:sizeof(uint8_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(sect) description:@"Section Index" offset:offsetof(struct nlist, n_sect) size:sizeof(uint8_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(desc) description:@"Description" offset:offsetof(struct nlist, n_desc) size:sizeof(uint16_t)],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(value) description:@"Value" offset:offsetof(struct nlist, n_value) size:self.dataModel.pointerSize]
+        self.class._strxFieldBuilder.build,
+        self.class._typeFieldBuilder.build,
+        self.class._sectFieldBuilder.build,
+        self.class._descFieldBuilder.build,
+        value.build
     ]];
 }
 

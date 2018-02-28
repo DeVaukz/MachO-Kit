@@ -77,7 +77,6 @@
 
 #import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKMachO.h>
-#import <MachOKit/MKMachO+Symbols.h>
 #import <MachOKit/MKMachHeader.h>
 #import <MachOKit/MKMachHeader64.h>
 #import <MachOKit/MKLoadCommand.h>
@@ -153,8 +152,6 @@
     #import <MachOKit/MKRebaseDoRebaseULEBTimes.h>
     #import <MachOKit/MKRebaseDoRebaseAddAddressULEB.h>
     #import <MachOKit/MKRebaseDoRebaseULEBTimesSkippingULEB.h>
-#import <MachOKit/MKStringTable.h>
-#import <MachOKit/MKSymbolTable.h>
 #import <MachOKit/MKMachO+Bindings.h>
     #import <MachOKit/MKBindingsInfo.h>
     #import <MachOKit/MKWeakBindingsInfo.h>
@@ -184,6 +181,9 @@
 	#import <MachOKit/MKExportTrieNode.h>
 	#import <MachOKit/MKExportTrieTerminalNode.h>
 	#import <MachOKit/MKExportTrieBranch.h>
+#import <MachOKit/MKMachO+Symbols.h>
+    #import <MachOKit/MKStringTable.h>
+    #import <MachOKit/MKSymbolTable.h>
     #import <MachOKit/MKSymbol.h>
 #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>
