@@ -28,13 +28,12 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldNumericType.h>
 #import <MachOKit/MKNodeFieldOptionSetType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldTypeOptionSet : NSObject <MKNodeFieldOptionSetType, MKNodeFieldNumericType> {
+@interface MKNodeFieldTypeOptionSet : NSObject <MKNodeFieldOptionSetType> {
 @package
     id<MKNodeFieldNumericType> _underlyingType;
     MKNodeFieldOptionSetOptions *_options;
