@@ -221,8 +221,8 @@
         NSString *formattedValue = [formatter stringForObjectValue:maskedNumber];
         
         if (formattedValue.length > 0) {
+            if (retValue.length != 0) [retValue appendString:@" "];
             [retValue appendString:formattedValue];
-            [retValue appendString:@" "];
         }
         
         [maskedNumber release];

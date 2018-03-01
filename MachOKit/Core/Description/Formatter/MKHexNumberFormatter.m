@@ -128,12 +128,12 @@
                 return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*hh", "x", "X"), 2, [anObject unsignedCharValue]];
             case 's':
             case 'S':
-                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*h", "x", "X"), 2, [anObject unsignedShortValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*h", "x", "X"), 4, [anObject unsignedShortValue]];
             case 'i':
             case 'I':
-                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*", "x", "X"), 2, [anObject unsignedIntValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*", "x", "X"), 8, [anObject unsignedIntValue]];
             default:
-                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*ll", "x", "X"), 2, [anObject unsignedLongLongValue]];
+                return [NSString stringWithFormat:MAKE_FORMAT_STRING("%0*ll", "x", "X"), 16, [anObject unsignedLongLongValue]];
         }
     } else if (_digits == 0)
         return [NSString stringWithFormat:MAKE_FORMAT_STRING("%ll", "x", "X"), [anObject unsignedLongLongValue]];
