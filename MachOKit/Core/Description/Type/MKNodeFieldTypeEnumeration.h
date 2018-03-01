@@ -28,13 +28,12 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKNodeFieldNumericType.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldTypeEnumeration : NSObject <MKNodeFieldEnumerationType, MKNodeFieldNumericType> {
+@interface MKNodeFieldTypeEnumeration : NSObject <MKNodeFieldEnumerationType> {
 @package
     id<MKNodeFieldNumericType> _underlyingType;
     MKNodeFieldEnumerationElements *_elements;
