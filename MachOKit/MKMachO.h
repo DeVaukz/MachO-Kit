@@ -28,11 +28,9 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKOptional.h>
-#import <MachOKit/MKNode+MachO.h>
 #import <MachOKit/MKBackedNode.h>
-#import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKMachOFieldType.h>
+#import <MachOKit/MKNode+MachO.h>
 
 @protocol MKLCSegment;
 @class MKMachOImage;

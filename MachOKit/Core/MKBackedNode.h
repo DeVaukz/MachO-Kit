@@ -28,7 +28,6 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKOptional.h>
 #import <MachOKit/MKAddressedNode.h>
 
 NS_ASSUME_NONNULL_BEGIN

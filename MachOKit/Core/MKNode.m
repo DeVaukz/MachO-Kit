@@ -27,7 +27,6 @@
 
 #import "MKNode.h"
 #import "MKInternal.h"
-#import "MKBackedNode.h"
 
 #import <objc/runtime.h>
 

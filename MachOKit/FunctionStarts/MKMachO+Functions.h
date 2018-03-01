@@ -29,7 +29,6 @@
 @import Foundation;
 
 #import <MachOKit/MKMachO.h>
-#import <MachOKit/MKOptional.h>
 
 @class MKFunctionStarts;
 

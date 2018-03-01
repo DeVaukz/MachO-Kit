@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKNodeDescription.h>
+#import <MachOKit/MKOptional.h>
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKDataModel.h>
 

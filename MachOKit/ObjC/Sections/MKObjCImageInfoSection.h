@@ -29,7 +29,6 @@
 @import Foundation;
 
 #import <MachOKit/MKSection.h>
-#import <MachOKit/MKOptional.h>
 
 @class MKObjCImageInfo;
 
