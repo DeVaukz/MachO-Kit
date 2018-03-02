@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKBitfieldFormatter.h"
+#import "NSNumber+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKBitfieldFormatterMask
@@ -134,27 +135,7 @@
     
     NSMutableString *retValue = [NSMutableString string];
     
-    uint64_t value;
-    switch (*[anObject objCType]) {
-        case 'c':
-        case 'C':
-            value = (uint64_t)[anObject unsignedCharValue];
-            break;
-        case 's':
-        case 'S':
-            value = (uint64_t)[anObject unsignedShortValue];
-            break;
-        case 'i':
-        case 'I':
-            value = (uint64_t)[anObject unsignedIntValue];
-            break;
-        case 'q':
-        case 'Q':
-            value = (uint64_t)[anObject unsignedLongLongValue];
-            break;
-        default:
-            return nil;
-    }
+    uint64_t value = [anObject mk_UnsignedValue:NULL];
     
     for (MKBitfieldFormatterMask *group in self.bits) {
         NSNumber *maskValue = group.mask;
@@ -165,28 +146,7 @@
         if (maskValue == nil || formatter == nil)
             continue;
         
-        uint64_t mask;
-        switch (*[maskValue objCType]) {
-            case 'c':
-            case 'C':
-                mask = (uint64_t)[maskValue unsignedCharValue];
-                break;
-            case 's':
-            case 'S':
-                mask = (uint64_t)[maskValue unsignedShortValue];
-                break;
-            case 'i':
-            case 'I':
-                mask = (uint64_t)[maskValue unsignedIntValue];
-                break;
-            case 'q':
-            case 'Q':
-                mask = (uint64_t)[maskValue unsignedLongLongValue];
-                break;
-            default:
-                continue;
-        }
-        
+        uint64_t mask = [maskValue mk_UnsignedValue:NULL];
         uint64_t maskedValue = value & mask;
         
         if (maskedValue == 0 && ignoreZero)

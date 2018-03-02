@@ -26,6 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKOptionSetFormatter.h"
+#import "NSNumber+MK.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKOptionSetFormatter
@@ -101,32 +102,8 @@
     if ([anObject isKindOfClass:NSNumber.class] == NO)
         return nil;
     
-    uint64_t value;
     size_t bits;
-    switch (*[anObject objCType]) {
-        case 'c':
-        case 'C':
-            bits = sizeof(uint8_t) * 8;
-            value = (uint64_t)[anObject unsignedCharValue];
-            break;
-        case 's':
-        case 'S':
-            bits = sizeof(uint16_t) * 8;
-            value = (uint64_t)[anObject unsignedShortValue];
-            break;
-        case 'i':
-        case 'I':
-            bits = sizeof(uint32_t) * 8;
-            value = (uint64_t)[anObject unsignedIntValue];
-            break;
-        case 'q':
-        case 'Q':
-            bits = sizeof(uint64_t) * 8;
-            value = (uint64_t)[anObject unsignedLongLongValue];
-            break;
-        default:
-            return nil;
-    }
+    uint64_t value = [anObject mk_UnsignedValue:&bits];
     
     MKOptionSetFormatterOptions *options = self.options;
     
@@ -151,27 +128,7 @@
     uint64_t maskedBits = 0;
     
     for (NSNumber *maskValue in options) {
-        uint64_t mask;
-        switch (*[maskValue objCType]) {
-            case 'c':
-            case 'C':
-                mask = (uint64_t)[maskValue unsignedCharValue];
-                break;
-            case 's':
-            case 'S':
-                mask = (uint64_t)[maskValue unsignedShortValue];
-                break;
-            case 'i':
-            case 'I':
-                mask = (uint64_t)[maskValue unsignedIntValue];
-                break;
-            case 'q':
-            case 'Q':
-                mask = (uint64_t)[maskValue unsignedLongLongValue];
-                break;
-            default:
-                continue;
-        }
+        uint64_t mask = [maskValue mk_UnsignedValue:NULL];
         
         if (mask == 0x0)
             continue;

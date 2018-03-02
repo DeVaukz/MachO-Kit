@@ -64,7 +64,7 @@ typedef NS_ENUM(NSUInteger, MKOptionSetFormatterZeroBehavior) {
 @property (nonatomic, copy, nullable) MKOptionSetFormatterOptions *options;
 
 //! The behavior when the formatter encounters a zero value.  Only applicable
-//! if the options dictionary does not contain a value for zero.
+//! if the options dictionary does not define a value for zero.
 @property (nonatomic, readwrite) MKOptionSetFormatterZeroBehavior zeroBehavior;
 
 @end

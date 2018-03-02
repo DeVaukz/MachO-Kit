@@ -44,33 +44,34 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
         return;
     
     s_CPUTypes = [@{
-        @(CPU_TYPE_ANY): @"CPU_TYPE_ANY",
-        @(CPU_TYPE_VAX): @"CPU_TYPE_VAX",
+        _$(CPU_TYPE_ANY): @"CPU_TYPE_ANY",
+        _$(CPU_TYPE_VAX): @"CPU_TYPE_VAX",
         /* skip                ((cpu_type_t) 2)    */
         /* skip                ((cpu_type_t) 3)    */
         /* skip                ((cpu_type_t) 4)    */
         /* skip                ((cpu_type_t) 5)    */
-        @(CPU_TYPE_MC680x0): @"CPU_TYPE_MC680x0",
-        @(CPU_TYPE_X86): @"CPU_TYPE_X86",
-        @(CPU_TYPE_X86_64): @"CPU_TYPE_X86_64",
+        _$(CPU_TYPE_MC680x0): @"CPU_TYPE_MC680x0",
+        _$(CPU_TYPE_X86): @"CPU_TYPE_X86",
+        _$(CPU_TYPE_X86_64): @"CPU_TYPE_X86_64",
         /* skip CPU_TYPE_MIPS        ((cpu_type_t) 8)    */
         /* skip             ((cpu_type_t) 9)    */
-        @(CPU_TYPE_MC98000): @"CPU_TYPE_MC98000",
-        @(CPU_TYPE_HPPA): @"CPU_TYPE_HPPA",
-        @(CPU_TYPE_ARM): @"CPU_TYPE_ARM",
-        @(CPU_TYPE_ARM64): @"CPU_TYPE_ARM64",
-        @(CPU_TYPE_MC88000): @"CPU_TYPE_MC88000",
-        @(CPU_TYPE_SPARC): @"CPU_TYPE_SPARC",
-        @(CPU_TYPE_I860): @"CPU_TYPE_I860",
+        _$(CPU_TYPE_MC98000): @"CPU_TYPE_MC98000",
+        _$(CPU_TYPE_HPPA): @"CPU_TYPE_HPPA",
+        _$(CPU_TYPE_ARM): @"CPU_TYPE_ARM",
+        _$(CPU_TYPE_ARM64): @"CPU_TYPE_ARM64",
+        _$(CPU_TYPE_MC88000): @"CPU_TYPE_MC88000",
+        _$(CPU_TYPE_SPARC): @"CPU_TYPE_SPARC",
+        _$(CPU_TYPE_I860): @"CPU_TYPE_I860",
         /* skip    CPU_TYPE_ALPHA        ((cpu_type_t) 16)    */
         /* skip                ((cpu_type_t) 17)    */
-        @(CPU_TYPE_POWERPC): @"CPU_TYPE_POWERPC",
-        @(CPU_TYPE_POWERPC64): @"CPU_TYPE_POWERPC64"
+        _$(CPU_TYPE_POWERPC): @"CPU_TYPE_POWERPC",
+        _$(CPU_TYPE_POWERPC64): @"CPU_TYPE_POWERPC64"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"CPU_TYPE";
     formatter.elements = s_CPUTypes;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

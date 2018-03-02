@@ -38,7 +38,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldSectionFlagsType : MKNodeFieldTypeDoubleWord <MKNodeFieldBitfieldType>
+@interface MKNodeFieldSectionFlagsType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldBitfieldType>
 
 + (instancetype)sharedInstance;
 

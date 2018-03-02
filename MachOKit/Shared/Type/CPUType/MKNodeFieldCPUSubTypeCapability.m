@@ -44,7 +44,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeCapability)
         return;
     
     s_Capability = [@{
-        @((cpu_subtype_t)(CPU_SUBTYPE_LIB64)): @"CPU_SUBTYPE_LIB64",
+        _$((uint32_t)CPU_SUBTYPE_LIB64): @"CPU_SUBTYPE_LIB64",
     } retain];
     
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];

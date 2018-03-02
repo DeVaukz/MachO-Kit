@@ -34,6 +34,14 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
+//! @name       CPU SubType Capabilities
+//! @relates    MKNodeFieldCPUSubTypeCapability
+//
+typedef NS_OPTIONS(uint32_t, MKCPUSubTypeCapability) {
+    MKCPUSubTypeCapabilityLib64                     = CPU_SUBTYPE_LIB64
+};
+
+//----------------------------------------------------------------------------//
 @interface MKNodeFieldCPUSubTypeCapability : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;

@@ -46,13 +46,13 @@ typedef NS_OPTIONS(uint32_t, MKSectionSystemAttributes) {
     //! Section has external relocation entries
     MKSectionAttributeExternalRelocations       = S_ATTR_EXT_RELOC,
     //! Section has local relocation entries
-    MKSectionAttributeLocalRelocations          = S_ATTR_LOC_RELOC,
+    MKSectionAttributeLocalRelocations          = S_ATTR_LOC_RELOC
 };
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldSectionSystemAttributesType : MKNodeFieldTypeDoubleWord
+@interface MKNodeFieldSectionSystemAttributesType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

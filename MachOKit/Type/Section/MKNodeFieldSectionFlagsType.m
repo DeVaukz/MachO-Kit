@@ -47,22 +47,22 @@ MKMakeSingletonInitializer(MKNodeFieldSectionFlagsType)
         return;
     
     s_Bits = [[NSArray alloc] initWithObjects:
-        @((uint32_t)SECTION_TYPE),
-        @((uint32_t)SECTION_ATTRIBUTES_USR),
-        @((uint32_t)SECTION_ATTRIBUTES_SYS),
+        _$((uint32_t)SECTION_TYPE),
+        _$((uint32_t)SECTION_ATTRIBUTES_USR),
+        _$((uint32_t)SECTION_ATTRIBUTES_SYS),
     nil];
     
     MKBitfieldFormatterMask *type = [MKBitfieldFormatterMask new];
-    type.mask = @((uint32_t)SECTION_TYPE);
+    type.mask = _$((uint32_t)SECTION_TYPE);
     type.formatter = MKNodeFieldSectionType.sharedInstance.formatter;
     
     MKBitfieldFormatterMask *userAttributes = [MKBitfieldFormatterMask new];
-    userAttributes.mask = @((uint32_t)SECTION_ATTRIBUTES_USR);
+    userAttributes.mask = _$((uint32_t)SECTION_ATTRIBUTES_USR);
     userAttributes.formatter = MKNodeFieldSectionUserAttributesType.sharedInstance.formatter;
     userAttributes.ignoreZero = YES;
     
     MKBitfieldFormatterMask *systemAttributes = [MKBitfieldFormatterMask new];
-    systemAttributes.mask = @((uint32_t)SECTION_ATTRIBUTES_SYS);
+    systemAttributes.mask = _$((uint32_t)SECTION_ATTRIBUTES_SYS);
     systemAttributes.formatter = MKNodeFieldSectionSystemAttributesType.sharedInstance.formatter;
     systemAttributes.ignoreZero = YES;
     
@@ -89,11 +89,11 @@ MKMakeSingletonInitializer(MKNodeFieldSectionFlagsType)
 //|++++++++++++++++++++++++++++++++++++|//
 - (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
 {
-    if ([mask isEqual:@((uint32_t)SECTION_TYPE)])
+    if ([mask isEqual:_$((uint32_t)SECTION_TYPE)])
         return MKNodeFieldSectionType.sharedInstance;
-    else if ([mask isEqual:@((uint32_t)SECTION_ATTRIBUTES_USR)])
+    else if ([mask isEqual:_$((uint32_t)SECTION_ATTRIBUTES_USR)])
         return MKNodeFieldSectionUserAttributesType.sharedInstance;
-    else if ([mask isEqual:@((uint32_t)SECTION_ATTRIBUTES_SYS)])
+    else if ([mask isEqual:_$((uint32_t)SECTION_ATTRIBUTES_SYS)])
         return MKNodeFieldSectionSystemAttributesType.sharedInstance;
     else
         return nil;

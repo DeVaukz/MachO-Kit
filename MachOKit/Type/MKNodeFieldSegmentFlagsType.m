@@ -44,10 +44,10 @@ MKMakeSingletonInitializer(MKNodeFieldSegmentFlagsType)
         return;
     
     s_Flags = [@{
-        @(SG_HIGHVM): @"SG_HIGHVM",
-        @(SG_FVMLIB): @"SG_FVMLIB",
-        @(SG_NORELOC): @"SG_NORELOC",
-        @(SG_PROTECTED_VERSION_1): @"SG_PROTECTED_VERSION_1"
+        _$((uint32_t)SG_HIGHVM): @"SG_HIGHVM",
+        _$((uint32_t)SG_FVMLIB): @"SG_FVMLIB",
+        _$((uint32_t)SG_NORELOC): @"SG_NORELOC",
+        _$((uint32_t)SG_PROTECTED_VERSION_1): @"SG_PROTECTED_VERSION_1"
     } retain];
     
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];

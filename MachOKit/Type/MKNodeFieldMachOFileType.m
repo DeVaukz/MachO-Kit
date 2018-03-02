@@ -44,22 +44,23 @@ MKMakeSingletonInitializer(MKNodeFieldMachOFileType)
         return;
     
     s_FileTypes = [@{
-        @(MH_OBJECT): @"MH_OBJECT",
-        @(MH_EXECUTE): @"MH_EXECUTE",
-        @(MH_FVMLIB): @"MH_FVMLIB",
-        @(MH_CORE): @"MH_CORE",
-        @(MH_PRELOAD): @"MH_PRELOAD",
-        @(MH_DYLIB): @"MH_DYLIB",
-        @(MH_DYLINKER): @"MH_DYLINKER",
-        @(MH_BUNDLE): @"MH_BUNDLE",
-        @(MH_DYLIB_STUB): @"MH_DYLIB_STUB",
-        @(MH_DSYM): @"MH_DSYM",
-        @(MH_KEXT_BUNDLE): @"MH_KEXT_BUNDLE"
+        _$((uint32_t)MH_OBJECT): @"MH_OBJECT",
+        _$((uint32_t)MH_EXECUTE): @"MH_EXECUTE",
+        _$((uint32_t)MH_FVMLIB): @"MH_FVMLIB",
+        _$((uint32_t)MH_CORE): @"MH_CORE",
+        _$((uint32_t)MH_PRELOAD): @"MH_PRELOAD",
+        _$((uint32_t)MH_DYLIB): @"MH_DYLIB",
+        _$((uint32_t)MH_DYLINKER): @"MH_DYLINKER",
+        _$((uint32_t)MH_BUNDLE): @"MH_BUNDLE",
+        _$((uint32_t)MH_DYLIB_STUB): @"MH_DYLIB_STUB",
+        _$((uint32_t)MH_DSYM): @"MH_DSYM",
+        _$((uint32_t)MH_KEXT_BUNDLE): @"MH_KEXT_BUNDLE"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"MH";
     formatter.elements = s_FileTypes;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

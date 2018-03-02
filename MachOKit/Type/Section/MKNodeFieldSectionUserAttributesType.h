@@ -56,13 +56,13 @@ typedef NS_OPTIONS(uint32_t, MKSectionUserAttributes) {
     //! Used with i386 code stubs written on by dyld
     MKSectionAttributeSelfModifyingCode         = S_ATTR_SELF_MODIFYING_CODE,
     //! A debug section
-    MKSectionAttributeDebug                     = S_ATTR_DEBUG,
+    MKSectionAttributeDebug                     = S_ATTR_DEBUG
 };
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldSectionUserAttributesType : MKNodeFieldTypeDoubleWord
+@interface MKNodeFieldSectionUserAttributesType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

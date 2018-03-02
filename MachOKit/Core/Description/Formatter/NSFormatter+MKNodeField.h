@@ -50,7 +50,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSFormatter*)mk_decimalNumberFormatter;
 
 + (NSFormatter*)mk_hexFormatter;
++ (NSFormatter*)mk_hex8Formatter;
++ (NSFormatter*)mk_hex16Formatter;
++ (NSFormatter*)mk_hex32Formatter;
++ (NSFormatter*)mk_hex64Formatter;
+
 + (NSFormatter*)mk_uppercaseHexFormatter;
++ (NSFormatter*)mk_uppercaseHex8Formatter;
++ (NSFormatter*)mk_uppercaseHex16Formatter;
++ (NSFormatter*)mk_uppercaseHex32Formatter;
++ (NSFormatter*)mk_uppercaseHex64Formatter;
 
 + (NSFormatter*)mk_hexCompactFormatter;
 + (NSFormatter*)mk_uppercaseHexCompactFormatter;

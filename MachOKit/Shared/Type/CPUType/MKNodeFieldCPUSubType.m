@@ -41,8 +41,8 @@ static MKNodeFieldBitfieldMasks *s_Bits = nil;
         return;
     
     s_Bits = [[NSArray alloc] initWithObjects:
-        @((cpu_subtype_t)CPU_SUBTYPE_MASK),
-        @(~(cpu_subtype_t)CPU_SUBTYPE_MASK),
+        _$((uint32_t)CPU_SUBTYPE_MASK),
+        _$(~(uint32_t)CPU_SUBTYPE_MASK),
     nil];
 }
 
@@ -104,11 +104,11 @@ static MKNodeFieldBitfieldMasks *s_Bits = nil;
     _implType = [subtype ?: MKNodeFieldCPUSubTypeAny.sharedInstance retain];
     
     MKBitfieldFormatterMask *subtypeMask = [MKBitfieldFormatterMask new];
-    subtypeMask.mask = @(~(cpu_subtype_t)CPU_SUBTYPE_MASK);
+    subtypeMask.mask = _$(~(uint32_t)CPU_SUBTYPE_MASK);
     subtypeMask.formatter = _implType.formatter;
     
     MKBitfieldFormatterMask *capabilitiesMask = [MKBitfieldFormatterMask new];
-    capabilitiesMask.mask = @((cpu_subtype_t)CPU_SUBTYPE_MASK);
+    capabilitiesMask.mask = _$((uint32_t)CPU_SUBTYPE_MASK);
     capabilitiesMask.formatter = MKNodeFieldCPUSubTypeCapability.sharedInstance.formatter;
     capabilitiesMask.ignoreZero = YES;
     
@@ -149,7 +149,7 @@ static MKNodeFieldBitfieldMasks *s_Bits = nil;
 //|++++++++++++++++++++++++++++++++++++|//
 - (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
 {
-    if ([mask isEqual:@((cpu_subtype_t)CPU_SUBTYPE_MASK)])
+    if ([mask isEqual:_$((uint32_t)CPU_SUBTYPE_MASK)])
         return MKNodeFieldCPUSubTypeCapability.sharedInstance;
     else
         return _implType;

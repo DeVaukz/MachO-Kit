@@ -41,7 +41,7 @@ typedef NS_OPTIONS(vm_prot_t, MKVMProtection) {
     MKVMProtectionNone                      = VM_PROT_NONE,
     MKVMProtectionNoneRead                  = VM_PROT_READ,
     MKVMProtectionNoneWrite                 = VM_PROT_WRITE,
-    MKVMProtectionNoneExecute               = VM_PROT_EXECUTE,
+    MKVMProtectionNoneExecute               = VM_PROT_EXECUTE
 };
 
 

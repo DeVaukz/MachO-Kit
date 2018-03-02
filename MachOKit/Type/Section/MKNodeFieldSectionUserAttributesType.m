@@ -44,13 +44,13 @@ MKMakeSingletonInitializer(MKNodeFieldSectionUserAttributesType)
         return;
     
     s_UserAttributes = [@{
-        @(S_ATTR_PURE_INSTRUCTIONS): @"S_ATTR_PURE_INSTRUCTIONS",
-        @(S_ATTR_NO_TOC): @"S_ATTR_NO_TOC",
-        @(S_ATTR_STRIP_STATIC_SYMS): @"S_ATTR_STRIP_STATIC_SYMS",
-        @(S_ATTR_NO_DEAD_STRIP): @"S_ATTR_NO_DEAD_STRIP",
-        @(S_ATTR_LIVE_SUPPORT): @"S_ATTR_LIVE_SUPPORT",
-        @(S_ATTR_SELF_MODIFYING_CODE): @"S_ATTR_SELF_MODIFYING_CODE",
-        @(S_ATTR_DEBUG): @"S_ATTR_DEBUG"
+        _$((uint32_t)S_ATTR_PURE_INSTRUCTIONS): @"S_ATTR_PURE_INSTRUCTIONS",
+        _$((uint32_t)S_ATTR_NO_TOC): @"S_ATTR_NO_TOC",
+        _$((uint32_t)S_ATTR_STRIP_STATIC_SYMS): @"S_ATTR_STRIP_STATIC_SYMS",
+        _$((uint32_t)S_ATTR_NO_DEAD_STRIP): @"S_ATTR_NO_DEAD_STRIP",
+        _$((uint32_t)S_ATTR_LIVE_SUPPORT): @"S_ATTR_LIVE_SUPPORT",
+        _$((uint32_t)S_ATTR_SELF_MODIFYING_CODE): @"S_ATTR_SELF_MODIFYING_CODE",
+        _$((uint32_t)S_ATTR_DEBUG): @"S_ATTR_DEBUG"
     } retain];
     
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];

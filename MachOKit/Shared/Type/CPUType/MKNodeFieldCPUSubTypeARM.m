@@ -44,24 +44,25 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM)
         return;
     
     s_Types = [@{
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_ALL): @"CPU_SUBTYPE_ARM_ALL",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V4T): @"CPU_SUBTYPE_ARM_V4T",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V6): @"CPU_SUBTYPE_ARM_V6",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V5TEJ): @"CPU_SUBTYPE_ARM_V5TEJ",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_XSCALE): @"CPU_SUBTYPE_ARM_XSCALE",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7): @"CPU_SUBTYPE_ARM_V7",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7F): @"CPU_SUBTYPE_ARM_V7F",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7S): @"CPU_SUBTYPE_ARM_V7S",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7K): @"CPU_SUBTYPE_ARM_V7K",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V6M): @"CPU_SUBTYPE_ARM_V6M",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7M): @"CPU_SUBTYPE_ARM_V7M",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V7EM): @"CPU_SUBTYPE_ARM_V7EM",
-         @((cpu_subtype_t)CPU_SUBTYPE_ARM_V8): @"CPU_SUBTYPE_ARM_V8"
+         _$(CPU_SUBTYPE_ARM_ALL): @"CPU_SUBTYPE_ARM_ALL",
+         _$(CPU_SUBTYPE_ARM_V4T): @"CPU_SUBTYPE_ARM_V4T",
+         _$(CPU_SUBTYPE_ARM_V6): @"CPU_SUBTYPE_ARM_V6",
+         _$(CPU_SUBTYPE_ARM_V5TEJ): @"CPU_SUBTYPE_ARM_V5TEJ",
+         _$(CPU_SUBTYPE_ARM_XSCALE): @"CPU_SUBTYPE_ARM_XSCALE",
+         _$(CPU_SUBTYPE_ARM_V7): @"CPU_SUBTYPE_ARM_V7",
+         _$(CPU_SUBTYPE_ARM_V7F): @"CPU_SUBTYPE_ARM_V7F",
+         _$(CPU_SUBTYPE_ARM_V7S): @"CPU_SUBTYPE_ARM_V7S",
+         _$(CPU_SUBTYPE_ARM_V7K): @"CPU_SUBTYPE_ARM_V7K",
+         _$(CPU_SUBTYPE_ARM_V6M): @"CPU_SUBTYPE_ARM_V6M",
+         _$(CPU_SUBTYPE_ARM_V7M): @"CPU_SUBTYPE_ARM_V7M",
+         _$(CPU_SUBTYPE_ARM_V7EM): @"CPU_SUBTYPE_ARM_V7EM",
+         _$(CPU_SUBTYPE_ARM_V8): @"CPU_SUBTYPE_ARM_V8"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"CPU_SUBTYPE_ARM";
     formatter.elements = s_Types;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

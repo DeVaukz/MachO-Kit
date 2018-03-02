@@ -273,6 +273,8 @@
 		D05E7EB720389F84000C72B7 /* MKNodeFieldTypeOffset.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */; };
 		D060FA7E1A1877B1002A010C /* _MKFileMemoryMap.h in Headers */ = {isa = PBXBuildFile; fileRef = D060FA7C1A1877B1002A010C /* _MKFileMemoryMap.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		D060FA7F1A1877B1002A010C /* _MKFileMemoryMap.m in Sources */ = {isa = PBXBuildFile; fileRef = D060FA7D1A1877B1002A010C /* _MKFileMemoryMap.m */; };
+		D061346C204528A200173476 /* NSNumber+MK.h in Headers */ = {isa = PBXBuildFile; fileRef = D061346A204528A200173476 /* NSNumber+MK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D061346D204528A200173476 /* NSNumber+MK.m in Sources */ = {isa = PBXBuildFile; fileRef = D061346B204528A200173476 /* NSNumber+MK.m */; };
 		D061B1541FF70208004A3047 /* MKExportTrieTerminalNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1521FF70208004A3047 /* MKExportTrieTerminalNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D061B1551FF70208004A3047 /* MKExportTrieTerminalNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D061B1531FF70208004A3047 /* MKExportTrieTerminalNode.m */; };
 		D061B16A1FF71AAC004A3047 /* MKExportTrieBranch.h in Headers */ = {isa = PBXBuildFile; fileRef = D061B1681FF71AAC004A3047 /* MKExportTrieBranch.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -724,6 +726,7 @@
 		D0C3B2E519F37B2800CAFE58 /* MKMachO.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3B2E219F37B2800CAFE58 /* MKMachO.m */; };
 		D0C3B2F019F463EA00CAFE58 /* MKNode.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C3B2EE19F463EA00CAFE58 /* MKNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0C3B2F119F463EA00CAFE58 /* MKNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3B2EF19F463EA00CAFE58 /* MKNode.m */; };
+		D0C3DA87204732D000D48DE4 /* MKNumberSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C3DA86204732D000D48DE4 /* MKNumberSpec.m */; };
 		D0C563F81A944E2800443090 /* symbol.c in Sources */ = {isa = PBXBuildFile; fileRef = D0C563F61A944E2800443090 /* symbol.c */; };
 		D0C563FA1A944E2800443090 /* symbol.c in Sources */ = {isa = PBXBuildFile; fileRef = D0C563F61A944E2800443090 /* symbol.c */; };
 		D0C563FB1A944E2800443090 /* symbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C563F71A944E2800443090 /* symbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1198,6 +1201,8 @@
 		D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeOffset.m; sourceTree = "<group>"; };
 		D060FA7C1A1877B1002A010C /* _MKFileMemoryMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _MKFileMemoryMap.h; sourceTree = "<group>"; };
 		D060FA7D1A1877B1002A010C /* _MKFileMemoryMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _MKFileMemoryMap.m; sourceTree = "<group>"; };
+		D061346A204528A200173476 /* NSNumber+MK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSNumber+MK.h"; sourceTree = "<group>"; };
+		D061346B204528A200173476 /* NSNumber+MK.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSNumber+MK.m"; sourceTree = "<group>"; };
 		D061B1521FF70208004A3047 /* MKExportTrieTerminalNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKExportTrieTerminalNode.h; sourceTree = "<group>"; };
 		D061B1531FF70208004A3047 /* MKExportTrieTerminalNode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKExportTrieTerminalNode.m; sourceTree = "<group>"; };
 		D061B1681FF71AAC004A3047 /* MKExportTrieBranch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKExportTrieBranch.h; sourceTree = "<group>"; };
@@ -1537,6 +1542,7 @@
 		D0C3B2E219F37B2800CAFE58 /* MKMachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKMachO.m; sourceTree = "<group>"; };
 		D0C3B2EE19F463EA00CAFE58 /* MKNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNode.h; sourceTree = "<group>"; };
 		D0C3B2EF19F463EA00CAFE58 /* MKNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNode.m; sourceTree = "<group>"; };
+		D0C3DA86204732D000D48DE4 /* MKNumberSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNumberSpec.m; sourceTree = "<group>"; };
 		D0C563F61A944E2800443090 /* symbol.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = symbol.c; sourceTree = "<group>"; };
 		D0C563F71A944E2800443090 /* symbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol.h; sourceTree = "<group>"; };
 		D0C564091A944E3E00443090 /* symbol_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol_internal.h; sourceTree = "<group>"; };
@@ -1962,6 +1968,7 @@
 		D034564E19A52A6E0068EE8F /* Specs */ = {
 			isa = PBXGroup;
 			children = (
+				D0C3DA86204732D000D48DE4 /* MKNumberSpec.m */,
 				D0302FFA1A21C84500288B3E /* MKMemoryMapSpec.m */,
 				D03EFF2A203E939400040928 /* MKFormatterSpec.m */,
 				D0302FF81A21BD6E00288B3E /* MKDataModelSpec.m */,
@@ -2511,6 +2518,8 @@
 				D0B9F6C91E58076300D0B35A /* MKInternal.h */,
 				D038B70A1A1021AA008621AE /* NSError+MK.h */,
 				D038B70B1A1021AA008621AE /* NSError+MK.m */,
+				D061346A204528A200173476 /* NSNumber+MK.h */,
+				D061346B204528A200173476 /* NSNumber+MK.m */,
 				D0C3B2ED19F463C000CAFE58 /* Core */,
 				D061B18E1FFAC84B004A3047 /* Shared */,
 				D09959EC1A6A29B8007134CE /* Fat */,
@@ -3192,6 +3201,7 @@
 				D0A1D8EA19E4EEB80095870C /* load_command_symtab.h in Headers */,
 				D0A92F4320033DDC0001C18D /* MKNodeFieldCollectionType.h in Headers */,
 				D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */,
+				D061346C204528A200173476 /* NSNumber+MK.h in Headers */,
 				D0B9F6C11E57FC3200D0B35A /* MKNodeFieldType.h in Headers */,
 				D0A1D84619E4EE320095870C /* logging_internal.h in Headers */,
 				D097ABCD1C70F8E0000F62C4 /* MKMachO+Segments.h in Headers */,
@@ -3642,6 +3652,7 @@
 				D0A1D8C919E4EEB80095870C /* load_command_load_dylib.c in Sources */,
 				D0CC85851C6FBBEF001FB7C7 /* MKDSCImagesInfo.m in Sources */,
 				D0F7EBAB1A63413400FA834F /* memory_map_self.c in Sources */,
+				D061346D204528A200173476 /* NSNumber+MK.m in Sources */,
 				D097ABCE1C70F8E0000F62C4 /* MKMachO+Segments.m in Sources */,
 				D01C750E1CA746D000648CA6 /* MKBindSetSegmentAndOffsetULEB.m in Sources */,
 				D082FD3E20072F6F00E6C3E5 /* MKNodeFieldCPUSubTypePowerPC.m in Sources */,
@@ -3904,6 +3915,7 @@
 				D0F7EBAF1A63559600FA834F /* data_model_spec.m in Sources */,
 				D0A3BB541A68DEF200D663A0 /* macho_image_spec.m in Sources */,
 				D08AD76B1E07B95E001F6A2F /* NSArray+MKTests.m in Sources */,
+				D0C3DA87204732D000D48DE4 /* MKNumberSpec.m in Sources */,
 				D03EFF3A203E93B400040928 /* MKFormatterSpec.m in Sources */,
 				D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */,
 				D0302FF91A21BD6E00288B3E /* MKDataModelSpec.m in Sources */,

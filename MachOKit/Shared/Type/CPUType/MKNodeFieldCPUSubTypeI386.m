@@ -44,30 +44,31 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeI386)
         return;
     
     s_Types = [@{
-         @((cpu_subtype_t)CPU_SUBTYPE_I386_ALL): @"CPU_SUBTYPE_I386_ALL",
-         @((cpu_subtype_t)CPU_SUBTYPE_486): @"CPU_SUBTYPE_486",
-         @((cpu_subtype_t)CPU_SUBTYPE_486SX): @"CPU_SUBTYPE_486SX",
-         @((cpu_subtype_t)CPU_SUBTYPE_586): @"CPU_SUBTYPE_586",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTPRO): @"CPU_SUBTYPE_PENTPRO",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTII_M3): @"CPU_SUBTYPE_PENTII_M3",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTII_M5): @"CPU_SUBTYPE_PENTII_M5",
-         @((cpu_subtype_t)CPU_SUBTYPE_CELERON): @"CPU_SUBTYPE_CELERON",
-         @((cpu_subtype_t)CPU_SUBTYPE_CELERON_MOBILE): @"CPU_SUBTYPE_CELERON_MOBILE",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_3): @"CPU_SUBTYPE_PENTIUM_3",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_3_M): @"CPU_SUBTYPE_PENTIUM_3_M",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_3_XEON): @"CPU_SUBTYPE_PENTIUM_3_XEON",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_M): @"CPU_SUBTYPE_PENTIUM_M",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_4): @"CPU_SUBTYPE_PENTIUM_4",
-         @((cpu_subtype_t)CPU_SUBTYPE_PENTIUM_4_M): @"CPU_SUBTYPE_PENTIUM_4_M",
-         @((cpu_subtype_t)CPU_SUBTYPE_ITANIUM): @"CPU_SUBTYPE_ITANIUM",
-         @((cpu_subtype_t)CPU_SUBTYPE_ITANIUM_2): @"CPU_SUBTYPE_ITANIUM_2",
-         @((cpu_subtype_t)CPU_SUBTYPE_XEON): @"CPU_SUBTYPE_XEON",
-         @((cpu_subtype_t)CPU_SUBTYPE_XEON_MP): @"CPU_SUBTYPE_XEON_MP"
+         _$(CPU_SUBTYPE_I386_ALL): @"CPU_SUBTYPE_I386_ALL",
+         _$(CPU_SUBTYPE_486): @"CPU_SUBTYPE_486",
+         _$(CPU_SUBTYPE_486SX): @"CPU_SUBTYPE_486SX",
+         _$(CPU_SUBTYPE_586): @"CPU_SUBTYPE_586",
+         _$(CPU_SUBTYPE_PENTPRO): @"CPU_SUBTYPE_PENTPRO",
+         _$(CPU_SUBTYPE_PENTII_M3): @"CPU_SUBTYPE_PENTII_M3",
+         _$(CPU_SUBTYPE_PENTII_M5): @"CPU_SUBTYPE_PENTII_M5",
+         _$(CPU_SUBTYPE_CELERON): @"CPU_SUBTYPE_CELERON",
+         _$(CPU_SUBTYPE_CELERON_MOBILE): @"CPU_SUBTYPE_CELERON_MOBILE",
+         _$(CPU_SUBTYPE_PENTIUM_3): @"CPU_SUBTYPE_PENTIUM_3",
+         _$(CPU_SUBTYPE_PENTIUM_3_M): @"CPU_SUBTYPE_PENTIUM_3_M",
+         _$(CPU_SUBTYPE_PENTIUM_3_XEON): @"CPU_SUBTYPE_PENTIUM_3_XEON",
+         _$(CPU_SUBTYPE_PENTIUM_M): @"CPU_SUBTYPE_PENTIUM_M",
+         _$(CPU_SUBTYPE_PENTIUM_4): @"CPU_SUBTYPE_PENTIUM_4",
+         _$(CPU_SUBTYPE_PENTIUM_4_M): @"CPU_SUBTYPE_PENTIUM_4_M",
+         _$(CPU_SUBTYPE_ITANIUM): @"CPU_SUBTYPE_ITANIUM",
+         _$(CPU_SUBTYPE_ITANIUM_2): @"CPU_SUBTYPE_ITANIUM_2",
+         _$(CPU_SUBTYPE_XEON): @"CPU_SUBTYPE_XEON",
+         _$(CPU_SUBTYPE_XEON_MP): @"CPU_SUBTYPE_XEON_MP"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"CPU_SUBTYPE_INTEL";
     formatter.elements = s_Types;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

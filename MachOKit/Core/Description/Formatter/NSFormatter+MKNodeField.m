@@ -92,6 +92,54 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_hex8Formatter
+{
+    static MKHexNumberFormatter *s_Hex8Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_Hex8Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:2] retain];
+    });
+    
+    return s_Hex8Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_hex16Formatter
+{
+    static MKHexNumberFormatter *s_Hex16Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_Hex16Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:4] retain];
+    });
+    
+    return s_Hex16Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_hex32Formatter
+{
+    static MKHexNumberFormatter *s_Hex32Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_Hex32Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:8] retain];
+    });
+    
+    return s_Hex32Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_hex64Formatter
+{
+    static MKHexNumberFormatter *s_Hex64Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_Hex64Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:16] retain];
+    });
+    
+    return s_Hex64Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSFormatter*)mk_uppercaseHexFormatter
 {
     static MKHexNumberFormatter *s_UppercaseHexFormatter = nil;
@@ -101,6 +149,54 @@
     });
     
     return s_UppercaseHexFormatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHex8Formatter
+{
+    static MKHexNumberFormatter *s_UppercaseHex8Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHex8Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:2 uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHex8Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHex16Formatter
+{
+    static MKHexNumberFormatter *s_UppercaseHex16Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHex16Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:4 uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHex16Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHex32Formatter
+{
+    static MKHexNumberFormatter *s_UppercaseHex32Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHex32Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:8 uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHex32Formatter;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSFormatter*)mk_uppercaseHex64Formatter
+{
+    static MKHexNumberFormatter *s_UppercaseHex64Formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        s_UppercaseHex64Formatter = [[MKHexNumberFormatter hexNumberFormatterWithDigits:16 uppercase:YES] retain];
+    });
+    
+    return s_UppercaseHex64Formatter;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

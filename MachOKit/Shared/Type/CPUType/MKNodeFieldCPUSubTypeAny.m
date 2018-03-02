@@ -44,14 +44,15 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeAny)
         return;
     
     s_Types = [@{
-        @((cpu_subtype_t)CPU_SUBTYPE_MULTIPLE): @"CPU_SUBTYPE_MULTIPLE",
-        @((cpu_subtype_t)CPU_SUBTYPE_LITTLE_ENDIAN): @"CPU_SUBTYPE_LITTLE_ENDIAN",
-        @((cpu_subtype_t)CPU_SUBTYPE_BIG_ENDIAN): @"CPU_SUBTYPE_BIG_ENDIAN"
+        _$(CPU_SUBTYPE_MULTIPLE): @"CPU_SUBTYPE_MULTIPLE",
+        _$(CPU_SUBTYPE_LITTLE_ENDIAN): @"CPU_SUBTYPE_LITTLE_ENDIAN",
+        _$(CPU_SUBTYPE_BIG_ENDIAN): @"CPU_SUBTYPE_BIG_ENDIAN"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"CPU_SUBTYPE";
     formatter.elements = s_Types;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

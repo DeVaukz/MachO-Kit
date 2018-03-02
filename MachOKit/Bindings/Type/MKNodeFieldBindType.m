@@ -44,14 +44,15 @@ MKMakeSingletonInitializer(MKNodeFieldBindType)
         return;
     
     s_Elements = [@{
-        @(BIND_TYPE_POINTER): @"BIND_TYPE_POINTER",
-        @(BIND_TYPE_TEXT_ABSOLUTE32): @"BIND_TYPE_TEXT_ABSOLUTE32",
-        @(BIND_TYPE_TEXT_PCREL32): @"BIND_TYPE_TEXT_PCREL32"
+        _$((uint8_t)BIND_TYPE_POINTER): @"BIND_TYPE_POINTER",
+        _$((uint8_t)BIND_TYPE_TEXT_ABSOLUTE32): @"BIND_TYPE_TEXT_ABSOLUTE32",
+        _$((uint8_t)BIND_TYPE_TEXT_PCREL32): @"BIND_TYPE_TEXT_PCREL32"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"BIND_TYPE";
     formatter.elements = s_Elements;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

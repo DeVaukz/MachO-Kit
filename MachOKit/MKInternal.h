@@ -34,6 +34,21 @@
 #include "internal.h"
 
 #import "NSError+MK.h"
+#import "NSNumber+MK.h"
+
+//----------------------------------------------------------------------------//
+#pragma mark -  Boxing
+/// @name       Boxing
+//----------------------------------------------------------------------------//
+
+//! Replacement for \c @() that correctly handles unsigned integers.
+#define _$(X) _Generic((X), \
+    uint8_t: [NSNumber mk_numberWithUnsignedByte:(X)], \
+    uint16_t: [NSNumber mk_numberWithUnsignedWord:(X)], \
+    uint32_t: [NSNumber mk_numberWithUnsignedDoubleWord:(X)], \
+    uint64_t: [NSNumber mk_numberWithUnsignedQuadWord:(X)], \
+    default: @(X) \
+)
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Singleton

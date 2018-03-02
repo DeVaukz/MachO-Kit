@@ -53,13 +53,13 @@ typedef NS_OPTIONS(uint32_t, MKSegmentFlags) {
     //! This segment is protected.  If the segment starts at file offset 0,
     //! the first page of the segment is not protected.  All other pages of
     //! the segment are protected.
-    MKSegmentProtectedV1                        = SG_PROTECTED_VERSION_1,
+    MKSegmentProtectedV1                        = SG_PROTECTED_VERSION_1
 };
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldSegmentFlagsType : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
+@interface MKNodeFieldSegmentFlagsType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

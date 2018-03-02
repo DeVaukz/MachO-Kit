@@ -30,7 +30,7 @@
 
 #include <mach-o/loader.h>
 
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
+#import <MachOKit/MKNodeFieldTypeByte.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -90,7 +90,7 @@ static const MKSectionType MKSectionTypeLocalInitFunctionPointers      = S_THREA
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldSectionType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+@interface MKNodeFieldSectionType : MKNodeFieldTypeUnsignedByte <MKNodeFieldEnumerationType>
 
 + (instancetype)sharedInstance;
 

@@ -65,13 +65,13 @@ typedef NS_OPTIONS(uint32_t, MKMachOFlags) {
     MKMachOFlagDeadStrippableDylib             = MH_DEAD_STRIPPABLE_DYLIB,
     MKMachOFlagHasTLVDescriptors               = MH_HAS_TLV_DESCRIPTORS,
     MKMachOFlagNoHeapExecution                 = MH_NO_HEAP_EXECUTION,
-    MKMachOFlagAppExtensionSafe                = MH_APP_EXTENSION_SAFE,
+    MKMachOFlagAppExtensionSafe                = MH_APP_EXTENSION_SAFE
 };
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldMachOFlagsType : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
+@interface MKNodeFieldMachOFlagsType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

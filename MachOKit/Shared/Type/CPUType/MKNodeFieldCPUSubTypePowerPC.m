@@ -44,24 +44,25 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypePowerPC)
         return;
     
     s_Types = [@{
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_ALL): @"CPU_SUBTYPE_POWERPC_ALL",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_601): @"CPU_SUBTYPE_POWERPC_601",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_602): @"CPU_SUBTYPE_POWERPC_602",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_603): @"CPU_SUBTYPE_POWERPC_603",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_603e): @"CPU_SUBTYPE_POWERPC_603e",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_603ev): @"CPU_SUBTYPE_POWERPC_603ev",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_604): @"CPU_SUBTYPE_POWERPC_604",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_604e): @"CPU_SUBTYPE_POWERPC_604e",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_620): @"CPU_SUBTYPE_POWERPC_620",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_750): @"CPU_SUBTYPE_POWERPC_750",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_7400): @"CPU_SUBTYPE_POWERPC_7400",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_7450): @"CPU_SUBTYPE_POWERPC_7450",
-        @((cpu_subtype_t)CPU_SUBTYPE_POWERPC_970): @"CPU_SUBTYPE_POWERPC_970"
+        _$(CPU_SUBTYPE_POWERPC_ALL): @"CPU_SUBTYPE_POWERPC_ALL",
+        _$(CPU_SUBTYPE_POWERPC_601): @"CPU_SUBTYPE_POWERPC_601",
+        _$(CPU_SUBTYPE_POWERPC_602): @"CPU_SUBTYPE_POWERPC_602",
+        _$(CPU_SUBTYPE_POWERPC_603): @"CPU_SUBTYPE_POWERPC_603",
+        _$(CPU_SUBTYPE_POWERPC_603e): @"CPU_SUBTYPE_POWERPC_603e",
+        _$(CPU_SUBTYPE_POWERPC_603ev): @"CPU_SUBTYPE_POWERPC_603ev",
+        _$(CPU_SUBTYPE_POWERPC_604): @"CPU_SUBTYPE_POWERPC_604",
+        _$(CPU_SUBTYPE_POWERPC_604e): @"CPU_SUBTYPE_POWERPC_604e",
+        _$(CPU_SUBTYPE_POWERPC_620): @"CPU_SUBTYPE_POWERPC_620",
+        _$(CPU_SUBTYPE_POWERPC_750): @"CPU_SUBTYPE_POWERPC_750",
+        _$(CPU_SUBTYPE_POWERPC_7400): @"CPU_SUBTYPE_POWERPC_7400",
+        _$(CPU_SUBTYPE_POWERPC_7450): @"CPU_SUBTYPE_POWERPC_7450",
+        _$(CPU_SUBTYPE_POWERPC_970): @"CPU_SUBTYPE_POWERPC_970"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"CPU_SUBTYPE_POWERPC";
     formatter.elements = s_Types;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

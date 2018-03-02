@@ -34,6 +34,7 @@
 #include <MachOKit/macho.h>
 
 #import <MachOKit/NSError+MK.h>
+#import <MachOKit/NSNumber+MK.h>
 
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKNodeDescription.h>

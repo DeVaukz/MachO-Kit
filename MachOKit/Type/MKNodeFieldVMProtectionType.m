@@ -44,10 +44,10 @@ MKMakeSingletonInitializer(MKNodeFieldVMProtectionType)
         return;
     
     s_Values = [@{
-        @(VM_PROT_NONE): @"VM_PROT_NONE",
-        @(VM_PROT_READ): @"VM_PROT_READ",
-        @(VM_PROT_WRITE): @"VM_PROT_WRITE",
-        @(VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
+        _$(VM_PROT_NONE): @"VM_PROT_NONE",
+        _$(VM_PROT_READ): @"VM_PROT_READ",
+        _$(VM_PROT_WRITE): @"VM_PROT_WRITE",
+        _$(VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
     } retain];
     
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];

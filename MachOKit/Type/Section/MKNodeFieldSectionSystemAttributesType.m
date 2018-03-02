@@ -44,9 +44,9 @@ MKMakeSingletonInitializer(MKNodeFieldSectionSystemAttributesType)
         return;
     
     s_SystemAttributes = [@{
-        @(S_ATTR_SOME_INSTRUCTIONS): @"S_ATTR_SOME_INSTRUCTIONS",
-        @(S_ATTR_EXT_RELOC): @"S_ATTR_EXT_RELOC",
-        @(S_ATTR_LOC_RELOC): @"S_ATTR_LOC_RELOC"
+        _$((uint32_t)S_ATTR_SOME_INSTRUCTIONS): @"S_ATTR_SOME_INSTRUCTIONS",
+        _$((uint32_t)S_ATTR_EXT_RELOC): @"S_ATTR_EXT_RELOC",
+        _$((uint32_t)S_ATTR_LOC_RELOC): @"S_ATTR_LOC_RELOC"
     } retain];
     
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];

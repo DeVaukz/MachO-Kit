@@ -44,14 +44,15 @@ MKMakeSingletonInitializer(MKNodeFieldRebaseType)
         return;
     
     s_Elements = [@{
-        @(REBASE_TYPE_POINTER): @"REBASE_TYPE_POINTER",
-        @(REBASE_TYPE_TEXT_ABSOLUTE32): @"REBASE_TYPE_TEXT_ABSOLUTE32",
-        @(REBASE_TYPE_TEXT_PCREL32): @"REBASE_TYPE_TEXT_PCREL32"
+        _$((uint8_t)REBASE_TYPE_POINTER): @"REBASE_TYPE_POINTER",
+        _$((uint8_t)REBASE_TYPE_TEXT_ABSOLUTE32): @"REBASE_TYPE_TEXT_ABSOLUTE32",
+        _$((uint8_t)REBASE_TYPE_TEXT_PCREL32): @"REBASE_TYPE_TEXT_PCREL32"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
     formatter.name = @"REBASE_TYPE";
     formatter.elements = s_Elements;
+    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
 

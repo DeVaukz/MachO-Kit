@@ -57,7 +57,7 @@ static const MKMachOFileType MKMachOFileTypeKEXT                = MH_KEXT_BUNDLE
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldMachOFileType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+@interface MKNodeFieldMachOFileType : MKNodeFieldTypeUnsignedDoubleWord <MKNodeFieldEnumerationType>
 
 + (instancetype)sharedInstance;
 
