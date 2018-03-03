@@ -29,11 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKAddressedNode.h>
-
-// <https://opensource.apple.com/source/dyld/dyld-519.2.1/src/ImageLoaderMachOCompressed.cpp.auto.html>
-#ifndef EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE
-	#define EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE			0x02
-#endif
+#import <MachOKit/MKExportsFieldType.h>
 
 @class MKExportsInfo;
 @class MKExportTrieNode;
@@ -41,35 +37,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Export Symbol Kind
-//! @relates    MKExport
-//!
-//
-typedef NS_ENUM(uint8_t, MKExportSymbolKind) {
-	MKExportSymbolKindRegular           = EXPORT_SYMBOL_FLAGS_KIND_REGULAR,
-	MKExportSymbolKindThreadLocal       = EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL,
-	MKExportSymbolKindAbsolute          = EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE
-};
-
-
-
-//----------------------------------------------------------------------------//
-//! @name       Export Symbol Options
-//! @relates    MKExport
-//!
-//
-typedef NS_OPTIONS(uint64_t, MKExportOptions) {
-	MKExportOptionWeakDefinition        = EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION,
-	MKExportOptionReExport              = EXPORT_SYMBOL_FLAGS_REEXPORT,
-	MKExportOptionStubAndResolver       = EXPORT_SYMBOL_FLAGS_STUB_AND_RESOLVER,
-};
-
-
-
-//----------------------------------------------------------------------------//
 @interface MKExport : MKAddressedNode {
 @package
-	mk_vm_size_t _nodeSize;
 	uint64_t _flags;
     NSString *_name;
 }
@@ -114,13 +83,13 @@ typedef NS_OPTIONS(uint64_t, MKExportOptions) {
 //! @name       Export Information
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//!
-@property (nonatomic, readonly) MKExportSymbolKind kind;
+//! The export kind.
+@property (nonatomic, readonly) MKExportKind kind;
 
-//!
+//! The export options.
 @property (nonatomic, readonly) MKExportOptions options;
 
-//! The export name
+//! The export name.
 @property (nonatomic, readonly) NSString *name;
 
 @end

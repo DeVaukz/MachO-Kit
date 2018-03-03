@@ -235,11 +235,14 @@
     
 	MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(flags)
-		type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
+		type:MKNodeFieldExportFlagsType.sharedInstance
 	];
 	flags.description = @"Flags";
     flags.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
 	flags.options = MKNodeFieldOptionDisplayAsDetail;
+    flags.formatter = [MKComboFormatter comboFormatterWithStyle:MKComboFormatterStyleRawAndRefinedValue2
+                                              rawValueFormatter:MKNodeFieldTypeUnsignedQuadWord.sharedInstance.formatter
+                                          refinedValueFormatter:flags.formatter];
     [fields addObject:flags.build];
     
     if (self.flags & EXPORT_SYMBOL_FLAGS_REEXPORT)

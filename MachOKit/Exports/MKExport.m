@@ -81,7 +81,6 @@
 	self = [super initWithParent:terminalNode error:error];
 	if (self == nil) return nil;
 	
-	_nodeSize = terminalNode.nodeSize;
 	_flags = terminalNode.flags;
 	
     // Build up the export name
@@ -138,7 +137,7 @@
 @synthesize name = _name;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKExportSymbolKind)kind
+- (MKExportKind)kind
 { return _flags & (uint64_t)EXPORT_SYMBOL_FLAGS_KIND_MASK; }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -158,22 +157,14 @@
 {
 	MKNodeFieldBuilder *kind = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(kind)
-		type:[MKNodeFieldTypeEnumeration enumerationWithUnderlyingType:MKNodeFieldTypeUnsignedByte.sharedInstance name:nil elements:@{
-			@(EXPORT_SYMBOL_FLAGS_KIND_REGULAR): @"EXPORT_SYMBOL_FLAGS_KIND_REGULAR",
-			@(EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL): @"EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL",
-			@(EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE): @"EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE"
-		}]
+		type:MKNodeFieldExportKindType.sharedInstance
 	];
 	kind.description = @"Kind";
 	kind.options = MKNodeFieldOptionDisplayAsDetail;
 	
 	MKNodeFieldBuilder *options = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(options)
-		type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedQuadWord.sharedInstance name:nil options:@{
-			@((uint64_t)EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION): @"EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION",
-			@((uint64_t)EXPORT_SYMBOL_FLAGS_REEXPORT): @"EXPORT_SYMBOL_FLAGS_REEXPORT",
-			@((uint64_t)EXPORT_SYMBOL_FLAGS_STUB_AND_RESOLVER): @"EXPORT_SYMBOL_FLAGS_STUB_AND_RESOLVER"
-		}]
+		type:MKNodeFieldExportOptionsType.sharedInstance
 	];
 	options.description = @"Options";
 	options.options = MKNodeFieldOptionDisplayAsDetail;
