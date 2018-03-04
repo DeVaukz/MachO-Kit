@@ -188,6 +188,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
     ];
     sections.description = @"Sections";
     sections.options = MKNodeFieldOptionDisplayAsChild | MKNodeFieldOptionMergeContainerContents;
+    sections.valueRecipe = [[[MKNodeFieldExtractSortedDictionaryValues alloc] initWithValueRecipe:sections.valueRecipe keyComparisonSelector:@selector(compare:)] autorelease];
     
     return sections;
 }
