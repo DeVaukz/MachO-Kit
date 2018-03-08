@@ -61,7 +61,7 @@
     // Load Rebase Commands
     @autoreleasepool
     {
-        NSMutableArray<__kindof MKRebaseCommand*> *commands = [[NSMutableArray alloc] initWithCapacity:size/3];
+        NSMutableArray<__kindof MKRebaseCommand*> *commands = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size/3];
         mk_vm_offset_t offset = 0;
         
         while (offset < self.nodeSize)
@@ -92,7 +92,7 @@
     // Determine the Fixup addresses
     @autoreleasepool
     {
-        NSMutableArray<MKFixup*> *fixups = [[NSMutableArray alloc] initWithCapacity:size/3];
+        NSMutableArray<MKFixup*> *fixups = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size/3];
         
         __block BOOL keepGoing = YES;
         __block NSError *rebaseError = nil;

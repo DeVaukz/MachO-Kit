@@ -54,7 +54,7 @@
 	
 	// Parse the trie
 	{
-		NSMutableArray<__kindof MKExportTrieNode*> *nodes = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/64];
+		NSMutableArray<__kindof MKExportTrieNode*> *nodes = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)self.nodeSize/64];
 		mk_vm_offset_t offset = 0;
 		
 		while (offset < self.nodeSize)

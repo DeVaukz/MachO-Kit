@@ -107,7 +107,7 @@ struct objc_protocollist_64 {
     
     // Load elements
     {
-        NSMutableArray *elements = [[NSMutableArray alloc] initWithCapacity:_count];
+        NSMutableArray *elements = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)_count];
         
         mk_vm_offset_t offset = dataModel.pointerSize;
         

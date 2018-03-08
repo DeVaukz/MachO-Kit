@@ -52,7 +52,7 @@
 {
     @autoreleasepool
     {
-        NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/3];
+        NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)self.nodeSize/3];
         
         __block BOOL keepGoing = YES;
         __block NSError *bindingError = nil;

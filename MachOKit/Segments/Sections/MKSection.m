@@ -215,7 +215,7 @@
             return _vmAddress;
             break;
         default: {
-            NSString *reason = [NSString stringWithFormat:@"Invalid node address type [%" PRIuPTR "].", type];
+            NSString *reason = [NSString stringWithFormat:@"Invalid node address type [%lu].", (unsigned long)type];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
         }
     }
