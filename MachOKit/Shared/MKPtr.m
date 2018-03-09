@@ -110,6 +110,9 @@ MKPtrTargetClass(struct MKPtr *ptr)
 MKOptional*
 MKPtrPointee(struct MKPtr *ptr)
 {
+// Silence the analyzer - the analyzer gets confused because it doesn't see
+// ptr->__opaque as holding a strong reference.  So it incorrectly reports leaks.
+#ifndef __clang_analyzer__
     if (ptr->address != 0x0 && (OPAQUE_GET_FLAGS(ptr->__opaque) & HAS_ATTEMPTED_RESOLUTION) == 0) {
 		MKOptional<MKBackedNode*> *boundingNode;
 		MKOptional<MKBackedNode*> *pointee;
@@ -205,6 +208,7 @@ MKPtrPointee(struct MKPtr *ptr)
 		
 		[context release];
     }
+#endif // silence analyzer
 	
     if (OPAQUE_GET_DISCRIMINATOR(ptr->__opaque) == DISCRIMINATOR_POINTEE)
         return OPAQUE_GET_VALUE(ptr->__opaque);

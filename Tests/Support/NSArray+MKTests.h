@@ -27,11 +27,15 @@
 
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
 @interface NSArray<ObjectType> (MKTests)
 
-- (void)mk_sliceWithTest:(BOOL (^)(ObjectType obj))test andEnumerate:(void (^)(ObjectType __nullable seperator, NSArray<ObjectType> *slice))enumerator;
+- (void)mk_sliceWithTest:(BOOL (NS_NOESCAPE ^)(ObjectType obj))test andEnumerate:(void (NS_NOESCAPE ^)(ObjectType __nullable seperator, NSArray<ObjectType>* slice))enumerator;
 
-- (void)mk_sliceWithHeirarchyTest:(NSUInteger (^)(ObjectType obj))test andEnumerate:(void (^)(ObjectType header, NSArray<ObjectType>* __nullable children))enumerator;
+- (void)mk_sliceWithHeirarchyTest:(NSUInteger (NS_NOESCAPE ^)(ObjectType obj))test andEnumerate:(void (NS_NOESCAPE ^)(ObjectType header, NSArray<ObjectType>* __nullable children))enumerator;
 
 @end
+
+NS_ASSUME_NONNULL_END

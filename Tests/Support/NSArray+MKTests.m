@@ -54,7 +54,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (void)mk_sliceWithHeirarchyTest:(NSUInteger (^)(id obj))test andEnumerate:(void (^)(id header, NSArray *children))enumerator
+- (void)mk_sliceWithHeirarchyTest:(NSUInteger (^)(id obj))test andEnumerate:(void (^)(id header, NSArray<id> *children))enumerator
 {
     if (self.count < 1)
         return;

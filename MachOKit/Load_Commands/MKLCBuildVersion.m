@@ -107,6 +107,9 @@
             [tools addObject:tool];
             [tool release];
         }}
+		
+		_tools = [tools copy];
+		[tools release];
     }
     
     return self;

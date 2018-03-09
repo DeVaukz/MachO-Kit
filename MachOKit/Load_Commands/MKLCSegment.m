@@ -120,6 +120,7 @@
                 // command's size.  We will match this behavior and throw away
                 // any section which straddles the boundary.
                 MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Part of section at index " PRIi32 " is outside the enclosing load command.", (self.nsects - sectionCount));
+                [sect release];
                 break;
             }
                 

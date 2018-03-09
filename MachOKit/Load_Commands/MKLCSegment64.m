@@ -120,6 +120,7 @@
             // away any section which straddles the boundary.
             if (oldOffset > offset || offset > self.nodeSize) {
                 MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Part of section at index " PRIi32 " is outside the enclosing load command.", (self.nsects - sectionCount));
+				[sect release];
                 break;
             }
             

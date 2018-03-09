@@ -53,6 +53,8 @@
             _stringTable = [[MKOptional alloc] initWithError:stringTableError];
         else
             _stringTable = [MKOptional new];
+        
+        [stringTable release];
     }
     
     return _stringTable;
@@ -72,6 +74,8 @@
             _symbolTable = [[MKOptional alloc] initWithError:symbolTableError];
         else
             _symbolTable = [MKOptional new];
+        
+        [symbolTable release];
     }
     
     return _symbolTable;
@@ -91,6 +95,8 @@
             _indirectSymbolTable = [[MKOptional alloc] initWithError:indirectSymbolTableError];
         else
             _indirectSymbolTable = [MKOptional new];
+        
+        [indirectSymbolTable release];
     }
     
     return _indirectSymbolTable;

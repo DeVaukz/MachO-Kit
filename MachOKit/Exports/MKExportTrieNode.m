@@ -165,6 +165,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 			MKExportTrieBranch *branch = [[MKExportTrieBranch alloc] initWithOffset:offset fromParent:self error:&branchError];
 			if (branch == nil) {
 				MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA underlyingError:branchError description:@"Could not parse branch at index [%" PRIi8 "].", i];
+				[branches release];
 				[self release]; return nil;
 			}
 			
