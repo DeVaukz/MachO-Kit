@@ -35,6 +35,10 @@
 + (uint8_t)opcode
 { return BIND_OPCODE_DO_BIND; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_DO_BIND"; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -93,6 +97,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return @"BIND_OPCODE_DO_BIND()"; }
+{ return [NSString stringWithFormat:@"%@()", self.class.name]; }
 
 @end

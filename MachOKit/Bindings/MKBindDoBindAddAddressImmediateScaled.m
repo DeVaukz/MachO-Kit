@@ -35,6 +35,10 @@
 + (uint8_t)opcode
 { return BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED"; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -115,6 +119,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED(0x%.8" PRIX64 ")", self.derivedOffset]; }
+{ return [NSString stringWithFormat:@"%@(0x%.8" PRIX64 ")", self.class.name, self.derivedOffset]; }
 
 @end

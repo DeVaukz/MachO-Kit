@@ -37,6 +37,10 @@
 { return BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -149,6 +153,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM(0x%.2" PRIx8 ", %@)", self.symbolFlags, self.symbolName]; }
+{ return [NSString stringWithFormat:@"%@(0x%.2" PRIx8 ", %@)", self.class.name, self.symbolFlags, self.symbolName]; }
 
 @end

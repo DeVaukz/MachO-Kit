@@ -54,7 +54,7 @@
     if (self.nodeSize == 0) {
         // Still need to assign a value to the commands and actions array.
         _commands = [@[] retain];
-		_actions = [@[] retain];
+        _actions = [@[] retain];
         return self;
     }
     
@@ -92,7 +92,7 @@
         
         if (commands.count == 0) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not contain a LC_DYLD_INFO load command."];
-			[commands release];
+            [commands release];
             [self release]; return nil;
         }
         
@@ -133,7 +133,7 @@
 {
     @autoreleasepool
     {
-        NSMutableArray<__kindof MKBindCommand*> *commands = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/8];
+        NSMutableArray<__kindof MKBindCommand*> *commands = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)self.nodeSize/8];
         mk_vm_offset_t offset = 0;
         
         while (offset < self.nodeSize)
@@ -167,7 +167,7 @@
 {
     @autoreleasepool
     {
-        NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:self.nodeSize/3];
+        NSMutableArray<MKBindAction*> *actions = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)self.nodeSize/3];
         
         __block BOOL keepGoing = YES;
         __block NSError *bindingError = nil;
@@ -193,14 +193,14 @@
             context.command = command;
             
             keepGoing &= [command bind:doBind withContext:&context error:&bindingError];
-			
-			if (keepGoing == NO) {
-				if (bindingError) {
-					MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Binding actions list generation failed at command: %@.", context.command.nodeDescription);
-				}
-					
-				break;
-			}
+            
+            if (keepGoing == NO) {
+                if (bindingError) {
+                    MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Binding actions list generation failed at command: %@.", context.command.nodeDescription);
+                }
+                
+                break;
+            }
         }
         
         _actions = [actions copy];

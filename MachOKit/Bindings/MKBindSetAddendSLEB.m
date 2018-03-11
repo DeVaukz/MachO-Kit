@@ -37,6 +37,10 @@
 { return BIND_OPCODE_SET_ADDEND_SLEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_SET_ADDEND_SLEB"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -121,6 +125,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_SET_ADDEND_SLEB(%" PRIi64 ")", self.addend]; }
+{ return [NSString stringWithFormat:@"%@(%" PRIi64 ")", self.class.name, self.addend]; }
 
 @end

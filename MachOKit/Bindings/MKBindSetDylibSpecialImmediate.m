@@ -35,6 +35,10 @@
 + (uint8_t)opcode
 { return BIND_OPCODE_SET_DYLIB_SPECIAL_IMM; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_SET_DYLIB_SPECIAL_IMM"; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -110,6 +114,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_SET_DYLIB_SPECIAL_IMM(%" PRIi64 ")", self.ordinal]; }
+{ return [NSString stringWithFormat:@"%@(%" PRIi64 ")", self.class.name, self.ordinal]; }
 
 @end

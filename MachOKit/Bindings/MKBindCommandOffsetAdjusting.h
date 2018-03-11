@@ -28,10 +28,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//!	A protocol adopted by bind commands that adjust the offset into the
+//! A protocol adopted by bind commands that adjust the offset into the
 //! current segment for the next bind action.  For many of these commands, the
-//!	offset is not read directly from the encoded command but instead is derived
-//!	from the command data and the current pointer size.
+//! offset is not read directly from the encoded command but instead is derived
+//! from the command data and the current pointer size.
 //
 @protocol MKBindCommandOffsetAdjusting
 

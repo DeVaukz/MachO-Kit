@@ -37,6 +37,10 @@
 { return BIND_OPCODE_ADD_ADDR_ULEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"BIND_OPCODE_ADD_ADDR_ULEB"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -131,6 +135,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"BIND_OPCODE_ADD_ADDR_ULEB(0x%.8" PRIX32 ")", (uint32_t)self.offset]; }
+{ return [NSString stringWithFormat:@"%@(0x%.8" PRIX32 ")", self.class.name, (uint32_t)self.offset]; }
 
 @end

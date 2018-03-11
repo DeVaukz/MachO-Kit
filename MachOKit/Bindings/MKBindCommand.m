@@ -151,6 +151,10 @@
 + (uint8_t)opcode
 { @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +opcode." userInfo:nil]; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +name." userInfo:nil]; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
