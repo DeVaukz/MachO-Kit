@@ -64,6 +64,7 @@
         NSMutableArray<__kindof MKRebaseCommand*> *commands = [[NSMutableArray alloc] initWithCapacity:(NSUInteger)size/3];
         mk_vm_offset_t offset = 0;
         
+        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
         while (offset < self.nodeSize)
         {
             NSError *rebaseCommandError = nil;
@@ -81,7 +82,7 @@
             if (command.opcode == REBASE_OPCODE_DONE)
                 break;
             
-            // Safe.  All command nodes must be within the size of this node.
+            // SAFE - All command nodes must be within the size of this node.
             offset += command.nodeSize;
         }
         

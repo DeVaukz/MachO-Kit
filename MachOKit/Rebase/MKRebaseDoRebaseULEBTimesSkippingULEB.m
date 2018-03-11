@@ -37,6 +37,10 @@
 { return REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -161,8 +165,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB(%" PRIu64 ", %" PRIu64 ")", self.count, self.skip];
-}
+{ return [NSString stringWithFormat:@"%@(%" PRIu64 ", %" PRIu64 ")", self.class.name, self.count, self.skip]; }
 
 @end

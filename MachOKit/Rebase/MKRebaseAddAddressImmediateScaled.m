@@ -35,6 +35,10 @@
 + (uint8_t)opcode
 { return REBASE_OPCODE_ADD_ADDR_IMM_SCALED; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"REBASE_OPCODE_ADD_ADDR_IMM_SCALED"; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - 	Performing Rebasing
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -95,6 +99,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"REBASE_OPCODE_ADD_ADDR_IMM_SCALED(0x%" PRIX64 ")", self.derivedOffset]; }
+{ return [NSString stringWithFormat:@"%@(0x%" PRIX64 ")", self.class.name, self.derivedOffset]; }
 
 @end

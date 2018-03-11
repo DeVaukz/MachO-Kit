@@ -34,7 +34,7 @@
 @implementation MKMachOImage (Rebase)
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Rebasing Information
+#pragma mark -  Rebasing Information
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -51,8 +51,8 @@
             _rebaseInfo = [[MKOptional alloc] initWithError:rebaseInfoError];
         else
             _rebaseInfo = [MKOptional new];
-		
-		[rebaseInfo release];
+        
+        [rebaseInfo release];
     }
     
     return _rebaseInfo;

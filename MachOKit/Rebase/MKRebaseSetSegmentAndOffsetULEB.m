@@ -37,6 +37,10 @@
 { return REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -132,8 +136,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB(%u, 0x%.8" PRIX64 ")", self.segmentIndex, self.offset];
-}
+{ return [NSString stringWithFormat:@"%@(%u, 0x%.8" PRIX64 ")", self.class.name, self.segmentIndex, self.offset]; }
 
 @end

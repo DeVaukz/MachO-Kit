@@ -85,6 +85,11 @@ NS_ASSUME_NONNULL_BEGIN
 //! Subclasses must implement the getter for this property.
 @property (class, nonatomic, readonly) uint8_t opcode;
 
+//! The name of the rebase opcode that this class parses.
+//!
+//! Subclasses must implement the getter for this property.
+@property (class, nonatomic, readonly) NSString *name;
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Rebasing
 //! @name       Performing Rebasing

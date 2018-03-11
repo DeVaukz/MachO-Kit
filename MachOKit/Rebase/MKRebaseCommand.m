@@ -98,7 +98,7 @@
 	NSError *memoryMapError = nil;
 	
     if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&_data length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read the rebase command immediate data."];
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read rebase command immediate data."];
 		[self release]; return nil;
 	}
     
@@ -132,6 +132,10 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint8_t)opcode
 { @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +opcode." userInfo:nil]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +name." userInfo:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark - 	Rebase Command Values

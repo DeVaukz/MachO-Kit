@@ -37,6 +37,10 @@
 { return REBASE_OPCODE_ADD_ADDR_ULEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)name
+{ return @"REBASE_OPCODE_ADD_ADDR_ULEB"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
@@ -120,8 +124,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{
-    return [NSString stringWithFormat:@"REBASE_OPCODE_ADD_ADDR_ULEB(0x%" PRIX64 ")", self.offset];
-}
+{ return [NSString stringWithFormat:@"%@(0x%" PRIX64 ")", self.class.name, self.offset]; }
 
 @end
