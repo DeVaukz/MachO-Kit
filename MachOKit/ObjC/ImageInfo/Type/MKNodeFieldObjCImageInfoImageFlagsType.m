@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKObjCImageInfo.m
+//|             MKNodeFieldObjCImageInfoImageFlagsType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,67 +25,57 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKObjCImageInfo.h"
-#import "NSError+MK.h"
-#import "MKMachO.h"
-
-#define SwiftVersionMaskShift   8
-#define SwiftVersionMask        (0xff << SwiftVersionMaskShift)
-
-struct objc_image_info {
-    uint32_t version;
-    uint32_t flags;
-};
+#import "MKNodeFieldObjCImageInfoImageFlagsType.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKObjCImageInfo
+@implementation MKNodeFieldObjCImageInfoImageFlagsType
+
+static NSDictionary *s_SystemAttributes = nil;
+static MKOptionSetFormatter *s_SystemFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldObjCImageInfoImageFlagsType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
++ (void)initialize
 {
-    self = [super initWithOffset:offset fromParent:parent error:error];
-    if (self == nil) return nil;
+    if (s_SystemAttributes != nil && s_SystemFormatter != nil)
+        return;
     
-    struct objc_image_info ii;
-    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&ii length:sizeof(ii) requireFull:YES error:error] < sizeof(ii))
-    { [self release]; return nil; }
+    s_SystemAttributes = [@{
+        _$(MKObjCImageIsReplacement): @"IsReplacement",
+        _$(MKObjCImageSupportsGC): @"SupportsGC",
+        _$(MKObjCImageRequiresGC): @"RequiresGC",
+        _$(MKObjCImageOptimizedByDyld): @"OptimizedByDyld",
+        _$(MKObjCImageCorrectedSynthesize): @"CorrectedSynthesize",
+        _$(MKObjCImageIsSimulated): @"IsSimulated",
+        _$(MKObjCImageHasCategoryClassProperties): @"HasCategoryClassProperties",
+    } retain];
     
-    _version = MKSwapLValue32(ii.version, self.dataModel);
-    _flags = MKSwapLValue32(ii.flags, self.dataModel);
-    
-    return self;
+    MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
+    formatter.options = s_SystemAttributes;
+    s_SystemFormatter = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Image Info Values
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-@synthesize version = _version;
-@synthesize flags = _flags;
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKObjCImageFlags)imageFlags
-{ return _flags; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)swiftVersion
-{ return (_flags & SwiftVersionMask) >> SwiftVersionMaskShift; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNodeFieldOptionSetType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return sizeof(struct objc_image_info); }
+- (MKNodeFieldOptionSetOptions*)options
+{ return s_SystemAttributes; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(version) description:@"Version" offset:offsetof(struct objc_image_info, version) size:sizeof(uint32_t) format:MKNodeFieldFormatDecimal],
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(struct objc_image_info, flags) size:sizeof(uint32_t) format:MKNodeFieldFormatHexCompact]
-    ]];
-}
+- (NSString*)name
+{ return @"ObjC Image Flags"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_SystemFormatter; }
 
 @end

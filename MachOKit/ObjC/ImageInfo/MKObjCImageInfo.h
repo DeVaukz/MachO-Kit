@@ -29,32 +29,9 @@
 @import Foundation;
 
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKObjCImageInfoFieldType.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
-//----------------------------------------------------------------------------//
-//! @name       Class Flags
-//! @relates    MKObjCClassData
-//!
-//
-typedef NS_OPTIONS(uint32_t, MKObjCImageFlags) {
-    //! used for Fix&Continue, now ignored
-    MKObjCImageIsReplacement                = 1<<0,
-    //! image supports GC
-    MKObjCImageSupportsGC                   = 1<<1,
-    //! image requires GC
-    MKObjCImageRequiresGC                   = 1<<2,
-    //! image is from an optimized shared cache
-    MKObjCImageOptimizedByDyld              = 1<<3,
-    //! used for an old workaround, now ignored
-    MKObjCImageCorrectedSynthesize          = 1<<4,
-    //! image compiled for a simulator platform
-    MKObjCImageIsSimulated                  = 1<<5,
-    //! class properties in category_t
-    MKObjCImageHasCategoryClassProperties   = 1<<6
-};
-
-
 
 //----------------------------------------------------------------------------//
 @interface MKObjCImageInfo : MKOffsetNode {
@@ -65,7 +42,7 @@ typedef NS_OPTIONS(uint32_t, MKObjCImageFlags) {
 
 @property (nonatomic, readonly) MKObjCImageFlags imageFlags;
 
-@property (nonatomic, readonly) uint8_t swiftVersion;
+@property (nonatomic, readonly) MKObjCImageSwiftVersion swiftVersion;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  objc_image_info Values
