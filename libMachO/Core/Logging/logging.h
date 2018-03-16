@@ -56,12 +56,8 @@ typedef enum {
     MK_LOGGING_LEVEL_DEBUG,
     //! informational message
     MK_LOGGING_LEVEL_INFO,
-    //! warning
-    MK_LOGGING_LEVEL_WARNING,
     //! error situation
     MK_LOGGING_LEVEL_ERROR,
-    //! critical situation
-    MK_LOGGING_LEVEL_CRITICAL,
     //! critical situation
     MK_LOGGING_LEVEL_FATAL,
     

@@ -43,14 +43,8 @@ const char* mk_string_for_logging_level(mk_logging_level_t level)
         case MK_LOGGING_LEVEL_INFO:
             levelString = "INFO";
             break;
-        case MK_LOGGING_LEVEL_WARNING:
-            levelString = "WARNING";
-            break;
         case MK_LOGGING_LEVEL_ERROR:
             levelString = "ERROR";
-            break;
-        case MK_LOGGING_LEVEL_CRITICAL:
-            levelString = "CRITICAL";
             break;
         case MK_LOGGING_LEVEL_FATAL:
             levelString = "FATAL";

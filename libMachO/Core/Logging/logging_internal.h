@@ -82,17 +82,9 @@
 #define _mkl_inform(CONTEXT, FORMAT, ...)                                   \
     _mk_log(CONTEXT, MK_LOGGING_LEVEL_INFO, FORMAT, ##__VA_ARGS__)
 
-//! Shortcut for calling \ref _mk_log with \ref MK_LOGGING_LEVEL_WARNING.
-#define _mkl_warn(CONTEXT, FORMAT, ...)                                     \
-    _mk_log(CONTEXT, MK_LOGGING_LEVEL_WARNING, FORMAT, ##__VA_ARGS__)
-
 //! Shortcut for calling \ref _mk_log with \ref MK_LOGGING_LEVEL_ERROR.
 #define _mkl_error(CONTEXT, FORMAT, ...)                                    \
     _mk_log(CONTEXT, MK_LOGGING_LEVEL_ERROR, FORMAT, ##__VA_ARGS__)
-
-//! Shortcut for calling \ref _mk_log with \ref MK_LOGGING_LEVEL_CITICAL.
-#define _mkl_critical(CONTEXT, FORMAT, ...)                                 \
-    _mk_log(CONTEXT, MK_LOGGING_LEVEL_CRITICAL, FORMAT, ##__VA_ARGS__)
 
 //! Shortcut for calling \ref _mk_log with \ref MK_LOGGING_LEVEL_FATAL.
 #define _mkl_fatal(CONTEXT, FORMAT, ...)                                    \
