@@ -50,15 +50,21 @@
 //
 typedef enum {
     MK_LOGGING_LEVEL_OFF = 0,
-    //! fine-grained debugging information
+    //! Fine-grained debugging information that is intended to only be useful
+    //! to maintainers of Mach-O Kit.
     MK_LOGGING_LEVEL_TRACE,
-    //! coarse-grained debugging information
+    //! Debugging information that is useful to clients.  This level should be
+    //! used to log messages when a function is going to return an error due to
+    //! bad inputs or invalid data.
     MK_LOGGING_LEVEL_DEBUG,
-    //! informational message
+    //! Informational message.
     MK_LOGGING_LEVEL_INFO,
-    //! error situation
+    //! Error situation.  This level should only be used to log a message when
+    //! a function is going to return an error for reasons outside of the
+    //! client's control (e.g, a platform API call failing).
     MK_LOGGING_LEVEL_ERROR,
-    //! critical situation
+    //! Fatal situation.  This should only be used to log a message when the
+    //! program is going to intentionally terminate because it can not recover.
     MK_LOGGING_LEVEL_FATAL,
     
     _MK_LOGGING_LEVEL_COUNT,
@@ -77,7 +83,7 @@ typedef void (*mk_logger_c)(void* context, void* reserved, mk_logging_level_t le
 //! @name       Functions
 //----------------------------------------------------------------------------//
 
-//! Returns the name of the provided logging level.
+//! Returns the name of the specified logging level.
 _mk_export const char*
 mk_string_for_logging_level(mk_logging_level_t level);
 
@@ -89,8 +95,8 @@ mk_string_for_logging_level(mk_logging_level_t level);
 
 //! The compile time configurable logging level.
 //!
-//! Configure this to be the lowest logging level you want to receive log
-//! messages with.
+//! Configure this to be the most verbose logging level you want to receive log
+//! messages for.
 #ifndef MK_LOGGING_LEVEL
 #   define MK_LOGGING_LEVEL MK_LOGGING_LEVEL_TRACE
 #endif
@@ -98,7 +104,7 @@ mk_string_for_logging_level(mk_logging_level_t level);
 //! The runtime configurable logging level.
 //!
 //! Defaults to the value of \ref MK_LOGGING_LEVEL and cannot be raised
-//! above the value of \ref MK_LOGGING_LEVEL.
+//! to a more verbose level than \ref MK_LOGGING_LEVEL.
 extern mk_logging_level_t mk_logging_level;
 
 

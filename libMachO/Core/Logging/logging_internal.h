@@ -41,7 +41,7 @@
 //----------------------------------------------------------------------------//
 
 //! @internal
-//! Logs a message if the log level is active.
+//! Logs a message if the specified log level is active.
 //!
 //! @param  CONTEXT
 //!         The \ref mk_context_s for the current file.
@@ -57,15 +57,15 @@
             LEVEL >= MK_LOGGING_LEVEL && LEVEL >= mk_logging_level)         \
         {                                                                   \
             if (CONTEXT)                                                    \
-                CONTEXT->logger(                                            \
+                ((mk_context_t*)CONTEXT)->logger(                           \
                     CONTEXT, NULL, LEVEL,                                   \
                     __FILE__, __LINE__, __PRETTY_FUNCTION__,                \
                     FORMAT, ##__VA_ARGS__);                                 \
             else {                                                          \
-                fprintf(stdout, "[Mach-O Kit - %s] %s:%i ",                 \
+                fprintf(stderr, "[Mach-O Kit - %s] %s:%i ",                 \
                   mk_string_for_logging_level(LEVEL), __FILE__, __LINE__);  \
-                fprintf(stdout, FORMAT, ##__VA_ARGS__);                     \
-                fprintf(stdout, "\n");                                      \
+                fprintf(stderr, FORMAT, ##__VA_ARGS__);                     \
+                fprintf(stderr, "\n");                                      \
             }                                                               \
         }                                                                   \
 } while (0)
@@ -97,14 +97,11 @@
 //----------------------------------------------------------------------------//
 
 //! Terminates the program if the provided condition is \c false.
-#define _mk_assert(ASSERTION, CONTEXT, MESSAGE) do { \
-    if (__builtin_constant_p(ASSERTION)) { \
-        char __compile_time_assert__[(bool)(ASSERTION) ? 1 : -1] _mk_unused; \
-    } else { \
-        if (__builtin_expect(!(ASSERTION), 0)) { \
-            _mkl_fatal(CONTEXT, "[Mach-O Kit] %s:%i Assertion %s failed! - %s", __FILE__, __LINE__, #ASSERTION, MESSAGE); \
-            __builtin_trap(); \
-        } \
+#define _mk_assert(ASSERTION, CONTEXT, MESSAGE, ...) do { \
+    if (__builtin_expect(!(ASSERTION), 0)) { \
+        _mkl_fatal(CONTEXT, MESSAGE, ##__VA_ARGS__); \
+        fprintf(stderr, "[Mach-O Kit] %s:%i Assertion '%s' failed!\n", __FILE__, __LINE__, #ASSERTION); \
+        __builtin_trap(); \
     } \
 } while (0)
 
