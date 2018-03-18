@@ -189,6 +189,9 @@
 #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>
 
+#import <MachOKit/MKCFString.h>
+    #import <MachOKit/MKCFStringsSection.h>
+
 #import <MachOKit/MKObjCElementList.h>
 #import <MachOKit/MKObjCImageInfo.h>
 #import <MachOKit/MKObjCClass.h>

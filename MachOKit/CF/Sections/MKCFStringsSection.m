@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKDataSection.m
+//|             MKCFStringsSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,32 +25,66 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKDataSection.h"
+#import "MKCFStringsSection.h"
 #import "MKInternal.h"
-#import "MKNode+MachO.h"
-#import "MKOffsetNode+AddressBasedInitialization.h"
+#import "MKSegment.h"
+#import "MKCFString.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKDataSection
+@implementation MKCFStringsSection
+
+@synthesize strings = _strings;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
-#pragma unused (segment)
-    // Contrary to what the name of this class may imply, it can handle more
-    // than just the __DATA,__data section.  While not a perfect heuristic,
-    // a section with the S_REGULAR and no attributes implies a section that
-    // contains blobs of data which may be referenced from elsewhere.
-    if (sectionLoadCommand.flags == S_REGULAR)
-        return 20;
+    if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
+        [sectionLoadCommand.sectname isEqualToString:@"__cfstring"])
+        return 50;
     
     return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment error:(NSError**)error
+{
+    self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
+    if (self == nil) return nil;
+    
+    // Load CFStrings
+    {
+        NSMutableArray<MKCFString*> *cfstrings = [[NSMutableArray alloc] init];
+        mk_vm_offset_t offset = 0;
+        
+        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
+        while ((mk_vm_size_t)offset < self.nodeSize)
+        {
+            NSError *cfstringError = nil;
+            
+            MKCFString *cfstring = [[MKCFString alloc] initWithOffset:offset fromParent:self error:&cfstringError];
+            if (cfstring == nil) {
+                MK_PUSH_WARNING_WITH_ERROR(stubs, MK_EINTERNAL_ERROR, cfstringError, @"Could not parse CFString at offset [%" MK_VM_PRIuOFFSET "].", offset);
+                break;
+            }
+            
+            [cfstrings addObject:cfstring];
+            [cfstring release];
+            
+            // SAFE - All string nodes must be within the size of this node.
+            offset += cfstring.nodeSize;
+        }
+        
+        _strings = [cfstrings copy];
+        [cfstrings release];
+    }
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_children release];
+    [_strings release];
     
     [super dealloc];
 }
@@ -62,43 +96,18 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    __block MKOptional *child = nil;
-    
-    [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
-        if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
-            child = [child retain];
-            *stop = YES;
-        } else
-            child = nil;
-    }];
-    
-    if (child)
-        return [child autorelease];
-    else
-        return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
-{
-    if (_children == nil)
-        _children = [[NSMutableDictionary alloc] init];
-    
-    MKOffsetNode *child = _children[@(address)];
-    if (child == nil && targetClass) {
-        NSError *error = nil;
-        
-        child = [[[targetClass alloc] initWithVMAddress:address inImage:self.macho error:&error] autorelease];
-        if (child)
-            _children[@(address)] = child;
-        else if (error)
-            return [MKOptional optionalWithError:error];
+    for (MKCFString *string in self.strings) {
+        mk_vm_range_t range = mk_vm_range_make(string.nodeVMAddress, string.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            MKOptional *child = [string childNodeOccupyingVMAddress:address targetClass:targetClass];
+            if (child.value)
+                return child;
+            // else, fallthrough and call the super's implementation.
+            // The caller may actually be looking for *this* node.
+        }
     }
     
-    if (child)
-        return [MKOptional optionalWithValue:child];
-    else
-        return [super childNodeAtVMAddress:address targetClass:targetClass];
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -108,8 +117,16 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    // MKDataSection does not describe it's children - they are not its concern.
-    return [super layout];
+    MKNodeFieldBuilder *strings = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(strings)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKCFString.class]]
+    ];
+    strings.description = @"Strings";
+    strings.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        strings.build
+    ]];
 }
 
 @end
