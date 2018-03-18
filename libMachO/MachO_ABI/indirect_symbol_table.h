@@ -54,7 +54,7 @@ typedef struct mk_indirect_symbol_table_s {
 //
 typedef union {
     struct mk_indirect_symbol_table_s *symbol_table;
-} mk_indirect_symbol_table_ref __attribute__((__transparent_union__));
+} mk_indirect_symbol_table_ref _mk_transparent_union;
 
 //! The identifier for the Symbol Table type.
 _mk_export intptr_t mk_indirect_symbol_table_type;

@@ -61,7 +61,7 @@ typedef struct mk_load_command_s {
 typedef union {
     mk_type_ref type;
     struct mk_load_command_s *load_command;
-} mk_load_command_ref __attribute__((__transparent_union__));
+} mk_load_command_ref _mk_transparent_union;
 
 //! The identifier for the Load Command type.
 _mk_export intptr_t mk_load_command_type;

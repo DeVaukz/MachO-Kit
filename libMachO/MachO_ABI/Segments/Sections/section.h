@@ -49,14 +49,14 @@ typedef union {
     void *any;
     struct section *section;
     struct section_64 *section_64;
-} mk_mach_section __attribute__((__transparent_union__));
+} mk_mach_section _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 typedef union {
     void *any;
     mk_load_command_section_t *section;
     mk_load_command_section_64_t *section_64;
-} mk_load_command_section __attribute__((__transparent_union__));
+} mk_load_command_section _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
@@ -77,7 +77,7 @@ typedef struct mk_section_s {
 //
 typedef union {
     struct mk_section_s *section;
-} mk_section_ref __attribute__((__transparent_union__));
+} mk_section_ref _mk_transparent_union;
 
 //! The identifier for the Section type.
 _mk_export intptr_t mk_section_type;

@@ -66,7 +66,7 @@ typedef struct mk_memory_object_s {
 //
 typedef union {
     struct mk_memory_object_s *memory_object;
-} mk_memory_object_ref __attribute__((__transparent_union__));
+} mk_memory_object_ref _mk_transparent_union;
 
 //! The identifier for the Memory Object type.
 _mk_export intptr_t mk_memory_object_type;

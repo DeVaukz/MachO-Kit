@@ -39,12 +39,19 @@
 #include "base.h"
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Configuration
-//! @name       Configuration
+#pragma mark -  Visibility
+/// @name       Visibility
 //----------------------------------------------------------------------------//
 
-#ifndef MK_DEBUG
-    #define MK_DEBUG DEBUG
+//! Hide the following definition from other modules.
+#if defined(DOXYGEN)
+#   define _mk_weak_import
+#elif __GNUC__ && defined(__cplusplus)
+#   define _mk_weak_import extern "C" __attribute__((weak_import))
+#elif __GNUC__
+#   define _mk_weak_import extern __attribute__((weak_import))
+#else
+#   define _mk_weak_import
 #endif
 
 

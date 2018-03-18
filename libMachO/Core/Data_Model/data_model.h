@@ -57,7 +57,7 @@ struct mk_data_model_s {
 //
 typedef union {
     struct mk_data_model_s *data_model;
-} mk_data_model_ref __attribute__((__transparent_union__));
+} mk_data_model_ref _mk_transparent_union;
 
 //! The identifier for the Data Model type.
 _mk_export intptr_t mk_data_model_type;

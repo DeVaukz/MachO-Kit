@@ -74,6 +74,15 @@
 #define MK_OPTIONS(_type, _name) _type _name; enum
 #endif
 
+// Transparent Union
+#if defined(DOXYGEN)
+#   define _mk_transparent_union
+#elif __GNUC__ && !defined(__cplusplus)
+#   define _mk_transparent_union __attribute__((__transparent_union__))
+#else
+#   define _mk_transparent_union
+#endif
+
 //----------------------------------------------------------------------------//
 #pragma mark -  Visibility
 /// @name       Visibility

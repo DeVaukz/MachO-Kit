@@ -54,7 +54,7 @@ typedef struct mk_string_table_s {
 //
 typedef union {
     struct mk_string_table_s *string_table;
-} mk_string_table_ref __attribute__((__transparent_union__));
+} mk_string_table_ref _mk_transparent_union;
 
 //! The identifier for the String Table type.
 _mk_export intptr_t mk_string_table_type;

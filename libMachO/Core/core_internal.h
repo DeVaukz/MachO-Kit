@@ -107,7 +107,7 @@ typedef struct _mk_runtime_base_s {
 
 #if __LP64__
 // TODO - Find a better way to handle the bridging or remove it altogether.
-extern const uintptr_t objc_debug_isa_class_mask __attribute__((weak_import));
+_mk_weak_import const uintptr_t objc_debug_isa_class_mask;
 #endif
 
 //! Helper macro for invoking a method on a bridged MachOKit type provided to

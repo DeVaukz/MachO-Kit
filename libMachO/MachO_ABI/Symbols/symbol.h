@@ -49,7 +49,7 @@ typedef union {
     void *any;
     struct nlist *nlist;
     struct nlist_64 *nlist_64;
-} mk_mach_nlist __attribute__((__transparent_union__));
+} mk_mach_nlist _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
@@ -65,7 +65,7 @@ typedef struct mk_symbol_s {
 //
 typedef union {
     struct mk_symbol_s *symbol;
-} mk_symbol_ref __attribute__((__transparent_union__));
+} mk_symbol_ref _mk_transparent_union;
 
 //! The identifier for the Symbol type.
 _mk_export intptr_t mk_symbol_type;

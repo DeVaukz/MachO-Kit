@@ -49,7 +49,7 @@ typedef union {
     void *any;
     struct segment_command *segment_command;
     struct segment_command_64 *segment_command_64;
-} mk_mach_segment __attribute__((__transparent_union__));
+} mk_mach_segment _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
@@ -67,7 +67,7 @@ typedef struct mk_segment_s {
 //
 typedef union {
     struct mk_segment_s *segment;
-} mk_segment_ref __attribute__((__transparent_union__));
+} mk_segment_ref _mk_transparent_union;
 
 //! The identifier for the Segment type.
 _mk_export intptr_t mk_segment_type;
