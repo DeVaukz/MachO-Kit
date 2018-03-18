@@ -42,7 +42,8 @@ const struct _mk_load_command_vtable _mk_load_command_sub_library_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_SUB_LIBRARY",
     .base.copy_description      = &_mk_load_command_sub_library_copy_description,
-    .command_id                 = LC_SUB_LIBRARY
+    .command_id                 = LC_SUB_LIBRARY,
+    .command_base_size          = sizeof(struct sub_library_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

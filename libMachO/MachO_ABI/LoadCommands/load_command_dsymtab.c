@@ -77,7 +77,8 @@ const struct _mk_load_command_vtable _mk_load_command_dysymtab_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_DYSYMTAB",
     .base.copy_description      = &_mk_load_command_dsymtab_copy_description,
-    .command_id                 = LC_DYSYMTAB
+    .command_id                 = LC_DYSYMTAB,
+    .command_base_size          = sizeof(struct dysymtab_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

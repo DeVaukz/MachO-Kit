@@ -42,7 +42,8 @@ const struct _mk_load_command_vtable _mk_load_command_uuid_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_UUID",
     .base.copy_description      = &_mk_load_command_uuid_copy_description,
-    .command_id                 = LC_UUID
+    .command_id                 = LC_UUID,
+    .command_base_size          = sizeof(struct uuid_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

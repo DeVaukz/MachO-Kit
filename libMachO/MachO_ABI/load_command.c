@@ -172,7 +172,7 @@ const struct _mk_load_command_vtable _mk_load_command_class = {
     .base.equal                 = &__mk_load_command_equal,
     .base.copy_description      = &__mk_load_command_copy_description,
     .command_id                 = 0,
-    .commnd_base_size           = 0
+    .command_base_size          = 0
 };
 
 intptr_t mk_load_command_type = (intptr_t)&_mk_load_command_class;
@@ -439,9 +439,8 @@ size_t
 mk_load_command_base_size(const mk_load_command_ref load_command)
 {
     struct _mk_load_command_vtable *vtable = (struct _mk_load_command_vtable*)load_command.load_command->vtable;
-    if (vtable->commnd_base_size)
-        return vtable->commnd_base_size;
+    _mk_assert(vtable->command_base_size != 0, mk_type_get_context(load_command.type),
+               "Load command type [%s] must specify a base command size.", mk_type_name(load_command.load_command));
     
-    fprintf(stderr, "%s must specify a base command size.", mk_type_name(load_command.type));
-    __builtin_trap();
+    return vtable->command_base_size;
 }

@@ -31,7 +31,8 @@ const struct _mk_load_command_vtable _mk_load_command_dyld_info_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_DYLD_INFO",
     .base.copy_description      = &_mk_load_command_type_dyld_info_copy_description,
-    .command_id                 = LC_DYLD_INFO
+    .command_id                 = LC_DYLD_INFO,
+    .command_base_size          = sizeof(struct dyld_info_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

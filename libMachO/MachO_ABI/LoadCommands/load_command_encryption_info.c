@@ -45,7 +45,8 @@ const struct _mk_load_command_vtable _mk_load_command_encryption_info_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_ENCRYPTION_INFO",
     .base.copy_description      = &_mk_load_command_encryption_info_copy_description,
-    .command_id                 = LC_ENCRYPTION_INFO
+    .command_id                 = LC_ENCRYPTION_INFO,
+    .command_base_size          = sizeof(struct encryption_info_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

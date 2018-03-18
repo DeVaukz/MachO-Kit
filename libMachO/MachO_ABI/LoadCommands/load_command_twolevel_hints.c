@@ -44,7 +44,8 @@ const struct _mk_load_command_vtable _mk_load_command_twolevel_hints_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_TWOLEVEL_HINTS",
     .base.copy_description      = &_mk_load_command_twolevel_hints_copy_description,
-    .command_id                 = LC_TWOLEVEL_HINTS
+    .command_id                 = LC_TWOLEVEL_HINTS,
+    .command_base_size          = sizeof(struct twolevel_hints_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

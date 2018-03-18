@@ -48,7 +48,8 @@ const struct _mk_load_command_vtable _mk_load_command_symtab_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_SYMTAB",
     .base.copy_description      = &_mk_load_command_symtab_copy_description,
-    .command_id                 = LC_SYMTAB
+    .command_id                 = LC_SYMTAB,
+    .command_base_size          = sizeof(struct symtab_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

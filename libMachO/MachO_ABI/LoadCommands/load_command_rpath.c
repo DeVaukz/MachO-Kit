@@ -42,7 +42,8 @@ const struct _mk_load_command_vtable _mk_load_command_rpath_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_RPATH",
     .base.copy_description      = &_mk_load_command_rpath_copy_description,
-    .command_id                 = LC_RPATH
+    .command_id                 = LC_RPATH,
+    .command_base_size          = sizeof(struct rpath_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

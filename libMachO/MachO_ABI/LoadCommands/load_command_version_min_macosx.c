@@ -44,7 +44,8 @@ const struct _mk_load_command_vtable _mk_load_command_version_min_macosx_class =
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_VERSION_MIN_MACOSX",
     .base.copy_description      = &_mk_load_command_min_version_macosx_copy_description,
-    .command_id                 = LC_VERSION_MIN_MACOSX
+    .command_id                 = LC_VERSION_MIN_MACOSX,
+    .command_base_size          = sizeof(struct version_min_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

@@ -31,7 +31,8 @@ const struct _mk_load_command_vtable _mk_load_command_code_signature_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_CODE_SIGNATURE",
     .base.copy_description      = &_mk_load_command_type_linkedit_description,
-    .command_id                 = LC_CODE_SIGNATURE
+    .command_id                 = LC_CODE_SIGNATURE,
+    .command_base_size          = sizeof(struct linkedit_data_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

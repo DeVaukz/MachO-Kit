@@ -50,7 +50,8 @@ const struct _mk_load_command_vtable _mk_load_command_build_version_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_BUILD_VERSION",
     .base.copy_description      = &_mk_load_command_build_version_copy_description,
-    .command_id                 = LC_BUILD_VERSION
+    .command_id                 = LC_BUILD_VERSION,
+    .command_base_size          = sizeof(struct build_version_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

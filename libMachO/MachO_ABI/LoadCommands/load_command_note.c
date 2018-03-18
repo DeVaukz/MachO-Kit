@@ -47,7 +47,8 @@ const struct _mk_load_command_vtable _mk_load_command_note_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_NOTE",
     .base.copy_description      = &_mk_load_command_note_copy_description,
-    .command_id                 = LC_NOTE
+    .command_id                 = LC_NOTE,
+    .command_base_size          = sizeof(struct note_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

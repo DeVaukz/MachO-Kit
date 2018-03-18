@@ -31,7 +31,8 @@ const struct _mk_load_command_vtable _mk_load_command_data_in_code_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_DATA_IN_CODE",
     .base.copy_description      = &_mk_load_command_type_linkedit_description,
-    .command_id                 = LC_DATA_IN_CODE
+    .command_id                 = LC_DATA_IN_CODE,
+    .command_base_size          = sizeof(struct linkedit_data_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

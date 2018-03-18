@@ -71,7 +71,7 @@ _mk_export const uint32_t _mk_load_command_classes_count;
 struct _mk_load_command_vtable {
     __MK_RUNTIME_TYPE_BASE
     uint32_t command_id;
-    size_t commnd_base_size;
+    size_t command_base_size;
 };
 
 //! The member function table for the \c load_command type.

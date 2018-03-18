@@ -62,7 +62,8 @@ const struct _mk_load_command_vtable _mk_load_command_segment_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_SEGMENT",
     .base.copy_description      = &_mk_load_command_segment_copy_description,
-    .command_id                 = LC_SEGMENT
+    .command_id                 = LC_SEGMENT,
+    .command_base_size          = sizeof(struct segment_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

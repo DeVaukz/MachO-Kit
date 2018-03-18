@@ -44,7 +44,8 @@ const struct _mk_load_command_vtable _mk_load_command_routines_64_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_ROUTINES_64",
     .base.copy_description      = &_mk_load_command_routines_64_copy_description,
-    .command_id                 = LC_ROUTINES_64
+    .command_id                 = LC_ROUTINES_64,
+    .command_base_size          = sizeof(struct routines_command_64)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

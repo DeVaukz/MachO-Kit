@@ -42,7 +42,8 @@ const struct _mk_load_command_vtable _mk_load_command_sub_framework_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_SUB_FRAMEWORK",
     .base.copy_description      = &_mk_load_command_sub_framework_copy_description,
-    .command_id                 = LC_SUB_FRAMEWORK
+    .command_id                 = LC_SUB_FRAMEWORK,
+    .command_base_size          = sizeof(struct sub_framework_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

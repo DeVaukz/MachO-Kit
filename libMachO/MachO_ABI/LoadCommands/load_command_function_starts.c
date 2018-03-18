@@ -31,7 +31,8 @@ const struct _mk_load_command_vtable _mk_load_command_function_starts_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_FUNCTION_STARTS",
     .base.copy_description      = &_mk_load_command_type_linkedit_description,
-    .command_id                 = LC_FUNCTION_STARTS
+    .command_id                 = LC_FUNCTION_STARTS,
+    .command_base_size          = sizeof(struct linkedit_data_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//

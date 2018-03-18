@@ -31,7 +31,8 @@ const struct _mk_load_command_vtable _mk_load_command_dyld_environment_class = {
     .base.super                 = &_mk_load_command_class,
     .base.name                  = "LC_DYLD_ENVIRONMENT",
     .base.copy_description      = &_mk_load_command_type_dylinker_description,
-    .command_id                 = LC_DYLD_ENVIRONMENT
+    .command_id                 = LC_DYLD_ENVIRONMENT,
+    .command_base_size          = sizeof(struct dylinker_command)
 };
 
 //|++++++++++++++++++++++++++++++++++++|//
