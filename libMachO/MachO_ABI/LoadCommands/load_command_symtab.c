@@ -32,9 +32,9 @@ static size_t
 _mk_load_command_symtab_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
-\tsymoff = %" PRIu32 "\n\
+\tsymoff = 0x%" PRIx32 "\n\
 \tnsyms = %" PRIu32 "\n\
-\tstroff = %" PRIu32 "\n\
+\tstroff = 0x%" PRIx32 "\n\
 \tstrsize = %" PRIu32 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type,

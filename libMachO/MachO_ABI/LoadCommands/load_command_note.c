@@ -35,8 +35,8 @@ size_t _mk_load_command_note_copy_description(mk_load_command_ref load_command, 
     
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tdata_owner = %s\n\
-\toffset = 0x%" PRIu64 "\n\
-\tsize = 0x%" PRIu64 "\n\
+\toffset = 0x%" PRIx64 "\n\
+\tsize = 0x%" PRIx64 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type, buffer,
                             mk_load_command_note_get_offset(load_command),

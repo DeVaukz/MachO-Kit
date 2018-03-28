@@ -31,8 +31,8 @@
 size_t _mk_load_command_encryption_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
-\tcryptoff = 0x%" PRIi32 "\n\
-\tcryptsize = 0x%" PRIi32 "\n\
+\tcryptoff = 0x%" PRIx32 "\n\
+\tcryptsize = 0x%" PRIx32 "\n\
 \tcryptid = 0x%" PRIx32 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type,

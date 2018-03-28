@@ -38,17 +38,17 @@ _mk_load_command_dsymtab_copy_description(mk_load_command_ref load_command, char
 \tnextdefsym = %" PRIu32 "\n\
 \tiundefsym = %" PRIu32 "\n\
 \tnundefsym = %" PRIu32 "\n\
-\ttocoff = %" PRIu32 "\n\
+\ttocoff = 0x%" PRIx32 "\n\
 \tntoc = %" PRIu32 "\n\
-\tmodtaboff = %" PRIu32 "\n\
+\tmodtaboff = 0x%" PRIx32 "\n\
 \tnmodtab = %" PRIu32 "\n\
-\textrefsymoff = %" PRIu32 "\n\
+\textrefsymoff = 0x%" PRIx32 "\n\
 \tnextrefsyms = %" PRIu32 "\n\
-\tindirectsymoff = %" PRIu32 "\n\
+\tindirectsymoff = 0x%" PRIx32 "\n\
 \tnindirectsyms = %" PRIu32 "\n\
-\textreloff = %" PRIu32 "\n\
+\textreloff = 0x%" PRIx32 "\n\
 \tnextrel = %" PRIu32 "\n\
-\tlocreloff = %" PRIu32 "\n\
+\tlocreloff = 0x%" PRIx32 "\n\
 \tnlocrel = %" PRIu32 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type,

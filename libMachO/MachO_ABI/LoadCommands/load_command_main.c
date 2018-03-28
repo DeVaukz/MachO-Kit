@@ -32,8 +32,8 @@ static size_t
 _mk_load_command_main_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
-\tentryoff: 0x%" PRIi64 "\n\
-\tstacksize: 0x %" PRIi64 "\n\
+\tentryoff: 0x%" PRIx64 "\n\
+\tstacksize: 0x%" PRIx64 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type,
                             mk_load_command_main_get_entryoff(load_command),

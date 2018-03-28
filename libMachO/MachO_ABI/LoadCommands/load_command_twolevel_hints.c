@@ -32,7 +32,7 @@ static size_t
 _mk_load_command_twolevel_hints_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
-\toffset: %" PRIu32 "\n\
+\toffset: 0x%" PRIx32 "\n\
 \tnhints: %" PRIu32 "\n\
 }",
                             mk_type_name(load_command.type), load_command.type,

@@ -32,16 +32,16 @@ size_t
 _mk_load_command_type_dyld_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
-\trebase_off = 0x%" PRIi32 "\n\
-\trebase_size = 0x%" PRIi32 "\n\
-\tbind_off = 0x%" PRIi32 "\n\
-\tbind_size = 0x%" PRIi32 "\n\
-\tweak_bind_off = 0x%" PRIi32 "\n\
-\tweak_bind_size = 0x%" PRIi32 "\n\
-\tlazy_bind_off = 0x%" PRIi32 "\n\
-\tlazy_bind_size = 0x%" PRIi32 "\n\
-\texport_off = 0x%" PRIi32 "\n\
-\texport_size = 0x%" PRIi32 "\n\
+\trebase_off = 0x%" PRIx32 "\n\
+\trebase_size = 0x%" PRIx32 "\n\
+\tbind_off = 0x%" PRIx32 "\n\
+\tbind_size = 0x%" PRIx32 "\n\
+\tweak_bind_off = 0x%" PRIx32 "\n\
+\tweak_bind_size = 0x%" PRIx32 "\n\
+\tlazy_bind_off = 0x%" PRIx32 "\n\
+\tlazy_bind_size = 0x%" PRIx32 "\n\
+\texport_off = 0x%" PRIx32 "\n\
+\texport_size = 0x%" PRIx32 "\n\
 \n}",
                             mk_type_name(load_command.type), load_command.type,
                             _mk_load_command_type_dyld_info_get_rebase_off(load_command),

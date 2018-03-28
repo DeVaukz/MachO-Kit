@@ -31,7 +31,7 @@
 size_t
 _mk_load_command_type_dylinker_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    char buffer[1024];
+    char buffer[MAXPATHLEN];
     _mk_load_command_type_dylib_copy_name(load_command, buffer, sizeof(buffer));
     
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\

@@ -31,10 +31,12 @@
 static size_t
 _mk_load_command_sub_framework_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    char buffer[1024];
+    char buffer[MAXPATHLEN];
     mk_load_command_sub_framework_copy_umbrella_name(load_command, buffer, sizeof(buffer));
     
-    return (size_t)snprintf(output, output_len, "<%s %p> {\n\tumbrella = %s\n}",
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
+\tumbrella = %s\n\
+}",
                             mk_type_name(load_command.type), load_command.type, buffer);
 }
 

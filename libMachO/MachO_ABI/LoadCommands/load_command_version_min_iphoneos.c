@@ -36,7 +36,10 @@ _mk_load_command_min_version_iphoneos_copy_description(mk_load_command_ref load_
     char sdk[256];
     mk_load_command_version_min_iphoneos_copy_sdk_string(load_command, sdk, sizeof(sdk));
     
-    return (size_t)snprintf(output, output_len, "<%s %p> {\n\tVersion: %s\n\tSDK: %s\n}",
+    return (size_t)snprintf(output, output_len, "<%s %p> {\n\
+\tVersion: %s\n\
+\tSDK: %s\n\
+}",
                             mk_type_name(load_command.type), load_command.type, version, sdk);
 }
 

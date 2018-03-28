@@ -31,14 +31,14 @@
 size_t
 _mk_load_command_type_dylib_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    char buffer[1024];
+    char buffer[MAXPATHLEN];
     _mk_load_command_type_dylib_copy_name(load_command, buffer, sizeof(buffer));
     
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tname = %s\n\
 \ttimestamp = %" PRIu32 "\n\
-\tcurrent_version = %" PRIu32 "\n\
-\tcompatibility_version = %" PRIu32 "\n\
+\tcurrent_version = 0x%" PRIx32 "\n\
+\tcompatibility_version = 0x%" PRIx32 "\n\
 \n}",
                             mk_type_name(load_command.type), load_command.type,
                             buffer,

@@ -41,9 +41,9 @@ _mk_load_command_segment_64_copy_description(mk_load_command_ref load_command, c
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tsegname = %s\n\
 \tvmaddr = 0x%" PRIx64 "\n\
-\tvmsize = %" PRIu64 "\n\
-\tfileoff = %" PRIu64 "\n\
-\tfilesize = %" PRIu64 "\n\
+\tvmsize = 0x%" PRIx64 "\n\
+\tfileoff = 0x%" PRIx64 "\n\
+\tfilesize = 0x%" PRIx64 "\n\
 \tmaxprot = 0x%X\n\
 \tinitprot = 0x%X\n\
 \tnsects = %" PRIu32 "\n\
