@@ -47,11 +47,12 @@
 //
 typedef struct mk_memory_object_s {
     __MK_RUNTIME_BASE
-    // A pointer back to the memory map that initialized this object.
+    // A pointer to the owning memory map.
     struct mk_memory_map_s *mapping;
-    // The host-relative address of the mapped memory.
-    mk_vm_address_t host_address;
-    // The in-memory address at which the target address has been mapped.
+    // The target-relative address of the mapped memory.
+    mk_vm_address_t target_address;
+    // The address at which the target address has been mapped into the
+    // current process.
     vm_address_t address;
     // The total requested length of the mapping. This value is the literal
     // requested length.
@@ -82,7 +83,7 @@ _mk_export intptr_t mk_memory_object_type;
 _mk_export void
 mk_memory_object_free(mk_memory_object_ref memory_object);
 
-//! Returns the base process-relative address of \a mobj.
+//! Returns the base (process-relative) address of \a mobj.
 //!
 //! @param  mobj
 //!         An initialized memory object.
@@ -96,70 +97,72 @@ mk_memory_object_address(mk_memory_object_ref mobj);
 _mk_export vm_size_t
 mk_memory_object_length(mk_memory_object_ref mobj);
 
-//! Returns the base host-relative address of \a mobj.
+//! Returns the base (target-relative) address of \a mobj.
 //!
 //! @param  mobj
 //!         An initialized memory object.
 _mk_export mk_vm_address_t
-mk_memory_object_host_address(mk_memory_object_ref mobj);
+mk_memory_object_target_address(mk_memory_object_ref mobj);
 
-//! Returns the process-relative range of memory represented by \a mobj.
+//! Returns the length of \a mobj.
+//!
+//! @param  mobj
+//!         An initialized memory object.
+_mk_export mk_vm_size_t
+mk_memory_object_target_length(mk_memory_object_ref mobj);
+
+//! Returns the (target-relative) range of memory that \a mobj mediates
+//! access to.
 //!
 //! @param  mobj
 //!         An initialized memory object.
 _mk_export mk_vm_range_t
-mk_memory_object_range(mk_memory_object_ref mobj);
-
-//! Returns the host-relative range of memory represented by \a mobj.
-//!
-//! @param  mobj
-//!         An initialized memory object.
-_mk_export mk_vm_range_t
-mk_memory_object_host_range(mk_memory_object_ref mobj);
+mk_memory_object_target_range(mk_memory_object_ref mobj);
 
 //! Verifies that \a length bytes starting at the process-relative
-//! (\a address + \a offset) is within \a mobj's mapped range.
+//! (\a address + \a offset) is within the specified memory object's mapped
+//! range.
 //!
 //! @param  mobj
 //!         An initialized memory object.
 //! @param  address
 //!         A process-relative address.
 //! @param  offset
-//!         An offset to be applied to \a address prior to verifying the
-//!         address range.
+//!         An offset to be applied to \a address.
 //! @param  length
 //!         The number of bytes that should be readable at
 //!         \a address + \a offset.
 _mk_export bool
 mk_memory_object_verify_local_pointer(mk_memory_object_ref mobj, vm_offset_t offset, vm_address_t address, vm_size_t length, mk_error_t* error);
 
-//! Validates the availability of (\a address + \a offset) via \a mobj and
-//! returns a process-relative pointer to the memory.
+//! Validates the availability of (\a address + \a offset) in the target via
+//! the specified memory object, and maps it to a process-relative pointer that
+//! can be used to access the data.
 //!
 //! @param  mobj
 //!         An initialized memory object.
 //! @param  address
-//!         The base host-relative address to be read.
+//!         The target-relative address to be read.
 //! @param  offset
-//!         An offset to be applied to \a address prior to verifying the
-//!         address range.
+//!         An offset to be applied to \a address.
 //! @param  length
-//!         The total number of bytes that should be readable at \a address.
+//!         The number of bytes that should be readable at
+//!         \a address + \a offset in the mapping.
 _mk_export vm_address_t
 mk_memory_object_remap_address(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error);
 
-//! The reverse of the remap operation, verifies the process-relative \a address
-//! then converts it into a host-relative address.
+//! The reverse of the remap operation.  Verifies the process-relative
+//! \a address, and then maps it to the corresponding target-relative address.
 //!
 //! @param  mobj
 //!         An initialized memory object.
 //! @param  address
-//!         The base process-relative address to be unmapped.
+//!         The process-relative address to be unmapped.
 //! @param  offset
-//!         An offset to be applied to \a address prior to verifying the
-//!         address range.
+//!         An offset to be applied to \a address.
 //! @param  length
-//!         The total number of bytes that should be readable at \a address.
+//!         The number of bytes that should be readable at
+//!         \a address + \a offset in the mapping.
 _mk_export mk_vm_address_t
 mk_memory_object_unmap_address(mk_memory_object_ref mobj, vm_offset_t offset, vm_address_t address, vm_size_t length, mk_error_t* error);
 
@@ -173,12 +176,12 @@ mk_memory_object_read_byte(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_
 _mk_export uint16_t
 mk_memory_object_read_word(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t *error);
 
-//! Returns the dword at \a offset + \a address in \a mobj, performing
+//! Returns the double-word at \a offset + \a address in \a mobj, performing
 //! any necessary byte-swapping.
 _mk_export uint32_t
 mk_memory_object_read_dword(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t *error);
 
-//! Returns the dword at \a offset + \a address in \a mobj, performing
+//! Returns the quad-word at \a offset + \a address in \a mobj, performing
 //! any necessary byte-swapping.
 _mk_export uint64_t
 mk_memory_object_read_qword(mk_memory_object_ref mobj, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t *error);

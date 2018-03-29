@@ -38,7 +38,7 @@ __mk_memory_map_get_context(mk_type_ref self)
 
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_error_t
-__mk_memory_map_init_object(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, bool require_full, mk_memory_object_t* memory_object)
+__mk_memory_map_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, bool require_full, mk_memory_object_t* memory_object)
 {
 #pragma unused (self)
 #pragma unused (offset)
@@ -46,23 +46,21 @@ __mk_memory_map_init_object(struct mk_memory_map_s* self, mk_vm_offset_t offset,
 #pragma unused (length)
 #pragma unused (require_full)
 #pragma unused (memory_object)
-    fprintf(stderr, "No default implementation of __mk_memory_map_init_object.");
-    __builtin_trap();
+    _mk_assert(false, NULL, "No default implementation of mk_memory_map_init_object.");
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static void
-__mk_memory_map_free_object(struct mk_memory_map_s* self, mk_memory_object_t* memory_object)
+__mk_memory_map_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object)
 {
 #pragma unused (self)
 #pragma unused (memory_object)
-    fprintf(stderr, "No default implementation of __mk_memory_map_free_object.");
-    __builtin_trap();
+    _mk_assert(false, NULL, "No default implementation of mk_memory_map_free_object.");
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static bool
-__mk_memory_map_has_mapping(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error)
+__mk_memory_map_has_mapping(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error)
 {
     mk_error_t err;
     mk_memory_object_t memory_object;
@@ -79,8 +77,8 @@ __mk_memory_map_has_mapping(struct mk_memory_map_s* self, mk_vm_offset_t offset,
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-static vm_size_t
-__mk_memory_map_copy_bytes(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error)
+static size_t
+__mk_memory_map_copy_bytes(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error)
 {
     mk_error_t err;
     mk_memory_object_t memory_object;
@@ -94,16 +92,16 @@ __mk_memory_map_copy_bytes(struct mk_memory_map_s* self, mk_vm_offset_t offset, 
     memcpy(buffer, (void*)mk_memory_object_address(&memory_object), MIN(length, (mk_vm_size_t)mappingLength));
     
     mk_memory_map_free_object(self, &memory_object);
-    return (vm_size_t)MIN(length, (mk_vm_size_t)mappingLength);
+    return (size_t)MIN(length, (mk_vm_size_t)mappingLength);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static uint8_t
-__mk_memory_map_read_byte(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
+__mk_memory_map_read_byte(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
 {
 #pragma unused (data_model)
     uint8_t retValue;
-    vm_size_t readSize;
+    size_t readSize;
     
     readSize = mk_memory_map_copy_bytes(self, offset, address, &retValue, sizeof(uint8_t), true, error);
     if (readSize < sizeof(uint8_t))
@@ -114,10 +112,10 @@ __mk_memory_map_read_byte(struct mk_memory_map_s* self, mk_vm_offset_t offset, m
 
 //|++++++++++++++++++++++++++++++++++++|//
 static uint16_t
-__mk_memory_map_read_word(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
+__mk_memory_map_read_word(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
 {
     uint16_t retValue;
-    vm_size_t readSize;
+    size_t readSize;
     
     readSize = mk_memory_map_copy_bytes(self, offset, address, &retValue, sizeof(uint16_t), true, error);
     if (readSize < sizeof(uint16_t))
@@ -131,10 +129,10 @@ __mk_memory_map_read_word(struct mk_memory_map_s* self, mk_vm_offset_t offset, m
 
 //|++++++++++++++++++++++++++++++++++++|//
 static uint32_t
-__mk_memory_map_read_dword(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
+__mk_memory_map_read_dword(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
 {
     uint32_t retValue;
-    vm_size_t readSize;
+    size_t readSize;
     
     readSize = mk_memory_map_copy_bytes(self, offset, address, &retValue, sizeof(uint32_t), true, error);
     if (readSize < sizeof(uint32_t))
@@ -148,10 +146,10 @@ __mk_memory_map_read_dword(struct mk_memory_map_s* self, mk_vm_offset_t offset, 
 
 //|++++++++++++++++++++++++++++++++++++|//
 static uint64_t
-__mk_memory_map_read_qword(struct mk_memory_map_s* self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
+__mk_memory_map_read_qword(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error)
 {
     uint64_t retValue;
-    vm_size_t readSize;
+    size_t readSize;
     
     readSize = mk_memory_map_copy_bytes(self, offset, address, &retValue, sizeof(uint64_t), true, error);
     if (readSize < sizeof(uint64_t))
@@ -204,7 +202,7 @@ bool mk_memory_map_has_mapping(mk_memory_map_ref map, mk_vm_offset_t offset, mk_
 { MK_TYPE_INVOKE(map, memory_map, has_mapping)(map, offset, address, length, error); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-vm_size_t mk_memory_map_copy_bytes(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error)
+size_t mk_memory_map_copy_bytes(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error)
 { MK_TYPE_INVOKE(map, memory_map, copy_bytes)(map, offset, address, buffer, length, require_full, error); }
 
 //|++++++++++++++++++++++++++++++++++++|//

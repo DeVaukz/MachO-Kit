@@ -152,7 +152,7 @@ mk_segment_get_load_command(mk_segment_ref segment)
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t mk_segment_get_range(mk_segment_ref segment)
-{ return mk_memory_object_host_range(mk_segment_get_mobj(segment)); }
+{ return mk_memory_object_target_range(mk_segment_get_mobj(segment)); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_memory_object_ref

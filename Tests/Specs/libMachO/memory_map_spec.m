@@ -64,7 +64,7 @@ describe(@"memory_map_self", ^{
         
         expect(mk_memory_object_address(&memory_object)).to.equal(allocation_address);
         expect(mk_memory_object_length(&memory_object)).to.equal(allocation_size);
-        expect(mk_memory_object_host_address(&memory_object)).to.equal(allocation_address);
+        expect(mk_memory_object_target_address(&memory_object)).to.equal(allocation_address);
         
         // The full range mapped previously should be available.
         expect(mk_memory_object_verify_local_pointer(&memory_object, 0, allocation_address, allocation_size, NULL)).to.beTruthy();
@@ -101,7 +101,7 @@ describe(@"memory_map_self", ^{
         
         expect(mk_memory_object_address(&memory_object)).to.equal(shifted_allocation_address);
         expect(mk_memory_object_length(&memory_object)).to.beGreaterThanOrEqualTo(shifted_allocation_size);
-        expect(mk_memory_object_host_address(&memory_object)).to.equal(shifted_allocation_address);
+        expect(mk_memory_object_target_address(&memory_object)).to.equal(shifted_allocation_address);
         
         // The full range mapped previously should be available.
         expect(mk_memory_object_verify_local_pointer(&memory_object, 0, shifted_allocation_address, shifted_allocation_size, NULL)).to.beTruthy();

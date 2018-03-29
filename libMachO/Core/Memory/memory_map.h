@@ -29,7 +29,8 @@
 //! @defgroup MEMORY Memory
 //! @ingroup CORE
 //!
-//! The Memory module provides an abstraction over the source of data.
+//! The memory module provides an abstraction which mediates access to data,
+//! regardless of where it resides.
 //----------------------------------------------------------------------------//
 
 //----------------------------------------------------------------------------//
@@ -78,7 +79,8 @@ _mk_export intptr_t mk_memory_map_type;
 //! @name       Static Methods
 //----------------------------------------------------------------------------//
 
-//! Returns a reference to the \c memory_map that initialized \a mobj.
+//! Returns a reference to the \c memory_map that initialized the specified
+//! memory object.
 _mk_export mk_memory_map_ref
 mk_memory_map_for_object(mk_memory_object_ref mobj);
 
@@ -88,21 +90,20 @@ mk_memory_map_for_object(mk_memory_object_ref mobj);
 //! @name       Instance Methods
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided memory object with the local address at which
-//! the data at (\a address + \a offset) in the context of \a map can be
-//! accessed.
+//! Maps the data at (\a address + \a offset) into the current process and
+//! initializes a memory object, which can then be used to access the data.
 //!
 //! @param  offset
-//!         An offset to be added to \a address prior to conversion.
-//! @param  contextAddress
-//!         A context-relative address.
+//!         An offset to be added to \a address.
+//! @param  address
+//!         The host-relative address to map.
 //! @param  length
-//!         The number of bytes to be read.  If \a requireFull is \c YES, the
-//!         conversion fails if one or more bytes would be inaccessible.
+//!         The number of bytes to be mapped.
 //! @param  requireFull
-//!         See the description of \a length.
+//!         If \c YES, initialization fails if the full length can not be
+//!         mapped.
 //! @param  memory_object
-//!         The \c memory_object to initialize with the result.
+//!         A valid \ref mk_memory_object_t structure.
 _mk_export mk_error_t
 mk_memory_map_init_object(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, bool require_full, mk_memory_object_t* memory_object);
 
@@ -112,12 +113,12 @@ _mk_export void
 mk_memory_map_free_object(mk_memory_map_ref map, mk_memory_object_t* memory_object);
 
 //! Returns \c true if \a length bytes at (\a address + \a offset) can be
-//! accessed using \a map.
+//! accessed using the specified memory map.
 _mk_export bool
 mk_memory_map_has_mapping(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error);
 
-//! 
-_mk_export vm_size_t
+//! Copies \a length bytes at \a offset from \a address into \a buffer.
+_mk_export size_t
 mk_memory_map_copy_bytes(mk_memory_map_ref map, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error);
 
 //! Returns the byte at \a offset from \a address, performing any necessary

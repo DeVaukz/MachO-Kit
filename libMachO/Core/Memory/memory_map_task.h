@@ -29,8 +29,7 @@
 //! @defgroup MEMORY_MAP_TASK Task Memory Map
 //! @ingroup MEMORY_MAP
 //!
-//! A task memory map sources memory from the task at a provided Mach task
-//! port.
+//! A task memory map mediates access to the VM of a mach task.
 //----------------------------------------------------------------------------//
 
 #ifndef _memory_map_task_h

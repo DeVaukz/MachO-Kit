@@ -41,28 +41,36 @@
 //! @name       Classes
 //----------------------------------------------------------------------------//
 
-//!
+//! Member function prototype for the \ref mk_memory_map_init_object
+//! polymorphic function.
 typedef mk_error_t (*_mk_memory_map_init_object)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, bool require_full, mk_memory_object_t* memory_object);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_free_object
+//! polymorphic function.
 typedef void (*_mk_memory_map_free_object)(mk_memory_map_ref self, mk_memory_object_t* memory_object);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_has_mapping
+//! polymorphic function.
 typedef bool (*_mk_memory_map_has_mapping)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_vm_size_t length, mk_error_t* error);
 
-//!
-typedef vm_size_t (*_mk_memory_map_copy_bytes)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error);
+//! Member function prototype for the \ref mk_memory_map_copy_bytes
+//! polymorphic function.
+typedef size_t (*_mk_memory_map_copy_bytes)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, void* buffer, mk_vm_size_t length, bool require_full, mk_error_t* error);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_read_byte
+//! polymorphic function.
 typedef uint8_t (*_mk_memory_map_read_byte)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_read_word
+//! polymorphic function.
 typedef uint16_t (*_mk_memory_map_read_word)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_read_dword
+//! polymorphic function.
 typedef uint32_t (*_mk_memory_map_read_dword)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error);
 
-//!
+//! Member function prototype for the \ref mk_memory_map_read_qword
+//! polymorphic function.
 typedef uint64_t (*_mk_memory_map_read_qword)(mk_memory_map_ref self, mk_vm_offset_t offset, mk_vm_address_t address, mk_data_model_ref data_model, mk_error_t* error);
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -84,7 +92,7 @@ struct _mk_memory_map_vtable {
     _mk_memory_map_read_qword read_qword;
 };
 
-//! The member function table for the\c memory_object type.  Contains
+//! The member function table for the \c memory_object type.  Contains
 //! implementations of all non-abstract methods in
 //! \c struct _mk_memory_map_vtable.
 _mk_internal_extern

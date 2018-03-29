@@ -61,6 +61,7 @@ mk_section_init(mk_segment_ref segment, mk_load_command_section lc_section, mk_s
     mk_macho_ref image = mk_segment_get_macho(segment);
     mk_load_command_ref load_command = mk_segment_get_load_command(segment);
     bool is64 = (mk_load_command_id(load_command) == mk_load_command_segment_64_id());
+    mk_memory_object_ref mapping = mk_segment_get_mobj(segment);
     
     mk_vm_address_t vm_address;
     mk_vm_size_t vm_size;
@@ -99,8 +100,8 @@ mk_section_init(mk_segment_ref segment, mk_load_command_section lc_section, mk_s
     }
     
     // Verify that this section is fully within it's segment's memory.
-    if (mk_vm_range_contains_range(mk_memory_object_host_range(mk_segment_get_mobj(segment)), mk_vm_range_make(vm_address, vm_size), false) != MK_ESUCCESS) {
         _mkl_error(mk_type_get_context(load_command.type), "Section %s is not within segment %s", sect_name, seg_name);
+    if (mk_vm_range_contains_range(mk_memory_object_target_range(mapping), mk_vm_range_make(vm_address, vm_size), false) != MK_ESUCCESS) {
         return err;
     }
     
