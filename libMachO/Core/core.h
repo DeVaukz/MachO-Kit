@@ -326,7 +326,7 @@ _mk_export const mk_byteorder_t mk_byteorder_swapped;
 
 #ifndef DOXYGEN
 //! @internal
-//! The preamble to all type declarations.
+//! The preamble of all type declarations.
 //! 
 //! @note   This must be kept in sync with \ref _mk_runtime_base_t.
 #define __MK_RUNTIME_BASE   \
@@ -354,9 +354,10 @@ mk_type_name(mk_type_ref mk);
 _mk_export bool
 mk_type_equal(mk_type_ref mk1, mk_type_ref mk2);
 
-//! Copys a description of any polymorphic type into the provided \a output
-//! buffer.  Returns the number of bytes copied.  If \a outout is \c NULL,
-//! returns the length of the complete description.
+//! Copies a description of any polymorphic type into the provided \a output
+//! buffer.  Returns the number of bytes copied, not counting the terminating
+//! null character.  If \a outout is \c NULL, returns the length of the complete
+//! description, not counting the terminating null character.
 _mk_export size_t
 mk_type_copy_description(mk_type_ref mk, char* output, size_t output_len);
 

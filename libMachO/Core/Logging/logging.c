@@ -38,7 +38,7 @@ const char* mk_string_for_logging_level(mk_logging_level_t level)
             levelString = "TRACE";
             break;
         case MK_LOGGING_LEVEL_DEBUG:
-            levelString = "TRACE";
+            levelString = "DEBUG";
             break;
         case MK_LOGGING_LEVEL_INFO:
             levelString = "INFO";

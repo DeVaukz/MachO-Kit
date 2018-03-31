@@ -52,6 +52,17 @@ _mk_internal_extern
 const struct _mk_macho_image_vtable _mk_macho_image_class;
 
 
+//----------------------------------------------------------------------------//
+#pragma mark -  Working With Mach-O Images
+//! @name       Working With Mach-O Images
+//----------------------------------------------------------------------------//
+
+//! Returns the memory object mapping the Mach-O header and load commands
+//! into the current process.
+_mk_internal_extern mk_memory_object_ref
+mk_macho_get_header_mapping(mk_macho_ref image);
+
+
 //! @} MACH !//
 
 #endif

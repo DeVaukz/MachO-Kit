@@ -49,12 +49,12 @@ typedef struct mk_macho_s {
     // The context associated with this Mach-O.
     mk_context_t *context;
     
-    // The memory map to use for this image.
+    // The memory map used to read the contents of the Mach-O image.
     mk_memory_map_ref memory_map;
     // See \ref mk_data_model
     mk_data_model_ref data_model;
     
-    // The binary's dyld-reported reported vmaddr slide.  This will be zero
+    // The image's dyld-reported reported vmaddr slide.  This will be zero
     // for binaries on disk.
     intptr_t slide;
     // The binary image's name/path.
@@ -78,56 +78,73 @@ typedef struct mk_macho_s {
 //! The Mach-O image polymorphic type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_macho_s *macho;
 } mk_macho_ref _mk_transparent_union;
 
-//! The identifier for the Mach-O Image type.
+//! The identifier for the Mach-O image parser type.
 _mk_export intptr_t mk_macho_image_type;
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Working With MachO Binaries
-//! @name       Working With MachO Binaries
+#pragma mark -  Working With Mach-O Images
+//! @name       Working With Mach-O Images
 //----------------------------------------------------------------------------//
 
-//! Initializes a new MachO image.
+//! Initializes a Mach-O image object.
+//!
+//! @param  ctx
+//!         A client supplied context.
+//! @param  name
+//!         The name of the Mach-O binary from which the Mach-O image was
+//!         loaded.  This is only used for logging.
+//! @param  slide
+//!         The slide applied to the Mach-O image.  If parsing a Mach-O image
+//!         loaded in the current process, the slide can be retrieved using the
+//!         \c _dyld_get_image_vmaddr_slide() API.
+//! @param  header_addr
+//!         The address of the Mach-O image in the address space of the
+//!         target, accessible via the provided \a memory_map.
+//!         If parsing a Mach-O image loaded in the current process, this
+//!         should be the load address of the image as reported by dyld.
+//! @param  memory_map
+//!         The memory map that mediates access to the memory in the target
+//!         where the Mach-O image resides.
+//! @param  image
+//!         A valid \ref mk_macho_t structure.
 _mk_export mk_error_t
 mk_macho_init(mk_context_t* ctx, const char* name, intptr_t slide, mk_vm_address_t header_addr,
               mk_memory_map_ref memory_map, mk_macho_t* image);
 
-//! Cleans up resources held by a MachO image.
+//! Cleans up resources held by a Mach-O image object.
 _mk_export void
 mk_macho_free(mk_macho_ref image);
     
-//! Returns the \ref mk_memory_map_ref the provided \a image was initialized
-//! with.
+//! Returns the memory map object that mediates access to memory where the
+//! specified Mach-O image resides.
 _mk_export mk_memory_map_ref
 mk_macho_get_memory_map(mk_macho_ref image);
 
-//! The \ref data_model representing the architecture the provided \a image
-//! is built to run on.
+//! Returns a data model object that defines the traits of the primative types
+//! in the specified Mach-O image.
 _mk_export mk_data_model_ref
 mk_macho_get_data_model(mk_macho_ref image);
 
-//! Shortcut to retrieving the \c byte_order from the \c data_model returned
+//! Shortcut to retrieving the \c byte_order from the data model returned
 //! by calling \ref mk_macho_data_model.
 _mk_export const mk_byteorder_t*
 mk_macho_get_byte_order(mk_macho_ref image);
-
-//! Shortcut to calling \ref mk_data_model_is_64_bit on the underlying
-//! data model.
-_mk_export bool
-mk_macho_is_64_bit(mk_macho_ref image);
     
-//! Returns the slide that the provided \a image was initialized with.
+//! Returns the slide of the specified Mach-O image.
 _mk_export intptr_t
 mk_macho_get_slide(mk_macho_ref image);
     
-//! Returns the name that the provided \a image was initialized with.
+//! Returns the name that the specified Mach-O image.
 _mk_export const char*
 mk_macho_get_name(mk_macho_ref image);
     
-//! Returns the header address that the provided \a image was initialized with.
+//! Returns the load address (in the target address space) of the specified
+//! Mach-O image.
 _mk_export mk_vm_address_t
 mk_macho_get_address(mk_macho_ref image);
     
@@ -149,8 +166,12 @@ _mk_export uint32_t
 mk_macho_get_sizeofcmds(mk_macho_ref image);
 _mk_export uint32_t
 mk_macho_get_flags(mk_macho_ref image);
-    
-//! Returns \c true if the provided \a image is part of the dy;d shared cache.
+
+//! Returns \c true if the specified Mach-O image uses the 64-bit Mach-O format.
+_mk_export bool
+mk_macho_is_64_bit(mk_macho_ref image);
+
+//! Returns \c true if the specified Mach-O image is part of a shared cache.
 _mk_export bool
 mk_macho_is_from_shared_cache(mk_macho_ref image);
 
@@ -160,67 +181,66 @@ mk_macho_is_from_shared_cache(mk_macho_ref image);
 //! @name       Enumerating Load Commands
 //----------------------------------------------------------------------------//
 
-//! Iterate over the available Mach-O LC_CMD entries.
+//! Iterate over the Mach-O load commands in the specified Mach-O image.
 //!
 //! @param  image
-//!         The image to iterate
+//!         The Mach-O image object.
 //! @param  previous
-//!         The previously returned load command, or \c NULL to iterate from
-//!         the first command.
-//! @param  host_address [out]
-//!         If not \c NULL, populated with the host-relative address of the
-//!         load command upon successful return.
+//!         The previously returned Mach-O load command structure, or \c NULL
+//!         to iterate from the first load command.
+//! @param  target_address [out]
+//!         If not \c NULL, populated with the address of the load command in
+//!         the target.
 //! @return
-//! A process-relative pointer to the load command or \c NULL if there was an
-//! error.  The returned command is gauranteed to be readable, and fully within
-//! the process address space.
+//! A process-relative pointer to the Mach-O load command structure or \c NULL
+//! if there was an error.  The returned structure is gauranteed to be readable,
+//! and fully within the current process' address space.
 _mk_export struct load_command*
-mk_macho_next_command(mk_macho_ref image, struct load_command* previous,
-                      mk_vm_address_t* host_address);
+mk_macho_next_command(mk_macho_ref image, struct load_command* previous, mk_vm_address_t* target_address);
 
 #if __BLOCKS__
-//! Iterate over the available Mach-O LC_CMD entries using a block.
+//! Iterate over the available Mach-O load commands using a block.
 _mk_export void
 mk_macho_enumerate_commands(mk_macho_ref image,
-                            void (^enumerator)(struct load_command* command, uint32_t index, mk_vm_address_t host_address));
+                            void (^enumerator)(struct load_command* lc, uint32_t index, mk_vm_address_t target_address));
 #endif
 
-//! Iterate over the available Mach-O LC_CMD entries.
+//! Iterate over specific Mach-O load commands in the specified Mach-O image.
 //!
 //! @param  image
-//!         The image to iterate
+//!         The Mach-O image object.
 //! @param  previous
-//!         The previously returned load command, or \c NULL to iterate from
-//!         the first command.
+//!         The previously returned Mach-O load command structure, or \c NULL
+//!         to iterate from the first load command.
 //! @param  expectedCommand
 //!         The LC_* command type to be returned. Only commands matching this
 //!         type will be returned by the iterator.
-//! @param  host_address [out]
-//!         If not \c NULL, populated with the host-relative address of the
-//!         load command upon successful return.
+//! @param  target_address [out]
+//!         If not \c NULL, populated with the address of the load command in
+//!         the target.
 //! @return
-//! A process-relative pointer to the load command or \c NULL if there was an
-//! error.  The returned command is gauranteed to be readable, and fully within
-//! the process address space.
+//! A process-relative pointer to the Mach-O load command structure or \c NULL
+//! if there was an error.  The returned structure is gauranteed to be readable,
+//! and fully within the current process' address space.
 _mk_export struct load_command*
-mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous,
-                           uint32_t expected_command, mk_vm_address_t* host_address);
+mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, uint32_t expected_command, mk_vm_address_t* target_address);
 
-//! Find the first instance of the specified command type.
+//! Finds the first instance of the specified load command type in the
+//! specified Mach-O image.
 //!
 //! @param  image
-//!         The image to iterate.
+//!         The Mach-O image object.
 //! @param  expectedCommand
 //!         The LC_* command type to be returned.
-//! @param  host_address [out]
-//!         If not \c NULL, populated with the host-relative address of the
-//!         load command upon successful return.
+//! @param  target_address [out]
+//!         If not \c NULL, populated with the address of the load command in
+//!         the target.
 //! @return
-//! A process-relative pointer to the load command or \c NULL if there was an
-//! error.  The returned command is gauranteed to be readable, and fully within
-//! the process address space.
+//! A process-relative pointer to the Mach-O load command structure or \c NULL
+//! if there was an error.  The returned structure is gauranteed to be readable,
+//! and fully within the current process' address space.
 _mk_export struct load_command*
-mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* host_address);
+mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address);
 
 
 //! @} MACH !//
