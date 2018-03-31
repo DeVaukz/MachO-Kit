@@ -1327,8 +1327,8 @@
 		D0848AF01A959E6C0076976F /* symbol_table_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol_table_internal.h; sourceTree = "<group>"; };
 		D08634E01C76F2D80094330F /* _mach_trie.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = _mach_trie.c; sourceTree = "<group>"; };
 		D08634E11C76F2D80094330F /* _mach_trie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _mach_trie.h; sourceTree = "<group>"; };
-		D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = "Mac-XCTest.xcconfig"; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
-		D087E8C51FEAE5F5009AEABC /* iOS-Extension.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "iOS-Extension.xcconfig"; path = "iOS-Extension.xcconfig"; sourceTree = "<group>"; };
+		D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
+		D087E8C51FEAE5F5009AEABC /* iOS-Extension.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Extension.xcconfig"; sourceTree = "<group>"; };
 		D08B3BDA1FFCA9E600471513 /* MKRebaseContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKRebaseContext.h; sourceTree = "<group>"; };
 		D08B43751CBC96A80059BB43 /* MKObjCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjCCategory.h; sourceTree = "<group>"; };
 		D08B43761CBC96A80059BB43 /* MKObjCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKObjCCategory.m; sourceTree = "<group>"; };
@@ -3568,12 +3568,9 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
-					D02FEB4C1890FF88004E88ED = {
-						TestTargetID = D02FEB351890FF88004E88ED;
-					};
 					D0A3BB731A68EB9D00D663A0 = {
 						CreatedOnToolsVersion = 6.1.1;
 					};

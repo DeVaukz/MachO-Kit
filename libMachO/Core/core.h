@@ -88,7 +88,7 @@
 //! Print formatters for the \ref mk_vm_offset_t type.
 #define MK_VM_PRIXOFFSET PRIX64
 #define MK_VM_PRIxOFFSET PRIx64
-#define MK_VM_PRIiOFFSET PRIi64
+#define MK_VM_PRIiOFFSET PRIi64 // TODO - Remove this
 #define MK_VM_PRIuOFFSET PRIu64
 //! Print formatters for the \ref mk_vm_slide_t type.
 #define MK_VM_PRIiSLIDE PRIi64

@@ -36,6 +36,7 @@
 #import <MachOKit/NSError+MK.h>
 #import <MachOKit/NSNumber+MK.h>
 
+/* CORE */
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKNodeDescription.h>
 #import <MachOKit/MKOptional.h>
@@ -45,15 +46,18 @@
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
 
+/* SHARED */
 #import <MachOKit/MKMemoryMap+Pointer.h>
 #import <MachOKit/MKSharedFieldType.h>
 #import <MachOKit/MKPointerNode.h>
 #import <MachOKit/MKPointer.h>
 #import <MachOKit/MKCString.h>
 
+/* FAT */
 #import <MachOKit/MKFatBinary.h>
 #import <MachOKit/MKFatArch.h>
 
+/* DSC */
 #import <MachOKit/MKSharedCache.h>
 #import <MachOKit/MKDSCHeader.h>
 #import <MachOKit/MKDSCMappingInfo.h>
@@ -76,6 +80,7 @@
     #import <MachOKit/MKDSCDylibInfos.h>
     #import <MachOKit/MKDSCDylibSymbolInfo.h>
 
+/* MachO */
 #import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKMachO.h>
 #import <MachOKit/MKMachHeader.h>
@@ -159,7 +164,7 @@
     #import <MachOKit/MKLazyBindingsInfo.h>
     #import <MachOKit/MKBindAction.h>
     #import <MachOKit/MKBindCommand.h>
-	#import <MachOKit/MKBindCommandOffsetAdjusting.h>
+    #import <MachOKit/MKBindCommandOffsetAdjusting.h>
     #import <MachOKit/MKBindDone.h>
     #import <MachOKit/MKBindSetDylibOrdinalImmediate.h>
     #import <MachOKit/MKBindSetDylibOrdinalULEB.h>

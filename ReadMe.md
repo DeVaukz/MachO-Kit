@@ -173,6 +173,10 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
         * `__objc_ivar` ✔
         * `__objc_const` ✔
         * `__objc_data` ✔
+* CF Data
+	* CFString (*incomplete - needs further testing*)
+	* CF-Specific Sections
+		* `__cfstring` ✔
 
 
 ## libMachO
