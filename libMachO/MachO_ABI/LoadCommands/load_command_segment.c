@@ -115,6 +115,7 @@ mk_load_command_segment_get_vmaddr(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->vmaddr );
 }
@@ -125,6 +126,7 @@ mk_load_command_segment_get_vmsize(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->vmsize );
 }
@@ -135,6 +137,7 @@ mk_load_command_segment_get_fileoff(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->fileoff );
 }
@@ -145,6 +148,7 @@ mk_load_command_segment_get_filesize(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->filesize );
 }
@@ -155,6 +159,7 @@ mk_load_command_segment_get_maxprot(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return INT_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return INT_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return (vm_prot_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( (uint32_t)mach_segment_command->maxprot );
 }
@@ -165,6 +170,7 @@ mk_load_command_segment_get_initprot(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return INT_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return INT_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return (vm_prot_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( (uint32_t)mach_segment_command->initprot );
 }
@@ -175,6 +181,7 @@ mk_load_command_segment_get_nsects(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->nsects );
 }
@@ -185,16 +192,20 @@ mk_load_command_segment_get_flags(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return UINT32_MAX);
+    
     struct segment_command *mach_segment_command = (struct segment_command*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_segment_command->flags );
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 struct section*
-mk_load_command_segment_next_section(mk_load_command_ref load_command, struct section *previous, mk_vm_address_t *context_address)
+mk_load_command_segment_next_section(mk_load_command_ref load_command, struct section *previous, mk_vm_address_t *target_address)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return NULL);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_class, return NULL);
+    
+    uintptr_t cmd = (uintptr_t)load_command.load_command->mach_load_command;
+    uint32_t cmdsize = mk_load_command_size(load_command);
     
     struct section *sec;
     
@@ -204,40 +215,36 @@ mk_load_command_segment_next_section(mk_load_command_ref load_command, struct se
             return NULL;
         
         // Sanity Check
-        if (mk_load_command_size(load_command) < sizeof(struct segment_command) + sizeof(struct section)) {
-            _mkl_debug(mk_type_get_context(load_command.type), "Mach-O segment load command is less than sizeof(struct section) in %s", load_command.load_command->image.macho->name);
+        if (cmdsize < sizeof(struct segment_command) + sizeof(struct section)) {
+            _mkl_debug(mk_type_get_context(load_command.load_command), "Mach-O load command 'cmdsize' [%" PRIu32 "] is less than sizeof(struct segment_command) + sizeof(struct section).", cmdsize);
             return NULL;
         }
         
-        sec = (typeof(sec))( (uint8_t*)load_command.load_command->mach_load_command + sizeof(struct segment_command) );
+        sec = (typeof(sec))( (uintptr_t)cmd + sizeof(struct segment_command) );
     }
     else
     {
-        // We need the size from the previous section; first, verify the pointer.
+        // Verify the 'previous' section pointer is within the load command.
         sec = previous;
-        if (!mk_memory_object_verify_local_pointer(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)sec, sizeof(*sec), NULL))
-        {
-            _mkl_debug(mk_type_get_context(load_command.type), "Failed to map section at address %p in: %s", sec, load_command.load_command->image.macho->name);
+        if (mk_vm_range_contains_address(mk_vm_range_make(cmd, cmdsize), 0, (uintptr_t)sec) != MK_ESUCCESS) {
+            char buffer[512] = { 0 };
+            mk_load_command_copy_short_description(load_command, buffer, sizeof(buffer));
+            _mkl_debug(mk_type_get_context(load_command.load_command), "Previous Mach-O section command pointer [%p] is not within load command %s.", previous, buffer);
             return NULL;
         }
         
-        sec = (typeof(sec))( ((uint8_t *)previous) + sizeof(struct section) );
+        sec = (typeof(sec))( (uintptr_t)sec + sizeof(struct section) );
     }
     
     // Avoid walking off the end of the segment command
-    if ((uintptr_t)sec >= (uintptr_t)load_command.load_command->mach_load_command + mk_load_command_size(load_command))
+    if ((uintptr_t)sec >= cmd + cmdsize)
         return NULL;
     
-    // Verify that the header mapping holds the new section
-    if (!mk_memory_object_verify_local_pointer(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)sec, sizeof(*sec), NULL)) {
-        _mkl_debug(mk_type_get_context(load_command.type), "Failed to map section command at address %p in: %s", sec, load_command.load_command->image.macho->name);
-        return NULL;
-    }
-    
-    if (context_address)
+    if (target_address)
     {
         mk_error_t err;
-        *context_address = mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)sec, sizeof(*sec), &err);
+        mk_memory_object_ref header_mapping = mk_macho_get_header_mapping(load_command.load_command->image);
+        *target_address = mk_memory_object_unmap_address(header_mapping, 0, (uintptr_t)sec, sizeof(*sec), &err);
         if (err != MK_ESUCCESS)
             return NULL;
     }
@@ -248,14 +255,14 @@ mk_load_command_segment_next_section(mk_load_command_ref load_command, struct se
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_load_command_segment_enumerate_sections(mk_load_command_ref load_command, void (^enumerator)(struct section *command, uint32_t index, mk_vm_address_t context_address))
+mk_load_command_segment_enumerate_sections(mk_load_command_ref load_command, void (^enumerator)(struct section *command, uint32_t index, mk_vm_address_t target_address))
 {
     struct section *sec = NULL;
     uint32_t index = 0;
-    mk_vm_address_t context_address;
+    mk_vm_address_t target_address;
     
-    while ((sec = mk_load_command_segment_next_section(load_command, sec, &context_address))) {
-        enumerator(sec, index++, context_address);
+    while ((sec = mk_load_command_segment_next_section(load_command, sec, &target_address))) {
+        enumerator(sec, index++, target_address);
     }
 }
 #endif
@@ -268,13 +275,18 @@ mk_load_command_segment_enumerate_sections(mk_load_command_ref load_command, voi
 mk_error_t
 mk_load_command_segment_section_init(mk_load_command_ref segment, struct section *sec, mk_load_command_section_t *section)
 {
-    if (!segment.type) return MK_EINVAL;
-    if (!sec) return MK_EINVAL;
-    if (!section) return MK_EINVAL;
+    if (segment.type == NULL) return MK_EINVAL;
+    if (sec == NULL) return MK_EINVAL;
+    if (section == NULL) return MK_EINVAL;
     
-    if (!mk_memory_object_verify_local_pointer(&segment.load_command->image.macho->header_mapping, 0, (vm_address_t)sec, sizeof(*sec), NULL)) {
-        _mkl_debug(mk_type_get_context(segment.type), "Header mapping does not entirely contain section for image %s", segment.load_command->image.macho->name);
-        return MK_EINVALID_DATA;
+    uintptr_t cmd = (uintptr_t)segment.load_command->mach_load_command;
+    uint32_t cmdsize = mk_load_command_size(segment);
+    
+    if (mk_vm_range_contains_range(mk_vm_range_make(cmd, cmdsize), mk_vm_range_make((uintptr_t)sec, sizeof(*sec)), false) != MK_ESUCCESS) {
+        char buffer[512] = { 0 };
+        mk_load_command_copy_short_description(segment, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(segment.type), "Part of Mach-O section command (pointer = %p, size = %zd) is not within load command %s.", sec, sizeof(*sec), buffer);
+        return MK_EINVAL;
     }
     
     section->segment = segment;

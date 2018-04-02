@@ -64,7 +64,7 @@ mk_load_command_sub_library_copy_native(mk_load_command_ref load_command, struct
     struct sub_library_command *mach_sub_library_command = (struct sub_library_command*)load_command.load_command->mach_load_command;
     
     result->cmd = byte_order->swap32( mach_sub_library_command->cmd );
-    result->cmdsize = -byte_order->swap32( mach_sub_library_command->cmdsize );
+    result->cmdsize = byte_order->swap32( mach_sub_library_command->cmdsize );
     
     _mk_mach_lc_str_copy_native(load_command,
                                 &mach_sub_library_command->sub_library,

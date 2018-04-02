@@ -201,10 +201,13 @@ mk_load_command_build_version_get_ntools(mk_load_command_ref load_command)
 
 //|++++++++++++++++++++++++++++++++++++|//
 struct build_tool_version*
-mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, struct build_tool_version *previous, mk_vm_address_t *context_address)
+mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, struct build_tool_version *previous, mk_vm_address_t *target_address)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return NULL);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_build_version_class, return NULL);
+    
+    uintptr_t cmd = (uintptr_t)load_command.load_command->mach_load_command;
+    uint32_t cmdsize = mk_load_command_size(load_command);
     
     struct build_tool_version *tool;
     
@@ -214,40 +217,36 @@ mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, st
             return NULL;
         
         // Sanity Check
-        if (mk_load_command_size(load_command) < sizeof(struct build_version_command) + sizeof(struct build_tool_version)) {
-            _mkl_debug(mk_type_get_context(load_command.type), "Mach-O build version load command is less than sizeof(struct build_tool_version) in %s", load_command.load_command->image.macho->name);
+        if (cmdsize < sizeof(struct build_version_command) + sizeof(struct build_tool_version)) {
+            _mkl_debug(mk_type_get_context(load_command.type), "Mach-O load command 'cmdsize' [%" PRIu32 "] is less than sizeof(struct build_version_command) + sizeof(struct build_tool_version).", cmdsize);
             return NULL;
         }
         
-        tool = (typeof(tool))( (uint8_t*)load_command.load_command->mach_load_command + sizeof(struct build_version_command) );
+        tool = (typeof(tool))( (uintptr_t)cmd + sizeof(struct build_version_command) );
     }
     else
     {
-        // We need the size from the previous build_tool_version; first, verify the pointer.
+        // Verify the 'previous' tool pointer is within the load command.
         tool = previous;
-        if (!mk_memory_object_verify_local_pointer(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)tool, sizeof(*tool), NULL))
-        {
-            _mkl_debug(mk_type_get_context(load_command.type), "Failed to map build_tool_version at address %p in: %s", tool, load_command.load_command->image.macho->name);
+        if (mk_vm_range_contains_address(mk_vm_range_make(cmd, cmdsize), 0, (uintptr_t)tool) != MK_ESUCCESS) {
+            char buffer[512] = { 0 };
+            mk_load_command_copy_short_description(load_command, buffer, sizeof(buffer));
+            _mkl_debug(mk_type_get_context(load_command.type), "Previous Mach-O tool command pointer [%p] is not within load command %s.", previous, buffer);
             return NULL;
         }
         
-        tool = (typeof(tool))( ((uint8_t *)previous) + sizeof(struct build_tool_version) );
+        tool = (typeof(tool))( (uintptr_t)tool + sizeof(struct build_tool_version) );
     }
     
     // Avoid walking off the end of the load command
-    if ((uintptr_t)tool >= (uintptr_t)load_command.load_command->mach_load_command + mk_load_command_size(load_command))
+    if ((uintptr_t)tool >= cmd + cmdsize)
         return NULL;
     
-    // Verify that the header mapping holds the next build_tool_version
-    if (!mk_memory_object_verify_local_pointer(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)tool, sizeof(*tool), NULL)) {
-        _mkl_debug(mk_type_get_context(load_command.type), "Failed to map build_tool_version at address %p in: %s", tool, load_command.load_command->image.macho->name);
-        return NULL;
-    }
-    
-    if (context_address)
+    if (target_address)
     {
         mk_error_t err;
-        *context_address = mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)tool, sizeof(*tool), &err);
+        mk_memory_object_ref header_mapping = mk_macho_get_header_mapping(load_command.load_command->image);
+        *target_address = mk_memory_object_unmap_address(header_mapping, 0, (uintptr_t)tool, sizeof(*tool), &err);
         if (err != MK_ESUCCESS)
             return NULL;
     }
@@ -258,14 +257,14 @@ mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, st
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_load_command_build_version_enumerate_tools(mk_load_command_ref load_command, void (^enumerator)(struct build_tool_version *tool, uint32_t index, mk_vm_address_t context_address))
+mk_load_command_build_version_enumerate_tools(mk_load_command_ref load_command, void (^enumerator)(struct build_tool_version *tool, uint32_t index, mk_vm_address_t target_address))
 {
     struct build_tool_version *tool = NULL;
     uint32_t index = 0;
-    mk_vm_address_t context_address;
+    mk_vm_address_t target_address;
     
-    while ((tool = mk_load_command_build_version_get_next_tool(load_command, tool, &context_address))) {
-        enumerator(tool, index++, context_address);
+    while ((tool = mk_load_command_build_version_get_next_tool(load_command, tool, &target_address))) {
+        enumerator(tool, index++, target_address);
     }
 }
 #endif
@@ -278,13 +277,18 @@ mk_load_command_build_version_enumerate_tools(mk_load_command_ref load_command, 
 mk_error_t
 mk_load_command_build_version_build_tool_version_init(mk_load_command_ref build_version, struct build_tool_version *tool, mk_load_command_build_tool_version_t *build_tool_version)
 {
-    if (!build_version.type) return MK_EINVAL;
-    if (!tool) return MK_EINVAL;
-    if (!build_tool_version) return MK_EINVAL;
+    if (build_version.type == NULL) return MK_EINVAL;
+    if (tool == NULL) return MK_EINVAL;
+    if (build_tool_version == NULL) return MK_EINVAL;
     
-    if (!mk_memory_object_verify_local_pointer(&build_version.load_command->image.macho->header_mapping, 0, (vm_address_t)tool, sizeof(*tool), NULL)) {
-        _mkl_debug(mk_type_get_context(build_version.type), "Header mapping does not entirely contain build_tool_version for image %s", build_version.load_command->image.macho->name);
-        return MK_EINVALID_DATA;
+    uintptr_t cmd = (uintptr_t)build_version.load_command->mach_load_command;
+    uint32_t cmdsize = mk_load_command_size(build_version);
+    
+    if (mk_vm_range_contains_range(mk_vm_range_make(cmd, cmdsize), mk_vm_range_make((uintptr_t)tool, sizeof(*tool)), false) != MK_ESUCCESS) {
+        char buffer[512] = { 0 };
+        mk_load_command_copy_short_description(build_version, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(build_version.type), "Part of Mach-O tool command (pointer = %p, size = %zd) is not within load command %s.", tool, sizeof(*tool), buffer);
+        return MK_EINVAL;
     }
     
     build_tool_version->build_version = build_version;

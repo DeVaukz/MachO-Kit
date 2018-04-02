@@ -49,9 +49,9 @@
 //
 typedef struct mk_load_command_s {
     __MK_RUNTIME_BASE
-    // The image this load command resides in.
+    // The Mach-O image that the load command resides within.
     mk_macho_ref image;
-    // The Mach-O load command.
+    // Pointer to the Mach-O load command structure.
     struct load_command *mach_load_command;
 } mk_load_command_t;
 
@@ -116,55 +116,56 @@ _mk_export intptr_t mk_load_command_type;
 //! @name       Static Methods
 //----------------------------------------------------------------------------//
 
-
-//! Returns the id of the provided Mach load command, or 0 if there was an
+//! Returns the id of the specified Mach-O load command, or 0 if there was an
 //! error.
 _mk_export uint32_t
 mk_mach_load_command_id(mk_macho_ref image, struct load_command* lc);
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Working With Mach-O Load Commands
-//! @name       Working With Mach-O Load Commands
+#pragma mark -  Working With Load Commands
+//! @name       Working With Load Commands
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided load command with the provided Mach load command
-//! structure in \a image.
+//! Initializes a load command object.
 _mk_export mk_error_t
 mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command);
 
-//! Initializes \a copy with a copy of the provided \a load_command.
+//! Initializes \a copy with the contents of the specified load command.
 _mk_export mk_error_t
 mk_load_command_copy(mk_load_command_ref load_command, mk_load_command_t* copy);
 
-//! Returns the \c image that was provided when \a load_command was initialied.
+//! Returns the Mach-O image that the specified load command resides within.
 _mk_export mk_macho_ref
 mk_load_command_get_macho(mk_load_command_ref load_command);
 
-//! Returns the host-relative range of memory occupied by \a load_command.
+//! Returns range of memory (in the target address space) that the specified
+//! load command occupies.
 _mk_export mk_vm_range_t
-mk_load_command_get_range(mk_load_command_ref load_command);
+mk_load_command_get_target_range(mk_load_command_ref load_command);
 
-//! Returns the address of the provided \a load_command.
+//! Returns the address (in the target address space) of the specified load
+//! command.
 _mk_export mk_vm_address_t
-mk_load_command_get_address(mk_load_command_ref load_command);
+mk_load_command_get_target_address(mk_load_command_ref load_command);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Load Command Values
 //! @name       Load Command Values
 //----------------------------------------------------------------------------//
 
-//! Returns the id of the provided \a load_command.  This will match the value
+//! Returns the id of the specified load command.  This will match the value
 //! defined in \c <mach-o/loader.h> for the load command type.
 _mk_export uint32_t
 mk_load_command_id(mk_load_command_ref load_command);
 
-//! Returns the size of the provided \a load_command.
-_mk_export mk_vm_size_t
+//! Returns the size of the specified load command.
+_mk_export uint32_t
 mk_load_command_size(mk_load_command_ref load_command);
 
-//! Returns the base size of the mach load command structure for the provided
-//! \a load_command.
+//! Returns the base size of the Mach-O load command structure for the
+//! specified load command.
 _mk_export size_t
 mk_load_command_base_size(mk_load_command_ref load_command);
 

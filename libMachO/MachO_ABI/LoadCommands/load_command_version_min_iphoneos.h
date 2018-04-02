@@ -51,8 +51,7 @@ _mk_export uint8_t
 mk_load_command_version_min_iphoneos_get_version_minor(mk_load_command_ref load_command);
 
 _mk_export size_t
-mk_load_command_version_min_iphoneos_copy_version_string(mk_load_command_ref load_command,
-                                                         char *output, size_t output_len);
+mk_load_command_version_min_iphoneos_copy_version_string(mk_load_command_ref load_command, char *output, size_t output_len);
 
 _mk_export uint8_t
 mk_load_command_version_min_iphoneos_get_sdk_primary(mk_load_command_ref load_command);
@@ -62,8 +61,7 @@ _mk_export uint8_t
 mk_load_command_version_min_iphoneos_get_sdk_minor(mk_load_command_ref load_command);
 
 _mk_export size_t
-mk_load_command_version_min_iphoneos_copy_sdk_string(mk_load_command_ref load_command,
-                                                     char *output, size_t output_len);
+mk_load_command_version_min_iphoneos_copy_sdk_string(mk_load_command_ref load_command, char *output, size_t output_len);
 
 
 //! @} LOAD_COMMANDS !//

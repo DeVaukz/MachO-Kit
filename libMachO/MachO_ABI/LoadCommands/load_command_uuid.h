@@ -46,8 +46,7 @@ mk_load_command_uuid_copy_native(mk_load_command_ref load_command, struct uuid_c
 _mk_export mk_error_t
 mk_load_command_uuid_copy_uuid(mk_load_command_ref load_command, uint8_t output[16]);
 _mk_export size_t
-mk_load_command_uuid_copy_prety_uuid(mk_load_command_ref load_command, bool include_seperators,
-                                     char *output, size_t output_len);
+mk_load_command_uuid_copy_prety_uuid(mk_load_command_ref load_command, bool include_seperators, char *output, size_t output_len);
 
 
 //! @} LOAD_COMMANDS !//

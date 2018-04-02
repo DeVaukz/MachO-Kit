@@ -54,8 +54,8 @@ _mk_export const uint32_t _mk_load_command_classes_count;
 //! Executes \a ACTION if \a LC is not of the expected class.
 #define _MK_LOAD_COMMAND_IS_A(LC, CLASS, ACTION) \
     if (LC.load_command->vtable != &CLASS) { \
-        _mkl_debug(mk_type_get_context(LC.type), "mk_load_command_t %p is of type %s, expected %s", \
-        LC.type, mk_type_name(load_command.type), CLASS.base.name); \
+_mkl_debug(mk_type_get_context(LC.type), "Calling %s() with load command [%p] of unsupported type [%s].", \
+        __FUNCTION__, LC.type, mk_type_name(load_command.load_command)); \
         ACTION; \
     }
 
@@ -77,6 +77,19 @@ struct _mk_load_command_vtable {
 //! The member function table for the \c load_command type.
 _mk_internal_extern
 const struct _mk_load_command_vtable _mk_load_command_class;
+
+
+//----------------------------------------------------------------------------//
+#pragma mark -  Working With Load Commands
+//! @name       Working With Load Commands
+//----------------------------------------------------------------------------//
+
+//! Copies a short description of the specified load command into the provided
+//! \a output buffer.  Returns the number of bytes copied, not counting the
+//! terminating null character.  If \a outout is \c NULL, returns the length
+//! of the complete description, not counting the terminating null character.
+_mk_internal_extern size_t
+mk_load_command_copy_short_description(mk_load_command_ref load_command, char* output, size_t output_len);
 
 
 //! @} LOAD_COMMANDS !//

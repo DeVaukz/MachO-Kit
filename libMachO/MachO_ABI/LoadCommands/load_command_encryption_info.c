@@ -28,7 +28,8 @@
 #include "macho_abi_internal.h"
 
 //|++++++++++++++++++++++++++++++++++++|//
-size_t _mk_load_command_encryption_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
+static size_t
+_mk_load_command_encryption_info_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     return (size_t)snprintf(output, output_len, "<%s %p> {\n\
 \tcryptoff = 0x%" PRIx32 "\n\

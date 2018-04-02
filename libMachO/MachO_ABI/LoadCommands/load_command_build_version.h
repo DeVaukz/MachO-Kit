@@ -54,8 +54,7 @@ _mk_export uint8_t
 mk_load_command_build_version_get_minos_minor(mk_load_command_ref load_command);
 
 _mk_export size_t
-mk_load_command_build_version_copy_minos_string(mk_load_command_ref load_command,
-                                                char *output, size_t output_len);
+mk_load_command_build_version_copy_minos_string(mk_load_command_ref load_command, char *output, size_t output_len);
 
 _mk_export uint16_t
 mk_load_command_build_version_get_sdk_primary(mk_load_command_ref load_command);
@@ -65,22 +64,21 @@ _mk_export uint8_t
 mk_load_command_build_version_get_sdk_minor(mk_load_command_ref load_command);
 
 _mk_export size_t
-mk_load_command_build_version_copy_sdk_string(mk_load_command_ref load_command,
-                                              char *output, size_t output_len);
+mk_load_command_build_version_copy_sdk_string(mk_load_command_ref load_command, char *output, size_t output_len);
 
 _mk_export uint32_t
 mk_load_command_build_version_get_ntools(mk_load_command_ref load_command);
 
 _mk_export struct build_tool_version*
-mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, struct build_tool_version *previous,
-                                            mk_vm_address_t *context_address);
+mk_load_command_build_version_get_next_tool(mk_load_command_ref load_command, struct build_tool_version *previous, mk_vm_address_t *target_address);
 
 #if __BLOCKS__
 //! Iterate over the build tools using a block.
 _mk_export void
 mk_load_command_build_version_enumerate_tools(mk_load_command_ref load_command,
-                                              void (^enumerator)(struct build_tool_version *tool, uint32_t index, mk_vm_address_t context_address));
+                                              void (^enumerator)(struct build_tool_version *tool, uint32_t index, mk_vm_address_t target_address));
 #endif
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Build Tools
@@ -91,25 +89,24 @@ mk_load_command_build_version_enumerate_tools(mk_load_command_ref load_command,
 //! @internal
 //
 typedef struct mk_load_command_build_tool_version_s {
-    // The build_version command that this build tool version resides in.
+    // The build_version command that the build tool version resides within.
     mk_load_command_ref build_version;
-    // The Mach-O build_tool_version.
+    // Pointer to the Mach-O build_tool_version structure.
     struct build_tool_version *mach_build_tool_version;
 } mk_load_command_build_tool_version_t;
 
 //! Initializes a new build tool version.
 _mk_export mk_error_t
-mk_load_command_build_version_build_tool_version_init(mk_load_command_ref build_version, struct build_tool_version *tool,
-                                                      mk_load_command_build_tool_version_t *build_tool_version);
+mk_load_command_build_version_build_tool_version_init(mk_load_command_ref build_version, struct build_tool_version *tool, mk_load_command_build_tool_version_t *build_tool_version);
 
 _mk_export mk_error_t
-mk_load_command_build_version_build_tool_version_copy_native(mk_load_command_build_tool_version_t *build_tool_version,
-                                                             struct build_tool_version *result);
+mk_load_command_build_version_build_tool_version_copy_native(mk_load_command_build_tool_version_t *build_tool_version, struct build_tool_version *result);
 
 _mk_export uint32_t
 mk_load_command_build_version_build_tool_version_get_tool(mk_load_command_build_tool_version_t *build_tool_version);
 _mk_export uint32_t
 mk_load_command_build_version_build_tool_version_get_version(mk_load_command_build_tool_version_t *build_tool_version);
+
 
 //! @} LOAD_COMMANDS !//
 

@@ -44,6 +44,7 @@ mk_error_t mk_load_command_segment_split_info_copy_native(mk_load_command_ref lo
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return MK_EINVAL);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_split_info_class, return MK_EINVAL);
+    
     return _mk_load_command_type_linkedit_copy_native(load_command, result);
 }
 
@@ -52,6 +53,7 @@ uint32_t mk_load_command_segment_split_info_get_dataoff(mk_load_command_ref load
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_split_info_class, return UINT32_MAX);
+    
     return _mk_load_command_type_linkedit_get_dataoff(load_command);
 }
 
@@ -60,5 +62,6 @@ uint32_t mk_load_command_segment_split_info_get_datasize(mk_load_command_ref loa
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT32_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_segment_split_info_class, return UINT32_MAX);
+    
     return _mk_load_command_type_linkedit_get_datasize(load_command);
 }

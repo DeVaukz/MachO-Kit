@@ -63,14 +63,13 @@ _mk_export uint32_t
 mk_load_command_segment_64_get_flags(mk_load_command_ref load_command);
 
 _mk_export struct section_64*
-mk_load_command_segment_64_next_section(mk_load_command_ref load_command, struct section_64 *previous,
-                                        mk_vm_address_t *context_address);
+mk_load_command_segment_64_next_section(mk_load_command_ref load_command, struct section_64 *previous, mk_vm_address_t *target_address);
 
 #if __BLOCKS__
 //! Iterate over the available sections using a block.
 _mk_export void
 mk_load_command_segment_64_enumerate_sections(mk_load_command_ref load_command,
-                                              void (^enumerator)(struct section_64 *command, uint32_t index, mk_vm_address_t context_address));
+                                              void (^enumerator)(struct section_64 *command, uint32_t index, mk_vm_address_t target_address));
 #endif
 
 
@@ -83,9 +82,9 @@ mk_load_command_segment_64_enumerate_sections(mk_load_command_ref load_command,
 //! @internal
 //
 typedef struct mk_section_64_s {
-    // The segment this section resides in.
+    // The segment load command that the section command resides within.
     mk_load_command_ref segment;
-    // The Mach-O section.
+    // Pointer to the Mach-O section_64 structure.
     struct section_64 *mach_section;
 } mk_load_command_section_64_t;
 

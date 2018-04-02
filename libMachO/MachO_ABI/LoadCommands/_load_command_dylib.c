@@ -40,8 +40,7 @@ _mk_load_command_type_dylib_copy_description(mk_load_command_ref load_command, c
 \tcurrent_version = 0x%" PRIx32 "\n\
 \tcompatibility_version = 0x%" PRIx32 "\n\
 \n}",
-                            mk_type_name(load_command.type), load_command.type,
-                            buffer,
+                            mk_type_name(load_command.type), load_command.type, buffer,
                             _mk_load_command_type_dylib_get_timestamp(load_command),
                             _mk_load_command_type_dylib_get_current_version(load_command),
                             _mk_load_command_type_dylib_get_current_compatibility_version(load_command));

@@ -28,38 +28,51 @@
 #ifndef __mach_lcstr_h
 #define __mach_lcstr_h
 
-//! Copies the contents of \a source_str from the source load command into
-//! the destination load command, updating \a dest_lc with the correct
-//! offset.
+//! Copies the contents of the specified load command string from the specified
+//! source load command into the specified destination load command, updating
+//! specified load command string with the offset.
+//!
+//! @param  source_load_command
+//!         The load command containing the \a source_str.  The full
+//!         load command must be mapped into process accessible memory.
+//! @param  src_lc_str
+//!         The \c lc_str structure for the source string.  This must be
+//!         within \a source_lc.
+//! @param  dest_lc_str
+//!         A load command structure containing \a dest_str.
+//! @param  dest_str
+//!         The \c lc_str structure for the destination string.  This must be
+//!         within \a dest_lc.
+//! @param  The size of the \a dest_lc structure.
 //!
 //! @return
-//! The number of bytes copied.
+//! The number of bytes copied, not counting the terminating null character.
 _mk_internal_extern size_t
-_mk_mach_lc_str_copy_native(mk_load_command_ref source_lc, union lc_str *source_str,
-                            struct load_command *dest_lc, union lc_str *dest_str, size_t dest_cmd_size);
+_mk_mach_lc_str_copy_native(mk_load_command_ref source_load_command, union lc_str *src_lc_str,
+                            struct load_command *dest_lc, union lc_str *dest_lc_str, size_t dest_cmdsize);
 
-//! Copies the contents of the string referenced by the mach \c lc_str structure
-//! for the given load command.
+//! Copies the contents of the specified load command string into the provided
+//! \a output buffer.
 //!
-//! @param  lc
-//!         The load command containing the \c lc_str structure.  The full
+//! @param  load_command
+//!         The load command containing the \a source_str.  The full
 //!         load command must be mapped into process accessible memory.
-//! @param  lc_base_size
-//!         \c sizeof(*lc);
-//! @param  str
-//!         A mach \c lc_str structure residing within the provided load
-//!         command.
+//! @param  lc_str
+//!         The \c lc_str structure for the source string.  This must be
+//!         within \a source_lc.
 //! @param  output
 //!         A buffer to receive the contents of the string.  May be \c NULL.
 //! @param  output_len
 //!         The size of the \a output buffer.
 //! @param  include_terminator
 //!         Forces the string copied to \a output to be \c NULL terminated
-//!         regardless of whether the source string is terminated.
+//!         regardless of whether the source string is \c NULL terminated.
 //! @return
-//! The number of bytes required to receive the full contents of the string.
+//! The number of bytes copied, not counting the terminating null character.
+//! If \a outout is \c NULL, returns the length of the load command string,
+//! not counting the terminating null character.
 _mk_internal_extern size_t
-_mk_mach_lc_str_copy(mk_load_command_ref source_lc, union lc_str *source_str,
+_mk_mach_lc_str_copy(mk_load_command_ref load_command, union lc_str *lc_str,
                      char *output, size_t output_len, bool include_terminator);
 
 #endif /* __mach_lcstr_h */

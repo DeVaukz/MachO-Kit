@@ -140,15 +140,15 @@ const uint32_t _mk_load_command_classes_count = sizeof(_mk_load_command_classes)
 
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
-__mk_load_command_get_context(mk_type_ref self)
-{ return mk_type_get_context( ((mk_load_command_t*)self)->image.macho ); }
+__mk_load_command_get_context(mk_load_command_ref self)
+{ return mk_type_get_context( self.load_command->image.type ); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 static bool
-__mk_load_command_equal(mk_type_ref self, mk_type_ref other)
+__mk_load_command_equal(mk_load_command_ref self, mk_load_command_ref other)
 {
-    mk_load_command_t *load_command = (mk_load_command_t*)self;
-    mk_load_command_t *other_command = (mk_load_command_t*)other;
+    mk_load_command_t *load_command = (mk_load_command_t*)self.load_command;
+    mk_load_command_t *other_command = (mk_load_command_t*)other.load_command;
     
     if (load_command->vtable != other_command->vtable) return false;
     if (!mk_type_equal(load_command->image.macho, other_command->image.macho)) return false;
@@ -159,10 +159,11 @@ __mk_load_command_equal(mk_type_ref self, mk_type_ref other)
 
 //|++++++++++++++++++++++++++++++++++++|//
 static size_t
-__mk_load_command_copy_description(mk_type_ref self, char *output, size_t output_len)
+__mk_load_command_copy_description(mk_load_command_ref self, char *output, size_t output_len)
 {
-    return (size_t)snprintf(output, output_len, "<%s %p; size = %llu>", mk_type_name(self),
-                            self, mk_load_command_size((mk_load_command_t*)self));
+    return (size_t)snprintf(output, output_len, "<%s %p; target_address = %" MK_VM_PRIxADDR ", size = %" PRIu32 ">",
+                            mk_type_name(self.type), self.type,
+                            mk_load_command_get_target_address(self), mk_load_command_size(self));
 }
 
 const struct _mk_load_command_vtable _mk_load_command_class = {
@@ -185,12 +186,16 @@ intptr_t mk_load_command_type = (intptr_t)&_mk_load_command_class;
 uint32_t
 mk_mach_load_command_id(mk_macho_ref image, struct load_command* lc)
 {
-    if (!image.macho) return 0;
-    if (!lc) return 0;
+    if (image.macho == NULL) return 0;
+    if (lc == NULL) return 0;
     
-    // Need to first verify it is safe to dereference lc.
-    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, sizeof(*lc), NULL)) {
-        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+    mk_memory_object_ref header_mapping = mk_macho_get_header_mapping(image);
+    
+    // Verify that it is safe to dereference lc.
+    if (!mk_memory_object_verify_local_pointer(header_mapping, 0, (uintptr_t)lc, sizeof(*lc), NULL)) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(header_mapping.memory_object, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(image.macho), "Mach-O load command pointer [%p] is not within Mach-O header %s.", lc, buffer);
         return 0;
     }
     
@@ -198,24 +203,34 @@ mk_mach_load_command_id(mk_macho_ref image, struct load_command* lc)
 }
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Working With Mach-O Load Commands
+#pragma mark -  Working With Load Commands
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command)
+mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_command_t* load_command)
 {
-    if (!image.macho) return MK_EINVAL;
-    if (!lc) return MK_EINVAL;
-    if (!load_command) return MK_EINVAL;
+    if (image.macho == NULL) return MK_EINVAL;
+    if (lc == NULL) return MK_EINVAL;
+    if (load_command == NULL) return MK_EINVAL;
     
-    // Need to first verify it is safe to dereference lc.
-    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, sizeof(*lc), NULL)) {
-        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+    mk_memory_object_ref header_mapping = mk_macho_get_header_mapping(image);
+    
+    // Verify that it is safe to dereference lc.
+    if (!mk_memory_object_verify_local_pointer(header_mapping, 0, (uintptr_t)lc, sizeof(*lc), NULL)) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(header_mapping.memory_object, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(image.macho), "Mach-O load command pointer [%p] is not within Mach-O header %s.", lc, buffer);
         return MK_EINVALID_DATA;
     }
-    if (!mk_memory_object_verify_local_pointer(&image.macho->header_mapping, 0, (vm_address_t)lc, mk_macho_get_byte_order(image)->swap32(lc->cmdsize), NULL)) {
-        _mkl_error(mk_type_get_context(image.macho), "Header mapping does not entirely contain load command %d in image %s", lc->cmd, image.macho->name);
+    
+    uint32_t lc_cmdsize = mk_macho_get_byte_order(image)->swap32(lc->cmdsize);
+    
+    // Verify that lc is completely within the header mapping.
+    if (!mk_memory_object_verify_local_pointer(header_mapping, 0, (uintptr_t)lc, lc_cmdsize, NULL)) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(header_mapping.memory_object, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(image.macho), "Part of Mach-O load command (pointer = %p, size = %" PRIu32 ") is not within Mach-O header %s.", lc, lc_cmdsize, buffer);
         return MK_EINVALID_DATA;
     }
     
@@ -374,8 +389,8 @@ mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_
             load_command->vtable = &_mk_load_command_build_version_class;
             break;
         default:
-            _mkl_error(mk_type_get_context(image.macho), "Unknown load command %d in image %s", lc->cmd, image.macho->name);
-            return MK_ENOT_FOUND;
+            _mkl_error(mk_type_get_context(image.macho), "Unknown load command type [%" PRIu32 "].", lc->cmd);
+            return MK_EINVALID_DATA;
     }
     
     return MK_ESUCCESS;
@@ -385,8 +400,8 @@ mk_load_command_init(const mk_macho_ref image, struct load_command* lc, mk_load_
 mk_error_t
 mk_load_command_copy(mk_load_command_ref load_command, mk_load_command_t* copy)
 {
-    if (!copy) return MK_EINVAL;
-    if (!load_command.type) return MK_EINVAL;
+    if (copy == NULL) return MK_EINVAL;
+    if (load_command.type == NULL) return MK_EINVAL;
     
     copy->vtable = load_command.load_command->vtable;
     copy->image = load_command.load_command->image;
@@ -402,16 +417,30 @@ mk_load_command_get_macho(mk_load_command_ref load_command)
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t
-mk_load_command_get_range(mk_load_command_ref load_command)
-{
-    return mk_vm_range_make(mk_load_command_get_address(load_command), mk_load_command_size(load_command));
-}
+mk_load_command_get_target_range(mk_load_command_ref load_command)
+{ return mk_vm_range_make(mk_load_command_get_target_address(load_command), mk_load_command_size(load_command)); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_address_t
-mk_load_command_get_address(mk_load_command_ref load_command)
+mk_load_command_get_target_address(mk_load_command_ref load_command)
 {
-    return mk_memory_object_unmap_address(&load_command.load_command->image.macho->header_mapping, 0, (vm_address_t)load_command.load_command->mach_load_command, (vm_size_t)mk_load_command_size(load_command), NULL);
+    mk_memory_object_ref header_mapping = mk_macho_get_header_mapping(load_command.load_command->image);
+    
+    uintptr_t cmd = (uintptr_t)load_command.load_command->mach_load_command;
+    uint32_t cmdsize = mk_load_command_size(load_command);
+    
+    return mk_memory_object_unmap_address(header_mapping, 0, cmd, cmdsize, NULL);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+size_t
+mk_load_command_copy_short_description(mk_load_command_ref load_command, char* output, size_t output_len)
+{
+    return (size_t)snprintf(output, output_len, "<%s %p; target_address = %" MK_VM_PRIxADDR ", local_address = 0x%" PRIxPTR ", size = %" PRIu32 ">",
+                            mk_type_name(load_command.type), load_command.load_command,
+                            mk_load_command_get_target_address(load_command),
+                            (uintptr_t)load_command.load_command->mach_load_command,
+                            mk_load_command_size(load_command));
 }
 
 //----------------------------------------------------------------------------//
@@ -423,16 +452,19 @@ uint32_t
 mk_load_command_id(mk_load_command_ref load_command)
 {
     struct _mk_load_command_vtable *vtable = (struct _mk_load_command_vtable*)load_command.load_command->vtable;
-    if (vtable->command_id)
-        return vtable->command_id;
+    _mk_assert(vtable->command_id != 0, mk_type_get_context(load_command.type),
+               "Load command class [%p] must specify a load command id.", vtable);
     
-    fprintf(stderr, "%s must specify a valid load command id.", mk_type_name(load_command.type));
-    __builtin_trap();
+    return vtable->command_id;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_size_t mk_load_command_size(mk_load_command_ref load_command)
-{ return (mk_vm_size_t)mk_macho_get_byte_order(load_command.load_command->image)->swap32( load_command.load_command->mach_load_command->cmdsize ); }
+uint32_t
+mk_load_command_size(mk_load_command_ref load_command)
+{
+    struct load_command *mach_load_command = (struct load_command*)load_command.load_command->mach_load_command;
+    return mk_macho_get_byte_order(load_command.load_command->image)->swap32( mach_load_command->cmdsize );
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 size_t
@@ -440,7 +472,7 @@ mk_load_command_base_size(const mk_load_command_ref load_command)
 {
     struct _mk_load_command_vtable *vtable = (struct _mk_load_command_vtable*)load_command.load_command->vtable;
     _mk_assert(vtable->command_base_size != 0, mk_type_get_context(load_command.type),
-               "Load command type [%s] must specify a base command size.", mk_type_name(load_command.load_command));
+               "Load command class [%p] must specify a base command size.", vtable);
     
     return vtable->command_base_size;
 }

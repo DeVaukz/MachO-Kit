@@ -65,6 +65,7 @@ mk_load_command_sub_client_copy_native(mk_load_command_ref load_command, struct 
     
     result->cmd = byte_order->swap32( mach_sub_client_command->cmd );
     result->cmdsize = byte_order->swap32( mach_sub_client_command->cmdsize );
+    
     _mk_mach_lc_str_copy_native(load_command,
                                 &mach_sub_client_command->client,
                                 (struct load_command*)result,

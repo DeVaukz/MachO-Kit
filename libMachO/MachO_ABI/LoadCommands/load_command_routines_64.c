@@ -83,6 +83,7 @@ mk_load_command_routines_64_get_init_address(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT64_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_routines_64_class, return UINT64_MAX);
+    
     struct routines_command_64 *mach_routines_command = (struct routines_command_64*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap64( mach_routines_command->init_address );
 }
@@ -93,6 +94,7 @@ mk_load_command_routines_64_get_init_module(mk_load_command_ref load_command)
 {
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return UINT64_MAX);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_routines_64_class, return UINT64_MAX);
+    
     struct routines_command_64 *mach_routines_command = (struct routines_command_64*)load_command.load_command->mach_load_command;
     return mk_macho_get_byte_order(load_command.load_command->image)->swap64( mach_routines_command->init_module );
 }

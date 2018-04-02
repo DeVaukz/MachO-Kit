@@ -28,7 +28,8 @@
 #include "macho_abi_internal.h"
 
 //|++++++++++++++++++++++++++++++++++++|//
-size_t _mk_load_command_note_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
+static size_t
+_mk_load_command_note_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
     char buffer[17] = { 0 };
     mk_load_command_note_copy_data_owner(load_command, buffer);
