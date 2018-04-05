@@ -65,7 +65,7 @@ mk_indirect_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref dysy
     if (indirectsymoff == 0)
         return MK_ENOT_FOUND;
     
-    mk_vm_address_t vm_address = mk_segment_get_range(link_edit).location;
+    mk_vm_address_t vm_address = mk_segment_get_target_range(segment).location;
     mk_error_t err;
     
     // This already include the slide.
@@ -85,8 +85,8 @@ mk_indirect_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref dysy
     symbol_table->range = mk_vm_range_make(vm_address, nindirectsyms * sizeof(uint32_t));
     
     // Make sure we are fully within the link_edit segment
-    if ((err = mk_vm_range_contains_range(mk_segment_get_range(link_edit), symbol_table->range, false))) {
         _mkl_error(mk_type_get_context(link_edit.segment), "__LINKEDIT segment does not fully contain the indirect symbol table.");
+    if ((err = mk_vm_range_contains_range(mk_segment_get_target_range(segment), symbol_table->range, false))) {
         return err;
     }
     

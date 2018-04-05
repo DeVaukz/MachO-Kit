@@ -29,7 +29,7 @@
 //! @defgroup SEGMENTS Segments
 //! @ingroup MACH
 //!
-//! Parsers for Segments.
+//! Parsers for Mach-O segments and sections.
 //----------------------------------------------------------------------------//
 
 #ifndef _segment_h
@@ -46,19 +46,19 @@
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 typedef union {
-    void *any;
-    struct segment_command *segment_command;
-    struct segment_command_64 *segment_command_64;
-} mk_mach_segment _mk_transparent_union;
+    struct load_command *any;
+    struct segment_command *segment;
+    struct segment_command_64 *segment_64;
+} mk_macho_segment_load_command_ptr _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
 //
 typedef struct mk_segment_s {
     __MK_RUNTIME_BASE
-    // The load command for this segment.
+    // The load command that defines the segment.
     mk_load_command_t command;
-    // Memory object for accessing this segment.
+    // Memory object mapping the segment into the current process.
     mk_memory_object_t memory_object;
 } mk_segment_t;
 
@@ -66,6 +66,7 @@ typedef struct mk_segment_s {
 //! The Segment polymorphic type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_segment_s *segment;
 } mk_segment_ref _mk_transparent_union;
 
@@ -85,47 +86,49 @@ _mk_export intptr_t mk_segment_type;
 //! @name       Working With Segments
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided segment with the provided load command.
+//! Initializes a Segment object.
 //!
 //! @param  load_command
-//!         A reference to a \c segment or \c segment_64 load command.
+//!         The load command that defines the segment.
 //! @param  segment
-//!         A pointer to the \ref mk_segment_t that will be initialized.
+//!         A valid \ref mk_segment_t structure.
 _mk_export mk_error_t
 mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment);
 
-//! Initializes the provided segment with the provided image and mach load
-//! command.
+//! Initializes a Segment object with the specified Mach-O image and Mach-O
+//! segment load command.
 _mk_export mk_error_t
-mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_mach_segment mach_segment, mk_segment_t* segment);
+mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_macho_segment_load_command_ptr lc, mk_segment_t* segment);
 
-//! Releases any resources held by \a segment
+//! Cleans up any resources held by \a segment.  It is no longer safe to
+//! use \a segment after calling this function.
 _mk_export void
 mk_segment_free(mk_segment_ref segment);
 
-//! Returns the image that \a segment resides within.
+//! Returns the Mach-O image that the specified segment resides within.
 _mk_export mk_macho_ref
 mk_segment_get_macho(mk_segment_ref segment);
 
-//! Returns the underlying load command for \a segment.
+//! Returns the load command that defines the specified segment.
 _mk_export mk_load_command_ref
 mk_segment_get_load_command(mk_segment_ref segment);
 
-//! Returns the host-relative range of memory occupied by \a segment.
+//! Returns range of memory (in the target address space) that the specified
+//! segment occupies.
 _mk_export mk_vm_range_t
-mk_segment_get_range(mk_segment_ref segment);
+mk_segment_get_target_range(mk_segment_ref segment);
 
-//! Returns a memory object that can be used to safely access \a segment
-//! contents.
+//! Returns the memory object mapping the specified segment into the current
+//! process.
 _mk_export mk_memory_object_ref
-mk_segment_get_mobj(mk_segment_ref segment);
+mk_segment_get_mapping(mk_segment_ref segment);
 
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Segment Values
 //! @name       Segment Values
 //!
-//! These functions return values directly from the underlying Mach
+//! These functions return values directly from the underlying Mach-O
 //! segment(_64) structure.
 //----------------------------------------------------------------------------//
 
@@ -154,15 +157,15 @@ mk_segment_get_flags(mk_segment_ref segment);
 //! @name       Enumerating Sections
 //----------------------------------------------------------------------------//
 
-//! Iterate over the sections in this segment.
-_mk_export mk_mach_section
-mk_segment_next_section(mk_segment_ref segment, mk_mach_section previous, mk_vm_address_t* host_address);
+//! Iterate over the Mach-O section commands in the specified segment.
+_mk_export mk_macho_section_command_ptr
+mk_segment_next_section(mk_segment_ref segment, mk_macho_section_command_ptr previous, mk_vm_address_t* host_address);
 
 #if __BLOCKS__
-//! Iterate over the available sections using a block.
+//! Iterate over the sections in the specified segment using a block.
 _mk_export void
 mk_segment_enumerate_sections(mk_segment_ref segment,
-                              void (^enumerator)(mk_mach_section section, uint32_t index));
+                              void (^enumerator)(mk_macho_section_command_ptr section, uint32_t index));
 #endif
 
 

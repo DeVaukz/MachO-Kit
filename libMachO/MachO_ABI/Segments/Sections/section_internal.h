@@ -47,7 +47,7 @@ struct _mk_section_vtable {
     __MK_RUNTIME_TYPE_BASE
 };
 
-//! The member function table for the \c section type type.
+//! The member function table for the \c section type.
 _mk_internal_extern
 const struct _mk_section_vtable _mk_section_class;
 

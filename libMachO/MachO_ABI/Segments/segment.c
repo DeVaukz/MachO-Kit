@@ -33,13 +33,24 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
-__mk_segment_get_context(mk_type_ref self)
-{ return mk_type_get_context( &((mk_segment_t*)self)->command ); }
+__mk_segment_get_context(mk_segment_ref self)
+{ return mk_type_get_context( &self.segment->command ); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+static size_t
+__mk_segment_copy_description(mk_segment_ref self, char *output, size_t output_len)
+{
+    return (size_t)snprintf(output, output_len, "<%s %p; target_address = %" MK_VM_PRIxADDR ", vmAddress = %" MK_VM_PRIxADDR ", vmSize = %" MK_VM_PRIxSIZE ">",
+                            mk_type_name(self.type), self.type,
+                            mk_segment_get_target_range(self).location,
+                            mk_segment_get_vmaddr(self), mk_segment_get_vmsize(self));
+}
 
 const struct _mk_segment_vtable _mk_segment_class = {
     .base.super                 = &_mk_type_class,
     .base.name                  = "segment",
-    .base.get_context           = &__mk_segment_get_context
+    .base.get_context           = &__mk_segment_get_context,
+    .base.copy_description      = &__mk_segment_copy_description
 };
 
 intptr_t mk_segment_type = (intptr_t)&_mk_segment_class;
@@ -53,42 +64,39 @@ mk_error_t
 mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
 {
     if (segment == NULL) return MK_EINVAL;
-    if (load_command.type == NULL) return MK_EINVAL;
+    if (load_command.load_command == NULL) return MK_EINVAL;
     
     mk_error_t err;
-    
-    if (mk_load_command_id(load_command) != mk_load_command_segment_id() && mk_load_command_id(load_command) != mk_load_command_segment_64_id()) {
-        _mkl_error(mk_type_get_context(load_command.type), "The load_command used to initialize an mk_segment must be one of LC_SEGMENT or LC_SEGMENT64, got %s", mk_type_name(load_command.type));
-        return MK_EINVAL;
-    }
-    
     mk_macho_ref image = mk_load_command_get_macho(load_command);
     
     mk_vm_address_t vm_address;
     mk_vm_size_t vm_size;
-    char seg_name[17] = {0x0};
+    char seg_name[17] = { 0 };
     
     if (mk_load_command_id(load_command) == mk_load_command_segment_64_id()) {
         vm_address = mk_load_command_segment_64_get_vmaddr(load_command);
         vm_size = mk_load_command_segment_64_get_vmsize(load_command);
         mk_load_command_segment_64_copy_name(load_command, seg_name);
-    } else {
+    } else if (mk_load_command_id(load_command) == mk_load_command_segment_id()) {
         vm_address = mk_load_command_segment_get_vmaddr(load_command);
         vm_size = mk_load_command_segment_get_vmsize(load_command);
         mk_load_command_segment_copy_name(load_command, seg_name);
+    } else {
+        _mkl_debug(mk_type_get_context(image.type), "Unsupported load command type [%s].", mk_type_name(load_command.type));
+        return MK_EINVAL;
     }
     
     // Slide the vmAddress
     {
-        mk_vm_offset_t slide = (mk_vm_offset_t)mk_macho_get_slide(image);
+        mk_vm_slide_t slide = (mk_vm_slide_t)mk_macho_get_slide(image);
         
-        if ((err = mk_vm_address_apply_offset(vm_address, slide, &vm_address))) {
-            _mkl_error(mk_type_get_context(load_command.type), "Arithmetic error %s while applying slide (%" MK_VM_PRIiOFFSET ") to vm_address (%" MK_VM_PRIxADDR ")", mk_error_string(err), slide, vm_address);
+        if ((err = mk_vm_address_apply_slide(vm_address, slide, &vm_address))) {
+            _mkl_debug(mk_type_get_context(image.type), "Arithmetic error [%s] applying slide [%" MK_VM_PRIiSLIDE "] to segment VM address [0x%" MK_VM_PRIxADDR "].", mk_error_string(err), slide, vm_address);
             return err;
         }
     }
     
-    // __PAGEZERO can not be mapped in a 64-bit process.  The kernel sets the
+    // __PAGEZERO in a 64-bit process can not be mapped.  The kernel sets the
     // start of the process vm map to be just after it.
     if (!strncmp(seg_name, SEG_PAGEZERO, sizeof(seg_name)))
         return MK_EUNAVAILABLE;
@@ -103,10 +111,10 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
     if (mk_macho_is_from_shared_cache(image) && !strncmp(seg_name, SEG_LINKEDIT, sizeof(seg_name)))
         allowShortMappings = true;
     
-    // Create a memory object for accessing this segment.  This will also check
+    // Create a memory object for accessing the segment.  This will also check
     // vmAddress + vmSize for potential overflow.
     if ((err = mk_memory_map_init_object(mk_macho_get_memory_map(image), 0, vm_address, vm_size, !allowShortMappings, &segment->memory_object))) {
-        _mkl_error(mk_type_get_context(load_command.type), "Failed to init memory object for segment %s at (vmAddress = %" MK_VM_PRIxADDR ", vmSize = %" MK_VM_PRIiSIZE "", seg_name, vm_address, vm_size);
+        _mkl_debug(mk_type_get_context(image.type), "Failed to map segment [%s] (target_address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ").", seg_name, vm_address, vm_size);
         return err;
     }
     
@@ -118,12 +126,12 @@ mk_segment_init(mk_load_command_ref load_command, mk_segment_t* segment)
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_mach_segment mach_segment, mk_segment_t* segment)
+mk_segment_init_with_mach_load_command(mk_macho_ref image, mk_macho_segment_load_command_ptr lc, mk_segment_t* segment)
 {
     mk_error_t err;
     mk_load_command_t load_command;
     
-    if ((err = mk_load_command_init(image, mach_segment.any, &load_command)))
+    if ((err = mk_load_command_init(image, lc.any, &load_command)))
         return err;
     
     return mk_segment_init(&load_command, segment);
@@ -142,26 +150,20 @@ mk_macho_ref mk_segment_get_macho(mk_segment_ref segment)
 { return mk_load_command_get_macho(&segment.segment->command); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_load_command_ref
-mk_segment_get_load_command(mk_segment_ref segment)
+mk_load_command_ref mk_segment_get_load_command(mk_segment_ref segment)
+{ return (mk_load_command_ref)&segment.segment->command; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_vm_range_t mk_segment_get_target_range(mk_segment_ref segment)
 {
-    mk_load_command_ref ret;
-    ret.load_command = &segment.segment->command;
-    return ret;
+    intptr_t slide = mk_macho_get_slide(mk_segment_get_macho(segment));
+    // Safely applying the slide to addr was checked in the initializer.
+    return mk_vm_range_make(mk_segment_get_vmaddr(segment) + (vm_offset_t)slide, mk_segment_get_vmsize(segment));
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_range_t mk_segment_get_range(mk_segment_ref segment)
-{ return mk_memory_object_target_range(mk_segment_get_mobj(segment)); }
-
-//|++++++++++++++++++++++++++++++++++++|//
-mk_memory_object_ref
-mk_segment_get_mobj(mk_segment_ref segment)
-{
-    mk_memory_object_ref ret;
-    ret.memory_object = &segment.segment->memory_object;
-    return ret;
-}
+mk_memory_object_ref mk_segment_get_mapping(mk_segment_ref segment)
+{ return (mk_memory_object_ref)&segment.segment->memory_object; }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Segment Values
@@ -262,10 +264,10 @@ mk_segment_get_flags(mk_segment_ref segment)
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_mach_section
-mk_segment_next_section(mk_segment_ref segment, mk_mach_section previous, mk_vm_address_t* host_address)
+mk_macho_section_command_ptr
+mk_segment_next_section(mk_segment_ref segment, mk_macho_section_command_ptr previous, mk_vm_address_t* host_address)
 {
-    mk_mach_section cmd;
+    mk_macho_section_command_ptr cmd;
     
     if (mk_load_command_id(&segment.segment->command) == mk_load_command_segment_64_id())
         cmd.section_64 = mk_load_command_segment_64_next_section(&segment.segment->command, previous.section_64, host_address);
@@ -278,9 +280,9 @@ mk_segment_next_section(mk_segment_ref segment, mk_mach_section previous, mk_vm_
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(mk_mach_section section, uint32_t index))
+mk_segment_enumerate_sections(mk_segment_ref segment, void (^enumerator)(mk_macho_section_command_ptr section, uint32_t index))
 {
-    mk_mach_section section; section.any = NULL;
+    mk_macho_section_command_ptr section; section.any = NULL;
     uint32_t i = 0;
     while ((section = mk_segment_next_section(segment, section, NULL)).any) {
         enumerator(section, i++);

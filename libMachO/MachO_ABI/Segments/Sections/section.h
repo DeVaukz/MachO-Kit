@@ -29,7 +29,7 @@
 //! @defgroup SECTIONS Sections
 //! @ingroup SEGMENTS
 //!
-//! Parsers for Sections.
+//! Parsers for Mach-O sections.
 //----------------------------------------------------------------------------//
 
 #ifndef _section_h
@@ -49,7 +49,7 @@ typedef union {
     void *any;
     struct section *section;
     struct section_64 *section_64;
-} mk_mach_section _mk_transparent_union;
+} mk_macho_section_command_ptr _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 typedef union {
@@ -63,12 +63,12 @@ typedef union {
 //
 typedef struct mk_section_s {
     __MK_RUNTIME_BASE
-    // The segment containing this section.
+    // The segment that the section resides within.
     mk_segment_ref segment;
-    // The section structure.
+    // The section command that defines the section.
     union {
-        mk_load_command_section_64_t section_64;
-        mk_load_command_section_t section;
+        mk_load_command_section_t command;
+        mk_load_command_section_64_t command_64;
     };
 } mk_section_t;
 
@@ -76,6 +76,7 @@ typedef struct mk_section_s {
 //! The Section polymorphic type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_section_s *section;
 } mk_section_ref _mk_transparent_union;
 
@@ -88,56 +89,53 @@ _mk_export intptr_t mk_section_type;
 //! @name       Working With Sections
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided \a section with the provided
-//! \ref mk_load_command_section_64_t or \ref mk_load_command_section_t.
+//! Initializes a Section object.
 //!
 //! @param  segment
-//!         The segment in which \a lc_section resides.
+//!         The segment that the section resides within.  Must remain valid for
+//!         the lifetime of the section object.
 //! @param  lc_section
-//!         A \ref mk_load_command_section.
+//!         The section command that defines the section.
 //! @param  section
-//!         A pointer to the \ref to be initialized.
+//!         A valid \ref mk_section_t structure.
 _mk_export mk_error_t
-mk_section_init(mk_segment_ref segment, mk_load_command_section lc_section, mk_section_t* section);
+mk_section_init(mk_segment_ref segment, mk_load_command_section section_command, mk_section_t* section);
 
-//! Initializes the provided \a section with the provided \a mach_section.
-//!
-//! @param  segment
-//!         The segment in which \a mach_section resides.
-//! @param  mach_section
-//!         A pointer to a Mach \c section or \c section_64 structure.
-//! @param  section
-//!         A pointer to the \ref to be initialized.
+//! Initializes a Section object with the specified segment and Mach-O
+//! section command.
 _mk_export mk_error_t
-mk_section_init_wih_mach_section(mk_segment_ref segment, mk_mach_section mach_section, mk_section_t* section);
+mk_section_init_wih_mach_section_command(mk_segment_ref segment, mk_macho_section_command_ptr lc_section, mk_section_t* section);
 
-//! Returns the image that \a section resides within.
+//! Returns the Mach-O image that the specified section resides within.
 _mk_export mk_macho_ref
 mk_section_get_macho(mk_section_ref section);
 
-//! Returns the segment that \a section resides within.
+//! Returns the segment that the specified section resides within.
 _mk_export mk_segment_ref
 mk_section_get_segment(mk_section_ref section);
 
-//! Returns the range of memory in the originating context occupied by
-//! \a section.
-//!
-//! @param  mobj
-//!         An initialized memory object.
+//! Returns range of memory (in the target address space) that the specified
+//! section occupies.
 _mk_export mk_vm_range_t
-mk_section_get_range(mk_section_ref section);
+mk_section_get_target_range(mk_section_ref section);
 
 //! Initializes a memory object that can be used to safely access the
-//! \a section contents.
+//! contents of the specified section.
+//!
+//! @note
+//! Some sections (such as the __TEXT,__text in stub frameworks) have a size
+//! of zero.  When this function is called with such a section, it will return
+//! \ref MK_ENOT_FOUND.  Your error handling may want to handle this error
+//! case separately since it is not actually an error.
 _mk_export mk_error_t
-mk_section_init_mobj(mk_section_ref section, mk_memory_object_t *mobj);
+mk_section_init_mapping(mk_section_ref section, mk_memory_object_t *mobj);
 
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Section Values
 //! @name       Section Values
 //!
-//! These functions return values directly from the underlying Mach
+//! These functions return values directly from the underlying Mach-O
 //! section(_64) structure.
 //----------------------------------------------------------------------------//
 

@@ -65,7 +65,7 @@ mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     if (stroff == 0)
         return MK_ENOT_FOUND;
     
-    mk_vm_address_t vm_address = mk_segment_get_range(link_edit).location;
+    mk_vm_address_t vm_address = mk_segment_get_target_range(segment).location;
     mk_error_t err;
     
     // This already include the slide.
@@ -85,8 +85,8 @@ mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
     string_table->range = mk_vm_range_make(vm_address, strsize);
     
     // Make sure we are fully within the link_edit segment
-    if ((err = mk_vm_range_contains_range(mk_segment_get_range(link_edit), string_table->range, false))) {
         _mkl_error(mk_type_get_context(link_edit.segment), "__LINKEDIT segment does not fully contain the string table.");
+    if ((err = mk_vm_range_contains_range(mk_segment_get_target_range(segment), string_table->range, false))) {
         return err;
     }
     
