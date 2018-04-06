@@ -29,7 +29,8 @@
 //! @defgroup ARCHITECTURE Architecture
 //! @ingroup CORE
 //!
-//! An architecture specifies basic information about a CPU.
+//! An architecture specifies basic information about a CPU that a Mach-O
+//! binary can execute on.
 //----------------------------------------------------------------------------//
 
 #ifndef _architecture_h
@@ -74,6 +75,10 @@ static const mk_architecture_t mk_architecture_x86_64h = { CPU_TYPE_X86_64, CPU_
 _mk_swift_name(mk_architecture_s.arm)
 static const mk_architecture_t mk_architecture_arm = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_ALL };
 
+//! Architecture for ARMv6 CPUs.
+_mk_swift_name(mk_architecture_s.armv7)
+static const mk_architecture_t mk_architecture_armv6 = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V6 };
+
 //! Architecture for ARMv7 CPUs.
 _mk_swift_name(mk_architecture_s.armv7)
 static const mk_architecture_t mk_architecture_armv7 = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7 };
@@ -100,7 +105,7 @@ static const mk_architecture_t mk_architecture_arm64 = { CPU_TYPE_ARM64, CPU_SUB
 //! @name       Creating An Architecture
 //----------------------------------------------------------------------------//
 
-//!  Create a new architecture structure with the given CPU type and subtype.
+//! Create a new architecture structure with the given CPU type and subtype.
 _mk_refined_for_swift
 _mk_inine mk_architecture_t
 mk_architecture_create(cpu_type_t type, cpu_subtype_t subtype)
@@ -117,23 +122,29 @@ mk_architecture_create(cpu_type_t type, cpu_subtype_t subtype)
 //! @name       Retrieving Information About An Architecture
 //----------------------------------------------------------------------------//
 
-//! Returns the CPU type of the provided \a architecture.
+//! Returns the CPU type of the specified architecture.
 _mk_swift_name(getter:mk_architecture_s.cpuType(self:))
 _mk_inine cpu_type_t
 mk_architecture_get_cpu_type(mk_architecture_t architecture)
 { return architecture.cputype; }
 
-//! Returns the CPU subtype of the provided \a architecture.
+//! Returns the CPU subtype of the specified architecture.
 _mk_swift_name(getter:mk_architecture_s.cpuSubtype(self:))
 _mk_inine cpu_subtype_t
 mk_architecture_get_cpu_subtype(mk_architecture_t architecture)
 { return architecture.cpusubtype; }
 
-//! Returns true if the provided \a architecture uses a 64-bit ABI.
+//! Returns \c true if the specified architecture uses a 64-bit ABI.
 _mk_swift_name(getter:mk_architecture_s.uses64bitABI(self:))
 _mk_inine bool
 mk_architecture_uses_64bit_abi(mk_architecture_t architecture)
-{ return !!(architecture.cputype & CPU_ARCH_ABI64); }
+{ return !!((uint32_t)architecture.cputype & CPU_ARCH_ABI64); }
+
+//! Returns a data model object that defines the traits of the primative types
+//! in the specified architecture.
+_mk_swift_name(getter:mk_architecture_s.dataModel(self:))
+_mk_export mk_data_model_ref
+mk_architecture_get_data_model(mk_architecture_t architecture);
 
 
 //----------------------------------------------------------------------------//
@@ -141,15 +152,18 @@ mk_architecture_uses_64bit_abi(mk_architecture_t architecture)
 //! @name       Describing Architectures
 //----------------------------------------------------------------------------//
 
+//! Copy a textual description of the specified architecture to the buffer
+//! referenced by \a output.
 _mk_export size_t
 mk_architecture_copy_description(mk_architecture_t architecture, char *output, size_t output_len);
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Comparing Architectures
 //! @name       Comparing Architectures
 //----------------------------------------------------------------------------//
 
-//! Returns true if the provided architecturs are equal.
+//! Returns \c true if two architectures are equal.
 _mk_swift_name(mk_architecture_s.equals(self:_:))
 _mk_inine bool
 mk_architecture_equal_to_architecture(mk_architecture_t architecture, mk_architecture_t other)

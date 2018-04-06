@@ -41,7 +41,7 @@
 //!
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-//! A table of callbacks and other data supplied by clients of libMachO.
+//! A table of callbacks and other information supplied by clients of libMachO.
 //
 typedef struct mk_context_s {
     //! User data

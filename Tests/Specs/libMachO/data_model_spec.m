@@ -29,7 +29,7 @@
 
 SpecBegin(data_model)
 
-describe(@"The ILP32 Data Model", ^{
+describe(@"ILP32", ^{
     mk_data_model_ref ilp32 = mk_data_model_ilp32();
     
     it(@"should have 4 byte pointers", ^{
@@ -39,9 +39,11 @@ describe(@"The ILP32 Data Model", ^{
     
     it(@"should properly byte swap", ^{
 #if !TARGET_RT_BIG_ENDIAN
+        uint16_t in16 = 0x0102;
         uint32_t in32 = 0x01020304;
         uint64_t in64 = 0x0102030405060708;
         
+        expect(mk_data_model_get_byte_order(ilp32)->swap16( in16 )).to.equal(@(0x0102));
         expect(mk_data_model_get_byte_order(ilp32)->swap32( in32 )).to.equal(@(0x01020304));
         expect(mk_data_model_get_byte_order(ilp32)->swap64( in64 )).to.equal(@(0x0102030405060708));
 #else
@@ -51,7 +53,7 @@ describe(@"The ILP32 Data Model", ^{
 });
 
 
-describe(@"The LP64 Data Model", ^{
+describe(@"LP64", ^{
     mk_data_model_ref lp64 = mk_data_model_lp64();
     
     it(@"should have 8 byte pointers", ^{
@@ -61,9 +63,11 @@ describe(@"The LP64 Data Model", ^{
     
     it(@"should properly byte swap", ^{
 #if !TARGET_RT_BIG_ENDIAN
+        uint16_t in16 = 0x0102;
         uint32_t in32 = 0x01020304;
         uint64_t in64 = 0x0102030405060708;
         
+        expect(mk_data_model_get_byte_order(lp64)->swap16( in16 )).to.equal(@(0x0102));
         expect(mk_data_model_get_byte_order(lp64)->swap32( in32 )).to.equal(@(0x01020304));
         expect(mk_data_model_get_byte_order(lp64)->swap64( in64 )).to.equal(@(0x0102030405060708));
 #else
@@ -83,9 +87,11 @@ describe(@"A Bridged Data Model", ^{
     
     it(@"should properly byte swap", ^{
 #if !TARGET_RT_BIG_ENDIAN
+        uint16_t in16 = 0x0102;
         uint32_t in32 = 0x01020304;
         uint64_t in64 = 0x0102030405060708;
         
+        expect(mk_data_model_get_byte_order(ppc32)->swap16( in16 )).to.equal(@(0x0201));
         expect(mk_data_model_get_byte_order(ppc32)->swap32( in32 )).to.equal(@(0x04030201));
         expect(mk_data_model_get_byte_order(ppc32)->swap64( in64 )).to.equal(@(0x0807060504030201));
 #else

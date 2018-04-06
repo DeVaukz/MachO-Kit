@@ -29,8 +29,8 @@
 //! @defgroup DATA_MODEL Data Model
 //! @ingroup CORE
 //!
-//! A data model contains basic information about a specific instruction set
-//! architecture.
+//! A data model contains basic information about how primative types are
+//! defined by an ABI.
 //----------------------------------------------------------------------------//
 
 #ifndef _data_model_h
@@ -70,17 +70,17 @@ _mk_export intptr_t mk_data_model_lp64_type;
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Creating A Data Model
-//! @name       Creating A Data Model
+#pragma mark -  Retrieving The Standard Data Models
+//! @name       Retrieving The Standard Data Models
 //----------------------------------------------------------------------------//
 
-//! Returns a \ref mk_data_model_t for the ILP32 data model used in
-//! Intel/32-bit Mach-O images.
+//! Returns the little-endian ILP32 data model used in Intel/ARM 32-bit
+//! Mach-O images.
 _mk_export mk_data_model_ref
 mk_data_model_ilp32(void);
 
-//! Returns a \ref mk_data_model_t for the LP64 data model used in
-//! Intel/64-bit Mach-O images.
+//! Returns the little-endian LP64 data model used in Intel/ARM 64-bit
+//! Mach-O images.
 _mk_export mk_data_model_ref
 mk_data_model_lp64(void);
 
@@ -90,22 +90,18 @@ mk_data_model_lp64(void);
 //! @name       Instance Methods
 //----------------------------------------------------------------------------//
 
-//! Returns a \ref mk_byteorder_t to convert data between the endianness of
-//! data represented by \a data_model and the current process.
+//! Returns a \ref mk_byteorder_t for converting data between the endianness of
+//! data represented in the specified data model and the current process.
 _mk_export const mk_byteorder_t*
 mk_data_model_get_byte_order(mk_data_model_ref data_model);
 
-//! Returns the size of a pointer under \a data_model.
+//! Returns the size of a pointer, as defined by the specified data model.
 _mk_export size_t
 mk_data_model_get_pointer_size(mk_data_model_ref data_model);
 
-//! Returns the alignment of a pointer under \a data_model.
+//! Returns the alignment of a pointer, as defined by the specified data model.
 _mk_export size_t
 mk_data_model_get_pointer_alignment(mk_data_model_ref data_model);
-
-//! Returns \c true if \a data_model represents a 64-bit ISA.
-_mk_export bool
-mk_data_model_is_64_bit(mk_data_model_ref data_model);
 
 
 //! @} DATA_MODEL !//

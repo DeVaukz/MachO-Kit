@@ -37,8 +37,7 @@ __mk_data_model_get_byte_order(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
 #pragma unused (reserved)
-    fprintf(stderr, "No default implementation of __mk_data_model_get_byte_order.");
-    __builtin_trap();
+    _mk_assert(false, NULL, "No default implementation of mk_data_model_get_byte_order.");
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -47,8 +46,7 @@ __mk_data_model_get_pointer_size(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
 #pragma unused (reserved)
-    fprintf(stderr, "No default implementation of __mk_data_model_get_pointer_size.");
-    __builtin_trap();
+    _mk_assert(false, NULL, "No default implementation of mk_data_model_get_pointer_size.");
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -57,8 +55,7 @@ __mk_data_model_get_pointer_alignment(mk_data_model_ref self, void* reserved)
 {
 #pragma unused (self)
 #pragma unused (reserved)
-    fprintf(stderr, "No default implementation of __mk_data_model_get_pointer_alignment.");
-    __builtin_trap();
+    _mk_assert(false, NULL, "No default implementation of mk_data_model_get_pointer_alignment.");
 }
 
 const struct _mk_data_model_vtable _mk_data_model_class = {
@@ -174,7 +171,7 @@ struct mk_data_model_s LP64_byte_order = {
 };
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Interacting With Memory Objects
+#pragma mark -  Retrieving The Standard Data Models
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -222,8 +219,3 @@ mk_data_model_get_pointer_alignment(mk_data_model_ref data_model)
     MK_OBJC_BRIDGED_INVOKE(data_model, data_model, _mk_data_model_get_pointer_alignment, "pointerAlignment");
     MK_TYPE_INVOKE(data_model, data_model, get_pointer_alignment)(data_model, NULL);
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-bool
-mk_data_model_is_64_bit(mk_data_model_ref data_model)
-{ return (mk_data_model_get_pointer_size(data_model) == 8); }

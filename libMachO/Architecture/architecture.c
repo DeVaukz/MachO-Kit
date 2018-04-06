@@ -29,6 +29,22 @@
 #include "architecture.h"
 
 //----------------------------------------------------------------------------//
+#pragma mark -  Retrieving Information About An Architecture
+//----------------------------------------------------------------------------//
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_data_model_ref
+mk_architecture_get_data_model(mk_architecture_t architecture)
+{
+    // TODO - Support PowerPC here.  Need big-endian data models.
+    if (mk_architecture_uses_64bit_abi(architecture)) {
+        return mk_data_model_lp64();
+    } else {
+        return mk_data_model_ilp32();
+    }
+}
+
+//----------------------------------------------------------------------------//
 #pragma mark -  Description
 //----------------------------------------------------------------------------//
 
@@ -49,8 +65,9 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
         case CPU_TYPE_MC680x0:
             description = "MC680x0";
             break;
-        case CPU_TYPE_X86:
-            description = "x86";
+        //case CPU_TYPE_X86:
+        case CPU_TYPE_I386:
+            description = "i386";
             break;
         case CPU_TYPE_X86_64:
         {
@@ -71,10 +88,31 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
             description = "HPPA";
             break;
         case CPU_TYPE_ARM:
-            description = "ARM";
+        {
+            switch (architecture.cpusubtype) {
+                case CPU_SUBTYPE_ARM_V7K:
+                    description = "armv7k";
+                    break;
+                case CPU_SUBTYPE_ARM_V7S:
+                    description = "armv7s";
+                    break;
+                case CPU_SUBTYPE_ARM_V7F:
+                    description = "armv7f";
+                    break;
+                case CPU_SUBTYPE_ARM_V7:
+                    description = "armv7";
+                    break;
+                case CPU_SUBTYPE_ARM_V6:
+                    description = "armv6";
+                    break;
+                default:
+                    description = "ARM";
+                    break;
+            }
             break;
+        }
         case CPU_TYPE_ARM64:
-            description = "ARM64";
+            description = "arm64";
             break;
         case CPU_TYPE_MC88000:
             description = "MC88000";
