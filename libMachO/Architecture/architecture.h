@@ -76,7 +76,7 @@ _mk_swift_name(mk_architecture_s.arm)
 static const mk_architecture_t mk_architecture_arm = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_ALL };
 
 //! Architecture for ARMv6 CPUs.
-_mk_swift_name(mk_architecture_s.armv7)
+_mk_swift_name(mk_architecture_s.armv6)
 static const mk_architecture_t mk_architecture_armv6 = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V6 };
 
 //! Architecture for ARMv7 CPUs.
