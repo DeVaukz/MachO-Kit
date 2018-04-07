@@ -33,8 +33,8 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
-__mk_symbol_get_context(mk_type_ref self)
-{ return mk_type_get_context( &((mk_symbol_t*)self)->symbol_table ); }
+__mk_symbol_get_context(mk_symbol_ref self)
+{ return mk_type_get_context( self.symbol->symbol_table.type ); }
 
 const struct _mk_symbol_vtable _mk_symbol_class = {
     .base.super                 = &_mk_type_class,
@@ -50,37 +50,36 @@ intptr_t mk_symbol_type = (intptr_t)&_mk_symbol_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_mach_nlist nlist, mk_symbol_t* load_command)
+mk_symbol_init(mk_symbol_table_ref symbol_table, mk_macho_nlist_ptr nlist, mk_symbol_t* symbol)
 {
     if (symbol_table.symbol_table == NULL) return MK_EINVAL;
     if (nlist.any == NULL) return MK_EINVAL;
-    if (load_command == NULL) return MK_EINVAL;
+    if (symbol == NULL) return MK_EINVAL;
     
-    mk_memory_object_ref mobj = mk_segment_get_mobj(mk_symbol_table_get_seg_link_edit(symbol_table));
-    mk_data_model_ref data_model = mk_macho_get_data_model(mk_symbol_table_get_macho(symbol_table));
+    mk_memory_object_ref mapping = mk_segment_get_mapping(mk_symbol_table_get_segment(symbol_table));
     
     mk_vm_address_t nlist_address;
     vm_size_t nlist_size;
     
-    if (mk_data_model_get_pointer_size(data_model) == 8)
+    if (mk_macho_is_64_bit(mk_symbol_table_get_macho(symbol_table)))
         nlist_size = sizeof(struct nlist_64);
     else
         nlist_size = sizeof(struct nlist);
     
-    nlist_address = mk_memory_object_unmap_address(mobj, 0, (vm_address_t)nlist.any, nlist_size, NULL);
+    nlist_address = mk_memory_object_unmap_address(mapping, 0, (vm_address_t)nlist.any, nlist_size, NULL);
     if (nlist_address == MK_VM_ADDRESS_INVALID) {
         _mkl_error(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
         return MK_EINVAL;
     }
     
-    if (mk_vm_range_contains_range(mk_symbol_table_get_range(symbol_table), mk_vm_range_make(nlist_address, nlist_size), false)) {
+    if (mk_vm_range_contains_range(mk_symbol_table_get_target_range(symbol_table), mk_vm_range_make(nlist_address, nlist_size), false)) {
         _mkl_error(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
         return MK_EINVAL;
     }
     
-    load_command->vtable = &_mk_symbol_class;
-    load_command->symbol_table = symbol_table;
-    load_command->nlist = nlist;
+    symbol->vtable = &_mk_symbol_class;
+    symbol->symbol_table = symbol_table;
+    symbol->nlist = nlist;
     
     return MK_ESUCCESS;
 }
@@ -95,19 +94,19 @@ mk_symbol_table_ref mk_symbol_get_symbol_table(mk_symbol_ref symbol)
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_vm_range_t
-mk_symbol_get_range(mk_symbol_ref symbol)
+mk_symbol_get_target_range(mk_symbol_ref symbol)
 {
-    mk_memory_object_ref mobj = mk_segment_get_mobj(mk_symbol_table_get_seg_link_edit(symbol.symbol->symbol_table));
-    mk_data_model_ref data_model = mk_macho_get_data_model(mk_symbol_get_macho(symbol));
+    mk_memory_object_ref mapping = mk_segment_get_mapping(mk_symbol_table_get_segment(symbol.symbol->symbol_table));
     
-    mk_vm_size_t size;
-    if (mk_data_model_get_pointer_size(data_model) == 8)
+    size_t size;
+    if (mk_macho_is_64_bit(mk_symbol_get_macho(symbol)))
         size = sizeof(struct nlist_64);
     else
         size = sizeof(struct nlist);
     
-    mk_vm_address_t host_addr = mk_memory_object_unmap_address(mobj, 0, (vm_address_t)symbol.symbol->nlist.any, (vm_size_t)size, NULL);
-    return mk_vm_range_make(host_addr, size);
+    mk_vm_address_t addr = mk_memory_object_unmap_address(mapping, 0, (uintptr_t)symbol.symbol->nlist.any, size, NULL);
+    
+    return mk_vm_range_make(addr, size);
 }
 
 //----------------------------------------------------------------------------//
@@ -134,8 +133,10 @@ int16_t mk_symbol_get_desc(mk_symbol_ref symbol)
 uint64_t
 mk_symbol_get_value(mk_symbol_ref symbol)
 {
-    mk_data_model_ref data_model = mk_macho_get_data_model(mk_symbol_get_macho(symbol));
-    if (mk_data_model_get_pointer_size(data_model) == 8)
+    mk_macho_ref image = mk_symbol_get_macho(symbol);
+    mk_data_model_ref data_model = mk_macho_get_data_model(image);
+    
+    if (mk_macho_is_64_bit(image))
         return mk_data_model_get_byte_order(data_model)->swap64( symbol.symbol->nlist.nlist_64->n_value );
     else
         return mk_data_model_get_byte_order(data_model)->swap32( symbol.symbol->nlist.nlist->n_value );

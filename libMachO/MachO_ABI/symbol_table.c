@@ -33,8 +33,8 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 static mk_context_t*
-__mk_symbol_table_get_context(mk_type_ref self)
-{ return mk_type_get_context( &((mk_symbol_table_t*)self)->link_edit ); }
+__mk_symbol_table_get_context(mk_symbol_table_ref self)
+{ return mk_type_get_context( self.symbol_table->link_edit.type ); }
 
 const struct _mk_symbol_table_vtable _mk_symbol_table_class = {
     .base.super                 = &_mk_type_class,
@@ -50,57 +50,74 @@ intptr_t mk_symbol_table_type = (intptr_t)&_mk_symbol_table_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_load_command_ref dysymtab_cmd, mk_symbol_table_t *symbol_table)
+mk_symbol_table_init(mk_segment_ref segment, mk_load_command_ref symtab_load_command, mk_load_command_ref dysymtab_load_command, mk_symbol_table_t *symbol_table)
 {
     if (symbol_table == NULL) return MK_EINVAL;
-    if (link_edit.segment == NULL) return MK_EINVAL;
-    if (symtab_cmd.load_command == NULL || mk_load_command_id(symtab_cmd) != mk_load_command_symtab_id()) return MK_EINVAL;
-    if (dysymtab_cmd.load_command && mk_load_command_id(dysymtab_cmd) != mk_load_command_dysymtab_id()) return MK_EINVAL;
+    if (segment.segment == NULL) return MK_EINVAL;
+    if (symtab_load_command.load_command == NULL) return MK_EINVAL;
     
-    if (mk_load_command_get_macho(symtab_cmd).macho != mk_segment_get_macho(link_edit).macho)
+    if (mk_load_command_id(symtab_load_command) != mk_load_command_symtab_id()) {
+        _mkl_debug(mk_type_get_context(segment.type), "Unsupported load command type [%s].", mk_type_name(symtab_load_command.type));
         return MK_EINVAL;
-    if (dysymtab_cmd.load_command && mk_load_command_get_macho(dysymtab_cmd).macho != mk_segment_get_macho(link_edit).macho)
+    }
+    if (dysymtab_load_command.load_command && mk_load_command_id(dysymtab_load_command) != mk_load_command_dysymtab_id()) {
+        _mkl_debug(mk_type_get_context(segment.type), "Unsupported load command type [%s].", mk_type_name(dysymtab_load_command.type));
         return MK_EINVAL;
+    }
     
-    uint32_t symoff = mk_load_command_symtab_get_symoff(symtab_cmd);
-    uint32_t nsyms = mk_load_command_symtab_get_nsyms(symtab_cmd);
-    mk_vm_size_t symsize;
-    if (mk_data_model_is_64_bit(mk_macho_get_data_model(mk_segment_get_macho(link_edit))))
-        symsize = nsyms * sizeof(struct nlist_64);
-    else
-        symsize = nsyms * sizeof(struct nlist);
+    mk_macho_ref image = mk_segment_get_macho(segment);
     
-    if (symoff == 0)
+    if (!mk_type_equal(mk_load_command_get_macho(symtab_load_command).type, image.type)) {
+        return MK_EINVAL;
+    }
+    if (dysymtab_load_command.load_command && !mk_type_equal(mk_load_command_get_macho(dysymtab_load_command).type, image.type)) {
+        return MK_EINVAL;
+    }
+    
+    uint32_t lc_symoff = mk_load_command_symtab_get_symoff(symtab_load_command);
+    uint32_t lc_nsyms = mk_load_command_symtab_get_nsyms(symtab_load_command);
+    
+    // If lc_symoff is 0, there is no symbol table.
+    if (lc_symoff == 0)
         return MK_ENOT_FOUND;
     
+    // This already include the slide.
     mk_vm_address_t vm_address = mk_segment_get_target_range(segment).location;
+    mk_vm_size_t vm_size;
+    if (mk_macho_is_64_bit(image))
+        vm_size = lc_nsyms * sizeof(struct nlist_64);
+    else
+        vm_size = lc_nsyms * sizeof(struct nlist);
+    
     mk_error_t err;
     
-    // This already include the slide.
-    if ((err = mk_vm_address_add(vm_address, symoff, &vm_address))) {
-        _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while adding offset (%" PRIi32 ") to __LINKEDIT vm_address (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), symoff, vm_address);
+    // Apply the offset.
+    if ((err = mk_vm_address_apply_offset(vm_address, lc_symoff, &vm_address))) {
+        _mkl_debug(mk_type_get_context(segment.type), "Arithmetic error [%s] applying symbol table offset [%" PRIu32 "] to LINKEDIT segment target address [0x%" MK_VM_PRIxADDR "].", mk_error_string(err), lc_symoff, vm_address);
         return err;
     }
     
     // For some reason we need to subtract the fileOffset of the __LINKEDIT
     // segment.
-    if ((err = mk_vm_address_subtract(vm_address, mk_segment_get_fileoff(link_edit), &vm_address))) {
-        _mkl_error(mk_type_get_context(link_edit.segment), "Arithmetic error %s while subtracting __LINKEDIT fileOffset (0x%" MK_VM_PRIxADDR ") from (0x%" MK_VM_PRIxADDR ")", mk_error_string(err), mk_segment_get_fileoff(link_edit), vm_address);
+    if ((err = mk_vm_address_subtract(vm_address, mk_segment_get_fileoff(segment), &vm_address))) {
+        _mkl_debug(mk_type_get_context(segment.type), "Arithmetic error [%s] subtracting LINKEDIT segment file offset [0x%" MK_VM_PRIxADDR "] from symbol table target address [0x%" MK_VM_PRIxADDR "].", mk_error_string(err), mk_segment_get_fileoff(segment), vm_address);
         return err;
     }
     
-    symbol_table->link_edit = link_edit;
-    symbol_table->range = mk_vm_range_make(vm_address, symsize);
-    symbol_table->symbol_count = nsyms;
+    symbol_table->link_edit = segment;
+    symbol_table->target_range = mk_vm_range_make(vm_address, vm_size);
     
-    // Make sure we are fully within the link_edit segment
-        _mkl_error(mk_type_get_context(link_edit.segment), "__LINKEDIT segment does not fully contain the symbol table.");
-    if ((err = mk_vm_range_contains_range(mk_segment_get_target_range(segment), symbol_table->range, false))) {
+    // Make sure the symbol table is completely within the link_edit segment
+    if ((err = mk_vm_range_contains_range(mk_segment_get_target_range(segment), symbol_table->target_range, false))) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(segment.type, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(segment.type), "Part of symbol table (target_address = 0x%" MK_VM_PRIxADDR ", size = 0x%" MK_VM_PRIxSIZE ") is not within LINKEDIT segment %s.", symbol_table->target_range.location, symbol_table->target_range.length, buffer);
         return err;
     }
     
-    if (dysymtab_cmd.load_command)
-        mk_load_command_copy(dysymtab_cmd, &symbol_table->dysymtab_cmd);
+    mk_load_command_copy(symtab_load_command, &symbol_table->symtab_command);
+    if (dysymtab_load_command.load_command)
+        mk_load_command_copy(dysymtab_load_command, &symbol_table->dysymtab_command);
     
     symbol_table->vtable = &_mk_symbol_table_class;
     return MK_ESUCCESS;
@@ -108,39 +125,43 @@ mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, m
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, struct dysymtab_command *mach_dysymtab, mk_symbol_table_t *symbol_table)
+mk_symbol_table_init_with_mach_load_commands(mk_segment_ref segment, struct symtab_command *symtab_lc, struct dysymtab_command *dysymtab_lc, mk_symbol_table_t *symbol_table)
 {
-    if (link_edit.segment == NULL) return MK_EINVAL;
-    if (mach_symtab == NULL) return MK_EINVAL;
+    if (segment.segment == NULL) return MK_EINVAL;
+    if (symtab_lc == NULL) return MK_EINVAL;
     
     mk_error_t err;
-    mk_load_command_t symtab_cmd;
-    mk_load_command_t dysymtab_cmd;
+    mk_load_command_t symtab_load_command;
+    mk_load_command_t dysymtab_load_command;
     
-    if ((err = mk_load_command_init(mk_segment_get_macho(link_edit), (struct load_command*)mach_symtab, &symtab_cmd)))
+    if ((err = mk_load_command_init(mk_segment_get_macho(segment), (struct load_command*)symtab_lc, &symtab_load_command)))
         return err;
     
-    if (mach_dysymtab && (err = mk_load_command_init(mk_segment_get_macho(link_edit), (struct load_command*)mach_dysymtab, &dysymtab_cmd)))
+    if (dysymtab_lc && (err = mk_load_command_init(mk_segment_get_macho(segment), (struct load_command*)dysymtab_lc, &dysymtab_load_command)))
         return err;
     
-    return mk_symbol_table_init(link_edit, &symtab_cmd, (mach_dysymtab ? &dysymtab_cmd : NULL), symbol_table);
+    return mk_symbol_table_init(segment, &symtab_load_command, (dysymtab_lc ? &dysymtab_load_command : NULL), symbol_table);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_symbol_table_init_with_segment(mk_segment_ref link_edit, mk_symbol_table_t *symbol_table)
+mk_symbol_table_init_with_segment(mk_segment_ref segment, mk_symbol_table_t *symbol_table)
 {
-    if (link_edit.segment == NULL) return MK_EINVAL;
+    if (segment.segment == NULL) return MK_EINVAL;
     
-    struct load_command *mach_symtab = mk_macho_find_command(mk_segment_get_macho(link_edit), LC_SYMTAB, NULL);
-    if (mach_symtab == NULL) {
-        _mkl_error(mk_type_get_context(link_edit.segment), "No LC_SYMTAB command in %s", mk_macho_get_name(mk_segment_get_macho(link_edit)));
+    mk_macho_ref image = mk_segment_get_macho(segment);
+    struct symtab_command *symtab_lc = (typeof(symtab_lc))mk_macho_find_command(image, LC_SYMTAB, NULL);
+    
+    if (symtab_lc == NULL) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(image.type, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(segment.type), "LC_SYMTAB load command not found in Mach-O image %s.", buffer);
         return MK_ENOT_FOUND;
     }
     
-    struct load_command *mach_dysymtab = mk_macho_find_command(mk_segment_get_macho(link_edit), LC_DYSYMTAB, NULL);
+    struct dysymtab_command *dysymtab_lc = (typeof(dysymtab_lc))mk_macho_find_command(image, LC_DYSYMTAB, NULL);
     
-    return mk_symbol_table_init_with_mach_symtab(link_edit, (struct symtab_command*)mach_symtab, (struct dysymtab_command*)mach_dysymtab, symbol_table);
+    return mk_symbol_table_init_with_mach_load_commands(segment, symtab_lc, dysymtab_lc, symbol_table);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -148,129 +169,138 @@ mk_macho_ref mk_symbol_table_get_macho(mk_symbol_table_ref symbol_table)
 { return mk_segment_get_macho(symbol_table.symbol_table->link_edit); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_segment_ref mk_symbol_table_get_seg_link_edit(mk_symbol_table_ref symbol_table)
+mk_segment_ref mk_symbol_table_get_segment(mk_symbol_table_ref symbol_table)
 { return symbol_table.symbol_table->link_edit; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_vm_range_t mk_symbol_table_get_range(mk_symbol_table_ref symbol_table)
-{ return symbol_table.symbol_table->range; }
+mk_vm_range_t mk_symbol_table_get_target_range(mk_symbol_table_ref symbol_table)
+{ return symbol_table.symbol_table->target_range; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-uint32_t mk_symbol_table_get_count(mk_symbol_table_ref symbol_table)
-{ return symbol_table.symbol_table->symbol_count; }
+mk_load_command_ref
+mk_symbol_table_get_symtab_load_command(mk_symbol_table_ref symbol_table)
+{ return (mk_load_command_ref)&symbol_table.symbol_table->symtab_command; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_load_command_ref
 mk_symbol_table_get_dysymtab_load_command(mk_symbol_table_ref symbol_table)
-{
-    mk_load_command_ref lc;
-    lc.load_command = &symbol_table.symbol_table->dysymtab_cmd;
-    return lc;
-}
+{ return (mk_load_command_ref)&symbol_table.symbol_table->dysymtab_command; }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Looking Up Symbols
 //----------------------------------------------------------------------------//
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_mach_nlist
-mk_symbol_table_get_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* host_address)
+uint32_t mk_symbol_table_get_symbol_count(mk_symbol_table_ref symbol_table)
+{ return mk_load_command_symtab_get_nsyms(&symbol_table.symbol_table->symtab_command); }
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_macho_nlist_ptr
+mk_symbol_table_get_mach_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* target_address)
 {
-    mk_mach_nlist symbol; symbol.any = NULL;
-    mk_vm_offset_t sym_off;
-    mk_vm_size_t sym_size;
-    vm_address_t addr;
+    mk_vm_address_t addr;
+    size_t size;
     
-    if (index >= symbol_table.symbol_table->symbol_count)
-        return symbol;
-    
-    if (mk_data_model_get_pointer_size(mk_macho_get_data_model(mk_symbol_table_get_macho(symbol_table))) == 8)
-        sym_size = sizeof(struct nlist_64);
+    // Determine the length of the nlist entry.
+    if (mk_macho_is_64_bit(mk_symbol_table_get_macho(symbol_table)))
+        size = sizeof(struct nlist_64);
     else
-        sym_size = sizeof(struct nlist);
+        size = sizeof(struct nlist);
     
-    // Compute the offset of the symbol at index.
-    sym_off = index * sym_size;
+    if (index >= mk_symbol_table_get_symbol_count(symbol_table))
+        return (mk_macho_nlist_ptr)NULL;
     
-    addr = mk_memory_object_remap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), sym_off, symbol_table.symbol_table->range.location, sym_size, NULL);
-    if (addr == UINTPTR_MAX)
-        return symbol;
+    if (mk_vm_address_apply_offset(symbol_table.symbol_table->target_range.location, index * size, &addr) != MK_ESUCCESS)
+        return (mk_macho_nlist_ptr)NULL;
     
-    mk_vm_address_apply_offset(symbol_table.symbol_table->range.location, sym_off, host_address);
-    symbol.any = (void*)addr;
-    return symbol;
+    uintptr_t symbol = mk_memory_object_remap_address(mk_segment_get_mapping(symbol_table.symbol_table->link_edit), 0, addr, size, NULL);
+    if (symbol == UINTPTR_MAX)
+        return (mk_macho_nlist_ptr)NULL;
+    
+    if (target_address) *target_address = addr;
+    return (mk_macho_nlist_ptr)(void*)symbol;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-mk_mach_nlist
-mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_mach_nlist previous, uint32_t* index, mk_vm_address_t* host_address)
+mk_macho_nlist_ptr
+mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_macho_nlist_ptr previous, uint32_t* index, mk_vm_address_t* target_address)
 {
-    mk_mach_nlist symbol; symbol.any = NULL;
-    mk_vm_offset_t sym_off;
-    mk_vm_address_t sym_addr;
-    mk_vm_size_t sym_size;
-    uint32_t sym_index;
-    
-    sym_addr = mk_memory_object_unmap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), 0, (vm_address_t)previous.any, 1, NULL);
-    if (sym_addr == MK_VM_ADDRESS_INVALID) {
-        _mkl_error(mk_type_get_context(symbol_table.symbol_table), "Previous value %p is not within <mk_symbol_table %p>", previous.any, symbol_table.symbol_table);
-        return symbol;
+    if (previous.any == NULL) {
+        mk_macho_nlist_ptr retValue = mk_symbol_table_get_mach_symbol_at_index(symbol_table, 0, target_address);
+        if (retValue.any != NULL && index) *index = 0;
+        return retValue;
     }
     
-    // Verify that previous is within the symbol table.
-    if (mk_vm_range_contains_address(symbol_table.symbol_table->range, 0, sym_addr)) {
-        _mkl_error(mk_type_get_context(symbol_table.symbol_table), "Previous value %p is not within <mk_symbol_table %p>", previous.any, symbol_table.symbol_table);
-        return symbol;
-    }
+    mk_memory_object_ref mapping = mk_segment_get_mapping(symbol_table.symbol_table->link_edit);
     
-    if (mk_data_model_get_pointer_size(mk_macho_get_data_model(mk_symbol_table_get_macho(symbol_table))) == 8)
-        sym_size = sizeof(struct nlist_64);
+    mk_vm_address_t addr;
+    size_t size;
+    
+    if (mk_macho_is_64_bit(mk_symbol_table_get_macho(symbol_table)))
+        size = sizeof(struct nlist_64);
     else
-        sym_size = sizeof(struct nlist);
+        size = sizeof(struct nlist);
     
-    sym_off = sym_addr - symbol_table.symbol_table->range.location;
-    sym_index = (uint32_t)(sym_off / sym_size);
+    addr = mk_memory_object_unmap_address(mapping, 0, (uintptr_t)previous.any, 1, NULL);
+    if (addr == MK_VM_ADDRESS_INVALID) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(mapping.memory_object, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(symbol_table.type), "Previous Mach-O symbol pointer [%p] is not within LINKEDIT %s.", previous.any, buffer);
+        return (mk_macho_nlist_ptr)NULL;
+    }
     
-    mk_mach_nlist retValue = mk_symbol_table_get_symbol_at_index(symbol_table, ++sym_index, host_address);
-    if (retValue.any != NULL && index) *index = sym_index;
+    // Verify that addr is within the symbol table.
+    if (mk_vm_range_contains_address(symbol_table.symbol_table->target_range, 0, addr) != MK_ESUCCESS) {
+        char buffer[512] = { 0 };
+        mk_type_copy_description(symbol_table.type, buffer, sizeof(buffer));
+        _mkl_debug(mk_type_get_context(symbol_table.type), "Previous Mach-O symbol pointer [%p] is not within symbol table %s.", previous.any, buffer);
+        return (mk_macho_nlist_ptr)NULL;
+    }
+    
+    mk_vm_offset_t offst = addr - symbol_table.symbol_table->target_range.location;
+    uint32_t idx = (uint32_t)(offst / size);
+    
+    mk_macho_nlist_ptr retValue = mk_symbol_table_get_mach_symbol_at_index(symbol_table, ++idx, target_address);
+    if (retValue.any != NULL && index) *index = idx;
     return retValue;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 #if __BLOCKS__
 void
-mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index, void (^enumerator)(const mk_mach_nlist symbol, uint32_t index, mk_vm_address_t host_address))
+mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index, void (^enumerator)(const mk_macho_nlist_ptr symbol, uint32_t index, mk_vm_address_t target_address))
 {
-    mk_mach_nlist symbol;
-    mk_vm_size_t sym_size;
-    mk_vm_address_t sym_addr;
-    mk_vm_size_t map_length;
-    uint32_t sym_index;
-    vm_address_t addr;
+    mk_memory_object_ref mapping = mk_segment_get_mapping(symbol_table.symbol_table->link_edit);
     
-    if (mk_data_model_get_pointer_size(mk_macho_get_data_model(mk_symbol_table_get_macho(symbol_table))) == 8)
-        sym_size = sizeof(struct nlist_64);
+    mk_vm_address_t target_address;
+    mk_vm_size_t max_length;
+    size_t size;
+    
+    if (mk_macho_is_64_bit(mk_symbol_table_get_macho(symbol_table)))
+        size = sizeof(struct nlist_64);
     else
-        sym_size = sizeof(struct nlist);
+        size = sizeof(struct nlist);
     
-    sym_index = index;
-    if (sym_index >= symbol_table.symbol_table->symbol_count)
+    if (index >= mk_symbol_table_get_symbol_count(symbol_table))
         return;
-    if (mk_vm_address_add(symbol_table.symbol_table->range.location, sym_index * sym_size, &sym_addr))
+    
+    if (mk_vm_address_add(symbol_table.symbol_table->target_range.location, index * size, &target_address))
         return;
-    if (mk_vm_address_subtract(symbol_table.symbol_table->range.length, sym_index * sym_size, &map_length))
+    
+    // Determine the remaining length of the symbol table that will be iterated.
+    if (mk_vm_address_subtract(symbol_table.symbol_table->target_range.length, index * size, &max_length))
         return;
-    addr = mk_memory_object_remap_address(mk_segment_get_mobj(symbol_table.symbol_table->link_edit), 0, sym_addr, map_length, NULL);
-    if (addr == UINTPTR_MAX)
+    
+    uintptr_t symbol = mk_memory_object_remap_address(mapping, 0, target_address, max_length, NULL);
+    if (symbol == UINTPTR_MAX)
         return;
     
     do {
-        symbol.any = (void*)addr;
-        enumerator(symbol, sym_index, sym_addr);
+        enumerator((mk_macho_nlist_ptr)(void*)symbol, index, target_address);
         
-        sym_index++;
-        sym_addr += sym_size;
-        addr  += sym_size;
-    } while (sym_index < symbol_table.symbol_table->symbol_count);
+        index++;
+        symbol += size;
+        target_address += size;
+    } while (index < mk_symbol_table_get_symbol_count(symbol_table));
 }
 #endif

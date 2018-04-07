@@ -44,8 +44,10 @@ typedef struct mk_indirect_symbol_table_s {
     __MK_RUNTIME_BASE
     //! Link edit segment
     mk_segment_ref link_edit;
-    //! The range of the indirect symbol table in the link edit segment.
-    mk_vm_range_t range;
+    //! The range of the indirect symbol table in the target.
+    mk_vm_range_t target_range;
+    //! Indirect Symbol Table information.
+    mk_load_command_t dysymtab_command;
 } mk_indirect_symbol_table_t;
 
 
@@ -53,6 +55,7 @@ typedef struct mk_indirect_symbol_table_s {
 //! The Indirect Symbol Table type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_indirect_symbol_table_s *symbol_table;
 } mk_indirect_symbol_table_ref _mk_transparent_union;
 
@@ -65,49 +68,63 @@ _mk_export intptr_t mk_indirect_symbol_table_type;
 //! @name       Working With The Indirect String Table
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided \ref mk_indirect_symbol_table_t.
+//! Initializes a Indirect Symbol Table object.
+//!
+//! @param  segment
+//!         The LINKEDIT segment.  Must remain valid for the lifetime of the
+//!         string table object.
+//! @param  load_command
+//!         The LC_DYSYMTAB load command that defines the indirect symbol table.
+//! @param  symbol_table
+//!         A valid \ref mk_indirect_symbol_table_t structure.
 _mk_export mk_error_t
-mk_indirect_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref dysymtab_cmd, mk_indirect_symbol_table_t *symbol_table);
+mk_indirect_symbol_table_init(mk_segment_ref segment, mk_load_command_ref load_command, mk_indirect_symbol_table_t *symbol_table);
 
-//! Initializes the provided \ref mk_indirect_symbol_table_t.
+//! Initializes a Indirect Symbol Table object with the specified Mach-O
+//! LC_DYSYMTAB load command.
 _mk_export mk_error_t
-mk_indirect_symbol_table_init_with_mach_dysymtab(mk_segment_ref link_edit, struct dysymtab_command *mach_dysymtab, mk_indirect_symbol_table_t *symbol_table);
+mk_indirect_symbol_table_init_with_mach_load_command(mk_segment_ref segment, struct dysymtab_command *lc, mk_indirect_symbol_table_t *symbol_table);
 
-//! Initializes the provided \ref mk_indirect_symbol_table_t.
+//! Initializes a Indirect Symbol Table object.
 _mk_export mk_error_t
-mk_indirect_symbol_table_init_with_segment(mk_segment_ref link_edit, mk_indirect_symbol_table_t *symbol_table);
+mk_indirect_symbol_table_init_with_segment(mk_segment_ref segment, mk_indirect_symbol_table_t *symbol_table);
 
-//! Returns the image that \a symbol_table resides within.
+//! Returns the Mach-O image that the specified indirect symbol table resides
+//! within.
 _mk_export mk_macho_ref
 mk_indirect_symbol_table_get_macho(mk_indirect_symbol_table_ref symbol_table);
 
-//! Returns the segment that was used to initialize \a symbol_table.
+//! Returns the LINKEDIT segment that the specified indirect symbol table
+//! resides within.
 _mk_export mk_segment_ref
-mk_indirect_symbol_table_get_seg_link_edit(mk_indirect_symbol_table_ref symbol_table);
+mk_indirect_symbol_table_get_segment(mk_indirect_symbol_table_ref symbol_table);
 
-//! Returns the host-relative range of memory occupied by \a symbol_table.
+//! Returns range of memory (in the target address space) that the specified
+//! indirect symbol table occupies.
 _mk_export mk_vm_range_t
-mk_indirect_symbol_table_get_range(mk_indirect_symbol_table_ref symbol_table);
-
-//! Returns the number of entries present in \a symbol_table.
-_mk_export uint32_t
-mk_indirect_symbol_table_get_count(mk_indirect_symbol_table_ref symbol_table);
+mk_indirect_symbol_table_get_target_range(mk_indirect_symbol_table_ref symbol_table);
 
 
 //----------------------------------------------------------------------------//
-#pragma mark -  Looking Up Symbols
-//! @name       Looking Up Symbols
+#pragma mark -  Looking Up Entries
+//! @name       Looking Up Entries
 //----------------------------------------------------------------------------//
 
-//!
+//! Returns the number of entries present in the specified indirect symbol
+//! table.
 _mk_export uint32_t
-mk_indirect_symbol_table_get_value_at_index(mk_indirect_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* host_address);
+mk_indirect_symbol_table_get_entry_count(mk_indirect_symbol_table_ref symbol_table);
+
+//! Returns the entry at \a index in the specified Indirect Symbol Table.
+_mk_export uint32_t
+mk_indirect_symbol_table_get_entry_at_index(mk_indirect_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* target_address);
 
 #if __BLOCKS__
-//!
+//! Iterate over the entries in the specified indirect symbol table using a
+//! block.
 _mk_export void
-mk_indirect_symbol_table_enumerate_values(mk_indirect_symbol_table_ref symbol_table, uint32_t index,
-                                          void (^enumerator)(uint32_t value, uint32_t index, mk_vm_address_t host_address));
+mk_indirect_symbol_table_enumerate_entries(mk_indirect_symbol_table_ref symbol_table, uint32_t index,
+                                           void (^enumerator)(uint32_t value, uint32_t index, mk_vm_address_t target_address));
 #endif
 
 

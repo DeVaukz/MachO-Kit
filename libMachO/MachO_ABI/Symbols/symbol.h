@@ -49,7 +49,7 @@ typedef union {
     void *any;
     struct nlist *nlist;
     struct nlist_64 *nlist_64;
-} mk_mach_nlist _mk_transparent_union;
+} mk_macho_nlist_ptr _mk_transparent_union;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! @internal
@@ -57,13 +57,14 @@ typedef union {
 typedef struct mk_symbol_s {
     __MK_RUNTIME_BASE
     mk_symbol_table_ref symbol_table;
-    mk_mach_nlist nlist;
+    mk_macho_nlist_ptr nlist;
 } mk_symbol_t;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 //! The Symbol polymorphic type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_symbol_s *symbol;
 } mk_symbol_ref _mk_transparent_union;
 
@@ -79,20 +80,20 @@ _mk_export intptr_t mk_symbol_type;
 //! Initializes the provided symbol with the provided Mach nlist structure
 //! in \a image.
 _mk_export mk_error_t
-mk_symbol_init_with_nlist(mk_symbol_table_ref symbol_table, mk_mach_nlist nlist, mk_symbol_t* load_command);
+mk_symbol_init(mk_symbol_table_ref symbol_table, mk_macho_nlist_ptr nlist, mk_symbol_t* symbol);
 
-//! Returns the image that \a symbol resides within.
+//! Returns the Mach-O image that the specified symbol resides within.
 _mk_export mk_macho_ref
 mk_symbol_get_macho(mk_symbol_ref symbol);
 
-//! Returns the symbol table that \a symbol resides within.
+//! Returns the symbol table that the specified symbol resides within.
 _mk_export mk_symbol_table_ref
 mk_symbol_get_symbol_table(mk_symbol_ref symbol);
 
-//! Returns the range of host-relative memory occupied by the mach
-//! \c nlist(_64) structure underlying \a symbol.
+//! Returns range of memory (in the target address space) that the specified
+//! symbol occupies.
 _mk_export mk_vm_range_t
-mk_symbol_get_range(mk_symbol_ref symbol);
+mk_symbol_get_target_range(mk_symbol_ref symbol);
 
 
 //----------------------------------------------------------------------------//

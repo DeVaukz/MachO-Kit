@@ -47,7 +47,7 @@ struct _mk_symbol_table_vtable {
     __MK_RUNTIME_TYPE_BASE
 };
 
-//! The member function table for the \c symbol_table type type.
+//! The member function table for the \c symbol_table type.
 _mk_internal_extern
 const struct _mk_symbol_table_vtable _mk_symbol_table_class;
 

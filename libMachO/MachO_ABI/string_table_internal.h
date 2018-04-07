@@ -47,7 +47,7 @@ struct _mk_string_table_vtable {
     __MK_RUNTIME_TYPE_BASE
 };
 
-//! The member function table for the \c string_table type type.
+//! The member function table for the \c string_table type.
 _mk_internal_extern
 const struct _mk_string_table_vtable _mk_string_table_class;
 

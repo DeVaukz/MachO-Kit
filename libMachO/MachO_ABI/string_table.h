@@ -44,8 +44,8 @@ typedef struct mk_string_table_s {
     __MK_RUNTIME_BASE
     //! Link edit segment
     mk_segment_ref link_edit;
-    //! The range of the string table in the link edit segment.
-    mk_vm_range_t range;
+    //! The range of the string table in the target.
+    mk_vm_range_t target_range;
 } mk_string_table_t;
 
 
@@ -53,6 +53,7 @@ typedef struct mk_string_table_s {
 //! The String Table type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_string_table_s *string_table;
 } mk_string_table_ref _mk_transparent_union;
 
@@ -65,33 +66,45 @@ _mk_export intptr_t mk_string_table_type;
 //! @name       Working With The String Table
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided \ref mk_string_table_t.
+//! Initializes a String Table object.
+//!
+//! @param  link_edit_segment
+//!         The LINKEDIT segment.  Must remain valid for the lifetime of the
+//!         string table object.
+//! @param  load_command
+//!         The LC_SYMTAB load command that defines the string table.
+//! @param  string_table
+//!         A valid \ref mk_string_table_t structure.
 _mk_export mk_error_t
-mk_string_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_string_table_t *string_table);
+mk_string_table_init(mk_segment_ref segment, mk_load_command_ref load_command, mk_string_table_t *string_table);
 
-//! Initializes the provided \ref mk_string_table_t.
+//! Initializes a String Table object with the specified Mach-O LC_SYMTAB
+//! load command.
 _mk_export mk_error_t
-mk_string_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, mk_string_table_t *string_table);
+mk_string_table_init_with_mach_load_command(mk_segment_ref segment, struct symtab_command *lc, mk_string_table_t *string_table);
 
-//! Initializes the provided \ref mk_string_table_t.
+//! Initializes a String Table object.
 _mk_export mk_error_t
-mk_string_table_init_with_segment(mk_segment_ref link_edit, mk_string_table_t *string_table);
+mk_string_table_init_with_segment(mk_segment_ref segment, mk_string_table_t *string_table);
 
-//! Releases any resources held by \a string_table
+//! Cleans up any resources held by \a string_table.  It is no longer safe to
+//! use \a string_table after calling this function.
 _mk_export void
 mk_string_table_free(mk_string_table_ref string_table);
 
-//! Returns the image that \a string_table resides within.
+//! Returns the Mach-O image that the specified string table resides within.
 _mk_export mk_macho_ref
 mk_string_table_get_macho(mk_string_table_ref string_table);
 
-//! Returns the segment that was used to initialize \a string_table.
+//! Returns the LINKEDIT segment that the specified string table resides
+//! within.
 _mk_export mk_segment_ref
-mk_string_table_get_seg_link_edit(mk_string_table_ref string_table);
+mk_string_table_get_segment(mk_string_table_ref string_table);
 
-//! Returns the host-relative range of memory occupied by \a string_table.
+//! Returns range of memory (in the target address space) that the specified
+//! string table occupies.
 _mk_export mk_vm_range_t
-mk_string_table_get_range(mk_string_table_ref string_table);
+mk_string_table_get_target_range(mk_string_table_ref string_table);
 
 
 //----------------------------------------------------------------------------//
@@ -99,30 +112,31 @@ mk_string_table_get_range(mk_string_table_ref string_table);
 //! @name       Looking Up Strings
 //----------------------------------------------------------------------------//
 
-//! Returns a pointer to the start of the string at \a offset.  The returned
-//! pointer should be considered valid for the lifetime of \a string_table.
+//! Returns a pointer to the start of the string at \a offset in the specified
+//! string table.  The returned pointer should only be considered valid for the
+//! lifetime of \a string_table.
 _mk_export const char*
-mk_string_table_get_string_at_offset(mk_string_table_ref string_table, uint32_t offset, mk_vm_address_t* host_address);
+mk_string_table_get_string_at_offset(mk_string_table_ref string_table, uint32_t offset, mk_vm_address_t* target_address);
 
-//! Copies the string at \a offset from \a string_table into \a buffer,
-//! returning the number of bytes copied.  If \a buffer is \c NULL, returns
-//! the length of the string at \a offset from \a string_table (not including
-//! terminating \c NULL byte).
+//! Copies the string at \a offset in the specified string table into \a buffer,
+//! returning the number of bytes copied, not counting the terminating
+//! null character.  If \a buffer is \c NULL, returns the length of the string,
+//! not including terminating \c NULL byte.
 //!
 //! @note
 //! The string copied to \a buffer is *not* \c NULL terminated.
 _mk_export size_t
 mk_string_table_copy_string_at_offset(mk_string_table_ref string_table, uint32_t offset, char buffer[], size_t max_len);
 
-//! 
+//! Iterate over strings in the specified string table.
 _mk_export const char*
-mk_string_table_next_string(mk_string_table_ref string_table, const char* previous, uint32_t *offset, mk_vm_address_t* host_address);
+mk_string_table_next_string(mk_string_table_ref string_table, const char* previous, uint32_t *offset, mk_vm_address_t* target_address);
 
 #if __BLOCKS__
-//! Iterate over the strings using a block.
+//! Iterate over the strings in the specified string table using a block.
 _mk_export void
 mk_string_table_enumerate_strings(mk_string_table_ref string_table, uint32_t offset,
-                                  void (^enumerator)(const char* string, uint32_t offset, mk_vm_address_t context_address));
+                                  void (^enumerator)(const char* string, uint32_t offset, mk_vm_address_t target_address));
 #endif
 
 

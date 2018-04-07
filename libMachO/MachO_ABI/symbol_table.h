@@ -44,12 +44,12 @@ typedef struct mk_symbol_table_s {
     __MK_RUNTIME_BASE
     //! Link edit segment
     mk_segment_ref link_edit;
-    //! The range of the symbol table in the link edit segment.
-    mk_vm_range_t range;
-    //! The total number of symbols.
-    uint32_t symbol_count;
+    //! The range of the symbol table in the target.
+    mk_vm_range_t target_range;
+    //! Symbol table information.
+    mk_load_command_t symtab_command;
     //! Dynamic Symbol Table information.
-    mk_load_command_t dysymtab_cmd;
+    mk_load_command_t dysymtab_command;
 } mk_symbol_table_t;
 
 
@@ -57,6 +57,7 @@ typedef struct mk_symbol_table_s {
 //! The Symbol Table type.
 //
 typedef union {
+    mk_type_ref type;
     struct mk_symbol_table_s *symbol_table;
 } mk_symbol_table_ref _mk_transparent_union;
 
@@ -76,35 +77,50 @@ _mk_export intptr_t mk_symbol_table_type;
 //! @name       Working With The String Table
 //----------------------------------------------------------------------------//
 
-//! Initializes the provided \ref mk_symbol_table_t.
+//! Initializes a Symbol Table object.
+//!
+//! @param  segment
+//!         The LINKEDIT segment.  Must remain valid for the lifetime of the
+//!         string table object.
+//! @param  symtab_load_command
+//!         The LC_SYMTAB load command that defines the symbol table.
+//! @param  dysymtab_load_command
+//!         The LC_DYSYMTAB load command that defines the symbol table.
+//! @param  symbol_table
+//!         A valid \ref mk_symbol_table_t structure.
 _mk_export mk_error_t
-mk_symbol_table_init(mk_segment_ref link_edit, mk_load_command_ref symtab_cmd, mk_load_command_ref dysymtab_cmd, mk_symbol_table_t *symbol_table);
+mk_symbol_table_init(mk_segment_ref segment, mk_load_command_ref symtab_load_command, mk_load_command_ref dysymtab_load_command, mk_symbol_table_t *symbol_table);
 
-//! Initializes the provided \ref mk_string_table_t.
+//! Initializes a Symbol Table object with the specified Mach-O LC_SYMTAB
+//! and LC_DYSYMTAB load commands.
 _mk_export mk_error_t
-mk_symbol_table_init_with_mach_symtab(mk_segment_ref link_edit, struct symtab_command *mach_symtab, struct dysymtab_command *mach_dysymtab, mk_symbol_table_t *symbol_table);
+mk_symbol_table_init_with_mach_load_commands(mk_segment_ref segment, struct symtab_command *symtab_lc, struct dysymtab_command *dysymtab_lc, mk_symbol_table_t *symbol_table);
 
-//! Initializes the provided \ref mk_string_table_t.
+//! Initializes a Symbol Table object.
 _mk_export mk_error_t
-mk_symbol_table_init_with_segment(mk_segment_ref link_edit, mk_symbol_table_t *symbol_table);
+mk_symbol_table_init_with_segment(mk_segment_ref segment, mk_symbol_table_t *symbol_table);
 
-//! Returns the image that \a symbol_table resides within.
+//! Returns the Mach-O image that the specified symbol table resides within.
 _mk_export mk_macho_ref
 mk_symbol_table_get_macho(mk_symbol_table_ref symbol_table);
 
-//! Returns the segment that was used to initialize \a symbol_table.
+//! Returns the LINKEDIT segment that the specified symbol table resides
+//! within.
 _mk_export mk_segment_ref
-mk_symbol_table_get_seg_link_edit(mk_symbol_table_ref symbol_table);
+mk_symbol_table_get_segment(mk_symbol_table_ref symbol_table);
 
-//! Returns the host-relative range of memory occupied by \a symbol_table.
+//! Returns range of memory (in the target address space) that the specified
+//! symbol table occupies.
 _mk_export mk_vm_range_t
-mk_symbol_table_get_range(mk_symbol_table_ref symbol_table);
+mk_symbol_table_get_target_range(mk_symbol_table_ref symbol_table);
 
-//! Returns the number of entries present in \a symbol_table.
-_mk_export uint32_t
-mk_symbol_table_get_count(mk_symbol_table_ref symbol_table);
+//! Returns the LC_SYMTAB load command that defines the specified symbol
+//! table.
+_mk_export mk_load_command_ref
+mk_symbol_table_get_symtab_load_command(mk_symbol_table_ref symbol_table);
 
-//!
+//! Returns the LC_DYSYMTAB load command that defines the specified symbol
+//! table.
 _mk_export mk_load_command_ref
 mk_symbol_table_get_dysymtab_load_command(mk_symbol_table_ref symbol_table);
 
@@ -114,21 +130,25 @@ mk_symbol_table_get_dysymtab_load_command(mk_symbol_table_ref symbol_table);
 //! @name       Looking Up Symbols
 //----------------------------------------------------------------------------//
 
-//! Returns a pointer to the symbol at \a index in \a symbol_table.  The
-//! returned pointer should be considered valid for the lifetime of
-//! \a symbol_table.
-_mk_export mk_mach_nlist
-mk_symbol_table_get_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* host_address);
+//! Returns the number of entries present in the specified symbol table.
+_mk_export uint32_t
+mk_symbol_table_get_symbol_count(mk_symbol_table_ref symbol_table);
 
-//! 
-_mk_export mk_mach_nlist
-mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_mach_nlist previous, uint32_t* index, mk_vm_address_t* host_address);
+//! Returns a pointer to the symbol at \a index in the specified Symbol Table.
+//! The returned pointer should only be considered valid for the lifetime of
+//! \a symbol_table.
+_mk_export mk_macho_nlist_ptr
+mk_symbol_table_get_mach_symbol_at_index(mk_symbol_table_ref symbol_table, uint32_t index, mk_vm_address_t* target_address);
+
+//! Iterate over symbols in the specified symbol table.
+_mk_export mk_macho_nlist_ptr
+mk_symbol_table_next_mach_symbol(mk_symbol_table_ref symbol_table, const mk_macho_nlist_ptr previous, uint32_t* index, mk_vm_address_t* target_address);
 
 #if __BLOCKS__
-//! Iterate over the mach symbols using a block.
+//! Iterate over the symbols in the specified symbol table using a block.
 _mk_export void
 mk_symbol_table_enumerate_mach_symbols(mk_symbol_table_ref symbol_table, uint32_t index,
-                                       void (^enumerator)(const mk_mach_nlist symbol, uint32_t index, mk_vm_address_t host_address));
+                                       void (^enumerator)(const mk_macho_nlist_ptr symbol, uint32_t index, mk_vm_address_t target_address));
 #endif
 
 
