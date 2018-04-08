@@ -1,5 +1,8 @@
-Mach-O Kit
-==========
+<p align="center">
+    <img width="850" height="200" src="https://raw.githubusercontent.com/DeVaukz/MachO-Kit/master/.github/banner.png">
+</p>
+
+## What is Mach-O Kit?
 
 Mach-O Kit is an Objective-C framework for parsing Mach-O binaries used by Darwin platforms (macOS, iOS, tvOS, and watchOS).  The project also includes a lightweight C library - libMachO - for parsing Mach-O images loaded in the current process.
 
@@ -19,7 +22,13 @@ git clone --recursive https://github.com/DeVaukz/MachO-Kit
 
 ### Installation
 
-Just add `MachOKit.xcodeproj` to your application project.  Mach-O Kit does not have any binary dependencies.
+1. Clone the Mach-O repository into your application's repository.
+```
+cd MyGreatApp;
+git clone --recursive https://github.com/DeVaukz/MachO-Kit
+```
+2. Drag and drop MachOKit.xcodeproj into your application’s Xcode project or workspace.
+3. On the “General” tab of your application target’s settings, add MachOKit.framework to the “Embedded Binaries” section.
 
 ### Using Mach-O Kit
 
