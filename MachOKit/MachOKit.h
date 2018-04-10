@@ -191,7 +191,7 @@
     #import <MachOKit/MKStringTable.h>
     #import <MachOKit/MKSymbolTable.h>
     #import <MachOKit/MKSymbol.h>
-#import <MachOKit/MKIndirectSymbolTable.h>
+    #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>
 
 #import <MachOKit/MKCFString.h>

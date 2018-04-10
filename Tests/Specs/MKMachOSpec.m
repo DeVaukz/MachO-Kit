@@ -457,6 +457,36 @@ SpecBegin(MKMachOImage)
             });
 			
             //----------------------------------------------------------------//
+            describe(@"Indirect Symbols", ^{
+                NSArray<NSDictionary*> *otoolIndirectSymbols = otoolArchitecture.indirectSymbols;
+                MKIndirectSymbolTable *machoIndirectSymbolTable = macho.indirectSymbolTable.value;
+                
+                if (machoIndirectSymbolTable == nil)
+                    return; // TODO - Check if the image should have a symbol table.
+                
+                NSArray *machoIndirectSymbols = machoIndirectSymbolTable.indirectSymbols;
+                
+                it(@"should exist", ^{
+                    expect(machoIndirectSymbolTable).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of entries", ^{
+                    expect(machoIndirectSymbolTable.indirectSymbols.count).to.equal(otoolIndirectSymbols.count);
+                });
+                
+                it(@"should result in the correct entries", ^{
+                    for (NSUInteger i=0; i<MIN(machoIndirectSymbolTable.indirectSymbols.count, otoolIndirectSymbols.count); i++) {
+                        MKIndirectSymbol *machoIndirectSymbol = machoIndirectSymbols[i];
+                        NSDictionary *otoolEntry = otoolIndirectSymbols[i];
+                        
+                        expect(machoIndirectSymbol.section.value.name).to.equal(otoolEntry[@"section"]);
+                        expect(machoIndirectSymbol.local).to.equal([otoolEntry[@"local"] boolValue]);
+                        expect(machoIndirectSymbol.absolute).to.equal([otoolEntry[@"absolute"] boolValue]);
+                        expect(machoIndirectSymbol.index).to.equal([otoolEntry[@"index"] unsignedIntValue]);
+                    }
+                });
+            });
+            //----------------------------------------------------------------//
             describe(@"_objc", ^{
                 // Skip images that use legacy OBJC ABI.
                 // TODO - Better heuristic that does not skip 32-bit images

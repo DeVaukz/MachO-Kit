@@ -262,6 +262,54 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
 
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseIndirectSymbols:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray new];
+    NSArray<NSString*> *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    NSString *currentSegment = nil;
+    NSString *currentSection = nil;
+    
+    for (NSString *line in lines) {
+        if ([line rangeOfString:@"Indirect symbols for"].location == 0) {
+            NSUInteger afterOpeningParen = [line rangeOfString:@"("].location + 1;
+            NSUInteger beforeClosingParen = [line rangeOfString:@")"].location;
+            NSArray *components = [[line substringWithRange:NSMakeRange(afterOpeningParen, beforeClosingParen - afterOpeningParen)] componentsSeparatedByString:@","];
+            currentSegment = components.firstObject;
+            currentSection = components.lastObject;
+            continue;
+        } else if ([line rangeOfString:@"0x"].location == 0) {
+            NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            NSString *address = components[0];
+            NSString *index = components[1];
+            
+            NSMutableDictionary *entry = [NSMutableDictionary new];
+            entry[@"segment"] = currentSegment;
+            entry[@"section"] = currentSection;
+            entry[@"indirectAddress"] = address;
+            if ([index isEqualToString:@"LOCAL"]) {
+                entry[@"local"] = @(YES);
+                entry[@"index"] = @(INDIRECT_SYMBOL_LOCAL);
+            } else if ([index isEqualToString:@"ABSOLUTE"]) {
+                entry[@"absolute"] = @(YES);
+                entry[@"index"] = @(INDIRECT_SYMBOL_ABS);
+            } else
+                entry[@"index"] = @([index intValue]);
+            
+            [result addObject:entry];
+            continue;
+        }
+    }
+    
+    return result;
+}
+
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSDictionary*)parseObjCImageInfo:(NSString*)input
 { @autoreleasepool {
     NSMutableDictionary *result = [NSMutableDictionary new];

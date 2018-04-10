@@ -28,14 +28,15 @@
 #import "MKIndirectSymbol.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
+#import "MKMachO+Segments.h"
+#import "MKSection.h"
+#import "MKSectionIndirectSymbolTableIndexing.h"
 #import "MKMachO+Symbols.h"
 #import "MKSymbolTable.h"
+#import "MKSymbol.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKIndirectSymbol
-
-@synthesize index = _index;
-@synthesize target = _target;
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError **)error
@@ -43,23 +44,61 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    MKMachOImage *image = self.macho;
-    NSParameterAssert(image);
-    
-    NSError *localError = nil;
-    _index = [self.memoryMap readDoubleWordAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:image.dataModel error:&localError];
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    // Read the index
+    {
+        NSError *indexError = nil;
+        
+        _index = [self.memoryMap readDoubleWordAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&indexError];
+        if (indexError) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:indexError description:@"Could not read index."];
+            [self release]; return nil;
+        }
     }
     
-    // Lookup the symbol referenced by the index.
-    MKSymbolTable *symbolTable = image.symbolTable.value;
-    if (_index < symbolTable.symbols.count)
-        _target = [symbolTable.symbols[_index] retain];
+    MKMachOImage *image = self.macho;
     
-    if (_target == nil)
-        MK_PUSH_WARNING(target, MK_ENOT_FOUND, @"Failed to load symbol for index %" PRIi32 "", _index);
+    // Lookup the symbol referenced by the index.
+    while (1) {
+        MKOptional<MKSymbolTable*> *symbolTable = image.symbolTable;
+        if (symbolTable.value == nil) {
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:symbolTable.error description:@"Could not load the symbol table."];
+            _symbol = [[MKOptional alloc] initWithError:error];
+            break;
+        }
+        
+        MKSymbol *symbol = _index < symbolTable.value.symbols.count ? symbolTable.value.symbols[_index] : nil;
+        if (symbol == nil) {
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Symbol table does not have an entry for index [%" PRIu32 "].", _index];
+            _symbol = [[MKOptional alloc] initWithError:error];
+            break;
+        }
+            
+        _symbol = [[MKOptional alloc] initWithValue:symbol];
+        break;
+    }
+    
+    // Find the section
+    {
+        // First need to determine the position of this entry in the indirect
+        // symbol table.
+        uint32_t position = (uint32_t)offset / sizeof(uint32_t);
+        
+        for (MKSection<MKSectionIndirectSymbolTableIndexing> *section in image.sections.allValues) {
+            if ([section conformsToProtocol:@protocol(MKSectionIndirectSymbolTableIndexing)] == NO)
+                continue;
+            
+            NSRange sectionIndirectSymbolTableRange = section.indirectSymbolTableRange;
+            if (position >= sectionIndirectSymbolTableRange.location &&
+                position < sectionIndirectSymbolTableRange.location + sectionIndirectSymbolTableRange.length)
+            {
+                _section = [[MKOptional alloc] initWithValue:section];
+                break;
+            }
+        }
+        
+        if (_section == nil)
+            _section = [MKOptional new];
+    }
     
     return self;
 }
@@ -67,13 +106,30 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
-    [_target release];
+    [_section release];
+    [_symbol release];
     
     [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  Entry Information
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize symbol = _symbol;
+@synthesize section = _section;
+@synthesize index = _index;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)isLocal
+{ return (self.index & ~(uint32_t)INDIRECT_SYMBOL_ABS) == INDIRECT_SYMBOL_LOCAL; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)isAbsolute
+{ return !!(self.index & (uint32_t)INDIRECT_SYMBOL_ABS); }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -83,18 +139,61 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *index;
+    
+    if (self.isLocal || self.isAbsolute)
+    {
+        index = [MKNodeFieldBuilder
+            builderWithProperty:MK_PROPERTY(index)
+            type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil options:@{
+                _$((uint32_t)INDIRECT_SYMBOL_LOCAL): @"INDIRECT_SYMBOL_LOCAL",
+                _$((uint32_t)INDIRECT_SYMBOL_ABS): @"INDIRECT_SYMBOL_ABS"
+            }]
+            offset:0
+            size:sizeof(uint32_t)
+        ];
+        index.description = @"Symbol Index";
+        index.options = MKNodeFieldOptionDisplayAsDetail;
+    }
+    else
+    {
+        index = [MKNodeFieldBuilder
+            builderWithProperty:MK_PROPERTY(index)
+            type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+            offset:0
+            size:sizeof(uint32_t)
+        ];
+        index.description = @"Symbol Index";
+        index.options = MKNodeFieldOptionDisplayAsDetail;
+    }
+    
+    MKNodeFieldBuilder *symbol = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(symbol)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKSymbol.class]
+    ];
+    symbol.description = @"Symbol";
+    symbol.options = MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
+    
+    MKNodeFieldBuilder *section = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(section)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKSection.class]
+    ];
+    section.description = @"Section";
+    section.options = MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(index) description:@"Symbol Index" offset:0 size:sizeof(uint32_t)],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(target) description:@"Symbol"]
+        index.build,
+        symbol.build,
+        section.build
     ]];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - NSObject
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"<%@ %p> 0x%" MK_VM_PRIxADDR " -> %@", NSStringFromClass(self.class), self, self.nodeContextAddress, self.target]; }
+{ return [NSString stringWithFormat:@"0x%" PRIu32 " -> %@", self.index, self.symbol]; }
 
 @end

@@ -29,6 +29,7 @@
 @import Foundation;
 
 #import <MachOKit/MKSection.h>
+#import <MachOKit/MKSectionIndirectSymbolTableIndexing.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,16 +40,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 //----------------------------------------------------------------------------//
-@interface MKStubsSection : MKSection {
+@interface MKStubsSection : MKSection <MKSectionIndirectSymbolTableIndexing> {
 @package
     NSArray<MKStub*> *_stubs;
-    uint32_t _indirectSymbolIndex;
+    uint32_t _indirectSymbolTableIndex;
     uint32_t _stubSize;
 }
 
 @property (nonatomic, readonly) NSArray<MKStub*> *stubs;
 
-@property (nonatomic, readonly) uint32_t indirectSymbolIndex;
+@property (nonatomic, readonly) uint32_t indirectSymbolTableIndex;
 @property (nonatomic, readonly) uint32_t stubSize;
 
 @end

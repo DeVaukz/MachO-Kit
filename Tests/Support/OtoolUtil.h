@@ -34,6 +34,18 @@
 + (NSArray*)parseLoadCommands:(NSString*)input;
 + (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
 
+//! Parses \a input into an array of dictionaries, each representing a single
+//! indirect symbol table entry.  Each dictionary contains the following keys:
+//!
+//!     segment: Name of the segment that references the entry
+//!     section: Name of the section that references the entry
+//!     indirectAddress:
+//!     index (optional): symbol table index
+//!     local (optional): YES if the the value is INDIRECT_SYMBOL_LOCAL
+//!     absolute (optional): YES if the value is INDIRECT_SYMBOL_ABS
+//!
++ (NSArray*)parseIndirectSymbols:(NSString*)input;
+
 + (NSDictionary*)parseObjCImageInfo:(NSString*)input;
 
 @end

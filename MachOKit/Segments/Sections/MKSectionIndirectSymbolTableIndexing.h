@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKIndirectSymbolTable.h
+//! @file       MKSectionIndirectSymbolTableIndexing.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,33 +28,14 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKLinkEditNode.h>
-
-@class MKMachOImage;
-@class MKIndirectSymbol;
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! The \c MKIndirectSymbolTable class parses the entries in the indirect
-//! symbol table, which are simply indexes into the symbol table.
-//! The sections that contain "symbol pointers" and "routine stubs" have
-//! indexes and (implied counts based on the size of the section and fixed
-//! size of the entry) into the "indirect symbol" table for each pointer
-//! and stub.
-//
-@interface MKIndirectSymbolTable : MKLinkEditNode {
-@package
-    NSArray<MKIndirectSymbol*> *_symbols;
-}
+@protocol MKSectionIndirectSymbolTableIndexing <NSObject>
 
-//! Initializes the receiver with the provided \ref MKMachOImage.
-- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
+@property (nonatomic, readonly) NSRange indirectSymbolTableRange;
 
-//! An array of \ref MKIndirectSymbol instances, each representing an entry
-//! in the indirect symbol table.  The order of this array matches the
-//! ordering of the entries in the indirect symbol table in the Mach-O image.
-@property (nonatomic, readonly) NSArray<MKIndirectSymbol*> *symbols;
+@property (nonatomic, readonly) mk_vm_size_t indirectSymbolTableEntrySize;
 
 @end
 

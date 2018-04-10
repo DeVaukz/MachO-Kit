@@ -30,25 +30,44 @@
 
 #import <MachOKit/MKOffsetNode.h>
 
+@class MKSection;
 @class MKSymbol;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! The \c MKIndirectSymbol class parses an entry in the indirect symbol
-//! table.  An inidrect symbol is simply an index into the symbol table
-//! to the symbol the pointer or stub is referring to.
+//! table.
 //
 @interface MKIndirectSymbol : MKOffsetNode {
 @package
     uint32_t _index;
-    MKSymbol *_target;
+    MKOptional<MKSymbol*> *_symbol;
+    MKOptional<MKSection*> *_section;
 }
 
-//! An index into the symbol table to the symbol this entry is referring to.
-@property (nonatomic, readonly) uint32_t index;
 //! The symbol referenced by this entry.
-@property (nonatomic, readonly, nullable) MKSymbol *target;
+@property (nonatomic, readonly) MKOptional<MKSymbol*> *symbol;
+
+//!
+@property (nonatomic, readonly) MKOptional<MKSection*> *section;
+
+//!
+@property (nonatomic, readonly, getter=isLocal) BOOL local;
+
+//!
+@property (nonatomic, readonly, getter=isAbsolute) BOOL absolute;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Entry Values
+//! @name       Entry Values
+//!
+//! @brief      These values are extracted directly from the indirect symbol
+//!             table entry without modification or cleanup.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! An index into the symbol table.
+@property (nonatomic, readonly) uint32_t index;
 
 @end
 

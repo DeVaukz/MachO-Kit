@@ -31,9 +31,6 @@
 //----------------------------------------------------------------------------//
 @implementation MKIndirectPointersSection
 
-@synthesize pointers = _pointers;
-@synthesize indirectSymbolIndex = _indirectSymbolIndex;
-
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
@@ -53,7 +50,7 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
     
-    _indirectSymbolIndex = [sectionLoadCommand reserved1];
+    _indirectSymbolTableIndex = [sectionLoadCommand reserved1];
     
     // Load pointers
     {
@@ -92,6 +89,27 @@
     
     [super dealloc];
 }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Section Values
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize pointers = _pointers;
+@synthesize indirectSymbolTableIndex = _indirectSymbolTableIndex;
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSRange)indirectSymbolTableRange
+{
+    uint32_t index = self.indirectSymbolTableIndex;
+    // SAFE - nodeSize can't be larger than uint32_t.
+    uint32_t count = (uint32_t)self.nodeSize / self.indirectSymbolTableEntrySize;
+    
+    return NSMakeRange(index, count);
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)indirectSymbolTableEntrySize
+{ return self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKPointer
