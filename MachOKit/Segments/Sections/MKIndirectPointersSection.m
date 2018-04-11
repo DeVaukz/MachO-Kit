@@ -52,49 +52,13 @@
     
     _indirectSymbolTableIndex = [sectionLoadCommand reserved1];
     
-    // Load pointers
-    {
-        NSMutableArray<MKIndirectPointer*> *pointers = [[NSMutableArray alloc] init];
-        mk_vm_offset_t offset = 0;
-        
-        // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.
-        while ((mk_vm_size_t)offset < self.nodeSize)
-        {
-            NSError *pointerError = nil;
-            
-            MKIndirectPointer *pointer = [[MKIndirectPointer alloc] initWithOffset:offset fromParent:self error:&pointerError];
-            if (pointer == nil) {
-                MK_PUSH_WARNING_WITH_ERROR(pointers, MK_EINTERNAL_ERROR, pointerError, @"Could not parse pointer at offset [%" MK_VM_PRIuOFFSET "].", offset);
-                break;
-            }
-            
-            [pointers addObject:pointer];
-            [pointer release];
-            
-            // SAFE - All pointers must be within the size of this node.
-            offset += pointer.nodeSize;
-        }
-        
-        _pointers = [pointers copy];
-        [pointers release];
-    }
-    
     return self;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (void)dealloc
-{
-    [_pointers release];
-    
-    [super dealloc];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Section Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize pointers = _pointers;
 @synthesize indirectSymbolTableIndex = _indirectSymbolTableIndex;
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -110,45 +74,5 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)indirectSymbolTableEntrySize
 { return self.dataModel.pointerSize; }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKPointer
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
-{
-    for (MKIndirectPointer *pointer in self.pointers) {
-        mk_vm_range_t range = mk_vm_range_make(pointer.nodeVMAddress, pointer.nodeSize);
-        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            MKOptional *child = [pointer childNodeOccupyingVMAddress:address targetClass:targetClass];
-            if (child.value)
-                return child;
-            // else, fallthrough and call the super's implementation.
-            // The caller may actually be looking for *this* node.
-        }
-    }
-    
-    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    MKNodeFieldBuilder *pointers = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(pointers)
-        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKIndirectPointer.class]]
-    ];
-    pointers.description = @"Pointers";
-    pointers.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
-    
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        pointers.build
-    ]];
-}
 
 @end

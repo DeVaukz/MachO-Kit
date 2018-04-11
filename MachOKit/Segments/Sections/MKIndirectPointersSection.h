@@ -28,20 +28,16 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKSection.h>
+#import <MachOKit/MKPointerListSection.h>
 #import <MachOKit/MKSectionIndirectSymbolTableIndexing.h>
-#import <MachOKit/MKIndirectPointer.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKIndirectPointersSection : MKSection <MKSectionIndirectSymbolTableIndexing> {
+@interface MKIndirectPointersSection : MKPointerListSection <MKSectionIndirectSymbolTableIndexing> {
 @package
-    NSArray<MKIndirectPointer*> *_pointers;
     uint32_t _indirectSymbolTableIndex;
 }
-
-@property (nonatomic, readonly) NSArray<MKIndirectPointer*> *pointers;
 
 @property (nonatomic, readonly) uint32_t indirectSymbolTableIndex;
 

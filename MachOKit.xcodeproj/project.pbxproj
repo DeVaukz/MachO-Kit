@@ -318,8 +318,6 @@
 		D06618711CBB4B18006979A1 /* MKObjCClassData.m in Sources */ = {isa = PBXBuildFile; fileRef = D066186F1CBB4B18006979A1 /* MKObjCClassData.m */; };
 		D06618741CBB4BE0006979A1 /* MKObjCClass.h in Headers */ = {isa = PBXBuildFile; fileRef = D06618721CBB4BE0006979A1 /* MKObjCClass.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06618751CBB4BE0006979A1 /* MKObjCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D06618731CBB4BE0006979A1 /* MKObjCClass.m */; };
-		D0672B0B1A4CEC0500D44610 /* MKIndirectPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = D0672B091A4CEC0500D44610 /* MKIndirectPointer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D0672B0C1A4CEC0500D44610 /* MKIndirectPointer.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B0A1A4CEC0500D44610 /* MKIndirectPointer.m */; };
 		D0672B1E1A4FBC0300D44610 /* MKSegment.h in Headers */ = {isa = PBXBuildFile; fileRef = D0672B1C1A4FBC0300D44610 /* MKSegment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0672B1F1A4FBC0300D44610 /* MKSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B1D1A4FBC0300D44610 /* MKSegment.m */; };
 		D0672B231A4FCF1100D44610 /* MKSection.h in Headers */ = {isa = PBXBuildFile; fileRef = D0672B211A4FCF1100D44610 /* MKSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1268,8 +1266,6 @@
 		D066186F1CBB4B18006979A1 /* MKObjCClassData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKObjCClassData.m; sourceTree = "<group>"; };
 		D06618721CBB4BE0006979A1 /* MKObjCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjCClass.h; sourceTree = "<group>"; };
 		D06618731CBB4BE0006979A1 /* MKObjCClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKObjCClass.m; sourceTree = "<group>"; };
-		D0672B091A4CEC0500D44610 /* MKIndirectPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKIndirectPointer.h; sourceTree = "<group>"; };
-		D0672B0A1A4CEC0500D44610 /* MKIndirectPointer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKIndirectPointer.m; sourceTree = "<group>"; };
 		D0672B1C1A4FBC0300D44610 /* MKSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSegment.h; sourceTree = "<group>"; };
 		D0672B1D1A4FBC0300D44610 /* MKSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSegment.m; sourceTree = "<group>"; };
 		D0672B211A4FCF1100D44610 /* MKSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSection.h; sourceTree = "<group>"; };
@@ -2809,8 +2805,6 @@
 				D010B3841A747D0B00AED697 /* MKDylibVersion.m */,
 				D0539BE61A24199C00D3A5F0 /* MKSourceVersion.h */,
 				D0539BE71A24199C00D3A5F0 /* MKSourceVersion.m */,
-				D0672B091A4CEC0500D44610 /* MKIndirectPointer.h */,
-				D0672B0A1A4CEC0500D44610 /* MKIndirectPointer.m */,
 				D03030011A22EBDE00288B3E /* Type */,
 				D0C3B2E119F37B2800CAFE58 /* MKMachO.h */,
 				D0C3B2E219F37B2800CAFE58 /* MKMachO.m */,
@@ -3147,7 +3141,6 @@
 				D061B1541FF70208004A3047 /* MKExportTrieTerminalNode.h in Headers */,
 				D0539BE01A2411B800D3A5F0 /* MKLinkEditDataLoadCommand.h in Headers */,
 				D08B43771CBC96A80059BB43 /* MKObjCCategory.h in Headers */,
-				D0672B0B1A4CEC0500D44610 /* MKIndirectPointer.h in Headers */,
 				D03D19411C72F7C4006A2CEB /* MKRebaseInfo.h in Headers */,
 				D03EF5E3204093CC00B8022C /* MKBindingsFieldType.h in Headers */,
 				D0A1D8CC19E4EEB80095870C /* load_command_load_dylinker.h in Headers */,
@@ -3911,7 +3904,6 @@
 				D090A28C1C782B9A0025B096 /* MKRebaseDoRebaseImmediateTimes.m in Sources */,
 				D0E3FD2F1A58F608007B2771 /* data_model.c in Sources */,
 				D01C751A1CA74AC100648CA6 /* MKBindDoBindAddAddressULEB.m in Sources */,
-				D0672B0C1A4CEC0500D44610 /* MKIndirectPointer.m in Sources */,
 				D0995A121A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */,
 				D030304D1A23CEB200288B3E /* MKLCRPath.m in Sources */,
 				D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */,
