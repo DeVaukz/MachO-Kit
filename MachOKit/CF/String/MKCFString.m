@@ -27,6 +27,7 @@
 
 #import "MKCFString.h"
 #import "MKInternal.h"
+#import "MKPointer+Node.h"
 #import "MKCString.h"
 #import "MKObjCClass.h"
 

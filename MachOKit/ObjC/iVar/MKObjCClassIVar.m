@@ -27,6 +27,7 @@
 
 #import "MKObjCClassIVar.h"
 #import "NSError+MK.h"
+#import "MKPointer+Node.h"
 
 struct objc_ivar_64 {
     uint64_t offset;

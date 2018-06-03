@@ -27,6 +27,7 @@
 
 #import "MKObjCClassProperty.h"
 #import "NSError+MK.h"
+#import "MKPointer+Node.h"
 
 struct objc_property_64 {
     uint64_t name;

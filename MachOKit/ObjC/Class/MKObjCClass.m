@@ -27,6 +27,7 @@
 
 #import "MKObjCClass.h"
 #import "NSError+MK.h"
+#import "MKPointer+Node.h"
 #import "MKObjCClassData.h"
 
 struct objc_class_64 {

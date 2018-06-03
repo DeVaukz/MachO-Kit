@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKPointer.h
+//! @file       MKPointer+Node.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,56 +28,18 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKOptional.h>
-#import <MachOKit/MKBackedNode.h>
+#import <MachOKit/MKPointer.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef MKOptional<NSDictionary*>* _Nullable (^MKDeferredContextProvider)(void);
-
 //----------------------------------------------------------------------------//
-//! @name       Constants
-//! @relates    MKPointer
-//
-
-//!
-extern NSString * const MKInitializationContextTargetClass;
-//!
-extern NSString * const MKInitializationContextDeferredProvider;
-
-
-
-//----------------------------------------------------------------------------//
-//! Pointers are used to encapsulate a level of indirection which can not be
-//! resolved by the current node; for example, because the target of the
-//! pointer resides in a sibling node.
-//! 
-@interface MKPointer<Pointee> : NSObject {
-@package
-    MKBackedNode *_parent;
-    uint64_t __reserved;
-    mk_vm_address_t _address;
-    uintptr_t __opaque;
-}
-
-- (instancetype)init NS_UNAVAILABLE;
-
-- (nullable instancetype)initWithAddress:(mk_vm_address_t)address node:(MKBackedNode*)sourceNode context:(nullable NSDictionary<NSString*, id>*)context error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+@interface MKPointer (Node)
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(nullable NSDictionary<NSString*, id>*)context error:(NSError**)error;
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(nullable Class)targetClass error:(NSError**)error;
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error;
-
-//! The address referenced by the pointer.
-@property (nonatomic, readonly) mk_vm_address_t address;
-
-//! The class of the node that the pointer is expected to reference.
-@property (nonatomic, readonly, nullable) Class targetClass;
-
-//! The node referenced by the pointer.
-@property (nonatomic, readonly) MKOptional<Pointee> *pointee;
 
 @end
 

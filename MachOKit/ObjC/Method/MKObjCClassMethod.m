@@ -27,6 +27,7 @@
 
 #import "MKObjCClassMethod.h"
 #import "NSError+MK.h"
+#import "MKPointer+Node.h"
 
 struct objc_method_64 {
     uint64_t name;

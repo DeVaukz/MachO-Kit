@@ -27,7 +27,6 @@
 
 #import "MKPointer.h"
 #import "MKInternal.h"
-#import "MKMemoryMap+Pointer.h"
 #import "MKPtr.h"
 
 #define mk_ptr_struct(OBJ)    ((struct MKPtr*)(&(OBJ->_parent)))
@@ -50,40 +49,6 @@
     
     return self;
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(NSDictionary*)context error:(NSError**)error
-{
-    mk_vm_address_t address;
-    NSError *memoryMapError = nil;
-    
-    address = [parent.memoryMap readPointerAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&memoryMapError];
-    
-    if (memoryMapError) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
-        [self release]; return nil;
-    }
-    
-    return [self initWithAddress:address node:parent context:context error:error];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(Class)targetClass error:(NSError**)error
-{
-    NSDictionary *context = nil;
-    
-    if (targetClass) {
-        context = @{
-            MKInitializationContextTargetClass: targetClass
-        };
-    }
-    
-    return [self initWithOffset:offset fromParent:parent context:context error:error];
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
-{ return [self initWithOffset:offset fromParent:parent targetClass:nil error:error]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc

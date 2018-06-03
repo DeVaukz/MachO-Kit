@@ -27,6 +27,7 @@
 
 #import "MKObjCCategory.h"
 #import "NSError+MK.h"
+#import "MKPointer+Node.h"
 #import "MKObjCProtocolList.h"
 #import "MKObjCClassMethodList.h"
 #import "MKObjCClassPropertyList.h"

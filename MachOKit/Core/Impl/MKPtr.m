@@ -189,6 +189,7 @@ MKPtrPointee(struct MKPtr *ptr)
         }];
         
         Class targetClass = context[MKInitializationContextTargetClass];
+        NSCAssert(targetClass == nil || [targetClass isSubclassOfClass:MKNode.class], @"The target class of a pointer must be an MKNode, not %@.", NSStringFromClass(targetClass));
         pointee = [[boundingNode.value childNodeAtVMAddress:ptr->address targetClass:targetClass] retain];
         
         [context enumerateKeysAndObjectsUsingBlock:^(NSString *key, __unused id obj, __unused BOOL *stop) {
