@@ -43,11 +43,11 @@
     
     mk_vm_address_t address;
     NSError *memoryMapError = nil;
-	
-	address = [self.memoryMap readPointerAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:self.dataModel error:&memoryMapError];
-	
+    
+    address = [self.memoryMap readPointerAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:self.dataModel error:&memoryMapError];
+    
     if (memoryMapError) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
         [self release]; return nil;
     }
     
@@ -84,7 +84,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Values
+#pragma mark -  Pointer Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize address = _address;
@@ -98,7 +98,7 @@
 { return MKPtrPointee(mk_ptr_struct(self)); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -115,7 +115,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	NSObject
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -123,7 +123,9 @@
 {
     MKBackedNode *pointee = self.pointee.value;
     if (pointee)
-        return [NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR " -> %@", self.nodeVMAddress, pointee.nodeDescription];
+        return [NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR " -> %@", self.nodeVMAddress, pointee.description];
+    else if (self.address == 0)
+        return [NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR " -> NULL", self.nodeVMAddress];
     else
         return [NSString stringWithFormat:@"0x%" MK_VM_PRIxADDR " -> 0x%" MK_VM_PRIxADDR "", self.nodeVMAddress, self.address];
 }

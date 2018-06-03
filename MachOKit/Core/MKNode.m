@@ -73,17 +73,17 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)nodeDescription
 {
-	IMP nodeDescriptionMethod = [MKNode instanceMethodForSelector:@selector(description)];
-	IMP descriptionMethod = [self methodForSelector:@selector(description)];
-	
-	if (descriptionMethod != nodeDescriptionMethod)
-		return [NSString stringWithFormat:@"<%@: %@>", NSStringFromClass(self.class), self.description];
-	else
-		return [NSString stringWithFormat:@"<%@>", NSStringFromClass(self.class)];
+    IMP nodeDescriptionMethod = [MKNode instanceMethodForSelector:@selector(description)];
+    IMP descriptionMethod = [self methodForSelector:@selector(description)];
+    
+    if (descriptionMethod != nodeDescriptionMethod)
+        return [NSString stringWithFormat:@"<%@: %@>", NSStringFromClass(self.class), self.description];
+    else
+        return [NSString stringWithFormat:@"<%@>", NSStringFromClass(self.class)];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -   Getting Related Objects
+#pragma mark -  Getting Related Objects
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -109,13 +109,13 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 { return self.parent.dataModel; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSArray<NSError*> *)warnings
+- (NSArray*)warnings
 { return objc_getAssociatedObject(self, AssociatedWarnings) ?: @[]; }
-- (void)setWarnings:(NSArray<NSError*> *)warnings
+- (void)setWarnings:(NSArray*)warnings
 { objc_setAssociatedObject(self, AssociatedWarnings, warnings, OBJC_ASSOCIATION_COPY); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -   Navigating the Node Tree
+#pragma mark -  Navigating the Node Tree
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize parent = _parent;
@@ -145,7 +145,7 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -   Subclasses
+#pragma mark -  Subclasses
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

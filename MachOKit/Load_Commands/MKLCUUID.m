@@ -74,7 +74,7 @@
         size:sizeof(lc.uuid)
     ];
     uuid.name = @"uuid";
-    uuid.description = @"Segment Name";
+    uuid.description = @"UUID";
     uuid.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

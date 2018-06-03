@@ -154,7 +154,7 @@ MKMakeUnsignedNSNumberSubclass(LongLong, long long, "Q")
             return [NSNumber mk_numberWithUnsignedQuadWord:(uint64_t)value];
         default:
         {
-            NSString *reason = [NSString stringWithFormat:@"-maskUsing: called on NSNumber with unsupported type [%s].", self.objCType];
+            NSString *reason = [NSString stringWithFormat:@"-mk_maskUsing: called on NSNumber with unsupported type [%s].", self.objCType];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
         }
     }
@@ -187,7 +187,7 @@ MKMakeUnsignedNSNumberSubclass(LongLong, long long, "Q")
             return [NSNumber mk_numberWithUnsignedQuadWord:(uint64_t)value];
         default:
         {
-            NSString *reason = [NSString stringWithFormat:@"-maskUsing: called on NSNumber with unsupported type [%s].", self.objCType];
+            NSString *reason = [NSString stringWithFormat:@"-mk_shift: called on NSNumber with unsupported type [%s].", self.objCType];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
         }
     }

@@ -64,15 +64,15 @@
 			MKExportTrieNode *node = [MKExportTrieNode nodeAtOffset:offset fromParent:self error:&trieNodeError];
 			if (node == nil) {
 				// TODO - If a malformed Mach-O added garbage data between nodes it would
-				// break our *current* parsing approach but would not (afaict) be rejected by
-				// dyld.  We should improve our parsing to handle this case.
+				// break our current parsing approach but would not (afaict) be rejected by
+				// dyld.  Our parsing should be improved to handle this case.
 				MK_PUSH_UNDERLYING_WARNING(nodes, trieNodeError, @"Could not parse trie node at offset [%" MK_VM_PRIiOFFSET "].", offset);
 				break;
 			}
 			
 			[nodes addObject:node];
 			
-			// Safe.  All trie nodes must be within the size of this node.
+			// SAFE - All trie nodes must be within the size of this node.
 			offset += node.nodeSize;
 		}
 		
@@ -182,10 +182,10 @@
 		if (dyldInfoOnlyCommands) [commands addObjectsFromArray:dyldInfoOnlyCommands];
 		
 		if (commands.count > 1)
-			MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@", commands.lastObject);
+			MK_PUSH_WARNING(nil, MK_EINVALID_DATA, @"Image contains multiple LC_DYLD_INFO load commands.  Ignoring %@.", commands.lastObject);
 		
 		if (commands.count == 0) {
-			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image load commands does not contain LC_DYLD_INFO load command."];
+			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not contain a LC_DYLD_INFO load command."];
 			[commands release];
 			[self release]; return nil;
 		}
@@ -211,7 +211,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//

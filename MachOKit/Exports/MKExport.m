@@ -97,7 +97,7 @@
                 if (next.nodeOffset == c.offset)
                     branch = c;
             }
-            NSAssert(branch != nil, @"%@ is not referenced by any branches of %@", next.nodeDescription, current.nodeDescription);
+            NSAssert(branch != nil, @"%@ is not referenced by any branches of %@.", next.nodeDescription, current.nodeDescription);
             
             NSString *prefix = branch.prefix.string;
             if (prefix == nil) {
@@ -119,7 +119,7 @@
 {
 #pragma unused(parent)
 #pragma unused(error)
-    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-initWithParent:error unavailable" userInfo:nil];
+    @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"-initWithParent:error unavailable." userInfo:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

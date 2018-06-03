@@ -180,7 +180,7 @@
             
             MKSection *section = [MKSection sectionWithLoadCommand:sectionLoadCommand inSegment:self error:&sectionError];
             if (section == nil) {
-                MK_PUSH_WARNING_WITH_ERROR(sections, MK_EINTERNAL_ERROR, sectionError, @"Failed to create section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]);
+                MK_PUSH_WARNING_WITH_ERROR(sections, MK_EINTERNAL_ERROR, sectionError, @"Could not create section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]);
                 continue;
             }
             

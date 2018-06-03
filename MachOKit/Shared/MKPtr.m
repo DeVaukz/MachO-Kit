@@ -203,8 +203,9 @@ MKPtrPointee(struct MKPtr *ptr)
 			ptr->__opaque = OPAQUE_WITH_VALUE(HAS_ATTEMPTED_RESOLUTION, context[MKInitializationContextTargetClass], DISCRIMINATOR_CLASS);
 			// Need to release 'pointee' because it may be an empty MKOptional.
 			[pointee release];
-		} else
+        } else {
 			ptr->__opaque = OPAQUE_WITH_VALUE(HAS_ATTEMPTED_RESOLUTION, pointee, DISCRIMINATOR_POINTEE);
+        }
 		
 		[context release];
     }

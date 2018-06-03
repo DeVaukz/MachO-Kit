@@ -56,13 +56,13 @@
 {
     mk_vm_address_t address;
     NSError *memoryMapError = nil;
-	
-	address = [parent.memoryMap readPointerAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&memoryMapError];
-	
-	if (memoryMapError) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
-		[self release]; return nil;
-	}
+    
+    address = [parent.memoryMap readPointerAtOffset:offset fromAddress:parent.nodeContextAddress withDataModel:parent.dataModel error:&memoryMapError];
+    
+    if (memoryMapError) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
+        [self release]; return nil;
+    }
     
     return [self initWithAddress:address node:parent context:context error:error];
 }
@@ -71,7 +71,7 @@
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(Class)targetClass error:(NSError**)error
 {
     NSDictionary *context = nil;
-	
+    
     if (targetClass) {
         context = @{
             MKInitializationContextTargetClass: targetClass
@@ -94,7 +94,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	Values
+#pragma mark -  Pointer Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -110,7 +110,7 @@
 { return MKPtrPointee(mk_ptr_struct(self)); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - 	NSObject
+#pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -118,7 +118,9 @@
 {
     MKBackedNode *pointee = self.pointee.value;
     if (pointee)
-        return [NSString stringWithFormat:@"-> %@", pointee.nodeDescription];
+        return [NSString stringWithFormat:@"-> %@", pointee.description];
+    else if (self.address == 0)
+        return [NSString stringWithFormat:@"-> NULL"];
     else
         return [NSString stringWithFormat:@"-> 0x%" MK_VM_PRIxADDR "", self.address];
 }
