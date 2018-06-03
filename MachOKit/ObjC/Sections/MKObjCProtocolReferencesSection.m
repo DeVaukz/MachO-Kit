@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCProtocolReferencesSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 
 //----------------------------------------------------------------------------//

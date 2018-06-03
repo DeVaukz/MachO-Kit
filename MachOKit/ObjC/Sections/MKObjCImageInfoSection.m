@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCImageInfoSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 #import "MKObjCImageInfo.h"
 
@@ -51,12 +51,18 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
  
-    NSError *e = nil;
-    MKObjCImageInfo *imageInfo = [[MKObjCImageInfo alloc] initWithOffset:0 fromParent:self error:&e];
-    if (imageInfo)
-        _imageInfo = [[MKOptional alloc] initWithValue:imageInfo];
-    else
-        _imageInfo = [[MKOptional alloc] initWithError:e];
+    // Load the Image Info
+    {
+        NSError *imageInfoError = nil;
+        
+        MKObjCImageInfo *imageInfo = [[MKObjCImageInfo alloc] initWithOffset:0 fromParent:self error:&imageInfoError];
+        if (imageInfo)
+            _imageInfo = [[MKOptional alloc] initWithValue:imageInfo];
+        else
+            _imageInfo = [[MKOptional alloc] initWithError:imageInfoError];
+        
+        [imageInfo release];
+    }
     
     return self;
 }
@@ -98,8 +104,15 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *imageInfo = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(imageInfo)
+        type:[MKNodeFieldTypeNode typeWithNodeType:MKObjCImageInfo.class]
+    ];
+    imageInfo.description = @"Image Info";
+    imageInfo.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(imageInfo) description:@"Image Info"]
+        imageInfo.build
     ]];
 }
 

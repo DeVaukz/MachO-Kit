@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClassListSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 #import "MKObjCClass.h"
 
@@ -36,18 +36,32 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
-    if ([segment.name rangeOfString:@SEG_DATA].location != 0)
-        return 0;
+    if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
+        ([sectionLoadCommand.sectname isEqualToString:@"__objc_classlist"] ||
+         [sectionLoadCommand.sectname isEqualToString:@"__objc_nlclslist"]))
+        return 50;
     
-    if ([sectionLoadCommand.sectname isEqualToString:@"__objc_classlist"] == NO &&
-        [sectionLoadCommand.sectname isEqualToString:@"__objc_nlclslist"] == NO)
-        return 0;
-    
-    return 50;
+    return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (Class)classForGenericArgumentAtIndex:(__unused NSUInteger)index
 { return MKObjCClass.class; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_elementsFieldBuilder
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-method-access"
+    MKNodeFieldBuilder *strx = [super _elementsFieldBuilder];
+#pragma clang diagnostic pop
+    strx.options |= MKNodeFieldOptionDisplayAsChild;
+    
+    return strx;
+}
 
 @end

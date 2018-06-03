@@ -108,9 +108,25 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *address = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(address)
+        type:MKNodeFieldTypeAddress.sharedInstance
+        offset:0
+        size:self.dataModel.pointerSize
+    ];
+    address.description = @"Pointer";
+    address.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *pointee = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(pointee)
+        type:(self.targetClass ? [MKNodeFieldTypeNode typeWithNodeType:self.targetClass] : nil)
+    ];
+    pointee.description = @"Pointee";
+    pointee.options = MKNodeFieldOptionHidden;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(address) description:@"Value" offset:0 size:self.dataModel.pointerSize format:MKNodeFieldFormatHexCompact],
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(pointee) description:@"Pointee"]
+        address.build,
+        pointee.build
     ]];
 }
 

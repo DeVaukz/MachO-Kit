@@ -26,13 +26,11 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCIVarSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKObjCIVarSection
-
-@synthesize elements = _ivarOffsets;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
@@ -50,24 +48,25 @@
     self = [super initWithLoadCommand:sectionLoadCommand inSegment:segment error:error];
     if (self == nil) return nil;
     
-    // Load pointers
+    // Load offsets
     {
         NSMutableArray<MKObjCIVarOffset*> *ivarOffsets = [[NSMutableArray alloc] init];
         mk_vm_offset_t offset = 0;
         
         while (offset < self.nodeSize)
         {
-            NSError *e = nil;
-            MKObjCIVarOffset *ivarOffset = [[MKObjCIVarOffset alloc] initWithOffset:offset fromParent:self error:&e];
+            NSError *offsetError = nil;
+            
+            MKObjCIVarOffset *ivarOffset = [[MKObjCIVarOffset alloc] initWithOffset:offset fromParent:self error:&offsetError];
             if (ivarOffset == nil) {
-                MK_PUSH_UNDERLYING_WARNING(references, e, @"Could not load ivar offset at offset %" MK_VM_PRIiOFFSET ".", offset);
+                MK_PUSH_WARNING_WITH_ERROR(references, MK_EINTERNAL_ERROR, offsetError, @"Could not parse ivar offset at offset [%" MK_VM_PRIuOFFSET "].", offset);
                 break;
             }
             
             [ivarOffsets addObject:ivarOffset];
             [ivarOffset release];
             
-            // Safe.  All pointer nodes must be within the size of this node.
+            // SAFE - All pointer nodes must be within the size of this node.
             offset += ivarOffset.nodeSize;
         }
         
@@ -87,7 +86,13 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  Section Values
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+@synthesize elements = _ivarOffsets;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -108,14 +113,21 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *elements = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(elements)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKObjCIVarOffset.class]]
+    ];
+    elements.description = @"IVar Offsets";
+    elements.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(elements) description:@"Element List"]
+        elements.build
     ]];
 }
 

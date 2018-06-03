@@ -125,17 +125,23 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
++ (MKNodeFieldBuilder*)_elementsFieldBuilder
 {
     MKNodeFieldBuilder *elements = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(elements)
         type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKPointerNode.class]]
     ];
     elements.description = @"Element List";
-    elements.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeWithParent;
+    elements.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
     
+    return elements;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeDescription*)layout
+{
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        elements.build
+        self.class._elementsFieldBuilder.build
     ]];
 }
 

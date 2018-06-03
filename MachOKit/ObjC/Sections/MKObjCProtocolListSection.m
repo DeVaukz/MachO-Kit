@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCProtocolListSection.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKSegment.h"
 #import "MKObjCProtocol.h"
 
@@ -46,5 +46,21 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (Class)classForGenericArgumentAtIndex:(__unused NSUInteger)index
 { return MKObjCProtocol.class; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNode
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (MKNodeFieldBuilder*)_elementsFieldBuilder
+{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-method-access"
+    MKNodeFieldBuilder *strx = [super _elementsFieldBuilder];
+#pragma clang diagnostic pop
+    strx.options |= MKNodeFieldOptionDisplayAsChild;
+    
+    return strx;
+}
 
 @end
