@@ -45,12 +45,13 @@
 #import <MachOKit/MKAddressedNode.h>
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKPointer.h>
 
 /* SHARED */
 #import <MachOKit/MKMemoryMap+Pointer.h>
+#import <MachOKit/MKPointer+Node.h>
 #import <MachOKit/MKSharedFieldType.h>
 #import <MachOKit/MKPointerNode.h>
-#import <MachOKit/MKPointer.h>
 #import <MachOKit/MKCString.h>
 
 /* FAT */

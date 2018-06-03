@@ -13,6 +13,8 @@
 		D00205471E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.m in Sources */ = {isa = PBXBuildFile; fileRef = D00205451E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.m */; };
 		D005C1AB1A70CA9E001D9B7B /* OtoolUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D005C1AA1A70CA9E001D9B7B /* OtoolUtil.m */; };
 		D0079FE41895D1AE00E9D0CF /* macho.h in Headers */ = {isa = PBXBuildFile; fileRef = D0079FE31895D16E00E9D0CF /* macho.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00A6CB41E669D9F0045F705 /* MKNodeFieldTypePointer.h in Headers */ = {isa = PBXBuildFile; fileRef = D00A6CB21E669D9F0045F705 /* MKNodeFieldTypePointer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D00A6CB51E669D9F0045F705 /* MKNodeFieldTypePointer.m in Sources */ = {isa = PBXBuildFile; fileRef = D00A6CB31E669D9F0045F705 /* MKNodeFieldTypePointer.m */; };
 		D00C093D200EFF1400FA1E9B /* MKFunctionStartsContext.h in Headers */ = {isa = PBXBuildFile; fileRef = D00C093C200EFF1400FA1E9B /* MKFunctionStartsContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00E88F32008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.h in Headers */ = {isa = PBXBuildFile; fileRef = D00E88F12008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00E88F42008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E88F22008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.m */; };
@@ -354,6 +356,7 @@
 		D06D59CB20156E4000A99173 /* MKNodeFieldTypeBoolean.m in Sources */ = {isa = PBXBuildFile; fileRef = D06D59C920156E4000A99173 /* MKNodeFieldTypeBoolean.m */; };
 		D06D59CE20159A9A00A99173 /* MKNodeFieldVersionType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06D59CF20159A9A00A99173 /* MKNodeFieldVersionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */; };
+		D07194B92011B69E00B609DB /* MKNodeFieldPointerType.h in Headers */ = {isa = PBXBuildFile; fileRef = D07194B82011B69E00B609DB /* MKNodeFieldPointerType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D074B6DB1A88859B00B5E3E5 /* segment.c in Sources */ = {isa = PBXBuildFile; fileRef = D074B6D91A88859B00B5E3E5 /* segment.c */; };
 		D074B6DD1A88859B00B5E3E5 /* segment.c in Sources */ = {isa = PBXBuildFile; fileRef = D074B6D91A88859B00B5E3E5 /* segment.c */; };
 		D074B6DE1A88859B00B5E3E5 /* segment.h in Headers */ = {isa = PBXBuildFile; fileRef = D074B6DA1A88859B00B5E3E5 /* segment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -968,6 +971,8 @@
 		D0079FDF1895CC0100E9D0CF /* MachOKit-Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MachOKit-Tests-Info.plist"; sourceTree = "<group>"; };
 		D0079FE11895D15900E9D0CF /* macho.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = macho.c; sourceTree = "<group>"; };
 		D0079FE31895D16E00E9D0CF /* macho.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macho.h; sourceTree = "<group>"; };
+		D00A6CB21E669D9F0045F705 /* MKNodeFieldTypePointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypePointer.h; sourceTree = "<group>"; };
+		D00A6CB31E669D9F0045F705 /* MKNodeFieldTypePointer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypePointer.m; sourceTree = "<group>"; };
 		D00C093C200EFF1400FA1E9B /* MKFunctionStartsContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKFunctionStartsContext.h; sourceTree = "<group>"; };
 		D00E88F12008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldCPUSubTypeAny.h; sourceTree = "<group>"; };
 		D00E88F22008707F00C0FBB7 /* MKNodeFieldCPUSubTypeAny.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldCPUSubTypeAny.m; sourceTree = "<group>"; };
@@ -1304,6 +1309,7 @@
 		D06D59C920156E4000A99173 /* MKNodeFieldTypeBoolean.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeBoolean.m; sourceTree = "<group>"; };
 		D06D59CC20159A9A00A99173 /* MKNodeFieldVersionType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldVersionType.h; sourceTree = "<group>"; };
 		D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldVersionType.m; sourceTree = "<group>"; };
+		D07194B82011B69E00B609DB /* MKNodeFieldPointerType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldPointerType.h; sourceTree = "<group>"; };
 		D074B6D91A88859B00B5E3E5 /* segment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = segment.c; sourceTree = "<group>"; };
 		D074B6DA1A88859B00B5E3E5 /* segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = segment.h; sourceTree = "<group>"; };
 		D07727751A55E14600A517D3 /* MKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSymbol.h; sourceTree = "<group>"; };
@@ -2746,6 +2752,7 @@
 				D06D59C0201560DC00A99173 /* MKNodeFieldDateType.h */,
 				D0A92F4220033DDC0001C18D /* MKNodeFieldCollectionType.h */,
 				D0E30A811E623B480005A882 /* MKNodeFieldNodeType.h */,
+				D07194B82011B69E00B609DB /* MKNodeFieldPointerType.h */,
 				D06D59C820156E4000A99173 /* MKNodeFieldTypeBoolean.h */,
 				D06D59C920156E4000A99173 /* MKNodeFieldTypeBoolean.m */,
 				D0B9F6C31E57FE3B00D0B35A /* MKNodeFieldTypeByte.h */,
@@ -2776,6 +2783,8 @@
 				D0B9F6E71E5947EF00D0B35A /* MKNodeFieldTypeCollection.m */,
 				D0B9F6EA1E594B4800D0B35A /* MKNodeFieldTypeNode.h */,
 				D0B9F6EB1E594B4800D0B35A /* MKNodeFieldTypeNode.m */,
+				D00A6CB21E669D9F0045F705 /* MKNodeFieldTypePointer.h */,
+				D00A6CB31E669D9F0045F705 /* MKNodeFieldTypePointer.m */,
 			);
 			path = Type;
 			sourceTree = "<group>";
@@ -3149,6 +3158,7 @@
 				D066184C1CBB11E4006979A1 /* MKObjCClassIVarList.h in Headers */,
 				D010F7181CB87055004025F5 /* MKObjCSelectorReferencesSection.h in Headers */,
 				D01C75191CA74AC100648CA6 /* MKBindDoBindAddAddressULEB.h in Headers */,
+				D00A6CB41E669D9F0045F705 /* MKNodeFieldTypePointer.h in Headers */,
 				D03030601A23D15100288B3E /* MKLCDyldInfo.h in Headers */,
 				D0E30A711E612C430005A882 /* MKFormatterChain.h in Headers */,
 				D0C3DA9C2047CC1C00D48DE4 /* MKNodeFieldExtractSortedDictionaryValues.h in Headers */,
@@ -3389,6 +3399,7 @@
 				D06618501CBB2813006979A1 /* MKObjCElementList.h in Headers */,
 				D0A0D2351DE50B71003F0A08 /* MKObjCProtocolMethodTypesList.h in Headers */,
 				D03CD8011B68831500F52FBB /* MKSharedCache.h in Headers */,
+				D07194B92011B69E00B609DB /* MKNodeFieldPointerType.h in Headers */,
 				D010F7281CB87190004025F5 /* MKObjCIVarSection.h in Headers */,
 				D0C7C7831A5A44A400B41355 /* data_model_internal.h in Headers */,
 				D0B9F6C81E58040D00D0B35A /* MKNodeFieldNumericType.h in Headers */,
@@ -3999,6 +4010,7 @@
 				D0A1E9221B69F3080061843F /* MKDSCMappingInfo.m in Sources */,
 				D06618631CBB3171006979A1 /* MKObjCClassMethodList.m in Sources */,
 				D010F7051CB86D66004025F5 /* MKObjCClassListSection.m in Sources */,
+				D00A6CB51E669D9F0045F705 /* MKNodeFieldTypePointer.m in Sources */,
 				D0A1D8E519E4EEB80095870C /* load_command_sub_framework.c in Sources */,
 				D01731611C66BA50007CB0A1 /* MKDSCImage.m in Sources */,
 				D06CDAD41CBCC24D000380CA /* MKDataSection.m in Sources */,

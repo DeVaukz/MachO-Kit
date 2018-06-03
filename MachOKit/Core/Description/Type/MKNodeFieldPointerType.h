@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKFieldType.h
+//! @file       MKNodeFieldPointerType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,32 +25,15 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <machOKit/MKNodeFieldContainerType.h>
-#import <MachOKit/MKNodeFieldBooleanType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-#import <MachOKit/MKNodeFieldOptionSetType.h>
-#import <MachOKit/MKNodeFieldBitfieldType.h>
-#import <MachOKit/MKNodeFieldStringType.h>
-#import <MachOKit/MKNodeFieldDateType.h>
-#import <MachOKit/MKNodeFieldCollectionType.h>
-#import <MachOKit/MKNodeFieldNodeType.h>
-#import <MachOKit/MKNodeFieldPointerType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
 
-#import <MachOKit/MKNodeFieldTypeBoolean.h>
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldTypeWord.h>
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldTypeQuadWord.h>
-#import <MachOKit/MKNodeFieldTypeAddress.h>
-#import <MachOKit/MKNodeFieldTypeSize.h>
-#import <MachOKit/MKNodeFieldTypeOffset.h>
-#import <MachOKit/MKNodeFieldTypeEnumeration.h>
-#import <MachOKit/MKNodeFieldTypeOptionSet.h>
-#import <MachOKit/MKNodeFieldTypeBitfield.h>
-#import <MachOKit/MKNodeFieldTypeString.h>
-#import <MachOKit/MKNodeFieldTypeDate.h>
-#import <MachOKit/MKNodeFieldTypeCollection.h>
-#import <MachOKit/MKNodeFieldTypeNode.h>
-#import <MachOKit/MKNodeFieldTypePointer.h>
+#import <MachOKit/MKNodeFieldType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@protocol MKNodeFieldPointerType <MKNodeFieldType>
+@end
+
+NS_ASSUME_NONNULL_END

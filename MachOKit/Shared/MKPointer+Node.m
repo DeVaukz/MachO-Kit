@@ -54,8 +54,8 @@
     
     if (targetClass) {
         context = @{
-                    MKInitializationContextTargetClass: targetClass
-                    };
+            MKInitializationContextTargetClass: targetClass
+        };
     }
     
     return [self initWithOffset:offset fromParent:parent context:context error:error];
