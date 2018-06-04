@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
     id<MKNodeFieldType> _type;
     NSFormatter *_formatter;
     MKNodeFieldOptions _options;
+    NSString *_alternateFieldName;
 }
 
 + (instancetype)builderWithProperty:(NSString*)propertyName type:(nullable id<MKNodeFieldType>)type offset:(mk_vm_offset_t)offset size:(mk_vm_size_t)size;
@@ -69,6 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite) MKNodeFieldOptions options;
 
 @property (nonatomic, strong, nullable) NSFormatter *formatter;
+
+@property (nonatomic, strong, nullable) NSString *alternateFieldName;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Creating Fields

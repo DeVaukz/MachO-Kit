@@ -40,9 +40,10 @@
 @synthesize dataRecipe = _dataRecipe;
 @synthesize valueFormatter = _valueFormatter;
 @synthesize options = _options;
+@synthesize alternateFieldName = _alternateFieldName;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
+- (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options alternateFieldName:(nullable NSString*)alternateFieldName
 {
     NSParameterAssert(name != nil);
     NSParameterAssert(valueRecipe != nil);
@@ -58,8 +59,15 @@
     // The formatter really should be copied but it saves memory not to.
     _valueFormatter = [valueFormatter retain];
     _options = options;
+    _alternateFieldName = [alternateFieldName copy];
     
     return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithName:(NSString*)name description:(NSString*)description type:(id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(id<MKNodeFieldDataRecipe>)dataRecipe formatter:(NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options
+{
+    return [self initWithName:name description:description type:type value:valueRecipe data:dataRecipe formatter:valueFormatter options:options alternateFieldName:nil];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -75,6 +83,7 @@
     [_valueRecipe release];
     [_dataRecipe release];
     [_valueFormatter release];
+    [_alternateFieldName release];
     
     [super dealloc];
 }

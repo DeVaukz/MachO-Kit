@@ -81,8 +81,22 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     //! Hint to not display the raw data of the field.
     MKNodeFieldOptionHideData                                   = (1U << 11),
     //! Combination of \c MKNodeFieldOptionHideAddress and
-    // \c MKNodeFieldOptionHideData.
-    MKNodeFieldOptionHideAddressAndData                         = MKNodeFieldOptionHideAddress | MKNodeFieldOptionHideData
+    //! \c MKNodeFieldOptionHideData.
+    MKNodeFieldOptionHideAddressAndData                         = MKNodeFieldOptionHideAddress | MKNodeFieldOptionHideData,
+/* Alternate Field Display Options */
+    //! Hint to include the alternate field in the description of the field.
+    //! This is the default (if an alternate field is specified).
+    MKNodeFieldOptionShowAlternateField                         = (1U << 15),
+    //! Hit to not include the alternate field in the description of the field.
+    MKNodeFieldOptionHideAlternateField                         = (1U << 16),
+    //! Hint to replace the description of the field with the value of the
+    //! alternate field.
+    MKNodeFieldOptionSubstituteAlternateFieldDescription        = (1U << 17),
+    //! Hint to replace the value of the field with the value of the
+    //! alternate field.
+    MKNodeFieldOptionSubstituteAlternateFieldValue              = (1U << 18),
+    //! 
+    MKNodeFieldOptionAlwaysSubstituteAlternateFieldDescription  = (1U << 19)
 };
 
 
@@ -97,7 +111,10 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     id<MKNodeFieldDataRecipe> _dataRecipe;
     NSFormatter *_valueFormatter;
     MKNodeFieldOptions _options;
+    NSString *_alternateFieldName;
 }
+
+- (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description type:(nullable id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(nullable id<MKNodeFieldDataRecipe>)dataRecipe formatter:(nullable NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options alternateFieldName:(nullable NSString*)alternateFieldName;
 
 - (instancetype)initWithName:(NSString*)name description:(nullable NSString*)description type:(nullable id<MKNodeFieldType>)type value:(id<MKNodeFieldValueRecipe>)valueRecipe data:(nullable id<MKNodeFieldDataRecipe>)dataRecipe formatter:(nullable NSFormatter*)valueFormatter options:(MKNodeFieldOptions)options;
 
@@ -128,6 +145,10 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
 
 //! A formatter used to format the value of the field.
 @property (nonatomic, readonly, nullable) NSFormatter *valueFormatter;
+
+//! A field that contains the same value, but typically formatted in a more
+//! human readable way.  The named field must be part of the same node.
+@property (nonatomic, readonly, nullable) NSString *alternateFieldName;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Obtaining a Formatted Description

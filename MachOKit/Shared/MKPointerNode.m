@@ -116,6 +116,7 @@
     ];
     address.description = @"Pointer";
     address.options = MKNodeFieldOptionDisplayAsDetail;
+    address.alternateFieldName = MK_PROPERTY(pointee);
     
     MKNodeFieldBuilder *pointee = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(pointee)

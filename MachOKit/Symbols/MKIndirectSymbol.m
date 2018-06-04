@@ -165,6 +165,7 @@
         ];
         index.description = @"Symbol Index";
         index.options = MKNodeFieldOptionDisplayAsDetail;
+        index.alternateFieldName = MK_PROPERTY(symbol);
     }
     
     MKNodeFieldBuilder *symbol = [MKNodeFieldBuilder
@@ -172,7 +173,7 @@
         type:[MKNodeFieldTypeNode typeWithNodeType:MKSymbol.class]
     ];
     symbol.description = @"Symbol";
-    symbol.options = MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
+    symbol.options = MKNodeFieldOptionHidden | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
     
     MKNodeFieldBuilder *section = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(section)

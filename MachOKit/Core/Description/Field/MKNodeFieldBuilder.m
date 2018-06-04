@@ -94,7 +94,7 @@
     id<MKNodeFieldValueRecipe> valueRecipe = [[MKNodeFieldOperationReadKeyPath alloc] initWithKeyPath:propertyName];
     id<MKNodeFieldDataRecipe> dataRecipe = nil;
     
-    if ([type conformsToProtocol:@protocol(MKNodeFieldNodeType)] && [[(id<MKNodeFieldNodeType>)type nodeClass] isSubclassOfClass:MKOffsetNode.class]) {
+    if ([type conformsToProtocol:@protocol(MKNodeFieldNodeType)] && [[(id<MKNodeFieldNodeType>)type nodeClass] isSubclassOfClass:MKBackedNode.class]) {
         dataRecipe = [MKNodeFieldDataOperationExtractChildNodeData.sharedInstance retain];
     }
     
@@ -126,6 +126,7 @@
     [_dataRecipe release];
     [_type release];
     [_formatter release];
+    [_alternateFieldName release];
     
     [super dealloc];
 }
@@ -141,6 +142,7 @@
 @synthesize dataRecipe = _dataRecipe;
 @synthesize options = _options;
 @synthesize formatter = _formatter;
+@synthesize alternateFieldName = _alternateFieldName;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Creating Fields
@@ -155,7 +157,8 @@
                                         value:self.valueRecipe
                                          data:self.dataRecipe
                                     formatter:self.formatter
-                                      options:self.options] autorelease];
+                                      options:self.options
+                           alternateFieldName:self.alternateFieldName] autorelease];
 }
 
 @end
