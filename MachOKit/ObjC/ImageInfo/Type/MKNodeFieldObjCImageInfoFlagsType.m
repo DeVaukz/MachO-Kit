@@ -91,7 +91,7 @@ MKMakeSingletonInitializer(MKNodeFieldObjCImageInfoFlagsType)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (int)shiftForMask:(__unused NSNumber*)mask
+- (int)shiftForMask:(NSNumber*)mask
 {
     if ([mask isEqual:_$(SwiftVersionMask)])
         return -SwiftVersionMaskShift;

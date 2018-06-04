@@ -26,8 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCProtocolMethodTypesList.h"
-#import "NSError+MK.h"
-#import "MKCString.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKObjCProtocolMethodTypesList
@@ -38,10 +37,7 @@
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
-    
-    __block NSError *localError = nil;
+    __block NSError *memoryMapError = nil;
     mk_error_t err;
     
     size_t entsize = self.dataModel.pointerSize;
@@ -54,65 +50,65 @@
     
     // Check if the full length is mappable.  If it is not, shrink the size to
     // the mappable region and emit a warning.
-    [self.memoryMap remapBytesAtOffset:0 fromAddress:self.nodeContextAddress length:_nodeSize requireFull:NO withHandler:^(__unused vm_address_t address, vm_size_t length, NSError *e) {
-        if (length == 0 || e) {
-            localError = e;
-            return;
-        }
+    [self.memoryMap remapBytesAtOffset:0 fromAddress:self.nodeContextAddress length:_nodeSize requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
+        if (address == 0x0) { memoryMapError = e; return; }
         
         if (length < _nodeSize) {
+            MK_PUSH_WARNING(elements, MK_ESIZE, @"Expected list size is [%" MK_VM_PRIuSIZE "] bytes but only [%" MK_VM_PRIuSIZE "] bytes could be read.  Truncating.", _nodeSize, length);
             _nodeSize = length;
-            // TODO - Warning
         }
     }];
     
-    if (localError) {
-        MK_ERROR_OUT = localError;
+    if (memoryMapError) {
+        MK_ERROR_OUT = memoryMapError;
         [self release]; return nil;
     }
     
     // In the interest of robustness, we won't care if all/part of the node falls
     // outside of its parent's range.  However, we will emit a warning.
-    // TODO - Warning
+    mk_vm_range_t parentRange = mk_vm_range_make([(MKBackedNode*)self.parent nodeVMAddress], [(MKBackedNode*)self.parent nodeSize]);
+    mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
+    if (mk_vm_range_contains_range(parentRange, nodeRange, false)) {
+        MK_PUSH_WARNING(nil, MK_EOUT_OF_RANGE, @"List size [%" MK_VM_PRIuSIZE "] extends beyond parent node: %@.", self.nodeSize, self.parent.nodeDescription);
+    }
     
     // Load elements
     {
         NSMutableArray *elements = [[NSMutableArray alloc] initWithCapacity:count];
-        
         mk_vm_offset_t offset = 0;
         
-        for (uint32_t i = 0; i < count; i++) {
-            NSError *e = nil;
+        for (uint32_t i = 0; i < count; i++)
+        {
+            NSError *elementError = nil;
             
-            MKPointerNode *element = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:MKCString.class error:&e];
-            
-            // Use the entsize, rather than the parsed element's nodeSize, when
-            // advancing the offset.
-            offset += entsize;
-            
+            MKPointerNode *element = [[MKPointerNode alloc] initWithOffset:offset fromParent:self targetClass:MKCString.class error:&elementError];
             if (element == nil) {
-                MK_PUSH_UNDERLYING_WARNING(ivars, e, @"Failed to load element at index %" PRIu32 ".", i);
+                MK_PUSH_WARNING_WITH_ERROR(elements, MK_EINTERNAL_ERROR, elementError, @"Could not parse element at index [%" PRIu32 "].", i);
                 // We might be able to continue parsing additional elemements,
                 // but that would break the ordering so just stop here.
                 break;
             }
-            else if (element.nodeSize != entsize) {
-                MK_PUSH_WARNING(elements, MK_ESIZE, @"Element at index %" PRIu32 " has an unexpected size.  Expected " PRIu32 " bytes, parsed " MK_VM_PRIuSIZE " bytes.", i, entsize, element.nodeSize);
+            
+            // Use the entsize, rather than the parsed element's nodeSize, when
+            // advancing the offset.
+            // SAFE - Computing the node size would have failed if this could
+            //        overflow.
+            offset += entsize;
+            
+            if (element.nodeSize != entsize) {
+                MK_PUSH_WARNING(elements, MK_ESIZE, @"Element at index [%" PRIu32 "] has an unexpected size.  Expected [%" PRIu32 "] bytes but parsed [" MK_VM_PRIuSIZE "] bytes.", i, entsize, element.nodeSize);
             }
             
             // While we could permit readable elements that extend beyond the
             // size computed from the list header, that could potentially give
             // invalid data.
             if (offset > _nodeSize) {
-                MK_PUSH_WARNING(elements, MK_EOUT_OF_RANGE, @"Part of element at index %" PRIu32 " is beyond element list size.", i);
+                MK_PUSH_WARNING(elements, MK_EOUT_OF_RANGE, @"Part of element at index [%" PRIu32 "] is beyond list size.", i);
                 break;
             }
             
             [elements addObject:element];
             [element release];
-            
-            // No need for an overflow check - (entsize * count) was previously
-            // determined to be safe.
         }
         
         _elements = [elements copy];
@@ -143,13 +139,13 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - Values
+#pragma mark -  List Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize elements = _elements;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKPointer
+#pragma mark -  MKPointer
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -170,7 +166,7 @@
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark - MKNode
+#pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize nodeSize = _nodeSize;
@@ -178,8 +174,15 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
+    MKNodeFieldBuilder *elements = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(elements)
+        type:[MKNodeFieldTypeCollection typeWithCollectionType:[MKNodeFieldTypeNode typeWithNodeType:MKCString.class]]
+    ];
+    elements.description = @"Elements";
+    elements.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionMergeContainerContents;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        [MKNodeField nodeFieldWithProperty:MK_PROPERTY(elements) description:@"Elements"]
+        elements.build
     ]];
 }
 

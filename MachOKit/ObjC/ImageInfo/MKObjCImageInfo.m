@@ -103,7 +103,7 @@ struct objc_image_info {
     flags.description = @"Flags";
     flags.options = MKNodeFieldOptionDisplayAsDetail;
 #ifdef TESTS
-    //flags.formatter = [NSFormatter mk_hexCompactFormatter];
+    flags.formatter = [NSFormatter mk_hexCompactFormatter];
 #endif
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[

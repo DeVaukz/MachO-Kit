@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClassProperty.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 
 struct objc_property_64 {
@@ -48,35 +48,39 @@ struct objc_property_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_property_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_property."];
+            [self release]; return nil;
+        }
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _attributes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), attributes) fromParent:self error:error];
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _attributes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), attributes) fromParent:self targetClass:MKCString.class error:error];
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
-        struct objc_property_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        NSError *memoryMapError = nil;
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _attributes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), attributes) fromParent:self error:error];
+        struct objc_property_32 var;
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_property."];
+            [self release]; return nil;
+        }
+        
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _attributes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), attributes) fromParent:self targetClass:MKCString.class error:error];
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
     return self;
@@ -92,7 +96,7 @@ struct objc_property_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  Property Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize name = _name;
@@ -109,22 +113,41 @@ struct objc_property_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    struct objc_property_64 var64;
-    struct objc_property_32 var32;
-    NSArray *fields;
+    struct objc_property_64 prop64;
+    struct objc_property_32 prop32;
     
-    if (self.dataModel.pointerSize == 8)
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var64), name) size:sizeof(var64.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(attributes) description:@"Attributes" offset:offsetof(typeof(var64), attributes) size:sizeof(var64.attributes)]
-        ];
-    else
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var32), name) size:sizeof(var32.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(attributes) description:@"Attributes" offset:offsetof(typeof(var32), attributes) size:sizeof(var32.attributes)]
-        ];
+    size_t pointerSize = self.dataModel.pointerSize;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(prop64), field) : offsetof(typeof(prop32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(prop64.field) : sizeof(prop32.field))
+    
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(name)
+        size:FIELD_SIZE(name)
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *attributes = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(attributes)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(attributes)
+        size:FIELD_SIZE(attributes)
+    ];
+    attributes.description = @"Attributes";
+    attributes.options = MKNodeFieldOptionDisplayAsDetail;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        name.build,
+        attributes.build
+    ]];
 }
 
 @end

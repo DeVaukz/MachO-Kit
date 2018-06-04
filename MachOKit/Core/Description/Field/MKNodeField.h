@@ -42,6 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 //!
 typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     MKNodeFieldOptionNone                                       = 0,
+    //! Hint to not display the field in non-debug descriptions of the
+    //! node.  This option is typically set for fields that are ancillary
+    //! to some other field.
+    MKNodeFieldOptionHidden                                     = (1U << 0),
     //! Hint to treat the field as a if it were a leaf when building a
     //! recursive description.  If the type of the field is a container
     //! (e.g, a node or collection type), it will be formatted as if it

@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClass.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 #import "MKObjCClassData.h"
 
@@ -57,16 +57,18 @@ struct objc_class_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_class_64 cls;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&cls length:sizeof(cls) requireFull:YES error:error] < sizeof(cls))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:0 fromAddress:self.nodeContextAddress into:&cls length:sizeof(cls) requireFull:YES error:&memoryMapError] < sizeof(cls)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_class."];
+            [self release]; return nil;
+        }
         
         _metaClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, meta_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _superClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
@@ -75,11 +77,15 @@ struct objc_class_32 {
         _mask = MKSwapLValue32(cls.mask, dataModel);
         _occupied = MKSwapLValue32(cls.occupied, dataModel);
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_class_32 cls;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&cls length:sizeof(cls) requireFull:YES error:error] < sizeof(cls))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:0 fromAddress:self.nodeContextAddress into:&cls length:sizeof(cls) requireFull:YES error:&memoryMapError] < sizeof(cls)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_class."];
+            [self release]; return nil;
+        }
         
         _metaClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, meta_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _superClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
@@ -89,13 +95,11 @@ struct objc_class_32 {
         _occupied = MKSwapLValue16(cls.occupied, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
-    
+        
     return self;
 }
 
@@ -111,7 +115,7 @@ struct objc_class_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  Class Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize metaClass = _metaClass;
@@ -127,36 +131,86 @@ struct objc_class_32 {
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return (self.dataModel.pointerSize == 8) ? sizeof(struct objc_class_64) : sizeof(struct objc_class_32); }
+{ return self.dataModel.pointerSize == 8 ? sizeof(struct objc_class_64) : sizeof(struct objc_class_32); }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
     struct objc_class_64 cls64;
     struct objc_class_32 cls32;
-    NSArray *fields;
     
-    if (self.dataModel.pointerSize == 8)
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(metaClass) description:@"ISA" offset:offsetof(struct objc_class_64, meta_class) size:sizeof(cls64.meta_class)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(superClass) description:@"Super Class" offset:offsetof(struct objc_class_64, super_class) size:sizeof(cls64.super_class)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cache) description:@"Cache" offset:offsetof(struct objc_class_64, cache) size:sizeof(cls64.cache)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mask) description:@"Cache Mask" offset:offsetof(struct objc_class_64, mask) size:sizeof(cls64.mask)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(occupied) description:@"Cache Occupied" offset:offsetof(struct objc_class_64, occupied) size:sizeof(cls64.occupied)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classData) description:@"Data" offset:offsetof(struct objc_class_64, data) size:sizeof(cls64.data)]
-        ];
-    else
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(metaClass) description:@"ISA" offset:offsetof(struct objc_class_32, meta_class) size:sizeof(cls32.meta_class)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(superClass) description:@"Super Class" offset:offsetof(struct objc_class_32, super_class) size:sizeof(cls32.super_class)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(cache) description:@"Cache" offset:offsetof(struct objc_class_32, cache) size:sizeof(cls32.cache)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mask) description:@"Cache Mask" offset:offsetof(struct objc_class_32, mask) size:sizeof(cls32.mask)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(occupied) description:@"Cache Occupied" offset:offsetof(struct objc_class_32, occupied) size:sizeof(cls32.occupied)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classData) description:@"Data" offset:offsetof(struct objc_class_32, data) size:sizeof(cls32.data)]
-        ];
-        
+    size_t pointerSize = self.dataModel.pointerSize;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(cls64), field) : offsetof(typeof(cls32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(cls64.field) : sizeof(cls32.field))
+    
+    MKNodeFieldBuilder *metaClass = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(metaClass)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(meta_class)
+        size:FIELD_SIZE(meta_class)
+    ];
+    metaClass.description = @"ISA";
+    metaClass.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *superClass = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(superClass)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(super_class)
+        size:FIELD_SIZE(super_class)
+    ];
+    superClass.description = @"Super Class";
+    superClass.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *cache = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(cache)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(cache)
+        size:FIELD_SIZE(cache)
+    ];
+    cache.description = @"Cache";
+    cache.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *mask = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(mask)
+        type:FIELD_TYPE(MKNodeFieldTypeUnsignedDoubleWord, MKNodeFieldTypeUnsignedWord)
+        offset:FIELD_OFFSET(mask)
+        size:FIELD_SIZE(mask)
+    ];
+    mask.description = @"Cache Mask";
+    mask.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *occupied = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(occupied)
+        type:FIELD_TYPE(MKNodeFieldTypeUnsignedDoubleWord, MKNodeFieldTypeUnsignedWord)
+        offset:FIELD_OFFSET(occupied)
+        size:FIELD_SIZE(occupied)
+    ];
+    occupied.description = @"Cache Occupied";
+    occupied.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *classData = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(classData)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(data)
+        size:FIELD_SIZE(data)
+    ];
+    classData.description = @"Class Data";
+    classData.options = MKNodeFieldOptionDisplayAsChild;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        metaClass.build,
+        superClass.build,
+        cache.build,
+        mask.build,
+        occupied.build,
+        classData.build
+    ]];
 }
 
 @end

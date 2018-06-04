@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKObjCIVarOffset.m
+//|             MKNodeFieldObjCClassFlagsType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,74 +25,58 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKObjCIVarOffset.h"
-#import "NSError+MK.h"
+#import "MKNodeFieldObjCClassFlagsType.h"
+#import "MKInternal.h"
+#import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKObjCIVarOffset
+@implementation MKNodeFieldObjCClassFlagsType
 
-@synthesize offset = _offset;
+static NSDictionary *s_Flags = nil;
+static MKOptionSetFormatter *s_Formatterr = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldObjCClassFlagsType)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode *)parent error:(NSError **)error
++ (void)initialize
 {
-    self = [super initWithOffset:offset fromParent:parent error:error];
-    if (self == nil) return nil;
+    if (s_Flags != nil && s_Formatterr != nil)
+        return;
     
-    id<MKDataModel> dataModel = self.dataModel;
-    size_t objcIVarOffsetSize = dataModel.objcIVarOffsetSize;
+    s_Flags = [@{
+        _$((uint32_t)MKObjCClassMeta): @"RO_META",
+        _$((uint32_t)MKObjCClassRoot): @"RO_ROOT",
+        _$((uint32_t)MKObjCClassHasCXXStructors): @"RO_HAS_CXX_STRUCTORS",
+        _$((uint32_t)MKObjCClassHidden): @"RO_HIDDEN",
+        _$((uint32_t)MKObjCClassException): @"RO_EXCEPTION",
+        _$((uint32_t)MKObjCClassIsARR): @"RO_IS_ARC",
+        _$((uint32_t)MKObjCClassHasCXXDestructorOnly): @"RO_HAS_CXX_DTOR_ONLY",
+        _$((uint32_t)MKObjCClassHasWeakiVarWithoutARR): @"RO_HAS_WEAK_WITHOUT_ARC"
+    } retain];
     
-    NSError *memoryMapError = nil;
-    
-    if (objcIVarOffsetSize == 8)
-        _offset = [self.memoryMap readQuadWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&memoryMapError];
-    else if (objcIVarOffsetSize == 4)
-        _offset = [self.memoryMap readDoubleWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&memoryMapError];
-    else
-    {
-        NSString *reason = [NSString stringWithFormat:@"Unsupported ivar offset size [%zu].", objcIVarOffsetSize];
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-    }
-    
-    if (memoryMapError) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read ivar offset."];;
-        [self release]; return nil;
-    }
-    
-    return self;
+    MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
+    formatter.options = s_Flags;
+    s_Formatterr = formatter;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
+#pragma mark -  MKNodeFieldOptionSetType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return self.dataModel.pointerSize; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(offset)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-        offset:0
-        size:self.dataModel.objcIVarOffsetSize
-    ];
-    offset.description = @"Offset";
-    offset.options = MKNodeFieldOptionDisplayAsDetail;
-    
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        offset.build
-    ]];
-}
+- (MKNodeFieldOptionSetOptions*)options
+{ return s_Flags; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  NSObject
+#pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return [NSString stringWithFormat:@"0x%" PRIu64 "", self.offset]; }
+- (NSString*)name
+{ return @"ObjC Class Flags"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_Formatterr; }
 
 @end

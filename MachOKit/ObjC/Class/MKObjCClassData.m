@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClassData.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 #import "MKCString.h"
 #import "MKObjCProtocolList.h"
@@ -70,16 +70,18 @@ struct objc_class_data_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_class_data_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:0 fromAddress:self.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc class data."];
+            [self release]; return nil;
+        }
         
         _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
         _methods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), baseMethodList) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
@@ -93,11 +95,15 @@ struct objc_class_data_32 {
         _instanceSize = MKSwapLValue32(var.instanceSize, dataModel);
         _reserved = MKSwapLValue32(var.reserved, dataModel);
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_class_data_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:0 fromAddress:self.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc class data."];
+            [self release]; return nil;
+        }
         
         _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
         _methods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), baseMethodList) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
@@ -111,11 +117,9 @@ struct objc_class_data_32 {
         _instanceSize = MKSwapLValue32(var.instanceSize, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
     return self;
@@ -136,7 +140,7 @@ struct objc_class_data_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  Class Data Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize flags = _flags;
@@ -162,40 +166,130 @@ struct objc_class_data_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    NSArray *fields;
+    struct objc_class_data_64 data64;
+    struct objc_class_data_32 data32;
     
-    if (self.dataModel.pointerSize == 8) {
-        struct objc_class_data_64 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceStart) description:@"Instance Start" offset:offsetof(typeof(var), instanceStart) size:sizeof(var.instanceStart)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceSize) description:@"Instance Size" offset:offsetof(typeof(var), instanceSize) size:sizeof(var.instanceSize)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(reserved) description:@"Reserved" offset:offsetof(typeof(var), reserved) size:sizeof(var.reserved)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var), name) size:sizeof(var.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(methods) description:@"Methods" offset:offsetof(typeof(var), baseMethodList) size:sizeof(var.baseMethodList)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(protocols) description:@"Protocols" offset:offsetof(typeof(var), baseProtocols) size:sizeof(var.baseProtocols)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(properties) description:@"Properties" offset:offsetof(typeof(var), baseProperties) size:sizeof(var.baseProperties)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ivars) description:@"Instance Variables" offset:offsetof(typeof(var), ivars) size:sizeof(var.ivars)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ivarLayout) description:@"ivar Layout" offset:offsetof(typeof(var), ivarLayout) size:sizeof(var.ivarLayout)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(weakIVarLayout) description:@"Weak ivar Layout" offset:offsetof(typeof(var), weakIVarLayout) size:sizeof(var.weakIVarLayout)],
-        ];
-    } else {
-        struct objc_class_data_32 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceStart) description:@"Instance Start" offset:offsetof(typeof(var), instanceStart) size:sizeof(var.instanceStart)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceSize) description:@"Instance Size" offset:offsetof(typeof(var), instanceSize) size:sizeof(var.instanceSize)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var), name) size:sizeof(var.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(methods) description:@"Methods" offset:offsetof(typeof(var), baseMethodList) size:sizeof(var.baseMethodList)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(protocols) description:@"Protocols" offset:offsetof(typeof(var), baseProtocols) size:sizeof(var.baseProtocols)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(properties) description:@"Properties" offset:offsetof(typeof(var), baseProperties) size:sizeof(var.baseProperties)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ivars) description:@"Instance Variables" offset:offsetof(typeof(var), ivars) size:sizeof(var.ivars)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(ivarLayout) description:@"ivar Layout" offset:offsetof(typeof(var), ivarLayout) size:sizeof(var.ivarLayout)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(weakIVarLayout) description:@"Weak ivar Layout" offset:offsetof(typeof(var), weakIVarLayout) size:sizeof(var.weakIVarLayout)],
-        ];
-    }
+    size_t pointerSize = self.dataModel.pointerSize;
+   
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(data64), field) : offsetof(typeof(data32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(data64.field) : sizeof(data32.field))
+
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:MKNodeFieldObjCClassFlagsType.sharedInstance
+        offset:FIELD_OFFSET(flags)
+        size:FIELD_SIZE(flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+    MKNodeFieldBuilder *instanceStart = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(instanceStart)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:FIELD_OFFSET(instanceStart)
+        size:FIELD_SIZE(instanceStart)
+    ];
+    instanceStart.description = @"Instance Start";
+    instanceStart.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *instanceSize = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(instanceSize)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:FIELD_OFFSET(instanceSize)
+        size:FIELD_SIZE(instanceSize)
+    ];
+    instanceSize.description = @"Instance Size";
+    instanceSize.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    /* MKNodeFieldBuilder *reserved = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:FIELD_OFFSET(reserved)
+        size:FIELD_SIZE(reserved)
+    ];
+    reserved.description = @"Reserved";
+    reserved.options = MKNodeFieldOptionDisplayAsDetail; */
+    
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(name)
+        size:FIELD_SIZE(name)
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *methods = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(methods)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(baseMethodList)
+        size:FIELD_SIZE(baseMethodList)
+    ];
+    methods.description = @"Methods";
+    methods.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *protocols = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(protocols)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(baseProtocols)
+        size:FIELD_SIZE(baseProtocols)
+    ];
+    protocols.description = @"Protocols";
+    protocols.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *properties = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(properties)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(baseProperties)
+        size:FIELD_SIZE(baseProperties)
+    ];
+    properties.description = @"Properties";
+    properties.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *ivars = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(ivars)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(ivars)
+        size:FIELD_SIZE(ivars)
+    ];
+    ivars.description = @"Instance Variables";
+    ivars.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *ivarLayout = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(ivarLayout)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(ivarLayout)
+        size:FIELD_SIZE(ivarLayout)
+    ];
+    ivarLayout.description = @"Instance Variable Layout";
+    ivarLayout.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *weakIVarLayout = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(weakIVarLayout)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(weakIVarLayout)
+        size:FIELD_SIZE(weakIVarLayout)
+    ];
+    weakIVarLayout.description = @"Weak Instance Variable Layout";
+    weakIVarLayout.options = MKNodeFieldOptionDisplayAsDetail;
+
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        flags.build,
+        instanceStart.build,
+        instanceSize.build,
+        name.build,
+        methods.build,
+        protocols.build,
+        properties.build,
+        ivars.build,
+        ivarLayout.build,
+        weakIVarLayout.build
+    ]];
 }
 
 @end

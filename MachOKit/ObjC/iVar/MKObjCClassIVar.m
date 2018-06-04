@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClassIVar.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 
 struct objc_ivar_64 {
@@ -54,48 +54,52 @@ struct objc_ivar_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
-        struct objc_ivar_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        NSError *memoryMapError = nil;
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _type = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), type) fromParent:self error:error];
+        struct objc_ivar_64 var;
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_ivar."];
+            [self release]; return nil;
+        }
+        
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _type = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), type) fromParent:self targetClass:MKCString.class error:error];
         _offset = MKSwapLValue64(var.offset, dataModel);
         _alignment = MKSwapLValue32(var.alignment, dataModel);
         _size = MKSwapLValue32(var.size, dataModel);
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
-        struct objc_ivar_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        NSError *memoryMapError = nil;
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _type = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), type) fromParent:self error:error];
+        struct objc_ivar_32 var;
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_ivar."];
+            [self release]; return nil;
+        }
+        
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _type = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), type) fromParent:self targetClass:MKCString.class error:error];
         _offset = MKSwapLValue32(var.offset, dataModel);
         _alignment = MKSwapLValue32(var.alignment, dataModel);
         _size = MKSwapLValue32(var.size, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
+    }
     
     // Convert the alignment to bytes.
     if (_alignment == ~(uint32_t)0)
         _alignment = (uint32_t)self.dataModel.pointerSize;
     else
         _alignment = (uint32_t)(1U << _alignment);
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
-    }
     
     return self;
 }
@@ -110,7 +114,7 @@ struct objc_ivar_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  IVar Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize offset = _offset;
@@ -130,29 +134,71 @@ struct objc_ivar_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    struct objc_ivar_64 var64;
-    struct objc_ivar_32 var32;
-    NSArray *fields;
+    struct objc_ivar_64 ivar64;
+    struct objc_ivar_32 ivar32;
     
-    if (self.dataModel.pointerSize == 8)
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Offset" offset:offsetof(typeof(var64), offset) size:sizeof(var64.offset)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var64), name) size:sizeof(var64.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(type) description:@"Type" offset:offsetof(typeof(var64), type) size:sizeof(var64.type)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(alignment) description:@"Alignment" offset:offsetof(typeof(var64), alignment) size:sizeof(var64.alignment)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(typeof(var64), size) size:sizeof(var64.size)]
-        ];
-    else
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(offset) description:@"Offset" offset:offsetof(typeof(var32), offset) size:sizeof(var32.offset)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var32), name) size:sizeof(var32.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(type) description:@"Type" offset:offsetof(typeof(var32), type) size:sizeof(var32.type)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(alignment) description:@"Alignment" offset:offsetof(typeof(var32), alignment) size:sizeof(var32.alignment)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(typeof(var32), size) size:sizeof(var32.size)]
-        ];
+    size_t pointerSize = self.dataModel.pointerSize;
     
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(ivar64), field) : offsetof(typeof(ivar32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(ivar64.field) : sizeof(ivar32.field))
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(offset)
+        type:[MKNodeFieldTypePointer pointerWithType:MKNodeFieldTypeUnsignedQuadWord.sharedInstance]
+        offset:FIELD_OFFSET(offset)
+        size:FIELD_SIZE(offset)
+    ];
+    offset.description = @"Offset";
+    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(name)
+        size:FIELD_SIZE(name)
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *type = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(type)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(type)
+        size:FIELD_SIZE(type)
+    ];
+    type.description = @"Type";
+    type.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *alignment = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(alignment)
+        type:[MKNodeFieldTypePointer pointerWithType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance]
+        offset:FIELD_OFFSET(alignment)
+        size:FIELD_SIZE(alignment)
+    ];
+    alignment.description = @"Alignment";
+    alignment.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(size)
+        type:[MKNodeFieldTypePointer pointerWithType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance]
+        offset:FIELD_OFFSET(size)
+        size:FIELD_SIZE(size)
+    ];
+    size.description = @"AlignSizement";
+    size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        offset.build,
+        name.build,
+        type.build,
+        alignment.build,
+        size.build
+    ]];
 }
 
 @end

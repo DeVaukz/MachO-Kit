@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCProtocol.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 #import "MKCString.h"
 #import "MKObjCProtocolList.h"
@@ -75,20 +75,22 @@ struct objc_protocol_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
 #define HAS_EXTENDED_METHOD_TYPES (var.size >= offsetof(typeof(var), extendedMethodTypes))
 #define HAS_DEMANGLED_NAME (var.size >= offsetof(typeof(var), demangledName))
 #define HAS_CLASS_PROPERTIES (var.size >= offsetof(typeof(var), classProperties))
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_protocol_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:NO error:error] < offsetof(typeof(var), extendedMethodTypes))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:NO error:error] < offsetof(typeof(var), extendedMethodTypes)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_protocol."];
+            [self release]; return nil;
+        }
         
         _isa = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), isa) fromParent:self error:error];
         _mangledName = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), mangledName) fromParent:self targetClass:MKCString.class error:error];
@@ -104,7 +106,7 @@ struct objc_protocol_32 {
         if (HAS_EXTENDED_METHOD_TYPES) {
             void *weakSelf = (void*)self;
             
-            MKDeferredContextProvider ctx = ^{
+            MKDeferredContextProvider ctx = Block_copy(^{
                 // Note that a nil value without an error is not an error, the
                 // protocol may not have any of that kind of method.
                 
@@ -130,12 +132,14 @@ struct objc_protocol_32 {
                                                 optionalInstanceMethods.value.count +
                                                 optionalClassMethods.value.count)
                 }];
-            };
+            });
             
             _extendedMethodTypes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), extendedMethodTypes) fromParent:self context:@{
                 MKInitializationContextTargetClass: MKObjCProtocolMethodTypesList.class,
                 MKInitializationContextDeferredProvider: ctx
             } error:error];
+            
+            Block_release(ctx);
         }
         
         if (HAS_DEMANGLED_NAME) {
@@ -146,11 +150,15 @@ struct objc_protocol_32 {
             _classProperties = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), classProperties) fromParent:self targetClass:MKObjCClassPropertyList.class error:error];
         }
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
+        NSError *memoryMapError = nil;
+        
         struct objc_protocol_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:NO error:error] < offsetof(typeof(var), extendedMethodTypes))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:NO error:error] < offsetof(typeof(var), extendedMethodTypes)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_protocol."];
+            [self release]; return nil;
+        }
         
         _isa = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), isa) fromParent:self error:error];
         _mangledName = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), mangledName) fromParent:self targetClass:MKCString.class error:error];
@@ -166,7 +174,7 @@ struct objc_protocol_32 {
         if (HAS_EXTENDED_METHOD_TYPES) {
             void *weakSelf = (void*)self;
             
-            MKDeferredContextProvider ctx = ^{
+            MKDeferredContextProvider ctx = Block_copy(^{
                 // Note that a nil value without an error is not an error, the
                 // protocol may not have any of that kind of method.
                 
@@ -192,12 +200,14 @@ struct objc_protocol_32 {
                                                 optionalInstanceMethods.value.count +
                                                 optionalClassMethods.value.count)
                     }];
-            };
+            });
             
             _extendedMethodTypes = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), extendedMethodTypes) fromParent:self context:@{
                 MKInitializationContextTargetClass: MKObjCProtocolMethodTypesList.class,
                 MKInitializationContextDeferredProvider: ctx
             } error:error];
+            
+            Block_release(ctx);
         }
         
         if (HAS_DEMANGLED_NAME) {
@@ -209,11 +219,9 @@ struct objc_protocol_32 {
         }
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
     return self;
@@ -238,7 +246,7 @@ struct objc_protocol_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  Protocol Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize isa = _isa;
@@ -266,45 +274,151 @@ struct objc_protocol_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    NSArray *fields;
+    struct objc_protocol_64 proto64;
+    struct objc_protocol_32 proto32;
     
-    if (self.dataModel.pointerSize == 8) {
-        struct objc_protocol_64 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(isa) description:@"ISA" offset:offsetof(typeof(var), isa) size:sizeof(var.isa)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mangledName) description:@"Mangled Name" offset:offsetof(typeof(var), mangledName) size:sizeof(var.mangledName)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(protocols) description:@"Protocols" offset:offsetof(typeof(var), protocols) size:sizeof(var.protocols)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceMethods) description:@"Instance Methods" offset:offsetof(typeof(var), instanceMethods) size:sizeof(var.instanceMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classMethods) description:@"Class Methods" offset:offsetof(typeof(var), classMethods) size:sizeof(var.classMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(optionalInstanceMethods) description:@"Optional Instance Methods" offset:offsetof(typeof(var), optionalInstanceMethods) size:sizeof(var.optionalInstanceMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(optionalClassMethods) description:@"Optional Class Methods" offset:offsetof(typeof(var), optionalClassMethods) size:sizeof(var.optionalClassMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceProperties) description:@"Instance Properties" offset:offsetof(typeof(var), instanceProperties) size:sizeof(var.instanceProperties)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(typeof(var), size) size:sizeof(var.size)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(extendedMethodTypes) description:@"Extended Types" offset:offsetof(typeof(var), extendedMethodTypes) size:sizeof(var.extendedMethodTypes)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(demangledName) description:@"Demangled Name" offset:offsetof(typeof(var), demangledName) size:sizeof(var.demangledName)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classProperties) description:@"Class Properties" offset:offsetof(typeof(var), classProperties) size:sizeof(var.classProperties)],
-        ];
-    } else {
-        struct objc_protocol_32 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(isa) description:@"ISA" offset:offsetof(typeof(var), isa) size:sizeof(var.isa)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(mangledName) description:@"Mangled Name" offset:offsetof(typeof(var), mangledName) size:sizeof(var.mangledName)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(protocols) description:@"Protocols" offset:offsetof(typeof(var), protocols) size:sizeof(var.protocols)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceMethods) description:@"Instance Methods" offset:offsetof(typeof(var), instanceMethods) size:sizeof(var.instanceMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classMethods) description:@"Class Methods" offset:offsetof(typeof(var), classMethods) size:sizeof(var.classMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(optionalInstanceMethods) description:@"Optional Instance Methods" offset:offsetof(typeof(var), optionalInstanceMethods) size:sizeof(var.optionalInstanceMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(optionalClassMethods) description:@"Optional Class Methods" offset:offsetof(typeof(var), optionalClassMethods) size:sizeof(var.optionalClassMethods)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(instanceProperties) description:@"Instance Properties" offset:offsetof(typeof(var), instanceProperties) size:sizeof(var.instanceProperties)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(size) description:@"Size" offset:offsetof(typeof(var), size) size:sizeof(var.size)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(extendedMethodTypes) description:@"Extended Types" offset:offsetof(typeof(var), extendedMethodTypes) size:sizeof(var.extendedMethodTypes)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(demangledName) description:@"Demangled Name" offset:offsetof(typeof(var), demangledName) size:sizeof(var.demangledName)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(classProperties) description:@"Class Properties" offset:offsetof(typeof(var), classProperties) size:sizeof(var.classProperties)],
-        ];
-    }
+    size_t pointerSize = self.dataModel.pointerSize;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(proto64), field) : offsetof(typeof(proto32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(proto64.field) : sizeof(proto32.field))
+    
+    MKNodeFieldBuilder *isa = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(isa)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(isa)
+        size:FIELD_SIZE(isa)
+    ];
+    isa.description = @"ISA";
+    isa.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *mangledName = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(mangledName)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(mangledName)
+        size:FIELD_SIZE(mangledName)
+    ];
+    mangledName.description = @"Mangled Name";
+    mangledName.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *protocols = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(protocols)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(protocols)
+        size:FIELD_SIZE(protocols)
+    ];
+    protocols.description = @"Protocols";
+    protocols.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *instanceMethods = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(instanceMethods)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(instanceMethods)
+        size:FIELD_SIZE(instanceMethods)
+    ];
+    instanceMethods.description = @"Instance Methods";
+    instanceMethods.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *classMethods = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(classMethods)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(classMethods)
+        size:FIELD_SIZE(classMethods)
+    ];
+    classMethods.description = @"Class Methods";
+    classMethods.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *optionalInstanceMethods = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(optionalInstanceMethods)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(optionalInstanceMethods)
+        size:FIELD_SIZE(optionalInstanceMethods)
+    ];
+    optionalInstanceMethods.description = @"Optional Instance Methods";
+    optionalInstanceMethods.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *optionalClassMethods = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(optionalClassMethods)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(optionalClassMethods)
+        size:FIELD_SIZE(optionalClassMethods)
+    ];
+    optionalClassMethods.description = @"Optional Class Methods";
+    optionalClassMethods.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *instanceProperties = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(instanceProperties)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(instanceProperties)
+        size:FIELD_SIZE(instanceProperties)
+    ];
+    instanceProperties.description = @"Instance Properties";
+    instanceProperties.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *size = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(size)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:FIELD_OFFSET(size)
+        size:FIELD_SIZE(size)
+    ];
+    size.description = @"Size";
+    size.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance /* TODO */
+        offset:FIELD_OFFSET(flags)
+        size:FIELD_SIZE(flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *extendedMethodTypes = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(extendedMethodTypes)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(extendedMethodTypes)
+        size:FIELD_SIZE(extendedMethodTypes)
+    ];
+    extendedMethodTypes.description = @"Extended Method Types";
+    extendedMethodTypes.options = MKNodeFieldOptionDisplayAsChild;
+    
+    MKNodeFieldBuilder *demangledName = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(demangledName)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(demangledName)
+        size:FIELD_SIZE(demangledName)
+    ];
+    demangledName.description = @"Demangled Name";
+    demangledName.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *classProperties = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(classProperties)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(classProperties)
+        size:FIELD_SIZE(classProperties)
+    ];
+    classProperties.description = @"Class Properties";
+    classProperties.options = MKNodeFieldOptionDisplayAsChild;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        isa.build,
+        mangledName.build,
+        protocols.build,
+        instanceMethods.build,
+        classMethods.build,
+        optionalInstanceMethods.build,
+        optionalClassMethods.build,
+        instanceProperties.build,
+        size.build,
+        flags.build,
+        extendedMethodTypes.build,
+        demangledName.build,
+        classProperties.build
+    ]];
 }
 
 @end

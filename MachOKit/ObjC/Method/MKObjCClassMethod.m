@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import "MKObjCClassMethod.h"
-#import "NSError+MK.h"
+#import "MKInternal.h"
 #import "MKPointer+Node.h"
 
 struct objc_method_64 {
@@ -50,37 +50,41 @@ struct objc_method_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
-    if (dataModel.pointerSize == 8)
+    if (pointerSize == 8)
     {
-        struct objc_method_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        NSError *memoryMapError = nil;
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _types = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), types) fromParent:self error:error];
+        struct objc_method_64 var;
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_method."];
+            [self release]; return nil;
+        }
+        
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _types = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), types) fromParent:self targetClass:MKCString.class error:error];
         _implementation = MKSwapLValue64(var.imp, dataModel);
     }
-    else if (dataModel.pointerSize == 4)
+    else if (pointerSize == 4)
     {
-        struct objc_method_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        NSError *memoryMapError = nil;
         
-        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self error:error];
-        _types = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), types) fromParent:self error:error];
+        struct objc_method_32 var;
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read objc_method."];
+            [self release]; return nil;
+        }
+        
+        _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
+        _types = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), types) fromParent:self targetClass:MKCString.class error:error];
         _implementation = MKSwapLValue32(var.imp, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
     return self;
@@ -96,7 +100,7 @@ struct objc_method_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  Method Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize name = _name;
@@ -114,25 +118,51 @@ struct objc_method_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    struct objc_method_64 var64;
-    struct objc_method_32 var32;
-    NSArray *fields;
+    struct objc_method_64 method64;
+    struct objc_method_32 method32;
     
-    if (self.dataModel.pointerSize == 8)
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var64), name) size:sizeof(var64.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(types) description:@"Types" offset:offsetof(typeof(var64), types) size:sizeof(var64.types)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(implementation) description:@"Implementation" offset:offsetof(typeof(var64), imp) size:sizeof(var64.imp)]
-        ];
-    else
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(name) description:@"Name" offset:offsetof(typeof(var32), name) size:sizeof(var32.name)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(types) description:@"Types" offset:offsetof(typeof(var32), types) size:sizeof(var32.types)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(implementation) description:@"Implementation" offset:offsetof(typeof(var32), imp) size:sizeof(var32.imp)]
-        ];
+    size_t pointerSize = self.dataModel.pointerSize;
     
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(method64), field) : offsetof(typeof(method32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(method64.field) : sizeof(method32.field))
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+    MKNodeFieldBuilder *name = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(name)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(name)
+        size:FIELD_SIZE(name)
+    ];
+    name.description = @"Name";
+    name.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *types = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(types)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(types)
+        size:FIELD_SIZE(types)
+    ];
+    types.description = @"Types";
+    types.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *implementation = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(implementation)
+        type:MKNodeFieldTypeAddress.sharedInstance
+        offset:FIELD_OFFSET(imp)
+        size:FIELD_SIZE(imp)
+    ];
+    implementation.description = @"Implementation";
+    implementation.options = MKNodeFieldOptionDisplayAsDetail;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        name.build,
+        types.build,
+        implementation.build
+    ]];
 }
 
 @end
