@@ -8,6 +8,10 @@ Mach-O Kit is an Objective-C framework for parsing Mach-O binaries used by Darwi
 
 Mach-O Kit is designed to be easy to use while still exposing all the details of the parsed Mach-O file (if you need them).  It can serve as the foundation for anything that needs to read Mach-O files - from a one-off command line tool up to a fully featured interactive disassembler.  Most importantly, Mach-O Kit is designed to be safe.  Every read operation and its returned data is extensively error checked so that parsing a malformed Mach-O file (even a malicious one) does not crash your program.
 
+## Projects Using Mach-O Kit
+
+* [Mach-O Explorer](https://github.com/DeVaukz/MachO-Explorer) - A graphical Mach-O viewer for macOS.
+
 ## Getting Started
 
 Mach-O Kit supports 32/64 bit OS X 10.10+, iOS 8.0+, and tvOS 9.0+.
@@ -161,7 +165,7 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
     * Segment Split Info
     * Data in Code Entries
     * Symbols (*incomplete - needs to be reworked*)
-    * Indirect Symbols
+    * Indirect Symbols ✔
 * ObjC Metadata
     * Image Info ✔
     * Classes ✔
