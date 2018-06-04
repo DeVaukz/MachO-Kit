@@ -222,12 +222,7 @@
     
     MKNodeFieldBuilder *maxprot = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(maxprot)
-        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
-          @((typeof(lc.maxprot))VM_PROT_NONE): @"VM_PROT_NONE",
-          @((typeof(lc.maxprot))VM_PROT_READ): @"VM_PROT_READ",
-          @((typeof(lc.maxprot))VM_PROT_WRITE): @"VM_PROT_WRITE",
-          @((typeof(lc.maxprot))VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
-        }]
+        type:MKNodeFieldVMProtectionType.sharedInstance
         offset:offsetof(typeof(lc), maxprot)
         size:sizeof(lc.maxprot)
     ];
@@ -239,12 +234,7 @@
     
     MKNodeFieldBuilder *initprot = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(initprot)
-        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeDoubleWord.sharedInstance name:nil options:@{
-           @((typeof(lc.initprot))VM_PROT_NONE): @"VM_PROT_NONE",
-           @((typeof(lc.initprot))VM_PROT_READ): @"VM_PROT_READ",
-           @((typeof(lc.initprot))VM_PROT_WRITE): @"VM_PROT_WRITE",
-           @((typeof(lc.initprot))VM_PROT_EXECUTE): @"VM_PROT_EXECUTE"
-        }]
+        type:MKNodeFieldVMProtectionType.sharedInstance
         offset:offsetof(typeof(lc), initprot)
         size:sizeof(lc.initprot)
     ];
@@ -265,12 +255,7 @@
     
     MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(flags)
-        type:[MKNodeFieldTypeOptionSet optionSetWithUnderlyingType:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance name:nil options:@{
-            @((typeof(lc.flags))SG_HIGHVM): @"SG_HIGHVM",
-            @((typeof(lc.flags))SG_FVMLIB): @"SG_FVMLIB",
-            @((typeof(lc.flags))SG_NORELOC): @"SG_NORELOC",
-            @((typeof(lc.flags))SG_PROTECTED_VERSION_1): @"SG_PROTECTED_VERSION_1"
-        }]
+        type:MKNodeFieldSegmentFlagsType.sharedInstance
         offset:offsetof(typeof(lc), flags)
         size:sizeof(lc.flags)
     ];
@@ -492,15 +477,15 @@
     
     MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(flags)
-        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance // TODO -
+        type:MKNodeFieldSectionFlagsType.sharedInstance
         offset:offsetof(typeof(sc), flags)
         size:sizeof(sc.flags)
     ];
     flags.description = @"Flags";
     flags.options = MKNodeFieldOptionDisplayAsDetail;
-//#ifdef TESTS
+#ifdef TESTS
     flags.formatter = NSFormatter.mk_hexCompactFormatter;
-//#endif
+#endif
     
     MKNodeFieldBuilder *reserved1 = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(reserved1)

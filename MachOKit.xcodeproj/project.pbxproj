@@ -2013,9 +2013,6 @@
 				D06D59CD20159A9A00A99173 /* MKNodeFieldVersionType.m */,
 				D0FF4F37201B0B230095106A /* MKNodeFieldVMProtectionType.h */,
 				D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */,
-				D0FF4F25201B05250095106A /* MKNodeFieldSegmentFlagsType.h */,
-				D0FF4F26201B05250095106A /* MKNodeFieldSegmentFlagsType.m */,
-				D096B051201D0DE5003DA008 /* Section */,
 			);
 			path = Type;
 			sourceTree = "<group>";
@@ -2422,6 +2419,7 @@
 		D0672B1B1A4FBB3800D44610 /* Segments */ = {
 			isa = PBXGroup;
 			children = (
+				D0C3DA982047CBBE00D48DE4 /* Type */,
 				D097ABCB1C70F8E0000F62C4 /* MKMachO+Segments.h */,
 				D097ABCC1C70F8E0000F62C4 /* MKMachO+Segments.m */,
 				D0672B1C1A4FBC0300D44610 /* MKSegment.h */,
@@ -2882,6 +2880,16 @@
 				D0E8B8251CB9800C00237EA1 /* MKPointer.m */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		D0C3DA982047CBBE00D48DE4 /* Type */ = {
+			isa = PBXGroup;
+			children = (
+				D0FF4F25201B05250095106A /* MKNodeFieldSegmentFlagsType.h */,
+				D0FF4F26201B05250095106A /* MKNodeFieldSegmentFlagsType.m */,
+				D096B051201D0DE5003DA008 /* Section */,
+			);
+			path = Type;
 			sourceTree = "<group>";
 		};
 		D0C3DA9E2047CEED00D48DE4 /* ValueModifiers */ = {
