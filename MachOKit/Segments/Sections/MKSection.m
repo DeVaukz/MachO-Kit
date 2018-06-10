@@ -44,7 +44,10 @@
 {
 #pragma unused (sectionLoadCommand)
 #pragma unused (segment)
-    return (self == MKSection.class) ? 10 : 0;
+    if (self != MKSection.class)
+        return 0;
+    
+    return 10;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

@@ -35,9 +35,12 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithTrieNodes:(NSArray<MKExportTrieNode*>*)nodes
 {
+    if (self != MKResolvedExport.class)
+        return 0;
+    
 	MKExportTrieTerminalNode *terminalNode = (MKExportTrieTerminalNode*)nodes.lastObject;
 	
-	return (self == MKResolvedExport.class && terminalNode.flags & EXPORT_SYMBOL_FLAGS_STUB_AND_RESOLVER) ? 40 : 0;
+	return (terminalNode.flags & EXPORT_SYMBOL_FLAGS_STUB_AND_RESOLVER) ? 40 : 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

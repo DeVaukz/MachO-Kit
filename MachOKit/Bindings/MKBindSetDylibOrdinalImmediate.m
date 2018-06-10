@@ -39,6 +39,15 @@
 + (NSString*)name
 { return @"BIND_OPCODE_SET_DYLIB_ORDINAL_IMM"; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
+{
+    if (self != MKBindSetDylibOrdinalImmediate.class)
+        return 0;
+    
+    return opcode == [self opcode] ? 10 : 0;
+}
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

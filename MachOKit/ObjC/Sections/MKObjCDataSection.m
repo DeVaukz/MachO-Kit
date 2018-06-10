@@ -35,6 +35,9 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
+    if (self != MKObjCDataSection.class)
+        return 0;
+    
     if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
         [sectionLoadCommand.sectname isEqualToString:@"__objc_data"])
         return 50;

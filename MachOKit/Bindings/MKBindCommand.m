@@ -39,12 +39,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
 {
-    @try {
-        return (opcode == [self opcode]) ? 10 : 0;
-    }
-    @catch (NSException *exception) {
-        return 0;
-    }
+#pragma unused (opcode)
+    return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

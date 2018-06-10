@@ -34,4 +34,13 @@
 + (uint32_t)ID
 { return LC_DYLD_ENVIRONMENT; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
+{
+    if (self != MKLCDyldEnvironment.class)
+        return 0;
+    
+    return commandID == [self ID] ? 10 : 0;
+}
+
 @end

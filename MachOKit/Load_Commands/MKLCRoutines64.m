@@ -40,6 +40,15 @@
 { return LC_ROUTINES_64; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
+{
+    if (self != MKLCRoutines64.class)
+        return 0;
+    
+    return commandID == [self ID] ? 10 : 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];

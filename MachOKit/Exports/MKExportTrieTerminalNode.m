@@ -39,7 +39,10 @@
 + (uint32_t)canInstantiateWithTerimalSize:(uint64_t)terminalSize contents:(uint8_t*)contents
 {
 #pragma unused(contents)
-	return (self == MKExportTrieTerminalNode.class && terminalSize > 0) ? 20 : 0;
+    if (self != MKExportTrieTerminalNode.class)
+        return 0;
+    
+	return (terminalSize > 0) ? 20 : 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

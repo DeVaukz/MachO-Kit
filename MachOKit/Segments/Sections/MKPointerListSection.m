@@ -38,6 +38,9 @@
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
+    if (self != MKPointerListSection.class)
+        return 0;
+    
     if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LITERAL_POINTERS)
         return 20;
     

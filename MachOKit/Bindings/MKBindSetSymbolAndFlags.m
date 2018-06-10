@@ -41,6 +41,15 @@
 { return @"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
+{
+    if (self != MKBindSetSymbolAndFlags.class)
+        return 0;
+    
+    return opcode == [self opcode] ? 10 : 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];

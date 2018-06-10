@@ -41,6 +41,15 @@
 { return @"REBASE_OPCODE_DO_REBASE_ULEB_TIMES"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
+{
+    if (self != MKRebaseDoRebaseULEBTimes.class)
+        return 0;
+    
+    return opcode == [self opcode] ? 10 : 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];

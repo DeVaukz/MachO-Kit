@@ -42,6 +42,9 @@
 + (uint32_t)canInstantiateWithSegmentLoadCommand:(id<MKLCSegment>)segmentLoadCommand
 {
 #pragma unused (segmentLoadCommand)
+    if (self != MKSegment.class)
+        return 0;
+    
     return 10;
 }
 

@@ -44,12 +44,8 @@ extern const uint32_t _mk_load_command_classes_count;
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
 {
-    @try {
-        return (commandID == [self ID]) ? 10 : 0;
-    }
-    @catch (NSException *exception) {
-        return 0;
-    }
+#pragma unused (commandID)
+    return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -138,7 +134,7 @@ extern const uint32_t _mk_load_command_classes_count;
         return nil;
     }
     
-    Class commandClass = [self classForCommandID:commandId];
+    Class commandClass = [MKLoadCommand classForCommandID:commandId];
     if (commandClass == NULL) {
         NSString *reason = [NSString stringWithFormat:@"No class for load command %" PRIi32 "", commandId];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
@@ -162,7 +158,7 @@ extern const uint32_t _mk_load_command_classes_count;
     _cmdId = MKSwapLValue32(lc.cmd, self.dataModel);
     _cmdSize = MKSwapLValue32(lc.cmdsize, self.dataModel);
     
-    if (self.class != [MKLoadCommand classForCommandID:_cmdId]) {
+    if (![self.class isSubclassOfClass:[MKLoadCommand classForCommandID:_cmdId]]) {
         NSString *reason = [NSString stringWithFormat:@"Cannot initialize %@ with load command data for %@", NSStringFromClass(self.class), NSStringFromClass([MKLoadCommand classForCommandID:_cmdId])];
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }

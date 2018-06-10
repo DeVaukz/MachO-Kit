@@ -64,6 +64,9 @@
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
+    if (self != MKStubsSection.class)
+        return 0;
+    
     if ((sectionLoadCommand.flags & SECTION_TYPE) == S_SYMBOL_STUBS)
         return 20;
     

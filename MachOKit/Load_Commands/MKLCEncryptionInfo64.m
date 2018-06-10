@@ -34,4 +34,13 @@
 + (uint32_t)ID
 { return LC_ENCRYPTION_INFO_64; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
+{
+    if (self != MKLCEncryptionInfo64.class)
+        return 0;
+    
+    return commandID == [self ID] ? 10 : 0;
+}
+
 @end

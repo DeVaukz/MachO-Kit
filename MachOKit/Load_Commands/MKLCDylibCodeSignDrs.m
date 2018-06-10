@@ -34,4 +34,13 @@
 + (uint32_t)ID
 { return LC_DYLIB_CODE_SIGN_DRS; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
+{
+    if (self != MKLCDylibCodeSignDrs.class)
+        return 0;
+    
+    return commandID == [self ID] ? 10 : 0;
+}
+
 @end

@@ -36,7 +36,10 @@
 + (uint32_t)canInstantiateWithTrieNodes:(NSArray<MKExportTrieNode*>*)nodes
 {
 #pragma unused(nodes)
-	return (self == MKRegularExport.class) ? 20 : 0;
+    if (self != MKRegularExport.class)
+        return 0;
+    
+	return 20;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

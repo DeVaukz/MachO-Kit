@@ -37,6 +37,9 @@
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
 #pragma unused (segment)
+    if (self != MKDataSection.class)
+        return 0;
+    
     // Contrary to what the name of this class may imply, it can handle more
     // than just the __DATA,__data section.  While not a perfect heuristic,
     // a section with the S_REGULAR and no attributes implies a section that

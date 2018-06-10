@@ -34,4 +34,13 @@
 + (uint32_t)ID
 { return LC_REEXPORT_DYLIB; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithLoadCommandID:(uint32_t)commandID
+{
+    if (self != MKLCReExportDylib.class)
+        return 0;
+    
+    return commandID == [self ID] ? 10 : 0;
+}
+
 @end

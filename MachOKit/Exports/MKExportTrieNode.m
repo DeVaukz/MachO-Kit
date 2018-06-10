@@ -43,7 +43,10 @@
 {
 #pragma unused(terminalSize)
 #pragma unused(contents)
-    return (self == MKExportTrieNode.class) ? 10 : 0;
+    if (self != MKExportTrieNode.class)
+        return 0;
+    
+    return 10;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
