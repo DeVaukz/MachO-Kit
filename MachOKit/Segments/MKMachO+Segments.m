@@ -91,6 +91,14 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
                 
                 for (uint32_t i=0; i<sectionLoadCommands.count; i++) {
                     id section = [segment sectionForLoadCommand:sectionLoadCommands[i]];
+                    
+                    // If the section for a load command could not be created,
+                    // skip all remaining sections in this segment.
+                    if (section == nil) {
+                        MK_PUSH_WARNING(sections, MK_EINTERNAL_ERROR, @"Could not create section for section command: %@", sectionLoadCommands[i]);
+                        break;
+                    }
+                    
                     [sections addObject:section];
                     sectionsByIndex[@(sectionBaseIndex + i)] = section;
                 }
