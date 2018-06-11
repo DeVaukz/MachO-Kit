@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKCString.h
+//! @file       MKString.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,27 +25,10 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-@import Foundation;
-
-#import <MachOKit/MKOffsetNode.h>
-#import <MachOKit/MKString.h>
-
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! An instance of \c MKCString parses a NULL terminated string.  Strings
-//! in a Mach-O are identified by their offset from another node
-//! (such as the string table found in the image's __LINKEDIT segment).
-//! After initializing an instance of \c MKCString with a parent node and
-//! offset, you can query its \ref nodeSize to retrieve the length of the
-//! string (which includes the \c NULL byte).
-//
-@interface MKCString : MKOffsetNode <MKString> {
-@package
-    mk_vm_size_t _nodeSize;
-    NSString *_string;
-}
+@protocol MKString
 
 @property (nonatomic, readonly, nullable) NSString *string;
 
