@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKCFStringsSection.h
+//! @file       MKCFStringSection.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -35,7 +35,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKCFStringsSection : MKSection {
+@interface MKCFStringSection : MKSection {
 @package
     NSArray<MKCFString*> *_strings;
 }

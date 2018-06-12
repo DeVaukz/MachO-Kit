@@ -28,7 +28,6 @@
 #import "MKCFString.h"
 #import "MKInternal.h"
 #import "MKPointer+Node.h"
-#import "MKCString.h"
 #import "MKObjCClass.h"
 
 struct cf_string_64 {
@@ -54,39 +53,43 @@ struct cf_string_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    NSError *localError = nil;
-    
     id<MKDataModel> dataModel = self.dataModel;
-    NSAssert(dataModel != nil, @"Parent node must have a data model.");
+    size_t pointerSize = dataModel.pointerSize;
     
     if (dataModel.pointerSize == 8)
     {
+        NSError *memoryMapError = nil;
+        
         struct cf_string_64 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read __builtin_CFString."];
+            [self release]; return nil;
+        }
         
         _isa = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), isa) fromParent:self targetClass:MKObjCClass.class error:error];
-        _string = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), string) fromParent:self targetClass:MKCString.class error:error];
+        _string = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), string) fromParent:self targetClass:nil error:error];
         _flags = (uint32_t)MKSwapLValue64(var.flags, dataModel);
         _length = MKSwapLValue64(var.length, dataModel);
     }
     else if (dataModel.pointerSize == 4)
     {
+        NSError *memoryMapError = nil;
+        
         struct cf_string_32 var;
-        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:error] < sizeof(var))
-        { [self release]; return nil; }
+        if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&var length:sizeof(var) requireFull:YES error:&memoryMapError] < sizeof(var)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read __builtin_CFString."];
+            [self release]; return nil;
+        }
         
         _isa = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), isa) fromParent:self targetClass:MKObjCClass.class error:error];
-        _string = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), string) fromParent:self targetClass:MKCString.class error:error];
+        _string = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), string) fromParent:self targetClass:nil error:error];
         _flags = MKSwapLValue32(var.flags, dataModel);
         _length = MKSwapLValue32(var.length, dataModel);
     }
     else
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unsupported pointer size." userInfo:nil];
-    
-    if (localError) {
-        MK_ERROR_OUT = localError;
-        [self release]; return nil;
+    {
+        NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
+        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
     }
     
     return self;
@@ -102,7 +105,7 @@ struct cf_string_32 {
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Values
+#pragma mark -  String Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize isa = _isa;
@@ -121,27 +124,62 @@ struct cf_string_32 {
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    NSArray *fields;
+    struct cf_string_64 cf64;
+    struct cf_string_32 cf32;
     
-    if (self.dataModel.pointerSize == 8) {
-        struct cf_string_64 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(isa) description:@"ISA" offset:offsetof(typeof(var), isa) size:sizeof(var.isa)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(string) description:@"String" offset:offsetof(typeof(var), string) size:sizeof(var.string)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(length) description:@"Length" offset:offsetof(typeof(var), length) size:sizeof(var.length)]
-        ];
-    } else {
-        struct cf_string_32 var;
-        fields = @[
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(isa) description:@"ISA" offset:offsetof(typeof(var), isa) size:sizeof(var.isa)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(flags) description:@"Flags" offset:offsetof(typeof(var), flags) size:sizeof(var.flags)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(string) description:@"String" offset:offsetof(typeof(var), string) size:sizeof(var.string)],
-            [MKPrimativeNodeField fieldWithProperty:MK_PROPERTY(length) description:@"Length" offset:offsetof(typeof(var), length) size:sizeof(var.length)]
-        ];
-    }
+    size_t pointerSize = self.dataModel.pointerSize;
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:fields];
+#define FIELD_TYPE(type64, type32) (pointerSize == 8 ? type64.sharedInstance : type32.sharedInstance)
+#define FIELD_OFFSET(field) (pointerSize == 8 ? offsetof(typeof(cf64), field) : offsetof(typeof(cf32), field))
+#define FIELD_SIZE(field) (pointerSize == 8 ? sizeof(cf64.field) : sizeof(cf32.field))
+    
+    MKNodeFieldBuilder *isa = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(isa)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(isa)
+        size:FIELD_SIZE(isa)
+    ];
+    isa.description = @"ISA";
+    isa.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *flags = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(flags)
+        type:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)
+        offset:FIELD_OFFSET(flags)
+        size:FIELD_SIZE(flags)
+    ];
+    flags.description = @"Flags";
+    flags.options = MKNodeFieldOptionDisplayAsDetail;
+    flags.formatter = [NSFormatter mk_hexCompactFormatter];
+    
+    MKNodeFieldBuilder *string = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(string)
+        type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
+        offset:FIELD_OFFSET(string)
+        size:FIELD_SIZE(string)
+    ];
+    string.description = @"String";
+    string.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *length = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(length)
+        type:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)
+        offset:FIELD_OFFSET(length)
+        size:FIELD_SIZE(length)
+    ];
+    length.description = @"Length";
+    length.options = MKNodeFieldOptionDisplayAsDetail;
+    
+#undef FIELD_SIZE
+#undef FIELD_OFFSET
+#undef FIELD_TYPE
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        isa.build,
+        flags.build,
+        string.build,
+        length.build
+    ]];
 }
 
 @end

@@ -30,9 +30,9 @@
 
 #import <MachOKit/MKOffsetNode.h>
 #import <MachOKit/MKPointer.h>
+#import <MachOKit/MKString.h>
 
 @class MKObjCClass;
-@class MKCString;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) uint32_t flags;
 
 //!
-@property (nonatomic, readonly) MKPointer<MKCString*> *string;
+@property (nonatomic, readonly) MKPointer<id<MKString>> *string;
 
 //!
 @property (nonatomic, readonly) uint64_t length;

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKCFStringsSection.m
+//|             MKCFStringSection.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,19 +25,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKCFStringsSection.h"
+#import "MKCFStringSection.h"
 #import "MKInternal.h"
 #import "MKSegment.h"
 #import "MKCFString.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKCFStringsSection
+@implementation MKCFStringSection
 
 @synthesize strings = _strings;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
+    if (self != MKCFStringSection.class)
+        return 0;
+    
     if ([segment.name rangeOfString:@SEG_DATA].location == 0 &&
         [sectionLoadCommand.sectname isEqualToString:@"__cfstring"])
         return 50;

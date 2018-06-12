@@ -196,7 +196,7 @@
     #import <MachOKit/MKIndirectSymbol.h>
 
 #import <MachOKit/MKCFString.h>
-    #import <MachOKit/MKCFStringsSection.h>
+    #import <MachOKit/MKCFStringSection.h>
 
 #import <MachOKit/MKObjCElementList.h>
 #import <MachOKit/MKObjCImageInfo.h>
