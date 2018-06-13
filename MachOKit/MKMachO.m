@@ -62,7 +62,9 @@
     
     // Read the Magic
     uint32_t magic = [mapping readDoubleWordAtOffset:0 fromAddress:contextAddress withDataModel:nil error:error];
-    if (magic == 0) { [self release]; return nil; }
+    if (magic == 0) {
+        [self release]; return nil;
+    }
     
     // Load the appropriate data model for the Mach-O
     switch (magic) {

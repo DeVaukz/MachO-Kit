@@ -59,37 +59,38 @@
         // The provided offset must be within the range of our parent node.
         mk_vm_range_t parentRange = mk_vm_range_make(parentAddress, parentSize);
         if ((err = mk_vm_range_contains_address(parentRange, offset, parentAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Provided offset %" MK_VM_PRIiOFFSET " is not within the parent node %@", offset, parent.nodeDescription];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Provided offset [%" MK_VM_PRIuOFFSET "] is not within parent node: %@.", offset, parent.nodeDescription];
             [self release]; return nil;
         }
         
         _nodeSize = parent.nodeSize - offset;
     }
     
-    __block NSError *localError = nil;
+    // TODO - If the string falls outside of the parent node, we could still try to
+    // parse it anyway.
+    // <http://reverse.put.as/2012/01/31/anti-debug-trick-1-abusing-mach-o-to-crash-gdb/>
+    
+    __block NSError *memoryMapError = nil;
     
     [parent.memoryMap remapBytesAtOffset:offset fromAddress:parent.nodeContextAddress length:_nodeSize requireFull:NO withHandler:^(vm_address_t address, vm_size_t length, NSError *e) {
-        if (length == 0 || e) {
-            localError = e;
-            return;
-        }
+        if (address == 0x0) { memoryMapError = e; return; }
         
         _nodeSize = strnlen((const char*)address, length);
         _string = [[NSString alloc] initWithBytes:(const void*)address length:(NSUInteger)_nodeSize encoding:NSUTF8StringEncoding];
         
         if (_string == nil)
-            MK_PUSH_WARNING(MK_PROPERTY(string), MK_EINVALID_DATA, @"Failed to create string with bytes.");
+            MK_PUSH_WARNING(string, MK_EINVALID_DATA, @"Could not initialize NSString with bytes.");
         
         if (_nodeSize < length) {
             // Account for the NULL byte.
             _nodeSize = _nodeSize + 1;
         } else {
-            MK_PUSH_WARNING(MK_PROPERTY(sring), MK_EINVALID_DATA, @"String may not be properly terminated.");
+            MK_PUSH_WARNING(sring, MK_EINVALID_DATA, @"String may not be properly terminated.");
         }
     }];
     
-    if (localError) {
-        MK_ERROR_OUT = localError;
+    if (memoryMapError) {
+        MK_ERROR_OUT = memoryMapError;
         [self release]; return nil;
     }
     
@@ -117,7 +118,7 @@
 {
     MKNodeFieldBuilder *string = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(string)
-        type:nil // TODO ?
+        type:MKNodeFieldTypeString.sharedInstance
         offset:0
         size:_nodeSize
     ];

@@ -87,7 +87,7 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     //! Hint to include the alternate field in the description of the field.
     //! This is the default (if an alternate field is specified).
     MKNodeFieldOptionShowAlternateField                         = (1U << 15),
-    //! Hit to not include the alternate field in the description of the field.
+    //! Hint to not include the alternate field in the description of the field.
     MKNodeFieldOptionHideAlternateField                         = (1U << 16),
     //! Hint to replace the description of the field with the value of the
     //! alternate field.

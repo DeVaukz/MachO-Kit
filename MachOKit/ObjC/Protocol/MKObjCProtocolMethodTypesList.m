@@ -104,6 +104,7 @@
             // invalid data.
             if (offset > _nodeSize) {
                 MK_PUSH_WARNING(elements, MK_EOUT_OF_RANGE, @"Part of element at index [%" PRIu32 "] is beyond list size.", i);
+                [element release];
                 break;
             }
             

@@ -159,22 +159,27 @@
         
         NSNumber *maskedNumber;
         switch (*[anObject objCType]) {
+        // Silence the analyzer.
+        // "A 64-bit integer is used to initialize a CFNumber object that
+        // represents a __-bit integer; __ bits of the integer value will be lost"
+        #ifndef __clang_analyzer__
             case 'c':
             case 'C':
-                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt8Type, &maskedValue);
+                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt8Type, (int8_t*)&maskedValue);
                 break;
             case 's':
             case 'S':
-                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt16Type, &maskedValue);
+                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt16Type, (int16_t*)&maskedValue);
                 break;
             case 'i':
             case 'I':
-                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt32Type, &maskedValue);
+                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt32Type, (int32_t*)&maskedValue);
                 break;
             case 'q':
             case 'Q':
+        #endif
             default:
-                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt64Type, &maskedValue);
+                maskedNumber = (NSNumber*)CFNumberCreate(NULL, kCFNumberSInt64Type, (int64_t*)&maskedValue);
                 break;
         }
         

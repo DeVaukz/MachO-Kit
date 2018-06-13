@@ -53,6 +53,7 @@
 #import <MachOKit/MKSharedFieldType.h>
 #import <MachOKit/MKPointerNode.h>
 #import <MachOKit/MKCString.h>
+#import <MachOKit/MKUString.h>
 
 /* FAT */
 #import <MachOKit/MKFatBinary.h>
@@ -135,6 +136,7 @@
     #import <MachOKit/MKSegment.h>
     #import <MachOKit/MKSection.h>
         #import <MachOKit/MKCStringSection.h>
+        #import <MachOKit/MKUStringSection.h>
         #import <MachOKit/MKPointerListSection.h>
         #import <MachOKit/MKDataSection.h>
         #import <MachOKit/MKStubsSection.h>

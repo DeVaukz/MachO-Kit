@@ -31,6 +31,7 @@
 #import <MachOKit/MKBackedNode.h>
 #import <MachOKit/MKMachOFieldType.h>
 #import <MachOKit/MKNode+MachO.h>
+#import <MachOKit/MKOffsetNode+AddressBasedInitialization.h>
 
 @protocol MKLCSegment;
 @class MKMachOImage;
