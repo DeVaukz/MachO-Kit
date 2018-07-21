@@ -242,6 +242,23 @@ mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, ui
 _mk_export struct load_command*
 mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address);
 
+//! Finds the last instance of the specified load command type in the
+//! specified Mach-O image.
+//!
+//! @param  image
+//!         The Mach-O image object.
+//! @param  expectedCommand
+//!         The LC_* command type to be returned.
+//! @param  target_address [out]
+//!         If not \c NULL, populated with the address of the load command in
+//!         the target.
+//! @return
+//! A process-relative pointer to the Mach-O load command structure or \c NULL
+//! if there was an error.  The returned structure is gauranteed to be readable,
+//! and fully within the current process' address space.
+_mk_export struct load_command*
+mk_macho_last_command_type(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address);
+
 
 //! @} MACH !//
 

@@ -150,7 +150,8 @@ mk_symbol_table_init_with_segment(mk_segment_ref segment, mk_symbol_table_t *sym
     if (segment.segment == NULL) return MK_EINVAL;
     
     mk_macho_ref image = mk_segment_get_macho(segment);
-    struct symtab_command *symtab_lc = (typeof(symtab_lc))mk_macho_find_command(image, LC_SYMTAB, NULL);
+    // dyld uses the *last* LC_SYMTAB in the load commands list.
+    struct symtab_command *symtab_lc = (typeof(symtab_lc))mk_macho_last_command_type(image, LC_SYMTAB, NULL);
     
     if (symtab_lc == NULL) {
         char buffer[512] = { 0 };

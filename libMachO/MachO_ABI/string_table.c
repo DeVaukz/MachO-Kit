@@ -129,7 +129,8 @@ mk_string_table_init_with_segment(mk_segment_ref segment, mk_string_table_t *str
     if (segment.segment == NULL) return MK_EINVAL;
     
     mk_macho_ref image = mk_segment_get_macho(segment);
-    struct load_command *lc = mk_macho_find_command(image, LC_SYMTAB, NULL);
+    // dyld uses the *last* LC_SYMTAB in the load commands list.
+    struct load_command *lc = mk_macho_last_command_type(image, LC_SYMTAB, NULL);
     
     if (lc == NULL) {
         char buffer[512] = { 0 };

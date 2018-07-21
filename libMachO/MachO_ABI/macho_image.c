@@ -303,3 +303,16 @@ mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, ui
 struct load_command* mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address)
 { return mk_macho_next_command_type(image, NULL, expected_command, target_address); }
 
+//|++++++++++++++++++++++++++++++++++++|//
+struct load_command* mk_macho_last_command_type(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address)
+{
+    struct load_command *lc = NULL;
+    struct load_command *next = NULL;
+    
+    while ((next = mk_macho_next_command_type(image, lc, expected_command, target_address)) != NULL) {
+        lc = next;
+    }
+    
+    return lc;
+}
+

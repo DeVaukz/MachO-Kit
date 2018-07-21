@@ -130,7 +130,8 @@ mk_indirect_symbol_table_init_with_segment(mk_segment_ref segment, mk_indirect_s
     if (segment.segment == NULL) return MK_EINVAL;
     
     mk_macho_ref image = mk_segment_get_macho(segment);
-    struct load_command *lc = mk_macho_find_command(image, LC_DYSYMTAB, NULL);
+    // dyld uses the *last* LC_DYSYMTAB in the load commands list.
+    struct load_command *lc = mk_macho_last_command_type(image, LC_DYSYMTAB, NULL);
     
     if (lc == NULL) {
         char buffer[512] = { 0 };
