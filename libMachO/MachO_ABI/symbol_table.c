@@ -166,6 +166,13 @@ mk_symbol_table_init_with_segment(mk_segment_ref segment, mk_symbol_table_t *sym
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+void
+mk_symbol_table_free(mk_symbol_table_ref symbol_table)
+{
+    symbol_table.symbol_table->vtable = NULL;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 mk_macho_ref mk_symbol_table_get_macho(mk_symbol_table_ref symbol_table)
 { return mk_segment_get_macho(symbol_table.symbol_table->link_edit); }
 

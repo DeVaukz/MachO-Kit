@@ -100,6 +100,11 @@ mk_symbol_table_init_with_mach_load_commands(mk_segment_ref segment, struct symt
 _mk_export mk_error_t
 mk_symbol_table_init_with_segment(mk_segment_ref segment, mk_symbol_table_t *symbol_table);
 
+//! Cleans up any resources held by \a symbol_table.  It is no longer safe to
+//! use \a symbol_table after calling this function.
+_mk_export void
+mk_symbol_table_free(mk_symbol_table_ref symbol_table);
+
 //! Returns the Mach-O image that the specified symbol table resides within.
 _mk_export mk_macho_ref
 mk_symbol_table_get_macho(mk_symbol_table_ref symbol_table);
