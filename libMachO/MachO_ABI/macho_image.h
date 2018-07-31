@@ -193,7 +193,7 @@ mk_macho_is_from_shared_cache(mk_macho_ref image);
 //!         the target.
 //! @return
 //! A process-relative pointer to the Mach-O load command structure or \c NULL
-//! if there was an error.  The returned structure is gauranteed to be readable,
+//! if there was an error.  The returned structure is guaranteed to be readable,
 //! and fully within the current process' address space.
 _mk_export struct load_command*
 mk_macho_next_command(mk_macho_ref image, struct load_command* previous, mk_vm_address_t* target_address);
@@ -220,7 +220,7 @@ mk_macho_enumerate_commands(mk_macho_ref image,
 //!         the target.
 //! @return
 //! A process-relative pointer to the Mach-O load command structure or \c NULL
-//! if there was an error.  The returned structure is gauranteed to be readable,
+//! if there was an error.  The returned structure is guaranteed to be readable,
 //! and fully within the current process' address space.
 _mk_export struct load_command*
 mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, uint32_t expected_command, mk_vm_address_t* target_address);
@@ -237,7 +237,7 @@ mk_macho_next_command_type(mk_macho_ref image, struct load_command* previous, ui
 //!         the target.
 //! @return
 //! A process-relative pointer to the Mach-O load command structure or \c NULL
-//! if there was an error.  The returned structure is gauranteed to be readable,
+//! if there was an error.  The returned structure is guaranteed to be readable,
 //! and fully within the current process' address space.
 _mk_export struct load_command*
 mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address);
@@ -254,7 +254,7 @@ mk_macho_find_command(mk_macho_ref image, uint32_t expected_command, mk_vm_addre
 //!         the target.
 //! @return
 //! A process-relative pointer to the Mach-O load command structure or \c NULL
-//! if there was an error.  The returned structure is gauranteed to be readable,
+//! if there was an error.  The returned structure is guaranteed to be readable,
 //! and fully within the current process' address space.
 _mk_export struct load_command*
 mk_macho_last_command_type(mk_macho_ref image, uint32_t expected_command, mk_vm_address_t* target_address);
