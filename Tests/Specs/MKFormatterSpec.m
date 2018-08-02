@@ -209,6 +209,10 @@ describe(@"MKOptionSetFormatter", ^{
         @((uint32_t)(1U << 1)): @"TWO"
     };
     
+    MKOptionSetFormatterOptions *optionsWithOverlappingValues = @{
+        @((uint32_t)(3U)): @"THREE"
+    };
+    
     MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
     formatter.options = optionsWithoutZero;
     formatter.zeroBehavior = MKOptionSetFormatterZeroBehaviorZeroString;
@@ -280,6 +284,16 @@ describe(@"MKOptionSetFormatter", ^{
             formatter.zeroBehavior = MKOptionSetFormatterZeroBehaviorNil;
             
             expect([formatter stringForObjectValue:@((uint32_t)0)]).to.equal(@"ZERO");
+        });
+    });
+    
+    describe(@"with partial matching behavior", ^{
+        it(@"should match partial values", ^{
+            MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
+            formatter.options = optionsWithOverlappingValues;
+            formatter.partialMatching = YES;
+            
+            expect([formatter stringForObjectValue:@((uint32_t)(1U))]).to.equal(@"THREE");
         });
     });
     

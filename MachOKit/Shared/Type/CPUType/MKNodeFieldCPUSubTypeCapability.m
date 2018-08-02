@@ -60,6 +60,10 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeCapability)
 - (MKNodeFieldOptionSetOptions*)options
 { return s_Capability; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetTraits)optionSetTraits
+{ return 0; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

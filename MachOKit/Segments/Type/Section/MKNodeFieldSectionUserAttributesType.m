@@ -66,6 +66,10 @@ MKMakeSingletonInitializer(MKNodeFieldSectionUserAttributesType)
 - (MKNodeFieldOptionSetOptions*)options
 { return s_UserAttributes; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetTraits)optionSetTraits
+{ return 0; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

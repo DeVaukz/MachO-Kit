@@ -37,13 +37,16 @@ NS_ASSUME_NONNULL_BEGIN
 @package
     id<MKNodeFieldNumericType> _underlyingType;
     MKNodeFieldOptionSetOptions *_options;
+    MKNodeFieldOptionSetTraits _optionSetTraits;
     NSString *_name;
     NSFormatter *_formatter;
 }
 
++ (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name traits:(MKNodeFieldOptionSetTraits)traits options:(nullable MKNodeFieldOptionSetOptions*)options;
 + (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name options:(nullable MKNodeFieldOptionSetOptions*)options;
 
-- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name options:(nullable MKNodeFieldOptionSetOptions*)options NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name traits:(MKNodeFieldOptionSetTraits)traits options:(nullable MKNodeFieldOptionSetOptions*)options NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(nullable NSString*)name options:(nullable MKNodeFieldOptionSetOptions*)options;
 
 - (instancetype)init NS_UNAVAILABLE;
 

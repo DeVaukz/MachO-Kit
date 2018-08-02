@@ -33,11 +33,15 @@
 @implementation MKNodeFieldTypeOptionSet
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name traits:(MKNodeFieldOptionSetTraits)traits options:(MKNodeFieldOptionSetOptions*)options
+{ return [[[self alloc] initWithUnderlyingType:underlyingType name:name traits:traits options:options] autorelease]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)optionSetWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(MKNodeFieldOptionSetOptions*)options
 { return [[[self alloc] initWithUnderlyingType:underlyingType name:name options:options] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(MKNodeFieldOptionSetOptions*)options
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name traits:(MKNodeFieldOptionSetTraits)traits options:(MKNodeFieldOptionSetOptions*)options
 {
     NSParameterAssert([underlyingType conformsToProtocol:@protocol(MKNodeFieldNumericType)]);
     
@@ -46,10 +50,15 @@
     
     _underlyingType = [underlyingType retain];
     _options = [options copy];
+    _optionSetTraits = traits;
     _name = [name copy];
     
     return self;
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithUnderlyingType:(id<MKNodeFieldNumericType>)underlyingType name:(NSString*)name options:(MKNodeFieldOptionSetOptions*)options
+{ return [self initWithUnderlyingType:underlyingType name:name traits:0 options:options]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
@@ -71,6 +80,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize options = _options;
+@synthesize optionSetTraits = _optionSetTraits;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldNumericType
@@ -107,6 +117,7 @@
     if (_formatter == nil) {
         MKOptionSetFormatter *optionSetFormatter = [MKOptionSetFormatter new];
         optionSetFormatter.options = self.options;
+        optionSetFormatter.partialMatching = (self.optionSetTraits & MKNodeFieldOptionSetTraitPartialMatchingAllowed) ? YES : NO;
         
         _formatter = optionSetFormatter;
     }

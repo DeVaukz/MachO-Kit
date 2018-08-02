@@ -66,6 +66,10 @@ MKMakeSingletonInitializer(MKNodeFieldObjCImageInfoImageFlagsType)
 - (MKNodeFieldOptionSetOptions*)options
 { return s_SystemAttributes; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetTraits)optionSetTraits
+{ return 0; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

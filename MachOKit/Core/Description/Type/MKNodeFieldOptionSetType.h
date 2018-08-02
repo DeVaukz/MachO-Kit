@@ -35,9 +35,25 @@ NS_ASSUME_NONNULL_BEGIN
 typedef NSDictionary<NSNumber*, NSString*> MKNodeFieldOptionSetOptions;
 
 //----------------------------------------------------------------------------//
+//! @name       Option Set Type Traits
+//! @relates    MKNodeFieldOptionSetType
+//!
+typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptionSetTraits) {
+    //! By default, an option is considered to be present iff
+    //! (value & optionMask) == optionMask
+    //! With this trait, an option is considered to be present if
+    //! (value & optionMask) != 0
+    MKNodeFieldOptionSetTraitPartialMatchingAllowed          = (1U << 0)
+};
+
+
+
+//----------------------------------------------------------------------------//
 @protocol MKNodeFieldOptionSetType <MKNodeFieldNumericType>
 
 @property (nonatomic, readonly) MKNodeFieldOptionSetOptions *options;
+
+@property (nonatomic, readonly) MKNodeFieldOptionSetTraits optionSetTraits;
 
 @end
 

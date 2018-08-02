@@ -61,6 +61,10 @@ MKMakeSingletonInitializer(MKNodeFieldBindSymbolFlagsType)
 - (MKNodeFieldOptionSetOptions*)options
 { return s_Options; }
 
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetTraits)optionSetTraits
+{ return 0; }
+
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

@@ -51,6 +51,7 @@ typedef NS_ENUM(NSUInteger, MKOptionSetFormatterZeroBehavior) {
 @package
     MKOptionSetFormatterOptions *_options;
     MKOptionSetFormatterZeroBehavior _zeroBehavior;
+    BOOL _partialMatching;
 }
 
 + (instancetype)optionSetFormatterWithOptions:(nullable MKOptionSetFormatterOptions*)options;
@@ -66,6 +67,12 @@ typedef NS_ENUM(NSUInteger, MKOptionSetFormatterZeroBehavior) {
 //! The behavior when the formatter encounters a zero value.  Only applicable
 //! if the options dictionary does not define a value for zero.
 @property (nonatomic, readwrite) MKOptionSetFormatterZeroBehavior zeroBehavior;
+
+//! If \c YES, an option is considered to be present if
+//! (value & optionMask) != 0
+//! If \c NO (default), an option is considered to be present if
+//! (value & optionMask) == optionMask
+@property (nonatomic, readwrite) BOOL partialMatching;
 
 @end
 

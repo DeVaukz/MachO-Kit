@@ -91,6 +91,7 @@
 
 @synthesize options = _options;
 @synthesize zeroBehavior = _zeroBehavior;
+@synthesize partialMatching = _partialMatching;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSFormatter
@@ -133,7 +134,7 @@
         if (mask == 0x0)
             continue;
         
-        if ((value & mask) == mask) {
+        if ((value & mask) == mask || (self.partialMatching && (value & mask) != 0)) {
             maskedBits |= mask;
             if (retValue.length != 0) [retValue appendString:@" "];
             [retValue appendString:options[maskValue]];
