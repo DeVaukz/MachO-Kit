@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D000F40A1AF541D20004DAF6 /* Expecta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D000F4071AF5416B0004DAF6 /* Expecta.framework */; };
+		D000F40A1AF541D20004DAF6 /* Expecta.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D000F4051AF5416B0004DAF6 /* Expecta.framework */; };
 		D000F40B1AF543A40004DAF6 /* base.h in Headers */ = {isa = PBXBuildFile; fileRef = D0C617021A4772ED00BF4F5A /* base.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00205461E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.h in Headers */ = {isa = PBXBuildFile; fileRef = D00205441E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D00205471E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.m in Sources */ = {isa = PBXBuildFile; fileRef = D00205451E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.m */; };
@@ -3639,7 +3639,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1010;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D0A3BB731A68EB9D00D663A0 = {
@@ -4263,7 +4263,6 @@
 					"__FRAMEWORK__=1",
 				);
 				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
-				"VALID_ARCHS[sdk=macosx*]" = "x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -4283,7 +4282,6 @@
 					"__FRAMEWORK__=1",
 				);
 				INFOPLIST_FILE = "Resources/MachOKit-Info.plist";
-				"VALID_ARCHS[sdk=macosx*]" = "x86_64 i386";
 			};
 			name = Release;
 		};
@@ -4316,7 +4314,6 @@
 				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				PRODUCT_NAME = MachO;
-				"VALID_ARCHS[sdk=macosx*]" = "x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -4327,7 +4324,6 @@
 				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				PRODUCT_NAME = MachO;
-				"VALID_ARCHS[sdk=macosx*]" = "x86_64 i386";
 			};
 			name = Release;
 		};
