@@ -29,11 +29,9 @@
 
 //----------------------------------------------------------------------------//
 typedef NS_OPTIONS(NSUInteger, MKExecutableType) {
-    MKFrameworkTypeOSXPublicFramework           = 1<<0,
-    MKFrameworkTypeOSXPrivateFramework          = 1<<1,
-    MKFrameworkTypeiOSPublicFramework           = 1<<2,
-    MKFrameworkTypeiOSPrivateFramework          = 1<<3,
-    MKFrameworkTypeAllFrameworks                = 0x0F,
+    MKFrameworkTypeOSX                          = 1<<0,
+    MKFrameworkTypeiOSMac                       = 1<<1,
+    MKFrameworkTypeAll                          = 0xFF,
 };
 
 

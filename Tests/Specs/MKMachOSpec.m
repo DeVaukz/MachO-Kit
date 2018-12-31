@@ -29,7 +29,7 @@
 
 SpecBegin(MKMachOImage)
 @autoreleasepool {
-    NSArray *frameworks = [NSFileManager allExecutableURLs:MKFrameworkTypeAllFrameworks];
+    NSArray *frameworks = [NSFileManager allExecutableURLs:MKFrameworkTypeAll];
     
     for (NSURL *frameworkURL in frameworks)
     describe([frameworkURL lastPathComponent], ^{
@@ -136,7 +136,7 @@ SpecBegin(MKMachOImage)
                     
                     for (NSString *key in otoolArchitectureLoadCommand)
                     {
-                        if ([key isEqualToString:@"cmd"] || [key isEqualToString:@"cmdsize"] || [key isEqualToString:@"sections"])
+                        if ([key isEqualToString:@"cmd"] || [key isEqualToString:@"cmdsize"] || [key isEqualToString:@"sections"] || [key isEqualToString:@"tools"])
                             continue;
                         
                         it([NSString stringWithFormat:@"%@.%@ should have the correct value", [machoLoadCommand.class name], key], ^{

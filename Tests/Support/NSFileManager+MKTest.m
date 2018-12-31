@@ -45,30 +45,62 @@
         }
         return frameworkExecutables;
     }};
-    
+	
+	NSArray* (^getDylibExecutables)(NSURL*) = ^(NSURL *directoryURL) {
+		@autoreleasepool {
+			NSArray *dylibs = [NSFileManager.defaultManager contentsOfDirectoryAtURL:directoryURL includingPropertiesForKeys:@[NSURLIsRegularFileKey] options:NSDirectoryEnumerationSkipsHiddenFiles error:NULL];
+			NSMutableArray *dylibExecutables = [NSMutableArray arrayWithCapacity:dylibs.count];
+			for (NSURL *url in dylibs)
+			{
+				NSNumber *isRegularFile = nil;
+				[url getResourceValue:&isRegularFile forKey:NSURLIsRegularFileKey error:NULL];
+				if (isRegularFile.boolValue == NO)
+					continue;
+				
+				if ([url.pathExtension isEqualToString:@"dylib"])
+					[dylibExecutables addObject:url];
+			}
+			return dylibExecutables;
+		}};
+	
+	static NSArray * librariesOSX = nil;
+	if (librariesOSX == nil)
+		librariesOSX = getDylibExecutables([NSURL fileURLWithPath:@"/usr/lib" isDirectory:YES]);
+	
+	static NSArray * systemLibrariesOSX = nil;
+	if (systemLibrariesOSX == nil)
+		systemLibrariesOSX = getDylibExecutables([NSURL fileURLWithPath:@"/usr/lib/system" isDirectory:YES]);
+	
     static NSArray *publicOSX = nil;
     if (publicOSX == nil)
         publicOSX = getFrameworkExecutables([NSURL fileURLWithPath:@"/System/Library/Frameworks" isDirectory:YES]);
-    /*
+    
     static NSArray *privateOSX = nil;
     if (privateOSX == nil)
         privateOSX = getFrameworkExecutables([NSURL fileURLWithPath:@"/System/Library/PrivateFrameworks" isDirectory:YES]);
     
-    static NSArray *publiciOS = nil;
-    if (publiciOS == nil)
-        publiciOS = getFrameworkExecutables([NSURL fileURLWithPath:@"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks" isDirectory:YES]);
+    static NSArray *publiciOSMac = nil;
+    if (publiciOSMac == nil)
+        publiciOSMac = getFrameworkExecutables([NSURL fileURLWithPath:@"/System/iOSSupport/System/Library/Frameworks" isDirectory:YES]);
     
-    static NSArray *privateiOS = nil;
-    if (privateiOS == nil)
-        privateiOS = getFrameworkExecutables([NSURL fileURLWithPath:@"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks" isDirectory:YES]);
-    */
+    static NSArray *privateiOSMac = nil;
+    if (privateiOSMac == nil)
+        privateiOSMac = getFrameworkExecutables([NSURL fileURLWithPath:@"/System/iOSSupport/System/Library/PrivateFrameworks" isDirectory:YES]);
+    
     NSMutableArray *retValue = [NSMutableArray array];
-    if (type & MKFrameworkTypeOSXPublicFramework) [retValue addObjectsFromArray:publicOSX];
-    //if (type & MKFrameworkTypeOSXPrivateFramework) [retValue addObjectsFromArray:privateOSX];
-    //if (type & MKFrameworkTypeiOSPublicFramework) [retValue addObjectsFromArray:publiciOS];
-    //if (type & MKFrameworkTypeiOSPrivateFramework) [retValue addObjectsFromArray:privateiOS];
     
-    return [retValue subarrayWithRange:NSMakeRange(0, 5)];
+    if (type & MKFrameworkTypeOSX) {
+        [retValue addObjectsFromArray:librariesOSX];
+        [retValue addObjectsFromArray:systemLibrariesOSX];
+        [retValue addObjectsFromArray:publicOSX];
+        [retValue addObjectsFromArray:privateOSX];
+    }
+    if (type & MKFrameworkTypeiOSMac) {
+        [retValue addObjectsFromArray:publiciOSMac];
+        [retValue addObjectsFromArray:privateiOSMac];
+    }
+	
+    return retValue;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

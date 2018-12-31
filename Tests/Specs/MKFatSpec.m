@@ -27,7 +27,7 @@
 
 SpecBegin(MKFat)
 {
-    NSArray *frameworks = [NSFileManager allExecutableURLs:MKFrameworkTypeAllFrameworks];
+    NSArray *frameworks = [NSFileManager allExecutableURLs:MKFrameworkTypeAll];
     
     for (NSURL *frameworkURL in frameworks)
     describe([frameworkURL lastPathComponent], ^{

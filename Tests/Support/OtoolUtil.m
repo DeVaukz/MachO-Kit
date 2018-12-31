@@ -124,6 +124,78 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
             return YES;
         };
         
+        OptionalParserAction parsePlatform = ^(NSMutableDictionary *dest) {
+            NSMutableArray *tokens = [[lines[0] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] mutableCopy];
+            [tokens removeObject:@""];
+            if (tokens.count == 0 || [tokens[0] isEqualToString:@"platform"] == NO) return NO;
+            [lines removeObjectAtIndex:0];
+            
+            // Consume "platform"
+            NSString *key = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            // Consume the value
+            NSString *value = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            
+            if ([value isEqualToString:@"macos"])
+                [dest setValue:@"PLATFORM_MACOS" forKey:key];
+            else if ([value isEqualToString:@"ios"])
+                [dest setValue:@"PLATFORM_IOS" forKey:key];
+            else if ([value isEqualToString:@"tvos"])
+                [dest setValue:@"PLATFORM_TVOS" forKey:key];
+            else if ([value isEqualToString:@"watchos"])
+                [dest setValue:@"PLATFORM_WATCHOS" forKey:key];
+            else if ([value isEqualToString:@"bridgeos"])
+                [dest setValue:@"PLATFORM_BRIDGEOS" forKey:key];
+            else if ([value isEqualToString:@"iosmac"])
+                [dest setValue:@"PLATFORM_IOSMAC" forKey:key];
+            else if ([value isEqualToString:@"iossimulator"])
+                [dest setValue:@"PLATFORM_IOSSIMULATOR" forKey:key];
+            else if ([value isEqualToString:@"tvossimulator"])
+                [dest setValue:@"PLATFORM_TVOSSIMULATOR" forKey:key];
+            else if ([value isEqualToString:@"watchossimulator"])
+                [dest setValue:@"PLATFORM_WATCHOSSIMULATOR" forKey:key];
+            else
+                [dest setValue:value forKey:key];
+            
+            return YES;
+        };
+        
+        OptionalParserAction parseTools = ^(NSMutableDictionary *dest) {
+            NSMutableArray *tokens = [[lines[0] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] mutableCopy];
+            [tokens removeObject:@""];
+            if (tokens.count == 0 || [tokens[0] isEqualToString:@"ntools"] == NO) return NO;
+            [lines removeObjectAtIndex:0];
+            
+            // Consume "ntools"
+            NSString *key = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            // Consume the value
+            NSString *value = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            
+            [dest setValue:value forKey:key];
+            
+            NSMutableArray *tools = dest[@"tools"] = [[NSMutableArray alloc] init];
+            
+            NSMutableDictionary *tool = [[NSMutableDictionary alloc] init];
+            while (lines.count &&
+                   ([lines[0] rangeOfString:@"tool"].length > 0 || [lines[0] rangeOfString:@"version"].length > 0) &&
+                   [lines[0] rangeOfString:@"Load command"].location == NSNotFound)
+            {
+                parseSingleValueLine(tool);
+                
+                // Once we have a tool name and version, add it to the list
+                // and move on.
+                if (tool[@"tool"] && tool[@"version"]) {
+                    [tools addObject:[tool copy]];
+                    [tool removeAllObjects];
+                }
+            }
+            
+            return YES;
+        };
+        
         OptionalParserAction parseSection = ^(NSMutableDictionary *dest) {
             if ([lines[0] rangeOfString:@"Section"].location == NSNotFound) return NO;
             [lines removeObjectAtIndex:0];
@@ -150,6 +222,8 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
         
         NSArray *actions = @[
             parseSection,
+            parseTools,
+            parsePlatform,
             parseName,
             parseVersion,
             parseSingleValueLine

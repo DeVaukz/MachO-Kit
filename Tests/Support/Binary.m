@@ -153,7 +153,7 @@
 {
     NSDictionary *objcInfo;
     @autoreleasepool {
-        NSString *info = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-o"])];
+        NSString *info = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-ov"])];
         objcInfo = [OtoolUtil parseObjCImageInfo:info];
     }
     return objcInfo;

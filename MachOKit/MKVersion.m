@@ -66,10 +66,8 @@
 {
     if (self.major && self.minor && self.patch)
         return [NSString stringWithFormat:@"%" PRIu16 ".%" PRIu8 ".%" PRIu8 "", self.major, self.minor, self.patch];
-    else if (self.major && self.minor)
-        return [NSString stringWithFormat:@"%" PRIu16 ".%" PRIu8 "", self.major, self.minor];
     else
-        return [NSString stringWithFormat:@"%" PRIu16 "", self.major];
+        return [NSString stringWithFormat:@"%" PRIu16 ".%" PRIu8 "", self.major, self.minor];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

@@ -176,6 +176,7 @@
         size:sizeof(bvc.minos)
     ];
     minos.description = @"Minimum OS Version";
+    minos.formatter = nil;
     minos.options = MKNodeFieldOptionDisplayAsDetail;
     
     MKNodeFieldBuilder *sdk = [MKNodeFieldBuilder
@@ -185,6 +186,7 @@
         size:sizeof(bvc.sdk)
     ];
     sdk.description = @"SDK Version";
+    sdk.formatter = nil;
     sdk.options = MKNodeFieldOptionDisplayAsDetail;
     
     MKNodeFieldBuilder *ntools = [MKNodeFieldBuilder
