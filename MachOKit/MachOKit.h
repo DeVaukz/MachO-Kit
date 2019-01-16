@@ -194,6 +194,23 @@
     #import <MachOKit/MKStringTable.h>
     #import <MachOKit/MKSymbolTable.h>
     #import <MachOKit/MKSymbol.h>
+    #import <MachOKit/MKDebugSymbol.h>
+        #import <MachOKit/MKGlobalSymbol.h>
+        #import <MachOKit/MKProcedureSymbol.h>
+        #import <MachOKit/MKStaticSymbol.h>
+        #import <MachOKit/MKBeginNamedSectionSymbol.h>
+        #import <MachOKit/MKASTSymbol.h>
+        #import <MachOKit/MKEndNamedSectionSymbol.h>
+        #import <MachOKit/MKSourceFileNameSymbol.h>
+        #import <MachOKit/MKObjectFileNameSymbol.h>
+        #import <MachOKit/MKIncludedFileNameSymbol.h>
+    #import <MachOKit/MKRegularSymbol.h>
+	#import <MachOKit/MKUndefinedSymbol.h>
+    #import <MachOKit/MKCommonSymbol.h>
+    #import <MachOKit/MKDefinedSymbol.h>
+    #import <MachOKit/MKAbsoluteSymbol.h>
+    #import <MachOKit/MKSectionSymbol.h>
+    #import <MachOKit/MKAliasSymbol.h>
     #import <MachOKit/MKIndirectSymbolTable.h>
     #import <MachOKit/MKIndirectSymbol.h>
 

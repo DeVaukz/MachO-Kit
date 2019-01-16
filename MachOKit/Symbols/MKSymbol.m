@@ -145,6 +145,8 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
         _value = entry.n_value;
     }
     
+    // The base MKSymbol class does not expose name and section properties, but
+    // enough of the subclasses do that it makes sense to perform the lookup here.
     
     MKMachOImage *image = self.macho;
     
@@ -163,7 +165,7 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
         
         MKCString *string = stringTable.value.strings[@(_strx)];
         if (string == nil) {
-            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"String table does not have an entry for index [%" PRIu32 "].", _strx];
+            NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"String table does not contain an entry for index [%" PRIu32 "].", _strx];
             _name = [[MKOptional alloc] initWithError:error];
             break;
         }
@@ -279,7 +281,7 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
+- (MKNodeFieldBuilder*)_valueFieldBuilder
 {
     MKNodeFieldBuilder *value = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(value)
@@ -290,12 +292,18 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
     value.description = @"Value";
     value.options = MKNodeFieldOptionDisplayAsDetail;
     
+    return value;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeDescription*)layout
+{
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         self.class._strxFieldBuilder.build,
         self.class._typeFieldBuilder.build,
         self.class._sectFieldBuilder.build,
         self.class._descFieldBuilder.build,
-        value.build
+        self._valueFieldBuilder.build
     ]];
 }
 

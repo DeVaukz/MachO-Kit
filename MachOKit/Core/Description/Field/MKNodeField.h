@@ -84,19 +84,25 @@ typedef NS_OPTIONS(NSUInteger, MKNodeFieldOptions) {
     //! \c MKNodeFieldOptionHideData.
     MKNodeFieldOptionHideAddressAndData                         = MKNodeFieldOptionHideAddress | MKNodeFieldOptionHideData,
 /* Alternate Field Display Options */
-    //! Hint to include the alternate field in the description of the field.
-    //! This is the default (if an alternate field is specified).
-    MKNodeFieldOptionShowAlternateField                         = (1U << 15),
-    //! Hint to not include the alternate field in the description of the field.
-    MKNodeFieldOptionHideAlternateField                         = (1U << 16),
-    //! Hint to replace the description of the field with the value of the
-    //! alternate field.
-    MKNodeFieldOptionSubstituteAlternateFieldDescription        = (1U << 17),
+    //! Hint to include the alternate field value when showing the value of the
+    //! field.  This is the default (if an alternate field is specified).
+    MKNodeFieldOptionShowAlternateFieldValue                    = (1U << 15),
+    //! Hint to not include the alternate field value when showing the value of
+    //! the field.
+    MKNodeFieldOptionHideAlternateFieldValue                    = (1U << 16),
     //! Hint to replace the value of the field with the value of the
     //! alternate field.
-    MKNodeFieldOptionSubstituteAlternateFieldValue              = (1U << 18),
+    MKNodeFieldOptionSubstituteAlternateFieldValue              = (1U << 17),
+    //! Hint to include the alternate field in the description of the field.
+    MKNodeFieldOptionShowAlternateFieldDescription              = (1U << 18),
+    //! Hint to not include the alternate field in the description of the field.
+    //! This is the default (if an alternate field is specified).
+    MKNodeFieldOptionHideAlternateFieldDescription              = (1U << 19),
+    //! Hint to replace the description of the field with the value of the
+    //! alternate field.
+    MKNodeFieldOptionSubstituteAlternateFieldDescription        = (1U << 20),
     //! 
-    MKNodeFieldOptionAlwaysSubstituteAlternateFieldDescription  = (1U << 19)
+    MKNodeFieldOptionAlwaysSubstituteAlternateFieldDescription  = (1U << 21)
 };
 
 

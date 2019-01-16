@@ -166,7 +166,13 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
     * Function Starts ✔
     * Segment Split Info
     * Data in Code Entries
-    * Symbols (*incomplete - needs to be reworked*)
+    * Symbols ✔
+        * STABS: *All stabs can be parsed by Mach-O Kit (because all stabs are symbols).  Specialized subclasses with refined API are only provided for the subset of stab types that are emitted by Apple's modern development tools.*
+        * Undefined Symbols ✔
+        * Common Symbols ✔
+        * Absolute Symbols ✔
+        * Section Symbols ✔
+        * Alias Symbols ✔
     * Indirect Symbols ✔
 * ObjC Metadata
     * Image Info ✔
