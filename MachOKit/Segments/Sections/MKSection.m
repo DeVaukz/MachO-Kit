@@ -151,12 +151,6 @@
         [self release]; return nil;
     }
     
-    // Emit a warning if the segname of the section load command does not match
-    // our parent segment.
-    if ([[sectionLoadCommand segname] isEqualToString:segment.name] == NO) {
-        MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Segment name for section [%@] does not match the parent segment: %@.", sectionLoadCommand, segment.nodeDescription);
-    }
-    
     return self;
 }
 

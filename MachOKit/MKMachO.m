@@ -101,6 +101,7 @@
     
     // Only support a subset of the Mach-O types at this time
     switch (_header.filetype) {
+        case MH_OBJECT:
         case MH_EXECUTE:
         case MH_DYLIB:
             break;
@@ -366,6 +367,9 @@
     NSString *kind;
     switch (self.header.filetype)
     {
+        case MH_OBJECT:
+            kind = @"Relocatable Object File";
+            break;
         case MH_EXECUTE:
             kind = @"Executable";
             break;

@@ -39,7 +39,7 @@
     if (self != MKUStringSection.class)
         return 0;
     
-    if ([segment.name rangeOfString:@SEG_TEXT].location == 0 &&
+    if ([sectionLoadCommand.segname rangeOfString:@SEG_TEXT].location == 0 &&
         [sectionLoadCommand.sectname isEqualToString:@"__ustring"])
         return 50;
     

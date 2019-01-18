@@ -28,6 +28,7 @@
 #import "MKLinkEditNode.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
+#import "MKMachHeader.h"
 #import "MKMachO+Segments.h"
 #import "MKSegment.h"
 
@@ -40,9 +41,13 @@
     NSAssert([image isKindOfClass:MKMachOImage.class], @"The parent of this node must be an MKMachOImage.");
     mk_error_t err;
     
+    // MH_OBJECT files contain a single unnamed segment.  Offsets to __LINKEDIT
+    // sections are relative to file start.
+    boolean_t expectLinkEdit = (image.header.filetype != MH_OBJECT);
+    
     // Make sure there is a __LINKEDIT segment.
     MKSegment *linkeditSegment = [image segmentsWithName:@SEG_LINKEDIT].firstObject;
-    if (linkeditSegment == nil) {
+    if (linkeditSegment == nil && expectLinkEdit) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not have a __LINKEDIT segment."];
         [self release]; return nil;
     }
@@ -52,11 +57,14 @@
     
     // Despite the image being our real parent node, all of our data should
     // be within the __LINKEDIT segment.
-    _memoryMap = linkeditSegment.memoryMap;
+    _memoryMap = expectLinkEdit ? linkeditSegment.memoryMap : image.memoryMap;
     NSParameterAssert(_memoryMap);
     
     if (image.isFromMemory)
     {
+        // MH_OBJECT files should never be loaded from memory.
+        NSAssert(linkeditSegment, @"Memory mapped images must have a __LINKEDIT segment.");
+        
         if ((err = mk_vm_address_apply_offset(linkeditSegment.vmAddress, offset, &_nodeContextAddress))) {
             MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, linkeditSegment.vmAddress, offset);
             [self release]; return nil;
