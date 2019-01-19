@@ -37,31 +37,33 @@ mk_error_string(mk_error_t error)
 {
     switch (error & ~MK_EMEMORY_ERROR) {
         case MK_ESUCCESS:
-            return "SUCCESS";
-        case MK_ECLIENT_ERROR:
-            return "CLIENT ERROR";
-        case MK_ECLIENT_INVALID_RESULT:
-            return "INVALID CLIENT RESULT";
+            return "Success";
         case MK_EINTERNAL_ERROR:
-            return "INTERNAL ERROR";
+            return "Internal error";
+        case MK_ECLIENT_ERROR:
+            return "Client error";
+        case MK_ECLIENT_INVALID_RESULT:
+            return "Client returned invalid result";
         case MK_EINVAL:
-            return "BAD INPUT";
+            return "Invalid argument";
         case MK_EINVALID_DATA:
-            return "INVALID DATA";
+            return "Invalid data";
         case MK_ENOT_FOUND:
-            return "NOT FOUND";
+            return "Not found";
         case MK_EUNAVAILABLE:
-            return "UNAVAILABLE";
+            return "Unavailable";
+        case MK_EDERIVED:
+            return "Could not compute derived value";
         case MK_EOUT_OF_RANGE:
-            return "OUT OF RANGE";
+            return "Out of range";
         case MK_ESIZE:
-            return "INSUFFICIENT SIZE";
+            return "Insufficient size";
         case MK_EOVERFLOW:
-            return "OVERFLOW";
+            return "Arithmetic overflow";
         case MK_EUNDERFLOW:
-            return "UNDERFLOW";
+            return "Arithmetic underflow";
         case MK_EBAD_ACCESS:
-            return "BAD ACCESS";
+            return "Invalid memory access";
         default:
             return "";
     }

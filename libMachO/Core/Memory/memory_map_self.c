@@ -100,7 +100,7 @@ __mk_memory_map_self_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         // Drop the memory handle
         kr = mach_port_mod_refs(mach_task_self(), mem_handle, MACH_PORT_RIGHT_SEND, -1);
         if (kr != KERN_SUCCESS) {
-            _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i]. #Port #Leak", kr);
+            _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
         }
         
         mapped_length += entry_length;

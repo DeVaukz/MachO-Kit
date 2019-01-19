@@ -129,20 +129,22 @@ typedef int64_t mk_vm_slide_t;
 typedef enum {
     //! Success
     MK_ESUCCESS = 0,
+    //! A platform API call failed, or other indirect error.
+    MK_EINTERNAL_ERROR,
     //! A callout to the application returned an error.
     MK_ECLIENT_ERROR,
     //! A callout to the application returned invalid data.
     MK_ECLIENT_INVALID_RESULT,
-    //!
-    MK_EINTERNAL_ERROR,
     //! Invalid argument
     MK_EINVAL,
     //! The input data is in an unknown or invalid format.
     MK_EINVALID_DATA,
-    //!
+    //! The requested item could not be found.
     MK_ENOT_FOUND,
-    //! The data is unavailable.
+    //! The requested item is unavailable.
     MK_EUNAVAILABLE,
+    //! A derived value needed for the operation could not be computed.
+    MK_EDERIVED,
     //!
     MK_EOUT_OF_RANGE,
     //!

@@ -89,7 +89,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
             break;
         default:
             _mkl_debug(ctx, "Bad Mach-O magic [0x%" PRIx32 "].", header.magic);
-            return MK_EINVAL;
+            return MK_EINVALID_DATA;
     }
     
     header.filetype = mk_data_model_get_byte_order(image->data_model)->swap32(header.filetype);

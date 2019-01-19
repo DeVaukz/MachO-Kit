@@ -98,7 +98,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
             // Drop the reference
             kr = mach_port_mod_refs(mach_task_self(), mem_handle, MACH_PORT_RIGHT_SEND, -1);
             if (kr != KERN_SUCCESS) {
-                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i]. #Port #Leak", kr);
+                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
             }
             
             verified_length += entry_length;
@@ -140,7 +140,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
             // Cleanup the reserved pages
             kr = mach_vm_deallocate(mach_task_self(), mapping_address, total_length);
             if (kr != KERN_SUCCESS) {
-                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i]. #Port #Leak", kr);
+                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
             }
             
             int target_pid = -1;
@@ -164,7 +164,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
             // Drop the memory handle
             kr = mach_port_mod_refs(mach_task_self(), mem_handle, MACH_PORT_RIGHT_SEND, -1);
             if (kr != KERN_SUCCESS) {
-                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i]. #Port #Leak", kr);
+                _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
             }
             
             _mkl_error(ctx, "Failed to map target process memory.  mach_vm_map() returned error [%i].", kr);
@@ -174,7 +174,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         // Drop the memory handle
         kr = mach_port_mod_refs(mach_task_self(), mem_handle, MACH_PORT_RIGHT_SEND, -1);
         if (kr != KERN_SUCCESS) {
-            _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i]. #Port #Leak", kr);
+            _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
         }
         
         mapped_length += entry_length;
@@ -226,7 +226,7 @@ mk_memory_map_task_init(mach_port_t task, mk_context_t *ctx, mk_memory_map_task_
 {
     kern_return_t err = mach_port_mod_refs(mach_task_self(), task, MACH_PORT_RIGHT_SEND, 1);
     if (err != KERN_SUCCESS) {
-        _mkl_error(ctx, "Failed to retain target task port.  mach_port_mod_refs() returned error [%i].", err);
+        _mkl_error(ctx, "Failed to retain target task port.  mach_port_mod_refs() returned error [%i].  #Port", err);
         return MK_EINTERNAL_ERROR;
     }
     
