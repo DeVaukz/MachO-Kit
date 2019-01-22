@@ -296,6 +296,10 @@
 		D05E7ED320395C12000C72B7 /* MKSectionSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7ED120395C12000C72B7 /* MKSectionSymbol.m */; };
 		D05E7ED6203A1E56000C72B7 /* MKNodeFieldSymbolType.h in Headers */ = {isa = PBXBuildFile; fileRef = D05E7ED4203A1E56000C72B7 /* MKNodeFieldSymbolType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D05E7ED7203A1E56000C72B7 /* MKNodeFieldSymbolType.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7ED5203A1E56000C72B7 /* MKNodeFieldSymbolType.m */; };
+		D05ED7CD21EEF94900F5A6BE /* MKMachO+SplitSegment.h in Headers */ = {isa = PBXBuildFile; fileRef = D05ED7CB21EEF94900F5A6BE /* MKMachO+SplitSegment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D05ED7CE21EEF94900F5A6BE /* MKMachO+SplitSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = D05ED7CC21EEF94900F5A6BE /* MKMachO+SplitSegment.m */; };
+		D05ED7D121EEFC9300F5A6BE /* MKSplitSegmentInfoV1.h in Headers */ = {isa = PBXBuildFile; fileRef = D05ED7CF21EEFC9300F5A6BE /* MKSplitSegmentInfoV1.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D05ED7D221EEFC9300F5A6BE /* MKSplitSegmentInfoV1.m in Sources */ = {isa = PBXBuildFile; fileRef = D05ED7D021EEFC9300F5A6BE /* MKSplitSegmentInfoV1.m */; };
 		D05F8A7221DAEDF20094F805 /* MKEndNamedSectionSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D05F8A7021DAEDF20094F805 /* MKEndNamedSectionSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D05F8A7321DAEDF20094F805 /* MKEndNamedSectionSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D05F8A7121DAEDF20094F805 /* MKEndNamedSectionSymbol.m */; };
 		D05F8A7621DAF2D20094F805 /* MKSourceFileNameSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D05F8A7421DAF2D20094F805 /* MKSourceFileNameSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -356,6 +360,24 @@
 		D0672B401A52771500D44610 /* MKOffsetNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B3E1A52771500D44610 /* MKOffsetNode.m */; };
 		D0672B471A535DFB00D44610 /* MKNode+MachO.h in Headers */ = {isa = PBXBuildFile; fileRef = D0672B451A535DFB00D44610 /* MKNode+MachO.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0672B481A535DFB00D44610 /* MKNode+MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B461A535DFB00D44610 /* MKNode+MachO.m */; };
+		D068864221F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h in Headers */ = {isa = PBXBuildFile; fileRef = D068864021F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D068864321F0489500F5E158 /* MKSplitSegmentInfoV1Entry.m in Sources */ = {isa = PBXBuildFile; fileRef = D068864121F0489500F5E158 /* MKSplitSegmentInfoV1Entry.m */; };
+		D068865921F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.h in Headers */ = {isa = PBXBuildFile; fileRef = D068865721F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D068865A21F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m in Sources */ = {isa = PBXBuildFile; fileRef = D068865821F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m */; };
+		D068865D21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.h in Headers */ = {isa = PBXBuildFile; fileRef = D068865B21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D068865E21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.m in Sources */ = {isa = PBXBuildFile; fileRef = D068865C21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.m */; };
+		D068866121F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.h in Headers */ = {isa = PBXBuildFile; fileRef = D068865F21F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D068866221F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.m in Sources */ = {isa = PBXBuildFile; fileRef = D068866021F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.m */; };
+		D06C873721F50CFB0006574C /* MKSplitSegmentInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C873521F50CFB0006574C /* MKSplitSegmentInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06C873821F50CFB0006574C /* MKSplitSegmentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D06C873621F50CFB0006574C /* MKSplitSegmentInfo.m */; };
+		D06C873B21F528D90006574C /* MKSplitSegmentInfoV1Opcode.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C873921F528D90006574C /* MKSplitSegmentInfoV1Opcode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06C873C21F528D90006574C /* MKSplitSegmentInfoV1Opcode.m in Sources */ = {isa = PBXBuildFile; fileRef = D06C873A21F528D90006574C /* MKSplitSegmentInfoV1Opcode.m */; };
+		D06C873F21F5318F0006574C /* MKSplitSegmentInfoV1FieldType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C873E21F531890006574C /* MKSplitSegmentInfoV1FieldType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06C874621F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C874421F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06C874721F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.m in Sources */ = {isa = PBXBuildFile; fileRef = D06C874521F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.m */; };
+		D06C874A21F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C874821F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06C874B21F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.m in Sources */ = {isa = PBXBuildFile; fileRef = D06C874921F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.m */; };
+		D06C874D21F550DA0006574C /* MKSplitSegmentInfoV1Context.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C874C21F550DA0006574C /* MKSplitSegmentInfoV1Context.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06CDAD31CBCC24D000380CA /* MKDataSection.h in Headers */ = {isa = PBXBuildFile; fileRef = D06CDAD11CBCC24D000380CA /* MKDataSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06CDAD41CBCC24D000380CA /* MKDataSection.m in Sources */ = {isa = PBXBuildFile; fileRef = D06CDAD21CBCC24D000380CA /* MKDataSection.m */; };
 		D06D595D201319DF00A99173 /* MKMachOFieldType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D595C201319DF00A99173 /* MKMachOFieldType.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1302,6 +1324,10 @@
 		D05E7ED120395C12000C72B7 /* MKSectionSymbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSectionSymbol.m; sourceTree = "<group>"; };
 		D05E7ED4203A1E56000C72B7 /* MKNodeFieldSymbolType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSymbolType.h; sourceTree = "<group>"; };
 		D05E7ED5203A1E56000C72B7 /* MKNodeFieldSymbolType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSymbolType.m; sourceTree = "<group>"; };
+		D05ED7CB21EEF94900F5A6BE /* MKMachO+SplitSegment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKMachO+SplitSegment.h"; sourceTree = "<group>"; };
+		D05ED7CC21EEF94900F5A6BE /* MKMachO+SplitSegment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "MKMachO+SplitSegment.m"; sourceTree = "<group>"; };
+		D05ED7CF21EEFC9300F5A6BE /* MKSplitSegmentInfoV1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1.h; sourceTree = "<group>"; };
+		D05ED7D021EEFC9300F5A6BE /* MKSplitSegmentInfoV1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1.m; sourceTree = "<group>"; };
 		D05F8A7021DAEDF20094F805 /* MKEndNamedSectionSymbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKEndNamedSectionSymbol.h; sourceTree = "<group>"; };
 		D05F8A7121DAEDF20094F805 /* MKEndNamedSectionSymbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKEndNamedSectionSymbol.m; sourceTree = "<group>"; };
 		D05F8A7421DAF2D20094F805 /* MKSourceFileNameSymbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSourceFileNameSymbol.h; sourceTree = "<group>"; };
@@ -1362,6 +1388,24 @@
 		D0672B3E1A52771500D44610 /* MKOffsetNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKOffsetNode.m; sourceTree = "<group>"; };
 		D0672B451A535DFB00D44610 /* MKNode+MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKNode+MachO.h"; sourceTree = "<group>"; };
 		D0672B461A535DFB00D44610 /* MKNode+MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKNode+MachO.m"; sourceTree = "<group>"; };
+		D068864021F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Entry.h; sourceTree = "<group>"; };
+		D068864121F0489500F5E158 /* MKSplitSegmentInfoV1Entry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1Entry.m; sourceTree = "<group>"; };
+		D068865721F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Terminator.h; sourceTree = "<group>"; };
+		D068865821F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1Terminator.m; sourceTree = "<group>"; };
+		D068865B21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Offset.h; sourceTree = "<group>"; };
+		D068865C21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1Offset.m; sourceTree = "<group>"; };
+		D068865F21F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Fixup.h; sourceTree = "<group>"; };
+		D068866021F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1Fixup.m; sourceTree = "<group>"; };
+		D06C873521F50CFB0006574C /* MKSplitSegmentInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfo.h; sourceTree = "<group>"; };
+		D06C873621F50CFB0006574C /* MKSplitSegmentInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfo.m; sourceTree = "<group>"; };
+		D06C873921F528D90006574C /* MKSplitSegmentInfoV1Opcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Opcode.h; sourceTree = "<group>"; };
+		D06C873A21F528D90006574C /* MKSplitSegmentInfoV1Opcode.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKSplitSegmentInfoV1Opcode.m; sourceTree = "<group>"; };
+		D06C873E21F531890006574C /* MKSplitSegmentInfoV1FieldType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1FieldType.h; sourceTree = "<group>"; };
+		D06C874421F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSplitSegmentInfoV1FixupType.h; sourceTree = "<group>"; };
+		D06C874521F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSplitSegmentInfoV1FixupType.m; sourceTree = "<group>"; };
+		D06C874821F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSplitSegmentInfoV1OpcodeType.h; sourceTree = "<group>"; };
+		D06C874921F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSplitSegmentInfoV1OpcodeType.m; sourceTree = "<group>"; };
+		D06C874C21F550DA0006574C /* MKSplitSegmentInfoV1Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Context.h; sourceTree = "<group>"; };
 		D06CDAD11CBCC24D000380CA /* MKDataSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDataSection.h; sourceTree = "<group>"; };
 		D06CDAD21CBCC24D000380CA /* MKDataSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDataSection.m; sourceTree = "<group>"; };
 		D06D595C201319DF00A99173 /* MKMachOFieldType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKMachOFieldType.h; sourceTree = "<group>"; };
@@ -2427,6 +2471,18 @@
 			path = Type;
 			sourceTree = "<group>";
 		};
+		D05ED7BC21EEF8FE00F5A6BE /* SplitSegment */ = {
+			isa = PBXGroup;
+			children = (
+				D05ED7CB21EEF94900F5A6BE /* MKMachO+SplitSegment.h */,
+				D05ED7CC21EEF94900F5A6BE /* MKMachO+SplitSegment.m */,
+				D06C873521F50CFB0006574C /* MKSplitSegmentInfo.h */,
+				D06C873621F50CFB0006574C /* MKSplitSegmentInfo.m */,
+				D068865221F04A4200F5E158 /* V1 */,
+			);
+			path = SplitSegment;
+			sourceTree = "<group>";
+		};
 		D061B18E1FFAC84B004A3047 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -2570,6 +2626,39 @@
 				D0672B281A4FD69600D44610 /* MKIndirectPointersSection.m */,
 			);
 			path = Sections;
+			sourceTree = "<group>";
+		};
+		D068865221F04A4200F5E158 /* V1 */ = {
+			isa = PBXGroup;
+			children = (
+				D06C873D21F531460006574C /* Type */,
+				D05ED7CF21EEFC9300F5A6BE /* MKSplitSegmentInfoV1.h */,
+				D05ED7D021EEFC9300F5A6BE /* MKSplitSegmentInfoV1.m */,
+				D06C874C21F550DA0006574C /* MKSplitSegmentInfoV1Context.h */,
+				D068865F21F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.h */,
+				D068866021F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.m */,
+				D068864021F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h */,
+				D068864121F0489500F5E158 /* MKSplitSegmentInfoV1Entry.m */,
+				D06C873921F528D90006574C /* MKSplitSegmentInfoV1Opcode.h */,
+				D06C873A21F528D90006574C /* MKSplitSegmentInfoV1Opcode.m */,
+				D068865B21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.h */,
+				D068865C21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.m */,
+				D068865721F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.h */,
+				D068865821F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m */,
+			);
+			path = V1;
+			sourceTree = "<group>";
+		};
+		D06C873D21F531460006574C /* Type */ = {
+			isa = PBXGroup;
+			children = (
+				D06C873E21F531890006574C /* MKSplitSegmentInfoV1FieldType.h */,
+				D06C874421F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.h */,
+				D06C874521F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.m */,
+				D06C874821F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h */,
+				D06C874921F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.m */,
+			);
+			path = Type;
 			sourceTree = "<group>";
 		};
 		D06D59582013167900A99173 /* Header */ = {
@@ -2992,6 +3081,7 @@
 				D0995A061A6B7B3D007134CE /* MKLinkEditNode.m */,
 				D07985A1200D7FFA00FF91C8 /* Function Starts */,
 				D03D193A1C72EE5F006A2CEB /* Rebase */,
+				D05ED7BC21EEF8FE00F5A6BE /* SplitSegment */,
 				D01C74E21CA7331A00648CA6 /* Bindings */,
 				D0B16D4A1CA87E3200E2116C /* Exports */,
 				D07727741A55E04100A517D3 /* Symbols */,
@@ -3324,6 +3414,7 @@
 				D0A1E9201B69F3080061843F /* MKDSCMappingInfo.h in Headers */,
 				D0A1D8BC19E4EEB80095870C /* load_command_dyld_info_only.h in Headers */,
 				D0A1D8C619E4EEB80095870C /* load_command_id_dylib.h in Headers */,
+				D06C874A21F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h in Headers */,
 				D0CF9D8A200DC89A00B508C4 /* MKFunctionOffset.h in Headers */,
 				D0A1D84019E4EE170095870C /* core_internal.h in Headers */,
 				D0A2302820CDD3F40027249D /* MKUString.h in Headers */,
@@ -3338,6 +3429,7 @@
 				D03030101A22F77700288B3E /* MKLCLoadDylib.h in Headers */,
 				D01C75211CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.h in Headers */,
 				D03030201A23B8E500288B3E /* MKLCIDDylinker.h in Headers */,
+				D068865D21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.h in Headers */,
 				D0539BA41A23D1F900D3A5F0 /* MKLCDyldInfoOnly.h in Headers */,
 				D03030541A23CFA100288B3E /* MKLCSegmentSplitInfo.h in Headers */,
 				D0E30A7F1E614D210005A882 /* MKOptionSetFormatter.h in Headers */,
@@ -3365,6 +3457,7 @@
 				D03EF5E3204093CC00B8022C /* MKBindingsFieldType.h in Headers */,
 				D0A1D8CC19E4EEB80095870C /* load_command_load_dylinker.h in Headers */,
 				D0590CDF1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.h in Headers */,
+				D05ED7CD21EEF94900F5A6BE /* MKMachO+SplitSegment.h in Headers */,
 				D0A1D8F219E4EEB80095870C /* load_command_version_min_macosx.h in Headers */,
 				D082FD412007326400E6C3E5 /* MKNodeFieldCPUSubTypeCapability.h in Headers */,
 				D019EBD4207AA3F7008B94FF /* MKSectionIndirectSymbolTableIndexing.h in Headers */,
@@ -3388,6 +3481,7 @@
 				D01C74E51CA7335900648CA6 /* MKMachO+Bindings.h in Headers */,
 				D0A13712205B7F0900DC20BF /* MKCFStringSection.h in Headers */,
 				D01C75151CA749A900648CA6 /* MKBindDoBind.h in Headers */,
+				D05ED7D121EEFC9300F5A6BE /* MKSplitSegmentInfoV1.h in Headers */,
 				D0539BD81A2405DB00D3A5F0 /* MKDylinkerLoadCommand.h in Headers */,
 				D0F7EB9F1A631B9A00FA834F /* memory_map_task.h in Headers */,
 				D0539BC81A23D69D00D3A5F0 /* MKLCEncryptionInfo64.h in Headers */,
@@ -3461,6 +3555,7 @@
 				D010F7141CB87019004025F5 /* MKObjCConstSection.h in Headers */,
 				D06D59AA20151F7500A99173 /* MKBooleanFormatter.h in Headers */,
 				D04269E51DD931E40091AB2A /* MKPtr.h in Headers */,
+				D06C873F21F5318F0006574C /* MKSplitSegmentInfoV1FieldType.h in Headers */,
 				D0A1D8CE19E4EEB80095870C /* load_command_load_weak_dylib.h in Headers */,
 				D060FA7E1A1877B1002A010C /* _MKFileMemoryMap.h in Headers */,
 				D0672B2D1A4FD69600D44610 /* MKIndirectPointersSection.h in Headers */,
@@ -3478,6 +3573,7 @@
 				D0A92F3C2002D9530001C18D /* MKNodeFieldCPUSubType.h in Headers */,
 				D0A2303D20CDE4410027249D /* MKString.h in Headers */,
 				D061B16E1FF75CD4004A3047 /* MKExport.h in Headers */,
+				D06C874D21F550DA0006574C /* MKSplitSegmentInfoV1Context.h in Headers */,
 				D0079FE41895D1AE00E9D0CF /* macho.h in Headers */,
 				D0B64B831E5414F000DFBFAD /* MKNodeFieldDeprecated.h in Headers */,
 				D0995A1F1A6C8D52007134CE /* MKFatBinary.h in Headers */,
@@ -3508,6 +3604,7 @@
 				D0672B2B1A4FD69600D44610 /* MKCStringSection.h in Headers */,
 				D0A1D8DA19E4EEB80095870C /* load_command_rpath.h in Headers */,
 				D0F6B51A21DAE7DF0040E72D /* MKASTSymbol.h in Headers */,
+				D06C873721F50CFB0006574C /* MKSplitSegmentInfo.h in Headers */,
 				D000F40B1AF543A40004DAF6 /* base.h in Headers */,
 				D09A1952203004DD0053181B /* MKNodeFieldExportKindType.h in Headers */,
 				D0A1E90C1B69E4130061843F /* MKDSCHeader.h in Headers */,
@@ -3539,6 +3636,8 @@
 				D0A1D8C219E4EEB80095870C /* load_command_encryption_info_64.h in Headers */,
 				D0DC9CF21E69429900AD0FC1 /* MKNodeFieldTypeAddress.h in Headers */,
 				D0B2617F1CAB78780058F04C /* MKAliasSymbol.h in Headers */,
+				D06C873B21F528D90006574C /* MKSplitSegmentInfoV1Opcode.h in Headers */,
+				D068866121F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.h in Headers */,
 				D06618671CBB32EA006979A1 /* MKObjCProtocolList.h in Headers */,
 				D07985B6200D843200FF91C8 /* MKFunctionStarts.h in Headers */,
 				D0848AF11A959E6C0076976F /* symbol_table_internal.h in Headers */,
@@ -3555,7 +3654,9 @@
 				D0A92F4320033DDC0001C18D /* MKNodeFieldCollectionType.h in Headers */,
 				D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */,
 				D0B261871CAB81440058F04C /* MKAbsoluteSymbol.h in Headers */,
+				D068865921F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.h in Headers */,
 				D0B16D691CA89C3E00E2116C /* MKDebugSymbol.h in Headers */,
+				D068864221F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h in Headers */,
 				D061346C204528A200173476 /* NSNumber+MK.h in Headers */,
 				D0B9F6C11E57FC3200D0B35A /* MKNodeFieldType.h in Headers */,
 				D0A1D84619E4EE320095870C /* logging_internal.h in Headers */,
@@ -3644,6 +3745,7 @@
 				D0B16D6D1CA8D27700E2116C /* MKLEB.h in Headers */,
 				D0539BBC1A23D4F600D3A5F0 /* MKLCDataInCode.h in Headers */,
 				D0E30A851E623D2F0005A882 /* MKNodeFieldDataOperationExtractChildNodeData.h in Headers */,
+				D06C874621F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.h in Headers */,
 				D0302FFF1A22DB1B00288B3E /* MKNodeDescription.h in Headers */,
 				D091459C1E5122C500959648 /* MKNodeFieldValueRecipe.h in Headers */,
 				D08E5ECC1B771E1E009185FE /* MKDSCDylibInfos.h in Headers */,
@@ -3977,6 +4079,7 @@
 				D0A1D8EB19E4EEB80095870C /* load_command_twolevel_hints.c in Sources */,
 				D010F71D1CB870C1004025F5 /* MKObjCProtocolReferencesSection.m in Sources */,
 				D04AE10120C488FC0047BAE1 /* MKPointer+Node.m in Sources */,
+				D06C874721F5322F0006574C /* MKNodeFieldSplitSegmentInfoV1FixupType.m in Sources */,
 				D01C750A1CA744DD00648CA6 /* MKBindSetAddendSLEB.m in Sources */,
 				D04269F81DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.m in Sources */,
 				D0A2303B20CDD8D50027249D /* MKUStringSection.m in Sources */,
@@ -4051,12 +4154,14 @@
 				D08E5EC81B76FBD3009185FE /* MKDSCSymbol.m in Sources */,
 				D0C5640F1A94517100443090 /* string_table.c in Sources */,
 				D010B3881A747D0B00AED697 /* MKDylibVersion.m in Sources */,
+				D068864321F0489500F5E158 /* MKSplitSegmentInfoV1Entry.m in Sources */,
 				D082FD3A20072CED00E6C3E5 /* MKNodeFieldCPUSubTypeX86.m in Sources */,
 				D0B16D6E1CA8D27700E2116C /* MKLEB.m in Sources */,
 				D01C75221CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.m in Sources */,
 				D0A1D8C519E4EEB80095870C /* load_command_id_dylib.c in Sources */,
 				D066184D1CBB11E4006979A1 /* MKObjCClassIVarList.m in Sources */,
 				D0F6B51721DAADB50040E72D /* MKBeginNamedSectionSymbol.m in Sources */,
+				D06C874B21F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.m in Sources */,
 				D03CD1631E4FD25300D76CFE /* MKObjCIVarOffset.m in Sources */,
 				D06618561CBB2BCD006979A1 /* MKObjCClassProperty.m in Sources */,
 				D0A13713205B7F0900DC20BF /* MKCFStringSection.m in Sources */,
@@ -4124,6 +4229,7 @@
 				D09145AE1E51426400959648 /* MKNodeFieldBuilder.m in Sources */,
 				D066185F1CBB2F12006979A1 /* MKObjCClassMethod.m in Sources */,
 				D0CF9D79200DC13900B508C4 /* MKFunction.m in Sources */,
+				D05ED7D221EEFC9300F5A6BE /* MKSplitSegmentInfoV1.m in Sources */,
 				D0A1E90E1B69E4130061843F /* MKDSCHeader.m in Sources */,
 				D03030411A23CD1D00288B3E /* MKLCSegment64.m in Sources */,
 				D0672B2E1A4FD69600D44610 /* MKIndirectPointersSection.m in Sources */,
@@ -4136,6 +4242,7 @@
 				D0A1D8AD19E4EEB80095870C /* _load_command_dylinker.c in Sources */,
 				D082FD362007292700E6C3E5 /* MKNodeFieldCPUSubTypeARM64.m in Sources */,
 				D0539BD91A2405DB00D3A5F0 /* MKDylinkerLoadCommand.m in Sources */,
+				D068865E21F051F200F5E158 /* MKSplitSegmentInfoV1Offset.m in Sources */,
 				D06618751CBB4BE0006979A1 /* MKObjCClass.m in Sources */,
 				D0A1D83E19E4EE170095870C /* context.c in Sources */,
 				D066186C1CBB3522006979A1 /* MKObjCProtocol.m in Sources */,
@@ -4249,6 +4356,7 @@
 				D0CF9D8B200DC89A00B508C4 /* MKFunctionOffset.m in Sources */,
 				D0A1E9221B69F3080061843F /* MKDSCMappingInfo.m in Sources */,
 				D06618631CBB3171006979A1 /* MKObjCClassMethodList.m in Sources */,
+				D05ED7CE21EEF94900F5A6BE /* MKMachO+SplitSegment.m in Sources */,
 				D010F7051CB86D66004025F5 /* MKObjCClassListSection.m in Sources */,
 				D00A6CB51E669D9F0045F705 /* MKNodeFieldTypePointer.m in Sources */,
 				D0A1D8E519E4EEB80095870C /* load_command_sub_framework.c in Sources */,
@@ -4256,6 +4364,7 @@
 				D06CDAD41CBCC24D000380CA /* MKDataSection.m in Sources */,
 				D0A1D8D319E4EEB80095870C /* load_command_reexport_dylib.c in Sources */,
 				D0A0D2321DE22C16003F0A08 /* MKPointerListSection.m in Sources */,
+				D06C873C21F528D90006574C /* MKSplitSegmentInfoV1Opcode.m in Sources */,
 				D0E30A801E614D210005A882 /* MKOptionSetFormatter.m in Sources */,
 				D082FD422007326400E6C3E5 /* MKNodeFieldCPUSubTypeCapability.m in Sources */,
 				D0B261841CAB7C9A0058F04C /* MKCommonSymbol.m in Sources */,
@@ -4266,6 +4375,7 @@
 				D0539BCD1A23DCD700D3A5F0 /* MKDylibLoadCommand.m in Sources */,
 				D08E5ECE1B771E1E009185FE /* MKDSCDylibInfos.m in Sources */,
 				D09145B21E51431D00959648 /* NSFormatter+MKNodeField.m in Sources */,
+				D068865A21F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m in Sources */,
 				D01C75061CA743EE00648CA6 /* MKBindSetTypeImmediate.m in Sources */,
 				D0A1D8E319E4EEB80095870C /* load_command_sub_client.c in Sources */,
 				D0492C521F931669009DDD18 /* MKLCBuildVersion.m in Sources */,
@@ -4298,12 +4408,14 @@
 				D082FD2E2007180600E6C3E5 /* MKNodeFieldCPUSubTypeI386.m in Sources */,
 				D09A1953203004DD0053181B /* MKNodeFieldExportKindType.m in Sources */,
 				D0A1D8B119E4EEB80095870C /* load_command_code_signature.c in Sources */,
+				D068866221F0528F00F5E158 /* MKSplitSegmentInfoV1Fixup.m in Sources */,
 				D05E7ED7203A1E56000C72B7 /* MKNodeFieldSymbolType.m in Sources */,
 				D061B1941FFAC996004A3047 /* MKMemoryMap+Pointer.m in Sources */,
 				D0E30A721E612C430005A882 /* MKFormatterChain.m in Sources */,
 				D0A1D85819E4EE580095870C /* macho_image.c in Sources */,
 				D03CD8031B68831500F52FBB /* MKSharedCache.m in Sources */,
 				D0E30A8A1E6289AB0005A882 /* MKNodeFieldTypeOptionSet.m in Sources */,
+				D06C873821F50CFB0006574C /* MKSplitSegmentInfo.m in Sources */,
 				D00EA1A31C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */,
 				D0EED21121169F1200BDFE0C /* MKNodeFieldSymbolFlagsType.m in Sources */,
 				D0C3B2F119F463EA00CAFE58 /* MKNode.m in Sources */,
