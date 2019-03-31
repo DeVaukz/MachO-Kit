@@ -3913,7 +3913,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D0A3BB731A68EB9D00D663A0 = {
