@@ -459,7 +459,6 @@
 		D090A2971C78E17C0025B096 /* MKRebaseDoRebaseULEBTimesSkippingULEB.h in Headers */ = {isa = PBXBuildFile; fileRef = D090A2951C78E17C0025B096 /* MKRebaseDoRebaseULEBTimesSkippingULEB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D090A2981C78E17C0025B096 /* MKRebaseDoRebaseULEBTimesSkippingULEB.m in Sources */ = {isa = PBXBuildFile; fileRef = D090A2961C78E17C0025B096 /* MKRebaseDoRebaseULEBTimesSkippingULEB.m */; };
 		D090A29C1C78F3300025B096 /* DyldInfoUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D090A29B1C78F3300025B096 /* DyldInfoUtil.m */; };
-		D090E3881DDD3AE0003FA797 /* NSArray+MKTests.h in Headers */ = {isa = PBXBuildFile; fileRef = D090E3861DDD3AE0003FA797 /* NSArray+MKTests.h */; };
 		D09145921E5121DD00959648 /* MKHexNumberFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = D09145901E5121DD00959648 /* MKHexNumberFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D09145931E5121DD00959648 /* MKHexNumberFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = D09145911E5121DD00959648 /* MKHexNumberFormatter.m */; };
 		D091459C1E5122C500959648 /* MKNodeFieldValueRecipe.h in Headers */ = {isa = PBXBuildFile; fileRef = D091459A1E5122C500959648 /* MKNodeFieldValueRecipe.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -3597,7 +3596,6 @@
 				D0A1D8C019E4EEB80095870C /* load_command_encryption_info.h in Headers */,
 				D096B04D201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.h in Headers */,
 				D03AB4EE20369B8100B492C9 /* MKNodeFieldRebaseType.h in Headers */,
-				D090E3881DDD3AE0003FA797 /* NSArray+MKTests.h in Headers */,
 				D0A1D85719E4EE580095870C /* load_command.h in Headers */,
 				D00205461E555E87006AD5E5 /* MKNodeFieldDataOperationExtractSubrange.h in Headers */,
 				D01C74F11CA7388D00648CA6 /* MKBindDone.h in Headers */,
