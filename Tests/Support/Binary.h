@@ -48,6 +48,7 @@
 @property (nonatomic, readonly) NSArray *lazyBindings;
 @property (nonatomic, readonly) NSArray *exports;
 @property (nonatomic, readonly) NSArray *functionStarts;
+@property (nonatomic, readonly) NSArray *dataInCodeEntries;
 @property (nonatomic, readonly) NSDictionary *objcInfo;
 
 @end

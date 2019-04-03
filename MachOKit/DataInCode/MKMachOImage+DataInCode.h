@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKMachO+DataInCode.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,36 +25,28 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKMachO.h>
+
+@class MKDataInCode;
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKMachOImage (DataInCode)
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Data In Code
+//! @name       Data In Code
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! Parses \a input into an array of dictionaries, each representing a single
-//! data in code entry.  Each dictionary contains the following keys:
-//!
-//!     offset: offset to the data range
-//!     length: length of the data range
-//!     kind: data kind
-//!
-+ (NSArray*)parseDataInCodeEntries:(NSString*)input;
-
-//! Parses \a input into an array of dictionaries, each representing a single
-//! indirect symbol table entry.  Each dictionary contains the following keys:
-//!
-//!     segment: Name of the segment that references the entry
-//!     section: Name of the section that references the entry
-//!     indirectAddress:
-//!     index (optional): symbol table index
-//!     local (optional): YES if the the value is INDIRECT_SYMBOL_LOCAL
-//!     absolute (optional): YES if the value is INDIRECT_SYMBOL_ABS
-//!
-+ (NSArray*)parseIndirectSymbols:(NSString*)input;
-
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//! The data in code entries table.  The returned optional may contain a \c nil
+//! value and a \c nil error if the image has no data in code entries
+//! information.
+@property (nonatomic, readonly) MKOptional<MKDataInCode*> *dataInCode;
 
 @end
+
+NS_ASSUME_NONNULL_END

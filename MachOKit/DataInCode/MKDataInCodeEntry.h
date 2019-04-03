@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKDataInCodeEntry.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,36 +25,35 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#import <MachOKit/MKOffsetNode.h>
+#import <MachOKit/MKDataInCodeFieldType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
+@interface MKDataInCodeEntry : MKOffsetNode {
+@package
+    mk_vm_address_t _address;
+    uint32_t _offset;
+    uint16_t _length;
+    uint16_t _kind;
+}
 
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
+//! The VM address of the data range.
+@property (nonatomic, readonly) mk_vm_address_t address;
 
-//! Parses \a input into an array of dictionaries, each representing a single
-//! data in code entry.  Each dictionary contains the following keys:
-//!
-//!     offset: offset to the data range
-//!     length: length of the data range
-//!     kind: data kind
-//!
-+ (NSArray*)parseDataInCodeEntries:(NSString*)input;
+//! The offset from the mach_header to start of data range.
+@property (nonatomic, readonly) uint32_t offset;
 
-//! Parses \a input into an array of dictionaries, each representing a single
-//! indirect symbol table entry.  Each dictionary contains the following keys:
-//!
-//!     segment: Name of the segment that references the entry
-//!     section: Name of the section that references the entry
-//!     indirectAddress:
-//!     index (optional): symbol table index
-//!     local (optional): YES if the the value is INDIRECT_SYMBOL_LOCAL
-//!     absolute (optional): YES if the value is INDIRECT_SYMBOL_ABS
-//!
-+ (NSArray*)parseIndirectSymbols:(NSString*)input;
+//! The number of bytes in the data range.
+@property (nonatomic, readonly) uint16_t length;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+//!
+@property (nonatomic, readonly) MKDataInCodeEntryType kind;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -457,6 +457,35 @@ SpecBegin(MKMachOImage)
             });
 			
             //----------------------------------------------------------------//
+            describe(@"data in code", ^{
+                NSArray<NSDictionary*> *dyldDataInCodeEntries = otoolArchitecture.dataInCodeEntries;
+                MKDataInCode *machoDataInCode = macho.dataInCode.value;
+                
+                if (machoDataInCode == nil)
+                    return; // TODO - Check if the image should have DICE.
+                
+                NSArray *machoDataInCodeEntries = machoDataInCode.entries;
+                
+                it(@"should exist", ^{
+                    expect(machoDataInCodeEntries).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of entries", ^{
+                    expect(machoDataInCodeEntries.count).to.equal(dyldDataInCodeEntries.count);
+                });
+                
+                it(@"should result in the correct entries", ^{
+                    for (NSUInteger i=0; i<MIN(machoDataInCodeEntries.count, dyldDataInCodeEntries.count); i++) {
+                        MKDataInCodeEntry *entry = machoDataInCodeEntries[i];
+                        
+                        expect([NSString stringWithFormat:@"0x%.8" PRIx32 "", entry.offset]).to.equal(dyldDataInCodeEntries[i][@"offset"]);
+                        expect([NSString stringWithFormat:@"%" PRIi16 "", entry.length]).to.equal(dyldDataInCodeEntries[i][@"length"]);
+                        expect([NSString stringWithFormat:@"0x%.4" PRIx16 "", entry.kind]).to.equal(dyldDataInCodeEntries[i][@"kind"]);
+                    }
+                });
+            });
+
+            //----------------------------------------------------------------//
             describe(@"Indirect Symbols", ^{
                 NSArray<NSDictionary*> *otoolIndirectSymbols = otoolArchitecture.indirectSymbols;
                 MKIndirectSymbolTable *machoIndirectSymbolTable = macho.indirectSymbolTable.value;

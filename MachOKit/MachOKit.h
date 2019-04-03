@@ -161,6 +161,9 @@
     #import <MachOKit/MKRebaseDoRebaseULEBTimes.h>
     #import <MachOKit/MKRebaseDoRebaseAddAddressULEB.h>
     #import <MachOKit/MKRebaseDoRebaseULEBTimesSkippingULEB.h>
+#import <MachOKit/MKMachOImage+DataInCode.h>
+    #import <MachOKit/MKDataInCode.h>
+    #import <MachOKit/MKDataInCodeEntry.h>
 #import <MachOKit/MKMachO+SplitSegment.h>
     #import <MachOKit/MKSplitSegmentInfo.h>
     #import <MachOKit/MKSplitSegmentInfoV1.h>

@@ -336,6 +336,32 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
 
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSArray*)parseDataInCodeEntries:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString *line in lines) {
+        NSArray *components = [line componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (components.count > 0 && [components[0] rangeOfString:@"0x"].location == 0) {
+            
+            components = [components filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^(NSString* evaluatedObject, __unused id bindings) {
+                return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
+            }]];
+            
+            [result addObject:@{
+                @"offset": components[0],
+                @"length": components[1],
+                @"kind": components[2]
+            }];
+        }
+    }
+    
+    return result;
+}
+
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseIndirectSymbols:(NSString*)input
 {
     NSMutableArray *result = [NSMutableArray new];

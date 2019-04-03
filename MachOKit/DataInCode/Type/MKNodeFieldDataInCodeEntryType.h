@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             OtoolUtil.h
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKNodeFieldDataInCodeEntryType.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,36 +25,36 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
+#include <MachOKit/macho.h>
 @import Foundation;
 
+#include <mach-o/loader.h>
+
+#import <MachOKit/MKNodeFieldTypeWord.h>
+#import <MachOKit/MKNodeFieldEnumerationType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
 //----------------------------------------------------------------------------//
-@interface OtoolUtil : NSObject
-
-+ (NSDictionary*)parseMachHeader:(NSString*)input;
-+ (NSArray*)parseLoadCommands:(NSString*)input;
-+ (NSDictionary<NSString*, id> *)parseFatHeader:(NSString*)input;
-
-//! Parses \a input into an array of dictionaries, each representing a single
-//! data in code entry.  Each dictionary contains the following keys:
+//! @name       Data In Code Entry Type
+//! @relates    MKNodeFieldDataInCodeEntryType
 //!
-//!     offset: offset to the data range
-//!     length: length of the data range
-//!     kind: data kind
-//!
-+ (NSArray*)parseDataInCodeEntries:(NSString*)input;
+//
+typedef uint16_t MKDataInCodeEntryType NS_TYPED_EXTENSIBLE_ENUM;
 
-//! Parses \a input into an array of dictionaries, each representing a single
-//! indirect symbol table entry.  Each dictionary contains the following keys:
-//!
-//!     segment: Name of the segment that references the entry
-//!     section: Name of the section that references the entry
-//!     indirectAddress:
-//!     index (optional): symbol table index
-//!     local (optional): YES if the the value is INDIRECT_SYMBOL_LOCAL
-//!     absolute (optional): YES if the value is INDIRECT_SYMBOL_ABS
-//!
-+ (NSArray*)parseIndirectSymbols:(NSString*)input;
+static const MKDataInCodeEntryType MKDataInCodeEntryTypeData                = DICE_KIND_DATA;
+static const MKDataInCodeEntryType MKDataInCodeEntryTypeJumpTable8          = DICE_KIND_JUMP_TABLE8;
+static const MKDataInCodeEntryType MKDataInCodeEntryTypeJumpTable16         = DICE_KIND_JUMP_TABLE16;
+static const MKDataInCodeEntryType MKDataInCodeEntryTypeJumpTable32         = DICE_KIND_JUMP_TABLE32;
+static const MKDataInCodeEntryType MKDataInCodeEntryTypeAbsoluteJumpTable32 = DICE_KIND_JUMP_TABLE32;
 
-+ (NSDictionary*)parseObjCImageInfo:(NSString*)input;
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldDataInCodeEntryType : MKNodeFieldTypeUnsignedWord
+
++ (instancetype)sharedInstance;
 
 @end
+
+NS_ASSUME_NONNULL_END

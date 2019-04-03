@@ -149,6 +149,17 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSArray*)dataInCodeEntries
+{
+    NSArray *dataInCodeEntriesList;
+    @autoreleasepool {
+        NSString *dataInCodeEntries = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-G"])];
+        dataInCodeEntriesList = [OtoolUtil parseDataInCodeEntries:dataInCodeEntries];
+    }
+    return dataInCodeEntriesList;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSDictionary*)objcInfo
 {
     NSDictionary *objcInfo;

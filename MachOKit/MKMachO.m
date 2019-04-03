@@ -226,6 +226,8 @@
     
     [_splitSegment release];
     
+    [_dataInCode release];
+    
     [_rebaseInfo release];
     
     [_segments release];
@@ -348,6 +350,7 @@
         [[self.class _sectionsFieldBuilder] build],
         [[self.class _functionStartsFieldBuilder] build],
         [[self.class _rebaseInfoFieldBuilder] build],
+        [[self.class _dataInCodeFieldBuilder] build],
         [[self.class _splitSegmentInfoFieldBuilder] build],
         [[self.class _bindingsInfoFieldBuilder] build],
         [[self.class _weakBindingsInfoFieldBuilder] build],
