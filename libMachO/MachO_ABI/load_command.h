@@ -92,6 +92,7 @@ _mk_export intptr_t mk_load_command_type;
 #include "load_command_code_signature.h"
 #include "load_command_segment_split_info.h"
 #include "load_command_reexport_dylib.h"
+#include "load_command_lazy_load_dylib.h"
 #include "load_command_encryption_info.h"
 #include "load_command_dyld_info.h"
 #include "load_command_dyld_info_only.h"

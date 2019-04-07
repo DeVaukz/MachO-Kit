@@ -58,7 +58,7 @@ extern const struct _mk_load_command_vtable _mk_load_command_rpath_class;
 extern const struct _mk_load_command_vtable _mk_load_command_code_signature_class;
 extern const struct _mk_load_command_vtable _mk_load_command_segment_split_info_class;
 extern const struct _mk_load_command_vtable _mk_load_command_reexport_dylib_class;
-// LC_LAZY_LOAD_DYLIB - Not implemented
+extern const struct _mk_load_command_vtable _mk_load_command_lazy_load_dylib_class;
 extern const struct _mk_load_command_vtable _mk_load_command_encryption_info_class;
 extern const struct _mk_load_command_vtable _mk_load_command_dyld_info_class;
 extern const struct _mk_load_command_vtable _mk_load_command_dyld_info_only_class;
@@ -111,7 +111,7 @@ const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     &_mk_load_command_code_signature_class,
     &_mk_load_command_segment_split_info_class,
     &_mk_load_command_reexport_dylib_class,
-    // LC_LAZY_LOAD_DYLIB - Not implemented
+    &_mk_load_command_lazy_load_dylib_class,
     &_mk_load_command_encryption_info_class,
     &_mk_load_command_dyld_info_class,
     &_mk_load_command_dyld_info_only_class,
@@ -328,9 +328,9 @@ mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_comman
         case LC_REEXPORT_DYLIB:
             load_command->vtable = &_mk_load_command_reexport_dylib_class;
             break;
-        //case LC_LAZY_LOAD_DYLIB: - Not implemented
-        //  load_command->vtable =
-        //  break;
+        case LC_LAZY_LOAD_DYLIB:
+            load_command->vtable = &_mk_load_command_lazy_load_dylib_class;
+            break;
         case LC_ENCRYPTION_INFO:
             load_command->vtable = &_mk_load_command_encryption_info_class;
             break;

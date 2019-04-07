@@ -113,6 +113,7 @@
     #import <MachOKit/MKLCCodeSignature.h>
     #import <MachOKit/MKLCSegmentSplitInfo.h>
     #import <MachOKit/MKLCReExportDylib.h>
+    #import <MachOKit/MKLCLazyLoadDylib.h>
     #import <MachOKit/MKLCEncryptionInfo.h>
     #import <MachOKit/MKLCDyldInfo.h>
     #import <MachOKit/MKLCDyldInfoOnly.h>

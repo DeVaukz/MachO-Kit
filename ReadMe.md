@@ -146,7 +146,6 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
         * LC_PREPAGE
         * LC_PREBOUND_DYLIB
         * LC_SUB_UMBRELLA
-        * LC_LAZY_LOAD_DYLIB
         * LC_LINKER_OPTION
         * LC_LINKER_OPTIMIZATION_HINT
     * Segments and Sections ✔
