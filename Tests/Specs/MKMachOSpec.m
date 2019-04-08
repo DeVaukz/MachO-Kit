@@ -486,6 +486,70 @@ SpecBegin(MKMachOImage)
             });
 
             //----------------------------------------------------------------//
+            describe(@"Symbols", ^{
+                NSArray<NSDictionary*> *nmDarwinSymbols = otoolArchitecture.darwinSymbols;
+                NSArray<NSDictionary*> *nmBSDSymbols = otoolArchitecture.bsdSymbols;
+                NSAssert(nmDarwinSymbols.count == nmBSDSymbols.count, @"NM produced mismatched symbol count between darwin and BSD formats");
+                MKSymbolTable *machoSymbolTable = macho.symbolTable.value;
+                
+                if (machoSymbolTable == nil)
+                    return; // TODO - Check if the image should have a symbol table.
+                
+                NSArray *machoSymbols = machoSymbolTable.symbols;
+                
+                it(@"should exist", ^{
+                    expect(machoSymbols).toNot.beNil();
+                });
+                
+                it(@"should have the correct number of symbols", ^{
+                    expect(machoSymbols.count).to.equal(nmDarwinSymbols.count);
+                });
+                
+                it(@"should result in the correct symbols", ^{
+                    for (NSUInteger i=0; i<MIN(machoSymbols.count, nmDarwinSymbols.count); i++) {
+                        // llvm-nm does not parse STABs when the output format
+                        // is set to 'darwin' (see the comment in NMUtil.m).
+                        // The solution is to run llvm-nm in 'bsd' format and
+                        // 'darwin' format.  BSD format correctly parses and
+                        // outputs STABs.  We use the BSD format output for
+                        // STABs and the darwin format output for everything
+                        // else.
+                        NSDictionary *nmDarwinSymbol = nmDarwinSymbols[i];
+                        NSDictionary *nmBSDSymbol = nmBSDSymbols[i];
+                        MKSymbol *machoSymbol = machoSymbols[i];
+                        
+                        // If llvm-nm in BSD format recorded the type as '-',
+                        // then it is a STAB.
+                        if ([nmBSDSymbol[@"type"] isEqualToString:@"-"]) {
+                            expect([machoSymbol isKindOfClass:MKDebugSymbol.class]).to.beTruthy();
+                            if ([machoSymbol isKindOfClass:MKDebugSymbol.class] == NO)
+                                continue;
+                            
+                            MKDebugSymbol *machoDebugSymbol = (MKDebugSymbol*)machoSymbol;
+                            NSDictionary *nmSTABInfo = nmBSDSymbol[@"stabInfo"];
+                            
+                            expect(machoDebugSymbol.name.description).to.equal(nmBSDSymbol[@"name"]);
+                            expect([[MKNodeFieldSTABType.sharedInstance.formatter stringForObjectValue:[machoDebugSymbol valueForKey:@"stabType"]] substringFromIndex:2]).to.equal(nmSTABInfo[@"type"]);
+                        }
+                        // Otherwise, it's a regular symbol.
+                        else {
+                            expect([machoSymbol isKindOfClass:MKRegularSymbol.class]).to.beTruthy();
+                            if ([machoSymbol isKindOfClass:MKRegularSymbol.class] == NO)
+                                continue;
+                            
+                            MKRegularSymbol *machoRegularSymbol = (MKRegularSymbol*)machoSymbol;
+                            
+                            expect(machoRegularSymbol.name.description).to.equal(nmDarwinSymbol[@"name"]);
+                            expect(machoRegularSymbol.section.description).to.equal(nmDarwinSymbol[@"section"]);
+                            expect([MKNodeFieldSymbolType.sharedInstance.formatter stringForObjectValue:[machoRegularSymbol valueForKey:@"symbolType"]]).to.equal(nmDarwinSymbol[@"type"]);
+                            expect(machoRegularSymbol.external).to.equal([nmDarwinSymbol[@"external"] boolValue]);
+                            expect(machoRegularSymbol.privateExternal).to.equal([nmDarwinSymbol[@"privateExternal"] boolValue]);
+                        }
+                    }
+                });
+            });
+            
+            //----------------------------------------------------------------//
             describe(@"Indirect Symbols", ^{
                 NSArray<NSDictionary*> *otoolIndirectSymbols = otoolArchitecture.indirectSymbols;
                 MKIndirectSymbolTable *machoIndirectSymbolTable = macho.indirectSymbolTable.value;

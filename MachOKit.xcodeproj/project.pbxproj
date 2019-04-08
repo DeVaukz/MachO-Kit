@@ -290,6 +290,7 @@
 		D05AD6FD1C08261C00D832C7 /* core.c in Sources */ = {isa = PBXBuildFile; fileRef = D0A1D83C19E4EE170095870C /* core.c */; };
 		D05E7EB620389F84000C72B7 /* MKNodeFieldTypeOffset.h in Headers */ = {isa = PBXBuildFile; fileRef = D05E7EB420389F84000C72B7 /* MKNodeFieldTypeOffset.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D05E7EB720389F84000C72B7 /* MKNodeFieldTypeOffset.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */; };
+		D05E7ECB2038B760000C72B7 /* NMUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7EC82038B717000C72B7 /* NMUtil.m */; };
 		D05E7ECE203936E3000C72B7 /* MKRegularSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D05E7ECC203936E3000C72B7 /* MKRegularSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D05E7ECF203936E3000C72B7 /* MKRegularSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D05E7ECD203936E3000C72B7 /* MKRegularSymbol.m */; };
 		D05E7ED220395C12000C72B7 /* MKSectionSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D05E7ED020395C12000C72B7 /* MKSectionSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1332,6 +1333,8 @@
 		D0590CDE1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKLCLoadUpwardDylib.m; sourceTree = "<group>"; };
 		D05E7EB420389F84000C72B7 /* MKNodeFieldTypeOffset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeOffset.h; sourceTree = "<group>"; };
 		D05E7EB520389F84000C72B7 /* MKNodeFieldTypeOffset.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeOffset.m; sourceTree = "<group>"; };
+		D05E7EC72038B717000C72B7 /* NMUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NMUtil.h; sourceTree = "<group>"; };
+		D05E7EC82038B717000C72B7 /* NMUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NMUtil.m; sourceTree = "<group>"; };
 		D05E7ECC203936E3000C72B7 /* MKRegularSymbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKRegularSymbol.h; sourceTree = "<group>"; };
 		D05E7ECD203936E3000C72B7 /* MKRegularSymbol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKRegularSymbol.m; sourceTree = "<group>"; };
 		D05E7ED020395C12000C72B7 /* MKSectionSymbol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSectionSymbol.h; sourceTree = "<group>"; };
@@ -2967,6 +2970,8 @@
 				D005C1AA1A70CA9E001D9B7B /* OtoolUtil.m */,
 				D090A29A1C78F3300025B096 /* DyldInfoUtil.h */,
 				D090A29B1C78F3300025B096 /* DyldInfoUtil.m */,
+				D05E7EC72038B717000C72B7 /* NMUtil.h */,
+				D05E7EC82038B717000C72B7 /* NMUtil.m */,
 				D0EB58EB1A6CE72800953DF9 /* Binary.h */,
 				D0EB58EC1A6CE72800953DF9 /* Binary.m */,
 			);
@@ -4504,6 +4509,7 @@
 				D03EFF3A203E93B400040928 /* MKFormatterSpec.m in Sources */,
 				D0995A2E1A6CAAD9007134CE /* MKFatSpec.m in Sources */,
 				D0302FF91A21BD6E00288B3E /* MKDataModelSpec.m in Sources */,
+				D05E7ECB2038B760000C72B7 /* NMUtil.m in Sources */,
 				D0A4A63F19CEB65B00B83A93 /* MKMachOSpec.m in Sources */,
 				D0EB58EA1A6CDD7A00953DF9 /* NSFileManager+MKTest.m in Sources */,
 				D005C1AB1A70CA9E001D9B7B /* OtoolUtil.m in Sources */,

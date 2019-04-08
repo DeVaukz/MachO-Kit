@@ -394,6 +394,11 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
             if ([index isEqualToString:@"LOCAL"]) {
                 entry[@"local"] = @(YES);
                 entry[@"index"] = @(INDIRECT_SYMBOL_LOCAL);
+                // Handle 'LOCAL ABSOLUTE'
+                if (components.count > 2 && [components[2] isEqualToString:@"ABSOLUTE"]) {
+                    entry[@"absolute"] = @(YES);
+                    entry[@"index"] = @(INDIRECT_SYMBOL_LOCAL | INDIRECT_SYMBOL_ABS);
+                }
             } else if ([index isEqualToString:@"ABSOLUTE"]) {
                 entry[@"absolute"] = @(YES);
                 entry[@"index"] = @(INDIRECT_SYMBOL_ABS);
