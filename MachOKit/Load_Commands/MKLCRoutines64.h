@@ -46,12 +46,26 @@ NS_ASSUME_NONNULL_BEGIN
 @package
     uint64_t _init_address;
     uint64_t _init_module;
+    uint64_t _reserved1;
+    uint64_t _reserved2;
+    uint64_t _reserved3;
+    uint64_t _reserved4;
+    uint64_t _reserved5;
+    uint64_t _reserved6;
 }
 
 //! Address of initialization routine.
 @property (nonatomic, readonly) uint64_t init_address;
 //! Index into the module table that the init routine is defined in.
 @property (nonatomic, readonly) uint64_t init_module;
+
+@property (nonatomic, readonly) uint64_t reserved1;
+@property (nonatomic, readonly) uint64_t reserved2;
+@property (nonatomic, readonly) uint64_t reserved3;
+@property (nonatomic, readonly) uint64_t reserved4;
+@property (nonatomic, readonly) uint64_t reserved5;
+@property (nonatomic, readonly) uint64_t reserved6;
+
 
 @end
 

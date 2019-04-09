@@ -34,6 +34,12 @@
 
 @synthesize init_address = _init_address;
 @synthesize init_module = _init_module;
+@synthesize reserved1 = _reserved1;
+@synthesize reserved2 = _reserved2;
+@synthesize reserved3 = _reserved3;
+@synthesize reserved4 = _reserved4;
+@synthesize reserved5 = _reserved5;
+@synthesize reserved6 = _reserved6;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)ID
@@ -60,6 +66,12 @@
     
     _init_address = MKSwapLValue32(lc.init_address, self.macho.dataModel);
     _init_module = MKSwapLValue32(lc.init_module, self.macho.dataModel);
+    _reserved1 = MKSwapLValue32(lc.reserved1, self.macho.dataModel);
+    _reserved2 = MKSwapLValue32(lc.reserved2, self.macho.dataModel);
+    _reserved3 = MKSwapLValue32(lc.reserved3, self.macho.dataModel);
+    _reserved4 = MKSwapLValue32(lc.reserved4, self.macho.dataModel);
+    _reserved5 = MKSwapLValue32(lc.reserved5, self.macho.dataModel);
+    _reserved6 = MKSwapLValue32(lc.reserved6, self.macho.dataModel);
     
     return self;
 }
@@ -76,6 +88,7 @@
         size:sizeof(lc.init_address)
     ];
     init_address.description = @"Initialization Routine";
+    init_address.formatter = [MKHexNumberFormatter hexNumberFormatterWithDigits:(size_t)(sizeof(lc.init_address)*2)];
     init_address.options = MKNodeFieldOptionDisplayAsDetail;
     
     MKNodeFieldBuilder *init_module = [MKNodeFieldBuilder
@@ -87,9 +100,69 @@
     init_module.description = @"Initialization Module Index";
     init_module.options = MKNodeFieldOptionDisplayAsDetail;
     
+    MKNodeFieldBuilder *reserved1 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved1)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved1)
+        size:sizeof(lc.reserved1)
+    ];
+    reserved1.description = @"Reserved1";
+    reserved1.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved2 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved2)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved2)
+        size:sizeof(lc.reserved2)
+    ];
+    reserved2.description = @"Reserved2";
+    reserved2.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved3 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved3)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved3)
+        size:sizeof(lc.reserved3)
+    ];
+    reserved3.description = @"Reserved3";
+    reserved3.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved4 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved4)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved4)
+        size:sizeof(lc.reserved4)
+    ];
+    reserved4.description = @"Reserved4";
+    reserved4.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved5 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved5)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved5)
+        size:sizeof(lc.reserved5)
+    ];
+    reserved5.description = @"Reserved5";
+    reserved5.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    MKNodeFieldBuilder *reserved6 = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(reserved6)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), reserved6)
+        size:sizeof(lc.reserved6)
+    ];
+    reserved6.description = @"Reserved6";
+    reserved6.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         init_address.build,
-        init_module.build
+        init_module.build,
+        reserved1.build,
+        reserved2.build,
+        reserved3.build,
+        reserved4.build,
+        reserved5.build,
+        reserved6.build
     ]];
 }
 
