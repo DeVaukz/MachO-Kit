@@ -126,7 +126,7 @@
             }
         }
     }
-    else if (self.type == S_ZEROFILL)
+    else if (self.type == S_ZEROFILL || self.type == S_THREAD_LOCAL_ZEROFILL)
     {
         _nodeContextAddress = 0;
         _nodeContextSize = 0;
