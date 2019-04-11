@@ -89,7 +89,7 @@
     if (immediate == 0)
         return 0;
     else
-        return BIND_OPCODE_MASK | immediate;
+        return (int8_t)(BIND_OPCODE_MASK | immediate);
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
