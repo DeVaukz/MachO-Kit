@@ -35,11 +35,11 @@
 //!
 //!     type: Symbol type
 //!     address [Optional]: Address of the symbol
-//!     stabInfo [Options]: Information specific to STABs
+//!     stabInfo [Optional]: Information specific to STABs
 //!         type: The value of the n_type field
 //!         sect: The value of the n_sect field
 //!         desc: The value of the n_desc field
-//!     indirect: The indirect symbol name
+//!     indirect [Optional]: The indirect symbol name
 //!     name: The symbol name
 //!
 //! @note

@@ -86,7 +86,7 @@ SpecBegin(MKMachOImage)
                 });
                 
                 it(@"should have the correct CPU subtype", ^{
-                    expect(machoHeader.cpusubtype).to.equal([otoolArchitectureHeader[@"cpusubtype"] integerValue]);
+                    expect((machoHeader.cpusubtype & (cpu_subtype_t)~CPU_SUBTYPE_MASK)).to.equal([otoolArchitectureHeader[@"cpusubtype"] integerValue]);
                 });
                 
                 it(@"should have the correct number of load commands", ^{
@@ -147,6 +147,12 @@ SpecBegin(MKMachOImage)
                                     break;
                                 }
                             }
+                            
+                            // HACK HACK - otool renders a 0.0 in the LC_VERSION_MIN_* load command as 'n/a'.
+                            // We don't want to match that behavior in MachOKit proper.  Just skip the unit
+                            // test in this case.
+                            if ([otoolArchitectureLoadCommand[key] isEqualToString:@"n/a"] && [machoLoadCommandValue isEqualToString:@"0.0"])
+                                return;
                             
                             expect(machoLoadCommandValue).to.equal(otoolArchitectureLoadCommand[key]);
                         });
@@ -455,7 +461,7 @@ SpecBegin(MKMachOImage)
                     }
                 });
             });
-			
+            
             //----------------------------------------------------------------//
             describe(@"data in code", ^{
                 NSArray<NSDictionary*> *dyldDataInCodeEntries = otoolArchitecture.dataInCodeEntries;
@@ -579,6 +585,7 @@ SpecBegin(MKMachOImage)
                     }
                 });
             });
+            
             //----------------------------------------------------------------//
             describe(@"_objc", ^{
                 // Skip images that use legacy OBJC ABI.

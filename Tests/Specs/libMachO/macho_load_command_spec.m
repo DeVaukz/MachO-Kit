@@ -101,8 +101,8 @@ SpecBegin(macho_load_command)
         #define TEST_STRING_LEN 13
             struct _dummy {
                 struct mach_header_64 header;
-                struct {
-                    struct {
+                struct __attribute__((__packed__)) {
+                    struct __attribute__((__packed__)) {
                         struct dylinker_command cmd;
                         char dylinker[TEST_STRING_LEN];
                     } lc_id_dylinker;

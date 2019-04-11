@@ -146,7 +146,7 @@
     
     // This should have already been verified at the segment level but we'll
     // verify again.
-    if ([segment.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_size] == NO) {
+    if (_nodeContextSize != 0 && [segment.memoryMap hasMappingAtOffset:0 fromAddress:_nodeContextAddress length:_size] == NO) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Section data does not exist in the memory map."];
         [self release]; return nil;
     }
