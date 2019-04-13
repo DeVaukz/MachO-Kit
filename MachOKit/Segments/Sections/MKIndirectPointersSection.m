@@ -44,6 +44,9 @@
     if ((sectionLoadCommand.flags & SECTION_TYPE) == S_NON_LAZY_SYMBOL_POINTERS)
         return 50;
     
+    if ((sectionLoadCommand.flags & SECTION_TYPE) == S_LAZY_DYLIB_SYMBOL_POINTERS)
+        return 50;
+    
     return 0;
 }
 
