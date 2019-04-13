@@ -132,10 +132,27 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
 {
-	if (self.importedName)
-		return [NSString stringWithFormat:@"[re-export] %@ (%@ from %@)", self.name, self.importedName, self.sourceLibrary];
-	else
-		return [NSString stringWithFormat:@"[re-export] %@ (from %@)", self.name, self.sourceLibrary];
+    // Source
+    NSString *source = nil;
+    {
+        // The dyldinfo tool omits any version number when displaying the source
+        // library name of a reexport.
+        // <https://opensource.apple.com/source/ld64/ld64-409.12/src/other/dyldinfo.cpp.auto.html>
+        NSString *sourceLibraryName = self.sourceLibrary.description;
+        NSRange firstDot = [sourceLibraryName rangeOfString:@"."];
+        if (firstDot.location != NSNotFound)
+            sourceLibraryName = [sourceLibraryName substringToIndex:firstDot.location];
+        
+        if (self.importedName)
+            source = [NSString stringWithFormat:@"(%@ from %@)", self.importedName, sourceLibraryName];
+        else
+            source = [NSString stringWithFormat:@"(from %@)", sourceLibraryName];
+    }
+    
+    if (source)
+        return [NSString stringWithFormat:@"[re-export] %@ %@", super.description, source];
+    else
+        return [NSString stringWithFormat:@"[re-export] %@", super.description];
 }
 
 @end

@@ -86,9 +86,24 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
+- (NSString*)_optionsDescription
 {
-	return [NSString stringWithFormat:@"0x%.8" PRIX64 "  %@ [resolver=0x%.8" PRIX64 "]", self.address, self.name, self.resolverAddress];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Weverything"
+    NSString *options = [super _optionsDescription];
+#pragma clang diagnostic pop
+    
+    NSMutableString *mutableOptions;
+    if (options)
+        mutableOptions = [options mutableCopy];
+    else
+        mutableOptions = [NSMutableString new];
+    
+    if (mutableOptions.length > 0)
+        [mutableOptions appendString:@", "];
+    [mutableOptions appendFormat:@"resolver=0x%.8" PRIX64 "", self.resolverAddress];
+    
+    return [mutableOptions autorelease];
 }
 
 @end

@@ -188,7 +188,46 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)_optionsDescription
+{
+    NSString *options = nil;
+    if (self.kind != EXPORT_SYMBOL_FLAGS_KIND_REGULAR || self.options != 0)
+    {
+        NSMutableString *mutableOptions = [NSMutableString string];
+        
+        if (self.options & EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION) {
+            [mutableOptions appendString:@"weak_def"];
+        }
+        
+        if (self.kind == EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL) {
+            if (mutableOptions.length > 0)
+                [mutableOptions appendString:@", "];
+            [mutableOptions appendString:@"per-thread"];
+        }
+        
+        if (self.kind == EXPORT_SYMBOL_FLAGS_KIND_ABSOLUTE) {
+            if (mutableOptions.length > 0)
+                [mutableOptions appendString:@", "];
+            [mutableOptions appendString:@"absolute"];
+        }
+        
+        if (mutableOptions.length > 0)
+            options = mutableOptions;
+    }
+    
+    return options;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return self.name; }
+{
+    // Options
+    NSString *options = [self _optionsDescription];
+    
+    if (options)
+        return [NSString stringWithFormat:@"%@ [%@]", self.name, options];
+    else
+        return [NSString stringWithFormat:@"%@", self.name];
+}
 
 @end
