@@ -26,9 +26,13 @@
 //----------------------------------------------------------------------------//
 
 #import "MKLCEncryptionInfo64.h"
+#import "MKInternal.h"
+#import "MKMachO.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLCEncryptionInfo64
+
+@synthesize pad = _pad;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)ID
@@ -41,6 +45,40 @@
         return 0;
     
     return commandID == [self ID] ? 10 : 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
+{
+    self = [super initWithOffset:offset fromParent:parent error:error];
+    if (self == nil) return nil;
+    
+    struct encryption_info_command_64 lc;
+    if ([self.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&lc length:sizeof(lc) requireFull:YES error:error] < sizeof(lc))
+    { [self release]; return nil; }
+    
+    _pad = MKSwapLValue32(lc.pad, self.macho.dataModel);
+    
+    return self;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeDescription*)layout
+{
+    __unused struct encryption_info_command_64 lc;
+    
+    MKNodeFieldBuilder *pad = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(pad)
+        type:MKNodeFieldTypeUnsignedDoubleWord.sharedInstance
+        offset:offsetof(typeof(lc), pad)
+        size:sizeof(lc.pad)
+    ];
+    pad.description = @"Padding";
+    pad.options = MKNodeFieldOptionDisplayAsDetail;
+    
+    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
+        pad.build
+    ]];
 }
 
 @end

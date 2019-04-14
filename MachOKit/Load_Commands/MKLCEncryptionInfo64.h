@@ -38,7 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
 //! The encryption_info_command contains the file offset and size of an
 //! of an encrypted segment.
 //
-@interface MKLCEncryptionInfo64 : MKLCEncryptionInfo
+@interface MKLCEncryptionInfo64 : MKLCEncryptionInfo {
+@package
+    uint32_t _pad;
+}
+
+//! Padding
+@property (nonatomic, readonly) uint32_t pad;
+
 @end
 
 NS_ASSUME_NONNULL_END

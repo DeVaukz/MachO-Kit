@@ -141,7 +141,7 @@ SpecBegin(MKMachOImage)
                         
                         it([NSString stringWithFormat:@"%@.%@ should have the correct value", [machoLoadCommand.class name], key], ^{
                             NSString *machoLoadCommandValue = nil;
-                            for (MKNodeField *field in layout.fields) {
+                            for (MKNodeField *field in layout.allFields) {
                                 if ([field.name isEqualToString:key]) {
                                     machoLoadCommandValue = [field formattedDescriptionForNode:machoLoadCommand];
                                     break;
