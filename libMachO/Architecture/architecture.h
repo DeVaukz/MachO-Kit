@@ -99,6 +99,10 @@ static const mk_architecture_t mk_architecture_armv7k = { CPU_TYPE_ARM, CPU_SUBT
 _mk_swift_name(mk_architecture_s.arm64)
 static const mk_architecture_t mk_architecture_arm64 = { CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64_ALL };
 
+//! Architecture for 64-bit ARM CPUs supporting the ARMv8.3 instruction set.
+_mk_swift_name(mk_architecture_s.arm64e)
+static const mk_architecture_t mk_architecture_arm64e = { CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64E };
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating An Architecture

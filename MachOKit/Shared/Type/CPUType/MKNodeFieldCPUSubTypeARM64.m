@@ -45,7 +45,8 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64)
     
     s_Types = [@{
          _$(CPU_SUBTYPE_ARM64_ALL): @"CPU_SUBTYPE_ARM64_ALL",
-         _$(CPU_SUBTYPE_ARM64_V8): @"CPU_SUBTYPE_ARM64_V8"
+         _$(CPU_SUBTYPE_ARM64_V8): @"CPU_SUBTYPE_ARM64_V8",
+         _$(CPU_SUBTYPE_ARM64E): @"CPU_SUBTYPE_ARM64E"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];

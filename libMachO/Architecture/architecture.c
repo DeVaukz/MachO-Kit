@@ -112,8 +112,17 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
             break;
         }
         case CPU_TYPE_ARM64:
-            description = "arm64";
+        {
+            switch (architecture.cpusubtype) {
+                case CPU_SUBTYPE_ARM64E:
+                    description = "arm64e";
+                    break;
+                default:
+                    description = "arm64";
+                    break;
+            }
             break;
+        }
         case CPU_TYPE_MC88000:
             description = "MC88000";
             break;
