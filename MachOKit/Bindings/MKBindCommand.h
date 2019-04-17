@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Returns the subclass of \ref MKBindCommand that is most suitable for
 //! parsing the provided opcode.
-+ (nullable Class)classForOpcode:(uint8_t)opcode;
++ (nullable Class)classForOpcode:(uint8_t)opcode immediate:(uint8_t)immediate;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Subclassing MKBindCommand
@@ -63,7 +63,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! with the command data.  \ref MKRebaseCommand subclasses in Mach-O Kit
 //!	return a value no larger than \c 100.  You can substitute your own subclass
 //!	by returning a larger value.
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode;
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Creating a Bind Command

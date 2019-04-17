@@ -41,8 +41,9 @@
 { return @"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
+#pragma unused (immediate)
     if (self != MKBindSetSymbolAndFlags.class)
         return 0;
     

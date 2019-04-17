@@ -40,8 +40,9 @@
 { return @"BIND_OPCODE_SET_DYLIB_SPECIAL_IMM"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
+#pragma unused (immediate)
     if (self != MKBindSetDylibSpecialImmediate.class)
         return 0;
     

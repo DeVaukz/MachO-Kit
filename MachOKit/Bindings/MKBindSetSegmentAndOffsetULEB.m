@@ -41,8 +41,9 @@
 { return @"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
+#pragma unused (immediate)
     if (self != MKBindSetSegmentAndOffsetULEB.class)
         return 0;
     

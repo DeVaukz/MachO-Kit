@@ -37,19 +37,20 @@
 { static NSSet *subclasses; return &subclasses; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
 #pragma unused (opcode)
+#pragma unused (immediate)
     return 0;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (Class)classForOpcode:(uint8_t)opcode
++ (Class)classForOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
     // If we have one or more compatible subclasses, return the best match.
     {
         Class subclass = [self bestSubclassWithRanking:^uint32_t(Class cls) {
-            return [cls canInstantiateWithOpcode:opcode];
+            return [cls canInstantiateWithOpcode:opcode immediate:immediate];
         }];
         
         if (subclass != MKBindCommand.class)
@@ -67,6 +68,7 @@
 + (instancetype)commandAtOffset:(mk_vm_offset_t)offset fromParent:(MKBindingsInfo*)parent error:(NSError**)error
 {
     uint8_t opcode;
+    uint8_t immediate;
     NSError *memoryMapError = nil;
     
     if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&opcode length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
@@ -74,11 +76,12 @@
         return nil;
     }
     
+    immediate = opcode & BIND_IMMEDIATE_MASK;
     opcode = opcode & BIND_OPCODE_MASK;
     
-    Class commandClass = [self classForOpcode:opcode];
+    Class commandClass = [self classForOpcode:opcode immediate:immediate];
     if (commandClass == NULL) {
-        NSString *reason = [NSString stringWithFormat:@"No class for bind opcode [%" PRIu8 "].", opcode];
+        NSString *reason = [NSString stringWithFormat:@"No class for bind opcode [%" PRIu8 "] and immediate [%" PRIu8 "].", opcode, immediate];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
     }
     

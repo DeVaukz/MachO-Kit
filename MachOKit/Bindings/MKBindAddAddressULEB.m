@@ -41,8 +41,9 @@
 { return @"BIND_OPCODE_ADD_ADDR_ULEB"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
+#pragma unused (immediate)
     if (self != MKBindAddAddressULEB.class)
         return 0;
     

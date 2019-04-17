@@ -41,8 +41,9 @@
 { return @"BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode
++ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
+#pragma unused (immediate)
     if (self != MKBindDoBindULEBTimesSkippingULEB.class)
         return 0;
     
