@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldBindOpcodeType.m
+//|             MKNodeFieldBindThreadedSubOpcodeType.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,17 +25,17 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldBindOpcodeType.h"
+#import "MKNodeFieldBindThreadedSubOpcodeType.h"
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldBindOpcodeType
+@implementation MKNodeFieldBindThreadedSubOpcodeType
 
 static NSDictionary *s_Elements = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldBindOpcodeType)
+MKMakeSingletonInitializer(MKNodeFieldBindThreadedSubOpcodeType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize
@@ -43,26 +43,13 @@ MKMakeSingletonInitializer(MKNodeFieldBindOpcodeType)
     if (s_Elements != nil && s_Formatter != nil)
         return;
     
-    // TODO - Derive these from the MKBindCommand subclasses?
     s_Elements = [@{
-        _$((uint8_t)BIND_OPCODE_DONE): @"BIND_OPCODE_DONE",
-        _$((uint8_t)BIND_OPCODE_SET_DYLIB_ORDINAL_IMM): @"BIND_OPCODE_SET_DYLIB_ORDINAL_IMM",
-        _$((uint8_t)BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB): @"BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB",
-        _$((uint8_t)BIND_OPCODE_SET_DYLIB_SPECIAL_IMM): @"BIND_OPCODE_SET_DYLIB_SPECIAL_IMM",
-        _$((uint8_t)BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM): @"BIND_OPCODE_SET_SYMBOL_TRAILING_FLAGS_IMM",
-        _$((uint8_t)BIND_OPCODE_SET_TYPE_IMM): @"BIND_OPCODE_SET_TYPE_IMM",
-        _$((uint8_t)BIND_OPCODE_SET_ADDEND_SLEB): @"BIND_OPCODE_SET_ADDEND_SLEB",
-        _$((uint8_t)BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB): @"BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB",
-        _$((uint8_t)BIND_OPCODE_ADD_ADDR_ULEB): @"BIND_OPCODE_ADD_ADDR_ULEB",
-        _$((uint8_t)BIND_OPCODE_DO_BIND): @"BIND_OPCODE_DO_BIND",
-        _$((uint8_t)BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB): @"BIND_OPCODE_DO_BIND_ADD_ADDR_ULEB",
-        _$((uint8_t)BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED): @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED",
-        _$((uint8_t)BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB): @"BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB",
-        _$((uint8_t)BIND_OPCODE_THREADED): @"BIND_OPCODE_THREADED"
+        _$((uint8_t)BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB): @"BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB",
+        _$((uint8_t)BIND_SUBOPCODE_THREADED_APPLY): @"BIND_SUBOPCODE_THREADED_APPLY"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
-    formatter.name = @"BIND_OPCODE";
+    formatter.name = @"BIND_SUBOPCODE_THREADED";
     formatter.elements = s_Elements;
     formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
@@ -82,7 +69,7 @@ MKMakeSingletonInitializer(MKNodeFieldBindOpcodeType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"Bind Opcode"; }
+{ return @"Bind Threaded Sub-Opcode"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter

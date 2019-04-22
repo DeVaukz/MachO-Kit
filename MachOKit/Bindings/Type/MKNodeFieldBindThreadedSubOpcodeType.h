@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBindingsFieldType.h
+//! @file       MKNodeFieldBindThreadedSubOpcodeType.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,7 +25,19 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldBindOpcodeType.h>
-#import <MachOKit/MKNodeFieldBindThreadedSubOpcodeType.h>
-#import <MachOKit/MKNodeFieldBindType.h>
-#import <MachOKit/MKNodeFieldBindSymbolFlagsType.h>
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKNodeFieldTypeByte.h>
+#import <MachOKit/MKNodeFieldEnumerationType.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldBindThreadedSubOpcodeType : MKNodeFieldTypeUnsignedByte <MKNodeFieldEnumerationType>
+
++ (instancetype)sharedInstance;
+
+@end
+
+NS_ASSUME_NONNULL_END

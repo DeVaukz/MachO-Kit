@@ -361,6 +361,8 @@
 		D0672B401A52771500D44610 /* MKOffsetNode.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B3E1A52771500D44610 /* MKOffsetNode.m */; };
 		D0672B471A535DFB00D44610 /* MKNode+MachO.h in Headers */ = {isa = PBXBuildFile; fileRef = D0672B451A535DFB00D44610 /* MKNode+MachO.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0672B481A535DFB00D44610 /* MKNode+MachO.m in Sources */ = {isa = PBXBuildFile; fileRef = D0672B461A535DFB00D44610 /* MKNode+MachO.m */; };
+		D0674AF0226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.h in Headers */ = {isa = PBXBuildFile; fileRef = D0674AEE226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0674AF1226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.m in Sources */ = {isa = PBXBuildFile; fileRef = D0674AEF226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.m */; };
 		D0678A3722597377007E0C8E /* MKLCLazyLoadDylib.h in Headers */ = {isa = PBXBuildFile; fileRef = D0678A3522597377007E0C8E /* MKLCLazyLoadDylib.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0678A3822597377007E0C8E /* MKLCLazyLoadDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = D0678A3622597377007E0C8E /* MKLCLazyLoadDylib.m */; };
 		D0678A49225977D9007E0C8E /* load_command_lazy_load_dylib.h in Headers */ = {isa = PBXBuildFile; fileRef = D0678A47225977D9007E0C8E /* load_command_lazy_load_dylib.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1405,6 +1407,8 @@
 		D0672B3E1A52771500D44610 /* MKOffsetNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKOffsetNode.m; sourceTree = "<group>"; };
 		D0672B451A535DFB00D44610 /* MKNode+MachO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKNode+MachO.h"; sourceTree = "<group>"; };
 		D0672B461A535DFB00D44610 /* MKNode+MachO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKNode+MachO.m"; sourceTree = "<group>"; };
+		D0674AEE226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldBindThreadedSubOpcodeType.h; sourceTree = "<group>"; };
+		D0674AEF226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldBindThreadedSubOpcodeType.m; sourceTree = "<group>"; };
 		D0678A3522597377007E0C8E /* MKLCLazyLoadDylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKLCLazyLoadDylib.h; sourceTree = "<group>"; };
 		D0678A3622597377007E0C8E /* MKLCLazyLoadDylib.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKLCLazyLoadDylib.m; sourceTree = "<group>"; };
 		D0678A47225977D9007E0C8E /* load_command_lazy_load_dylib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = load_command_lazy_load_dylib.h; sourceTree = "<group>"; };
@@ -2387,6 +2391,8 @@
 				D03EF5E2204093CC00B8022C /* MKBindingsFieldType.h */,
 				D03EF5DA203FE7B900B8022C /* MKNodeFieldBindOpcodeType.h */,
 				D03EF5DB203FE7B900B8022C /* MKNodeFieldBindOpcodeType.m */,
+				D0674AEE226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.h */,
+				D0674AEF226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.m */,
 				D03EF5DE2040928300B8022C /* MKNodeFieldBindType.h */,
 				D03EF5DF2040928300B8022C /* MKNodeFieldBindType.m */,
 				D03EF5E42040986100B8022C /* MKNodeFieldBindSymbolFlagsType.h */,
@@ -3595,6 +3601,7 @@
 				D0C3B2F019F463EA00CAFE58 /* MKNode.h in Headers */,
 				D0B16D481CA8503800E2116C /* MKWeakBindingsInfo.h in Headers */,
 				D02C80911F907F8C00EB9393 /* load_command_note.h in Headers */,
+				D0674AF0226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.h in Headers */,
 				D0A1D8D819E4EEB80095870C /* load_command_routines_64.h in Headers */,
 				D01731691C66CD20007CB0A1 /* MKDSCSlideInfoHeader.h in Headers */,
 				D096B05F201E54F7003DA008 /* MKNodeFieldContainerType.h in Headers */,
@@ -4154,6 +4161,7 @@
 				D0B64B841E5414F000DFBFAD /* MKNodeFieldDeprecated.m in Sources */,
 				D0B9F6D61E580B8000D0B35A /* MKNodeFieldTypeQuadWord.m in Sources */,
 				D0E30A7C1E613A870005A882 /* MKObjectFormatter.m in Sources */,
+				D0674AF1226D599E00BDD542 /* MKNodeFieldBindThreadedSubOpcodeType.m in Sources */,
 				D0A1D8E719E4EEB80095870C /* load_command_sub_library.c in Sources */,
 				D09A195B2030FC440053181B /* MKStringFormatter.m in Sources */,
 				D061B1771FF8BD7C004A3047 /* MKAddressedNode.m in Sources */,
