@@ -39,6 +39,46 @@
 @implementation MKBindAction
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (id*)_subclassesCache
+{ static NSSet *subclasses; return &subclasses; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)canInstantiateWithContext:(struct MKBindContext*)bindContext
+{
+#pragma unused (bindContext)
+    return 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (nullable Class)classForContext:(struct MKBindContext*)bindContext
+{
+    // If we have one or more compatible subclasses, return the best match.
+    {
+        Class subclass = [self bestSubclassWithRanking:^uint32_t(Class cls) {
+            return [cls canInstantiateWithContext:bindContext];
+        }];
+        
+        if (subclass != MKBindAction.class)
+            return subclass;
+    }
+    
+    return self;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Creating a Bind Command
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (nullable instancetype)actionWithContext:(struct MKBindContext*)bindContext error:(NSError**)error
+{
+    Class actionClass = [self classForContext:bindContext];
+    NSAssert(actionClass != nil, @"+[MKBindAction classForContext:] should never return nil.");
+    
+    return [[[actionClass alloc] initWithContext:bindContext error:error] autorelease];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
 	NSParameterAssert(bindContext->info != nil);

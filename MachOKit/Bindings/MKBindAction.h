@@ -67,11 +67,42 @@ typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
     MKBindType _type;
 }
 
+//! Returns the subclass of \ref MKBindCommand that is most suitable to
+//! represent the bind action for the provided \a bindContext
++ (nullable Class)classForContext:(struct MKBindContext*)bindContext;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Subclassing MKBindAction
+//! @name       Subclassing MKBindAction
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! This method is called on all \ref MKBindAction subclasses when
+//! determining the appropriate class to instantiate to represent the bind
+//! action for the provided \a bindContext.
+//!
+//! Subclasses should return a non-zero integer.  The subclass that returns the
+//! largest value will be instantiated.  \ref MKBindAction subclasses in
+//! Mach-O Kit return a value no larger than \c 100.  You can substitute your
+//! own subclass by returning a larger value.
++ (uint32_t)canInstantiateWithContext:(struct MKBindContext*)bindContext;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Creating a Bind Action
+//! @name       Creating a Bind Action
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
++ (nullable instancetype)actionWithContext:(struct MKBindContext*)bindContext error:(NSError**)error;
+
 - (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_UNAVAILABLE;
 
 - (nullable instancetype)initWithContext:(struct MKBindContext*)bindContext error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
-//! The binding type.
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Binding Information
+//! @name       Binding Information
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! The bind action type.
 @property (nonatomic, readonly) MKBindType type;
 
 //!

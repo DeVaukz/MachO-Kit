@@ -125,10 +125,6 @@
 { return YES; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (Class)_parseActionClass
-{ return MKBindAction.class; }
-
-//|++++++++++++++++++++++++++++++++++++|//
 - (void)_parseCommands
 {
     @autoreleasepool
@@ -174,14 +170,12 @@
         __block struct MKBindContext context = { 0, .info = self };
         
         void (^doBind)(void) = ^{
-            MKBindAction *action = [[self._parseActionClass alloc] initWithContext:&context error:&bindingError];
+            MKBindAction *action = [MKBindAction actionWithContext:&context error:&bindingError];
             
             if (action)
                 [actions addObject:action];
             else
                 keepGoing = NO;
-            
-            [action release];
         };
         
         for (MKBindCommand *command in _commands) {
