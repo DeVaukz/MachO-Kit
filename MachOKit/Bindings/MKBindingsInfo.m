@@ -197,6 +197,8 @@
             }
         }
         
+        [context.ordinalTable release];
+        
         _actions = [actions copy];
         [actions release];
     }

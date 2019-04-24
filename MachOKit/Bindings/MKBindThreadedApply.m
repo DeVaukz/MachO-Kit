@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKBindDoBindAddAddressImmediateScaled.m
+//|             MKBindThreadedApply.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,28 +25,28 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKBindDoBindAddAddressImmediateScaled.h"
+#import "MKBindThreadedApply.h"
 #import "MKInternal.h"
+#import "MKSegment.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKBindDoBindAddAddressImmediateScaled
+@implementation MKBindThreadedApply
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint8_t)opcode
-{ return BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED; }
++ (uint8_t)subopcode
+{ return BIND_SUBOPCODE_THREADED_APPLY; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSString*)name
-{ return @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED"; }
+{ return @"BIND_SUBOPCODE_THREADED_APPLY"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
-#pragma unused (immediate)
-    if (self != MKBindDoBindAddAddressImmediateScaled.class)
+    if (self != MKBindThreadedApply.class)
         return 0;
     
-    return opcode == [self opcode] ? 10 : 0;
+    return (opcode == [self opcode] && immediate == [self subopcode]) ? 10 : 0;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -56,49 +56,65 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    // TODO - Unclear if this command can appear when using threaded binds.
+    id<MKDataModel> dataModel = self.dataModel;
+    NSAssert(dataModel != nil, @"Missing datamodel");
     
-    binder();
-    
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->derivedOffset, self.derivedOffset, &bindContext->derivedOffset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.derivedOffset);
+    // Threaded bind opcodes should only appear in 64-bit binaries
+    size_t pointerSize = dataModel.pointerSize;
+    if (pointerSize != 8) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EUNAVAILABLE description:@"Unsupported pointer size [%zu].", pointerSize];
         return NO;
     }
     
-    // Reset
-    bindContext->command = nil;
+    MKSegment *segment = bindContext->segment;
+    if (segment == nil) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment set."];
+        return NO;
+    }
+    
+    mk_error_t err;
+    mk_vm_address_t segmentAddress = segment.vmAddress;
+    mk_vm_range_t segmentRange = mk_vm_range_make(segmentAddress, segment.vmSize);
+    
+    uint64_t delta = 0;
+    do {
+        bindContext->derivedOffset = bindContext->segmentOffset;
+        
+        // Verify that the offset location is within the segment
+        if ((err = mk_vm_range_contains_address(segmentRange, bindContext->derivedOffset, segmentAddress))) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"The offset [%" MK_VM_PRIuOFFSET "] is not within %@ segement (index %u).", bindContext->derivedOffset, bindContext->segment, bindContext->segmentIndex];
+            return NO;
+        }
+        
+        NSError *memoryMapError = nil;
+        uint64_t value;
+        
+        if ([segment.memoryMap copyBytesAtOffset:bindContext->derivedOffset fromAddress:segment.nodeContextAddress into:&value length:sizeof(value) requireFull:YES error:&memoryMapError] < sizeof(value)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read value at offset [%" MK_VM_PRIuOFFSET "] in %@ segment.", bindContext->derivedOffset, segment.description];
+            return NO;
+        }
+        
+        bindContext->threadedBindValue.raw = MKSwapLValue64(value, dataModel);
+        
+        // Need to preserve the original 'type' to match the dyld behavior
+        uint8_t savedType = bindContext->type;
+        bindContext->type = bindContext->threadedBindValue.isBind ? BIND_TYPE_THREADED_BIND : BIND_TYPE_THREADED_REBASE;
+        
+        binder();
+        
+        // Restore the previous 'type'
+        bindContext->type = savedType;
+        
+        delta = bindContext->threadedBindValue.delta * dataModel.pointerSize;
+        if ((err = mk_vm_offset_add(bindContext->segmentOffset, delta, &bindContext->segmentOffset))) {
+            MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->segmentOffset, delta);
+            return NO;
+        }
+        
+    } while (delta != 0);
     
     return YES;
 }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)weakBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{ return [self bind:binder withContext:bindContext error:error]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)lazyBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{
-#pragma unused(binder)
-#pragma unused(bindContext)
-    // Lazy bindings only use BIND_OPCODE_DO_BIND.  This command should
-    // never appear in a lazy binding.
-    MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unexpected BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED opcode in a lazy binding."];
-    
-    return NO;
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Bind Command Values
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)scale
-{ return _data & BIND_IMMEDIATE_MASK; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)derivedOffset
-{ return (self.scale * self.dataModel.pointerSize) + self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
@@ -108,29 +124,12 @@
 - (mk_vm_size_t)nodeSize
 { return 1; }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
-{
-    MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(scale)
-        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
-        offset:0
-        size:sizeof(uint8_t)
-    ];
-    scale.description = @"Scale";
-    scale.options = MKNodeFieldOptionDisplayAsDetail;
-    
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        scale.build
-    ]];
-}
-
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"%@(0x%.8" PRIX64 ")", self.class.name, self.derivedOffset]; }
+{ return self.class.name; }
 
 @end

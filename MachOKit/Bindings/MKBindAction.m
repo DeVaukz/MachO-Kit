@@ -114,15 +114,15 @@
     _symbolName = [bindContext->symbolName retain];
     _symbolOptions = bindContext->symbolFlags;
     
-    _offset = bindContext->offset;
     _addend = bindContext->addend;
     
-    // Lookup the segment
-    _segment = [self.macho.segments[@(bindContext->segmentIndex)] retain];
-    if (_segment == nil) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", bindContext->segmentIndex];
+    if (bindContext->segment == nil) {
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment set."];
         [self release]; return nil;
     }
+    
+    _segment = [bindContext->segment retain];
+    _offset = bindContext->derivedOffset;
     
     // Verify that the bind location is within the segment
     mk_error_t err;

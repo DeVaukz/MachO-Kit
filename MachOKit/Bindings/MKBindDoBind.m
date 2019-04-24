@@ -56,12 +56,24 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    binder();
-    
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->offset, self.derivedOffset, &bindContext->offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.derivedOffset);
-        return NO;
+    if (!bindContext->useThreadedRebaseBind) {
+        binder();
+        
+        mk_error_t err;
+        if ((err = mk_vm_offset_add(bindContext->derivedOffset, self.derivedOffset, &bindContext->derivedOffset))) {
+            MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.derivedOffset);
+            return NO;
+        }
+    } else {
+        struct MKBindThreadedData threadedBindData;
+        threadedBindData.libraryOrdinal = bindContext->libraryOrdinal;
+        threadedBindData.addend = bindContext->addend;
+        threadedBindData.type = bindContext->type;
+        threadedBindData.symbolFlags = bindContext->symbolFlags;
+        threadedBindData.symbolName = bindContext->symbolName; // No retain
+        NSValue *threadedBindDataValue = [[NSValue alloc] initWithBytes:&threadedBindData objCType:@encode(struct MKBindThreadedData)];
+        [bindContext->ordinalTable addObject:threadedBindDataValue];
+        [threadedBindDataValue release];
     }
     
     // Reset

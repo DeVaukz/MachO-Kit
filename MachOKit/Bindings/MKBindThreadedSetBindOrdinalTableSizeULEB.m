@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKBindDoBindAddAddressImmediateScaled.m
+//|             MKBindThreadedSetBindOrdinalTableSizeULEB.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,28 +25,47 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKBindDoBindAddAddressImmediateScaled.h"
+#import "MKBindThreadedSetBindOrdinalTableSizeULEB.h"
 #import "MKInternal.h"
+#import "MKLEB.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKBindDoBindAddAddressImmediateScaled
+@implementation MKBindThreadedSetBindOrdinalTableSizeULEB
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (uint8_t)opcode
-{ return BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED; }
++ (uint8_t)subopcode
+{ return BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (NSString*)name
-{ return @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED"; }
+{ return @"BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
 {
-#pragma unused (immediate)
-    if (self != MKBindDoBindAddAddressImmediateScaled.class)
+    if (self != MKBindThreadedSetBindOrdinalTableSizeULEB.class)
         return 0;
     
-    return opcode == [self opcode] ? 10 : 0;
+    return (opcode == [self opcode] && immediate == [self subopcode]) ? 10 : 0;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
+{
+    self = [super initWithOffset:offset fromParent:parent error:error];
+    if (self == nil) return nil;
+    
+    // Read the count ULEB
+    {
+        NSError *ULEBError = nil;
+        
+        if (!MKULEBRead(self, 1, &_count, &_countULEBSize, &ULEBError)) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:ULEBError description:@"Could not read count."];
+            [self release]; return nil;
+        }
+    }
+    
+    return self;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -56,49 +75,23 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    // TODO - Unclear if this command can appear when using threaded binds.
+#pragma unused(binder)
+#pragma unused(error)
+    bindContext->count = self.count;
     
-    binder();
+    [bindContext->ordinalTable release];
+    bindContext->ordinalTable = [[NSMutableArray alloc] initWithCapacity:(bindContext->count + 1)];
     
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->derivedOffset, self.derivedOffset, &bindContext->derivedOffset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.derivedOffset);
-        return NO;
-    }
-    
-    // Reset
-    bindContext->command = nil;
+    bindContext->useThreadedRebaseBind = true;
     
     return YES;
 }
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)weakBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{ return [self bind:binder withContext:bindContext error:error]; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)lazyBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{
-#pragma unused(binder)
-#pragma unused(bindContext)
-    // Lazy bindings only use BIND_OPCODE_DO_BIND.  This command should
-    // never appear in a lazy binding.
-    MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unexpected BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED opcode in a lazy binding."];
-    
-    return NO;
-}
-
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Bind Command Values
+#pragma mark -  Threaded Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)scale
-{ return _data & BIND_IMMEDIATE_MASK; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)derivedOffset
-{ return (self.scale * self.dataModel.pointerSize) + self.dataModel.pointerSize; }
+@synthesize count = _count;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
@@ -106,22 +99,29 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize
-{ return 1; }
+{ return 1 + _countULEBSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_size_t)countFieldSize
+{ return _countULEBSize; }
+- (mk_vm_offset_t)countFieldOffset
+{
+    return 1;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(scale)
-        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
-        offset:0
-        size:sizeof(uint8_t)
+    MKNodeFieldBuilder *count = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(count)
+        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
     ];
-    scale.description = @"Scale";
-    scale.options = MKNodeFieldOptionDisplayAsDetail;
+    count.description = @"Count";
+    count.dataRecipe = MKNodeFieldDataOperationExtractDynamicSubrange.sharedInstance;
+    count.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        scale.build
+        count.build
     ]];
 }
 
@@ -131,6 +131,6 @@
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)description
-{ return [NSString stringWithFormat:@"%@(0x%.8" PRIX64 ")", self.class.name, self.derivedOffset]; }
+{ return [NSString stringWithFormat:@"%@(%" PRIu64 ")", self.class.name, self.count]; }
 
 @end

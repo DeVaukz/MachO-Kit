@@ -194,6 +194,9 @@
     #import <MachOKit/MKBindDoBindAddAddressULEB.h>
     #import <MachOKit/MKBindDoBindAddAddressImmediateScaled.h>
     #import <MachOKit/MKBindDoBindULEBTimesSkippingULEB.h>
+    #import <MachOKit/MKBindThreaded.h>
+    #import <MachOKit/MKBindThreadedSetBindOrdinalTableSizeULEB.h>
+    #import <MachOKit/MKBindThreadedApply.h>
 #import <MachOKit/MKMachO+Exports.h>
 	#import <MachOKit/MKExportsInfo.h>
     #import <MachOKit/MKExport.h>

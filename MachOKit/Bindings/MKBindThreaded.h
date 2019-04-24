@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldBindType.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKBindThreaded.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,57 +25,39 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldBindType.h"
-#import "MKInternal.h"
-#import "MKNodeDescription.h"
+#include <MachOKit/macho.h>
+@import Foundation;
+
+#import <MachOKit/MKBindCommand.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldBindType
-
-static NSDictionary *s_Elements = nil;
-static MKEnumerationFormatter *s_Formatter = nil;
-
-MKMakeSingletonInitializer(MKNodeFieldBindType)
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (void)initialize
-{
-    if (s_Elements != nil && s_Formatter != nil)
-        return;
-    
-    s_Elements = [@{
-        _$((uint8_t)BIND_TYPE_POINTER): @"BIND_TYPE_POINTER",
-        _$((uint8_t)BIND_TYPE_TEXT_ABSOLUTE32): @"BIND_TYPE_TEXT_ABSOLUTE32",
-        _$((uint8_t)BIND_TYPE_TEXT_PCREL32): @"BIND_TYPE_TEXT_PCREL32",
-        _$((uint8_t)BIND_TYPE_THREADED_BIND): @"BIND_TYPE_THREADED_BIND",
-        _$((uint8_t)BIND_TYPE_THREADED_REBASE): @"BIND_TYPE_THREADED_REBASE"
-    } retain];
-    
-    MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
-    formatter.name = @"BIND_TYPE";
-    formatter.elements = s_Elements;
-    formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
-    s_Formatter = formatter;
-}
+//! Parent class of the threaded bind commands.
+//
+@interface MKBindThreaded : MKBindCommand
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNodeFieldEnumerationType
+#pragma mark -  About This Threaded Bind Command
+//! @name       About This Threaded Bind Command
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldEnumerationElements*)elements
-{ return s_Elements; }
+//! Returns the threaded bind command sub-opcode that this class parses.
+//!
+//! Subclasses must implement the getter for this property.
+@property (class, nonatomic, readonly) uint8_t subopcode;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNodeFieldType
+#pragma mark -  Threaded Bind Command Values
+//! @name       Threaded Bind Command Values
+//!
+//! @brief      These values are extracted directly from the Mach-O
+//!             bind command without modification or cleanup.
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)name
-{ return @"Bind Type"; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSFormatter*)formatter
-{ return s_Formatter; }
+//! The threaded bind command sub-opcode.
+@property (nonatomic, readonly) uint8_t subopcode;
 
 @end
+
+NS_ASSUME_NONNULL_END

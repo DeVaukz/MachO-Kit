@@ -78,8 +78,8 @@
 {
 #pragma unused(binder)
     mk_error_t err;
-    if ((err = mk_vm_address_apply_slide(bindContext->offset, self.offset, &bindContext->offset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.offset);
+    if ((err = mk_vm_address_apply_slide(bindContext->derivedOffset, self.offset, &bindContext->derivedOffset))) {
+        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.offset);
         return NO;
     }
     

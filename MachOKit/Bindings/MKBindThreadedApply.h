@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldBindType.h
+//! @file       MKBindThreadedApply.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,41 +28,12 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#include <mach-o/loader.h>
-
-#import <MachOKit/MKNodeFieldTypeByte.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
-
-// <https://opensource.apple.com/source/dyld/dyld-635.2/src/ImageLoaderMachO.h.auto.html>
-#ifndef BIND_TYPE_THREADED_BIND
-    #define BIND_TYPE_THREADED_BIND 100
-#endif
-#ifndef BIND_TYPE_THREADED_REBASE
-    #define BIND_TYPE_THREADED_REBASE 102
-#endif
+#import <MachOKit/MKBindThreaded.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Bind Type
-//! @relates    MKNodeFieldBindType
-//!
-//
-typedef uint8_t MKBindType NS_TYPED_EXTENSIBLE_ENUM;
-
-static const MKBindType MKBindTypePointer           = BIND_TYPE_POINTER;
-static const MKBindType MKBindTypeTextAbsolute32    = BIND_TYPE_TEXT_ABSOLUTE32;
-static const MKBindType MKBindTypeTextPcrel32       = BIND_TYPE_TEXT_PCREL32;
-static const MKBindType MKBindTypeThreadedBind      = BIND_TYPE_THREADED_BIND;
-static const MKBindType MKBindTypeThreadedRebase    = BIND_TYPE_THREADED_REBASE;
-
-
-
-//----------------------------------------------------------------------------//
-@interface MKNodeFieldBindType : MKNodeFieldTypeUnsignedByte <MKNodeFieldEnumerationType>
-
-+ (instancetype)sharedInstance;
-
+@interface MKBindThreadedApply : MKBindThreaded
 @end
 
 NS_ASSUME_NONNULL_END

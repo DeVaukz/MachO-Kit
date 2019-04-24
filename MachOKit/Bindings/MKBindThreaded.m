@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKBindDoBindAddAddressImmediateScaled.m
+//|             MKBindThreaded.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,112 +25,73 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKBindDoBindAddAddressImmediateScaled.h"
+#import "MKBindThreaded.h"
 #import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKBindDoBindAddAddressImmediateScaled
+@implementation MKBindThreaded
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint8_t)opcode
-{ return BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED; }
+{ return BIND_OPCODE_THREADED; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (NSString*)name
-{ return @"BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED"; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (uint32_t)canInstantiateWithOpcode:(uint8_t)opcode immediate:(uint8_t)immediate
-{
-#pragma unused (immediate)
-    if (self != MKBindDoBindAddAddressImmediateScaled.class)
-        return 0;
-    
-    return opcode == [self opcode] ? 10 : 0;
-}
++ (uint8_t)subopcode
+{ @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Subclasses must implement +opcode." userInfo:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Performing Binding
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{
-    // TODO - Unclear if this command can appear when using threaded binds.
-    
-    binder();
-    
-    mk_error_t err;
-    if ((err = mk_vm_offset_add(bindContext->derivedOffset, self.derivedOffset, &bindContext->derivedOffset))) {
-        MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.derivedOffset);
-        return NO;
-    }
-    
-    // Reset
-    bindContext->command = nil;
-    
-    return YES;
-}
-
-//|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)weakBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
-{ return [self bind:binder withContext:bindContext error:error]; }
+{
+#pragma unused(binder)
+#pragma unused(bindContext)
+    // Threaded bind commands do not appear in weak bindings.
+    MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unexpected BIND_OPCODE_THREADED opcode in a weak binding."];
+    
+    return NO;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)lazyBind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
 #pragma unused(binder)
 #pragma unused(bindContext)
-    // Lazy bindings only use BIND_OPCODE_DO_BIND.  This command should
-    // never appear in a lazy binding.
-    MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unexpected BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED opcode in a lazy binding."];
+    // Threaded bind commands do not appear in lazy bindings.
+    MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unexpected BIND_OPCODE_THREADED opcode in a lazy binding."];
     
     return NO;
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  Bind Command Values
+#pragma mark -  Threaded Bind Command Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)scale
+- (uint8_t)subopcode
 { return _data & BIND_IMMEDIATE_MASK; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)derivedOffset
-{ return (self.scale * self.dataModel.pointerSize) + self.dataModel.pointerSize; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return 1; }
-
-//|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeDescription*)layout
 {
-    MKNodeFieldBuilder *scale = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(scale)
-        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldTypeUnsignedByte.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
+    MKNodeFieldBuilder *subopcode = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(subopcode)
+        type:[MKNodeFieldTypeBitfield bitfieldWithType:MKNodeFieldBindThreadedSubOpcodeType.sharedInstance mask:@((uint8_t)BIND_IMMEDIATE_MASK) name:nil]
         offset:0
         size:sizeof(uint8_t)
     ];
-    scale.description = @"Scale";
-    scale.options = MKNodeFieldOptionDisplayAsDetail;
+    subopcode.description = @"Sub-Opcode";
+    subopcode.options = MKNodeFieldOptionDisplayAsDetail;
     
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        scale.build
+        subopcode.build
     ]];
 }
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  NSObject
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return [NSString stringWithFormat:@"%@(0x%.8" PRIX64 ")", self.class.name, self.derivedOffset]; }
 
 @end

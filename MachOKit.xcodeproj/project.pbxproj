@@ -389,6 +389,12 @@
 		D06C874D21F550DA0006574C /* MKSplitSegmentInfoV1Context.h in Headers */ = {isa = PBXBuildFile; fileRef = D06C874C21F550DA0006574C /* MKSplitSegmentInfoV1Context.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06CDAD31CBCC24D000380CA /* MKDataSection.h in Headers */ = {isa = PBXBuildFile; fileRef = D06CDAD11CBCC24D000380CA /* MKDataSection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06CDAD41CBCC24D000380CA /* MKDataSection.m in Sources */ = {isa = PBXBuildFile; fileRef = D06CDAD21CBCC24D000380CA /* MKDataSection.m */; };
+		D06CEC4E22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.h in Headers */ = {isa = PBXBuildFile; fileRef = D06CEC4C22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06CEC4F22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.m in Sources */ = {isa = PBXBuildFile; fileRef = D06CEC4D22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.m */; };
+		D06CEC5222629736001FF343 /* MKBindThreaded.h in Headers */ = {isa = PBXBuildFile; fileRef = D06CEC5022629736001FF343 /* MKBindThreaded.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06CEC5322629736001FF343 /* MKBindThreaded.m in Sources */ = {isa = PBXBuildFile; fileRef = D06CEC5122629736001FF343 /* MKBindThreaded.m */; };
+		D06CEC5622629D57001FF343 /* MKBindThreadedApply.h in Headers */ = {isa = PBXBuildFile; fileRef = D06CEC5422629D57001FF343 /* MKBindThreadedApply.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06CEC5722629D57001FF343 /* MKBindThreadedApply.m in Sources */ = {isa = PBXBuildFile; fileRef = D06CEC5522629D57001FF343 /* MKBindThreadedApply.m */; };
 		D06D595D201319DF00A99173 /* MKMachOFieldType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D595C201319DF00A99173 /* MKMachOFieldType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06D596E2013BB6700A99173 /* MKNodeFieldMachOFileType.h in Headers */ = {isa = PBXBuildFile; fileRef = D06D596C2013BB6700A99173 /* MKNodeFieldMachOFileType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D06D596F2013BB6700A99173 /* MKNodeFieldMachOFileType.m in Sources */ = {isa = PBXBuildFile; fileRef = D06D596D2013BB6700A99173 /* MKNodeFieldMachOFileType.m */; };
@@ -1433,6 +1439,12 @@
 		D06C874C21F550DA0006574C /* MKSplitSegmentInfoV1Context.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKSplitSegmentInfoV1Context.h; sourceTree = "<group>"; };
 		D06CDAD11CBCC24D000380CA /* MKDataSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDataSection.h; sourceTree = "<group>"; };
 		D06CDAD21CBCC24D000380CA /* MKDataSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDataSection.m; sourceTree = "<group>"; };
+		D06CEC4C22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindThreadedSetBindOrdinalTableSizeULEB.h; sourceTree = "<group>"; };
+		D06CEC4D22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindThreadedSetBindOrdinalTableSizeULEB.m; sourceTree = "<group>"; };
+		D06CEC5022629736001FF343 /* MKBindThreaded.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindThreaded.h; sourceTree = "<group>"; };
+		D06CEC5122629736001FF343 /* MKBindThreaded.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindThreaded.m; sourceTree = "<group>"; };
+		D06CEC5422629D57001FF343 /* MKBindThreadedApply.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindThreadedApply.h; sourceTree = "<group>"; };
+		D06CEC5522629D57001FF343 /* MKBindThreadedApply.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindThreadedApply.m; sourceTree = "<group>"; };
 		D06D595C201319DF00A99173 /* MKMachOFieldType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKMachOFieldType.h; sourceTree = "<group>"; };
 		D06D596C2013BB6700A99173 /* MKNodeFieldMachOFileType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldMachOFileType.h; sourceTree = "<group>"; };
 		D06D596D2013BB6700A99173 /* MKNodeFieldMachOFileType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldMachOFileType.m; sourceTree = "<group>"; };
@@ -2124,6 +2136,12 @@
 				D01C751C1CA74B9000648CA6 /* MKBindDoBindAddAddressImmediateScaled.m */,
 				D01C751F1CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.h */,
 				D01C75201CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.m */,
+				D06CEC5022629736001FF343 /* MKBindThreaded.h */,
+				D06CEC5122629736001FF343 /* MKBindThreaded.m */,
+				D06CEC4C22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.h */,
+				D06CEC4D22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.m */,
+				D06CEC5422629D57001FF343 /* MKBindThreadedApply.h */,
+				D06CEC5522629D57001FF343 /* MKBindThreadedApply.m */,
 			);
 			path = Bindings;
 			sourceTree = "<group>";
@@ -3527,6 +3545,7 @@
 				D0590CDF1A742B3300CF9FD0 /* MKLCLoadUpwardDylib.h in Headers */,
 				D05ED7CD21EEF94900F5A6BE /* MKMachO+SplitSegment.h in Headers */,
 				D0A1D8F219E4EEB80095870C /* load_command_version_min_macosx.h in Headers */,
+				D06CEC5622629D57001FF343 /* MKBindThreadedApply.h in Headers */,
 				D082FD412007326400E6C3E5 /* MKNodeFieldCPUSubTypeCapability.h in Headers */,
 				D019EBD4207AA3F7008B94FF /* MKSectionIndirectSymbolTableIndexing.h in Headers */,
 				D030301C1A23B86600288B3E /* MKLCLoadDylinker.h in Headers */,
@@ -3644,6 +3663,7 @@
 				D070BC7E225081AD00F19459 /* MKDataInCode.h in Headers */,
 				D0A2303D20CDE4410027249D /* MKString.h in Headers */,
 				D061B16E1FF75CD4004A3047 /* MKExport.h in Headers */,
+				D06CEC4E22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.h in Headers */,
 				D06C874D21F550DA0006574C /* MKSplitSegmentInfoV1Context.h in Headers */,
 				D0079FE41895D1AE00E9D0CF /* macho.h in Headers */,
 				D0B64B831E5414F000DFBFAD /* MKNodeFieldDeprecated.h in Headers */,
@@ -3731,6 +3751,7 @@
 				D068864221F0489500F5E158 /* MKSplitSegmentInfoV1Entry.h in Headers */,
 				D061346C204528A200173476 /* NSNumber+MK.h in Headers */,
 				D0B9F6C11E57FC3200D0B35A /* MKNodeFieldType.h in Headers */,
+				D06CEC5222629736001FF343 /* MKBindThreaded.h in Headers */,
 				D0A1D84619E4EE320095870C /* logging_internal.h in Headers */,
 				D097ABCD1C70F8E0000F62C4 /* MKMachO+Segments.h in Headers */,
 				D090A2751C7821620025B096 /* MKRebaseAddAddressULEB.h in Headers */,
@@ -4169,9 +4190,11 @@
 				D01C75021CA73FEB00648CA6 /* MKBindSetSymbolAndFlags.m in Sources */,
 				D01C74F61CA7398200648CA6 /* MKBindSetDylibOrdinalImmediate.m in Sources */,
 				D0E2D1FB1CA7904E00CC2DF8 /* MKMachO+Libraries.m in Sources */,
+				D06CEC5722629D57001FF343 /* MKBindThreadedApply.m in Sources */,
 				D0539BED1A252C9500D3A5F0 /* MKMachHeader.m in Sources */,
 				D09A195F203110570053181B /* MKNodeFieldDataOperationExtractDynamicSubrange.m in Sources */,
 				D03030511A23CF3200288B3E /* MKLCCodeSignature.m in Sources */,
+				D06CEC4F22629400001FF343 /* MKBindThreadedSetBindOrdinalTableSizeULEB.m in Sources */,
 				D03EF60220411E9700B8022C /* MKNodeFieldObjCImageInfoFlagsType.m in Sources */,
 				D0B16D561CA884E000E2116C /* MKExportTrieNode.m in Sources */,
 				D0B16D521CA87EE800E2116C /* MKExportsInfo.m in Sources */,
@@ -4369,6 +4392,7 @@
 				D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */,
 				D06D596F2013BB6700A99173 /* MKNodeFieldMachOFileType.m in Sources */,
 				D0B16D641CA8968900E2116C /* MKStringTable.m in Sources */,
+				D06CEC5322629736001FF343 /* MKBindThreaded.m in Sources */,
 				D096B04E201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m in Sources */,
 				D0539BA91A23D28400D3A5F0 /* MKLCVersionMinMacOSX.m in Sources */,
 				D060FA7F1A1877B1002A010C /* _MKFileMemoryMap.m in Sources */,

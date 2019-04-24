@@ -92,12 +92,16 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    for (uint64_t i = 0; i < self.count; i++) {
+    // TODO - Unclear if this command can appear when using threaded binds.
+    
+    bindContext->count = self.count;
+    
+    for (uint64_t i = 0; i < bindContext->count; i++) {
         binder();
         
         mk_error_t err;
-        if ((err = mk_vm_offset_add(bindContext->offset, self.derivedOffset, &bindContext->offset))) {
-            MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->offset, self.derivedOffset);
+        if ((err = mk_vm_offset_add(bindContext->derivedOffset, self.derivedOffset, &bindContext->derivedOffset))) {
+            MK_ERROR_OUT = MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(err, bindContext->derivedOffset, self.derivedOffset);
             return NO;
         }
     }

@@ -27,6 +27,21 @@
 
 @class MKBindingsInfo;
 @class MKBindCommand;
+@class MKSegment;
+
+//----------------------------------------------------------------------------//
+struct MKBindThreadedData
+{
+    int64_t libraryOrdinal;
+    int64_t addend;
+    uint8_t type;
+    uint8_t symbolFlags;
+#if __has_feature(objc_arc)
+    void *symbolName;
+#else
+    NSString *symbolName;
+#endif
+};
 
 //----------------------------------------------------------------------------//
 struct MKBindContext
@@ -34,17 +49,38 @@ struct MKBindContext
     mk_vm_offset_t actionStartOffset;
     mk_vm_size_t actionSize;
     unsigned segmentIndex;
-    uint64_t offset;
-    uint8_t type;
+    uint64_t segmentOffset;
+    uint64_t derivedOffset;
     int64_t libraryOrdinal;
     int64_t addend;
+    uint8_t type;
     uint8_t symbolFlags;
+    bool useThreadedRebaseBind;
+    uint64_t count;
+    union {
+        uint64_t raw; // already byte swapped
+        // TODO - using a bitfield for this is not portable
+        struct {
+            // Rest of the bits differ between rebase/bind
+            uint64_t value : 51;
+            // Bits [51..61] is the delta to the next value
+            unsigned delta : 11;
+            // Bit 62 is to tell if this is a rebase (0) or bind (1)
+            bool isBind : 1;
+            // Bit 63 is unused
+            bool unused63 : 1;
+        };
+    } threadedBindValue;
 #if __has_feature(objc_arc)
     void *symbolName;
+    void *segment;
+    void *ordinalTable;
     void *command;
     void *info;
 #else
     NSString *symbolName;
+    MKSegment *segment;
+    NSMutableArray<NSValue*> *ordinalTable;
     MKBindCommand *command;
     MKBindingsInfo *info;
 #endif
