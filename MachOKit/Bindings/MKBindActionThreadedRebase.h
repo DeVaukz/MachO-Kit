@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBindingsInfo.h
+//! @file       MKBindActionThreadedRebase.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,35 +28,12 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKLinkEditNode.h>
-
-@class MKBindCommand;
-@class MKBindAction;
+#import <MachOKit/MKBindAction.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKBindingsInfo : MKLinkEditNode {
-@package
-    NSArray<__kindof MKBindCommand*> *_commands;
-    NSArray<__kindof MKBindAction*> *_actions;
-}
-
-//! Initializes the receiver with the provided Mach-O.
-- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
-
-//! An array of bind commands.
-@property (nonatomic, readonly) NSArray<__kindof MKBindCommand*> *commands;
-
-//! An array of bind actions derived from the bind commands.
-//!
-//! @note
-//! For binaries that use threaded binds (i.e, arm64e), this array will
-//! also contain rebase actions (represented by instances of
-//! \ref MKBindActionThreadedRebase).  Filter the array for subclasses of
-//! \ref MKBindActionBind if you are only interesting in the bindings.
-@property (nonatomic, readonly) NSArray<__kindof MKBindAction*> *actions;
-
+@interface MKBindActionThreadedRebase : MKBindAction
 @end
 
 NS_ASSUME_NONNULL_END

@@ -29,8 +29,6 @@
 #import "MKInternal.h"
 #import "MKBindingsInfo.h"
 #import "MKBindCommand.h"
-#import "MKDependentLibrary.h"
-#import "MKMachO+Libraries.h"
 #import "MKMachO+Segments.h"
 #import "MKSegment.h"
 #import "MKSection.h"
@@ -89,32 +87,6 @@
 	_nodeOffset = bindContext->actionStartOffset;
 	
 	_type = bindContext->type;
-	
-    _sourceLibraryOrdinal = bindContext->libraryOrdinal;
-    if (_sourceLibraryOrdinal > 0) {
-		NSArray *libraries = self.macho.dependentLibraries;
-		MKOptional<MKDependentLibrary*> *library = nil;
-		
-        // Lookup the library
-        if ((NSUInteger)_sourceLibraryOrdinal <= libraries.count)
-            library = libraries[(NSUInteger)(_sourceLibraryOrdinal - 1)];
-		
-        if (library.value)
-			_sourceLibrary = [library.value retain];
-		else
-            MK_PUSH_WARNING_WITH_ERROR(sourceLibrary, MK_ENOT_FOUND, library.error, @"Could not locate library for ordinal [%" PRIi64 "].", _sourceLibraryOrdinal);
-		
-    } else if (_sourceLibraryOrdinal != MKLibraryOrdinalSelf &&
-               _sourceLibraryOrdinal != MKLibraryOrdinalMainExecutable &&
-               _sourceLibraryOrdinal != MKLibraryOrdinalFlatLookup) {
-        // This is a malformed Mach-O (according to dyld).  But we don't care.
-        MK_PUSH_WARNING(sourceLibrary, MK_EOUT_OF_RANGE, @"Unknown special library ordinal [%" PRIi64 "].", _sourceLibraryOrdinal);
-    }
-	
-    _symbolName = [bindContext->symbolName retain];
-    _symbolOptions = bindContext->symbolFlags;
-    
-    _addend = bindContext->addend;
     
     if (bindContext->segment == nil) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment set."];
@@ -153,8 +125,6 @@
 {
     [_section release];
     [_segment release];
-    [_symbolName release];
-    [_sourceLibrary release];
     
     [super dealloc];
 }
@@ -164,11 +134,6 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 @synthesize type = _type;
-@synthesize sourceLibraryOrdinal = _sourceLibraryOrdinal;
-@synthesize sourceLibrary = _sourceLibrary;
-@synthesize symbolName = _symbolName;
-@synthesize symbolFlags = _symbolOptions;
-@synthesize addend = _addend;
 @synthesize segment = _segment;
 @synthesize section = _section;
 @synthesize offset = _offset;
@@ -187,7 +152,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_address_t)nodeAddress:(MKNodeAddressType)type
 {
-	// SAFE - _nodeOffset comes from the rebase commands, which are within the MKBindingsInfo.
+	// SAFE - _nodeOffset comes from the bind commands, which are within the MKBindingsInfo.
 	return [(MKBackedNode*)self.parent nodeAddress:type] + _nodeOffset;
 }
 
@@ -200,41 +165,6 @@
 	];
 	type.description = @"Type";
 	type.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	MKNodeFieldBuilder *sourceLibraryOrdinal = [MKNodeFieldBuilder
-		builderWithProperty:MK_PROPERTY(sourceLibraryOrdinal)
-		type:MKNodeFieldTypeQuadWord.sharedInstance
-	];
-	sourceLibraryOrdinal.description = @"Library Ordinal";
-	sourceLibraryOrdinal.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	MKNodeFieldBuilder *sourceLibrary = [MKNodeFieldBuilder
-		builderWithProperty:MK_PROPERTY(sourceLibrary)
-		type:[MKNodeFieldTypeNode typeWithNodeType:MKDependentLibrary.class]
-	];
-	sourceLibrary.description = @"Library";
-	sourceLibrary.options = MKNodeFieldOptionDisplayAsDetail | MKNodeFieldOptionIgnoreContainerContents | MKNodeFieldOptionHideAddressAndData;
-	
-	MKNodeFieldBuilder *symbolName = [MKNodeFieldBuilder
-		builderWithProperty:MK_PROPERTY(symbolName)
-		type:MKNodeFieldTypeString.sharedInstance
-	];
-	symbolName.description = @"Symbol Name";
-	symbolName.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	MKNodeFieldBuilder *symbolFlags = [MKNodeFieldBuilder
-		builderWithProperty:MK_PROPERTY(symbolFlags)
-		type:MKNodeFieldBindSymbolFlagsType.sharedInstance
-	];
-	symbolFlags.description = @"Symbol Flags";
-	symbolFlags.options = MKNodeFieldOptionDisplayAsDetail;
-	
-	MKNodeFieldBuilder *addend = [MKNodeFieldBuilder
-		builderWithProperty:MK_PROPERTY(addend)
-		type:MKNodeFieldTypeQuadWord.sharedInstance
-	];
-	addend.description = @"Addend";
-	addend.options = MKNodeFieldOptionDisplayAsDetail;
 	
 	MKNodeFieldBuilder *segment = [MKNodeFieldBuilder
 		builderWithProperty:MK_PROPERTY(segment)
@@ -259,27 +189,10 @@
 	
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
         type.build,
-        sourceLibraryOrdinal.build,
-        sourceLibrary.build,
-        symbolName.build,
-        symbolFlags.build,
-        addend.build,
         segment.build,
         section.build,
         address.build
     ]];
 }
 
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@implementation MKWeakBindAction
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@implementation MKLazyBindAction
 @end

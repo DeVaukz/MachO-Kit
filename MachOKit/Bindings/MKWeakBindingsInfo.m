@@ -30,7 +30,7 @@
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKBindCommand.h"
-#import "MKBindAction.h"
+#import "MKBindActionBind.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKWeakBindingsInfo
@@ -59,7 +59,7 @@
         __block struct MKBindContext context = { 0, .info = self };
         
         void (^doBind)(void) = ^{
-            MKBindAction *action = [[MKWeakBindAction alloc] initWithContext:&context error:&bindingError];
+            MKBindAction *action = [[MKBindActionWeakBind alloc] initWithContext:&context error:&bindingError];
             
             if (action)
                 [actions addObject:action];

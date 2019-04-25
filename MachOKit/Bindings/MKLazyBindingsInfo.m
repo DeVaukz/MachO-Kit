@@ -30,7 +30,7 @@
 #import "MKMachO.h"
 #import "MKLCDyldInfo.h"
 #import "MKBindCommand.h"
-#import "MKBindAction.h"
+#import "MKBindActionBind.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKLazyBindingsInfo
@@ -63,7 +63,7 @@
         __block struct MKBindContext context = { 0, .type = BIND_TYPE_POINTER, .info = self };
         
         void (^doBind)(void) = ^{
-            MKBindAction *action = [[MKLazyBindAction alloc] initWithContext:&context error:&bindingError];
+            MKBindAction *action = [[MKBindActionLazyBind alloc] initWithContext:&context error:&bindingError];
             
             if (action)
                 [actions addObject:action];

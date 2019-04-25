@@ -179,6 +179,9 @@
     #import <MachOKit/MKWeakBindingsInfo.h>
     #import <MachOKit/MKLazyBindingsInfo.h>
     #import <MachOKit/MKBindAction.h>
+    #import <MachOKit/MKBindActionBind.h>
+    #import <MachOKit/MKBindActionThreadedBind.h>
+    #import <MachOKit/MKBindActionThreadedRebase.h>
     #import <MachOKit/MKBindCommand.h>
     #import <MachOKit/MKBindCommandOffsetAdjusting.h>
     #import <MachOKit/MKBindDone.h>

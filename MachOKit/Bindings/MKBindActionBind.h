@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKBindingsInfo.h
+//! @file       MKBindActionBind.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,35 +28,62 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#import <MachOKit/MKLinkEditNode.h>
+#import <MachOKit/MKBindAction.h>
 
-@class MKBindCommand;
-@class MKBindAction;
+@class MKDependentLibrary;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKBindingsInfo : MKLinkEditNode {
+//! @name       Special Ordinals
+//! @relates    MKBindAction
+//!
+//
+typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
+    MKLibraryOrdinalSelf                = BIND_SPECIAL_DYLIB_SELF,
+    MKLibraryOrdinalMainExecutable      = BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE,
+    MKLibraryOrdinalFlatLookup          = BIND_SPECIAL_DYLIB_FLAT_LOOKUP
+};
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKBindActionBind : MKBindAction {
 @package
-    NSArray<__kindof MKBindCommand*> *_commands;
-    NSArray<__kindof MKBindAction*> *_actions;
+    MKLibraryOrdinal _sourceLibraryOrdinal;
+    MKDependentLibrary *_sourceLibrary;
+    NSString *_symbolName;
+    int64_t _addend;
+    MKBindSymbolFlags _symbolOptions;
 }
 
-//! Initializes the receiver with the provided Mach-O.
-- (nullable instancetype)initWithImage:(MKMachOImage*)image error:(NSError**)error;
-
-//! An array of bind commands.
-@property (nonatomic, readonly) NSArray<__kindof MKBindCommand*> *commands;
-
-//! An array of bind actions derived from the bind commands.
 //!
-//! @note
-//! For binaries that use threaded binds (i.e, arm64e), this array will
-//! also contain rebase actions (represented by instances of
-//! \ref MKBindActionThreadedRebase).  Filter the array for subclasses of
-//! \ref MKBindActionBind if you are only interesting in the bindings.
-@property (nonatomic, readonly) NSArray<__kindof MKBindAction*> *actions;
+@property (nonatomic, readonly) MKLibraryOrdinal sourceLibraryOrdinal;
 
+//!
+@property (nonatomic, readonly, nullable) MKDependentLibrary *sourceLibrary;
+
+//!
+@property (nonatomic, readonly) NSString *symbolName;
+
+//!
+@property (nonatomic, readonly) MKBindSymbolFlags symbolFlags;
+
+//!
+@property (nonatomic, readonly) int64_t addend;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKBindActionWeakBind : MKBindActionBind
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKBindActionLazyBind : MKBindActionBind
 @end
 
 NS_ASSUME_NONNULL_END

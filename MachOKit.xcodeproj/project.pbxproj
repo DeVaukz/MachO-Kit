@@ -759,6 +759,12 @@
 		D0A9EAB01A8FD6FA00280D38 /* section.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A9EAAA1A8FD6FA00280D38 /* section.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0A9EAB21A8FD70C00280D38 /* section_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A9EAB11A8FD70C00280D38 /* section_internal.h */; };
 		D0A9EAB41A8FD70C00280D38 /* section_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A9EAB11A8FD70C00280D38 /* section_internal.h */; };
+		D0AE1F55226C2FC0009994A9 /* MKBindActionBind.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE1F53226C2FC0009994A9 /* MKBindActionBind.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0AE1F56226C2FC0009994A9 /* MKBindActionBind.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AE1F54226C2FC0009994A9 /* MKBindActionBind.m */; };
+		D0AE1F59226C36E9009994A9 /* MKBindActionThreadedRebase.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE1F57226C36E9009994A9 /* MKBindActionThreadedRebase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0AE1F5A226C36E9009994A9 /* MKBindActionThreadedRebase.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AE1F58226C36E9009994A9 /* MKBindActionThreadedRebase.m */; };
+		D0AE1F5D226C3846009994A9 /* MKBindActionThreadedBind.h in Headers */ = {isa = PBXBuildFile; fileRef = D0AE1F5B226C3846009994A9 /* MKBindActionThreadedBind.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0AE1F5E226C3846009994A9 /* MKBindActionThreadedBind.m in Sources */ = {isa = PBXBuildFile; fileRef = D0AE1F5C226C3846009994A9 /* MKBindActionThreadedBind.m */; };
 		D0B16D451CA7A92A00E2116C /* MKBindContext.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B16D441CA7A92A00E2116C /* MKBindContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0B16D481CA8503800E2116C /* MKWeakBindingsInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = D0B16D461CA8503800E2116C /* MKWeakBindingsInfo.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = D0B16D471CA8503800E2116C /* MKWeakBindingsInfo.m */; };
@@ -1699,6 +1705,12 @@
 		D0A9EAA91A8FD6FA00280D38 /* section.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = section.c; sourceTree = "<group>"; };
 		D0A9EAAA1A8FD6FA00280D38 /* section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = section.h; sourceTree = "<group>"; };
 		D0A9EAB11A8FD70C00280D38 /* section_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = section_internal.h; sourceTree = "<group>"; };
+		D0AE1F53226C2FC0009994A9 /* MKBindActionBind.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindActionBind.h; sourceTree = "<group>"; };
+		D0AE1F54226C2FC0009994A9 /* MKBindActionBind.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindActionBind.m; sourceTree = "<group>"; };
+		D0AE1F57226C36E9009994A9 /* MKBindActionThreadedRebase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindActionThreadedRebase.h; sourceTree = "<group>"; };
+		D0AE1F58226C36E9009994A9 /* MKBindActionThreadedRebase.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindActionThreadedRebase.m; sourceTree = "<group>"; };
+		D0AE1F5B226C3846009994A9 /* MKBindActionThreadedBind.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBindActionThreadedBind.h; sourceTree = "<group>"; };
+		D0AE1F5C226C3846009994A9 /* MKBindActionThreadedBind.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKBindActionThreadedBind.m; sourceTree = "<group>"; };
 		D0B16D441CA7A92A00E2116C /* MKBindContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKBindContext.h; sourceTree = "<group>"; };
 		D0B16D461CA8503800E2116C /* MKWeakBindingsInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKWeakBindingsInfo.h; sourceTree = "<group>"; };
 		D0B16D471CA8503800E2116C /* MKWeakBindingsInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKWeakBindingsInfo.m; sourceTree = "<group>"; };
@@ -2107,6 +2119,12 @@
 				D0B16D441CA7A92A00E2116C /* MKBindContext.h */,
 				D0E2D1E11CA776AB00CC2DF8 /* MKBindAction.h */,
 				D0E2D1E21CA776AB00CC2DF8 /* MKBindAction.m */,
+				D0AE1F53226C2FC0009994A9 /* MKBindActionBind.h */,
+				D0AE1F54226C2FC0009994A9 /* MKBindActionBind.m */,
+				D0AE1F5B226C3846009994A9 /* MKBindActionThreadedBind.h */,
+				D0AE1F5C226C3846009994A9 /* MKBindActionThreadedBind.m */,
+				D0AE1F57226C36E9009994A9 /* MKBindActionThreadedRebase.h */,
+				D0AE1F58226C36E9009994A9 /* MKBindActionThreadedRebase.m */,
 				D01C74EB1CA7360600648CA6 /* MKBindCommand.h */,
 				D01C74EC1CA7360600648CA6 /* MKBindCommand.m */,
 				D061B1721FF85B30004A3047 /* MKBindCommandOffsetAdjusting.h */,
@@ -3602,6 +3620,7 @@
 				D0E3FD341A592E31007B2771 /* memory_map.h in Headers */,
 				D0590CD11A74286F00CF9FD0 /* load_command_load_upward_dylib.h in Headers */,
 				D0E30A821E623B480005A882 /* MKNodeFieldNodeType.h in Headers */,
+				D0AE1F59226C36E9009994A9 /* MKBindActionThreadedRebase.h in Headers */,
 				D01C74F91CA73A9F00648CA6 /* MKBindSetDylibOrdinalULEB.h in Headers */,
 				D0E30A891E6289AB0005A882 /* MKNodeFieldTypeOptionSet.h in Headers */,
 				D0A1D8AA19E4EEB80095870C /* _load_command_dyld_info.h in Headers */,
@@ -3630,6 +3649,7 @@
 				D03030381A23C10400288B3E /* MKLCPrebindChecksum.h in Headers */,
 				D0B9F6E81E5947EF00D0B35A /* MKNodeFieldTypeCollection.h in Headers */,
 				D08C4BFD1A35271600866B93 /* MKNodeField.h in Headers */,
+				D0AE1F5D226C3846009994A9 /* MKBindActionThreadedBind.h in Headers */,
 				D09145B11E51431D00959648 /* NSFormatter+MKNodeField.h in Headers */,
 				D06D59BE20155DFD00A99173 /* MKNodeFieldTypeString.h in Headers */,
 				D03EF5DC203FE7B900B8022C /* MKNodeFieldBindOpcodeType.h in Headers */,
@@ -3743,6 +3763,7 @@
 				D0B16D631CA8968900E2116C /* MKStringTable.h in Headers */,
 				D061B1931FFAC996004A3047 /* MKMemoryMap+Pointer.h in Headers */,
 				D0A1D8EA19E4EEB80095870C /* load_command_symtab.h in Headers */,
+				D0AE1F55226C2FC0009994A9 /* MKBindActionBind.h in Headers */,
 				D0A92F4320033DDC0001C18D /* MKNodeFieldCollectionType.h in Headers */,
 				D0E2D1FE1CA7915100CC2DF8 /* MKDependentLibrary.h in Headers */,
 				D0B261871CAB81440058F04C /* MKAbsoluteSymbol.h in Headers */,
@@ -4246,6 +4267,7 @@
 				D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */,
 				D010F7191CB87055004025F5 /* MKObjCSelectorReferencesSection.m in Sources */,
 				D06D59AB20151F7500A99173 /* MKBooleanFormatter.m in Sources */,
+				D0AE1F56226C2FC0009994A9 /* MKBindActionBind.m in Sources */,
 				D010F6F61CB848C0004025F5 /* architecture.c in Sources */,
 				D0678A3822597377007E0C8E /* MKLCLazyLoadDylib.m in Sources */,
 				D0539BC91A23D69D00D3A5F0 /* MKLCEncryptionInfo64.m in Sources */,
@@ -4309,6 +4331,7 @@
 				D01C74EA1CA7342C00648CA6 /* MKBindingsInfo.m in Sources */,
 				D0B9F6E91E5947EF00D0B35A /* MKNodeFieldTypeCollection.m in Sources */,
 				D0F6B4F521D9DF840040E72D /* MKProcedureSymbol.m in Sources */,
+				D0AE1F5A226C36E9009994A9 /* MKBindActionThreadedRebase.m in Sources */,
 				D0A1D8D119E4EEB80095870C /* load_command_prebind_cksum.c in Sources */,
 				D0E8B8151CB8AE1100237EA1 /* MKObjCImageInfo.m in Sources */,
 				D096B055201D126C003DA008 /* MKNodeFieldSectionSystemAttributesType.m in Sources */,
@@ -4350,6 +4373,7 @@
 				D066186C1CBB3522006979A1 /* MKObjCProtocol.m in Sources */,
 				D05F8A7721DAF2D20094F805 /* MKSourceFileNameSymbol.m in Sources */,
 				D030302D1A23BF3800288B3E /* MKLCSubClient.m in Sources */,
+				D0AE1F5E226C3846009994A9 /* MKBindActionThreadedBind.m in Sources */,
 				D08E5EB41B76D02D009185FE /* MKDSCSymbolTable.m in Sources */,
 				D0672B401A52771500D44610 /* MKOffsetNode.m in Sources */,
 				D06D59CF20159A9A00A99173 /* MKNodeFieldVersionType.m in Sources */,

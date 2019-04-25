@@ -34,36 +34,17 @@
 
 @class MKSegment;
 @class MKSection;
-@class MKDependentLibrary;
 @class MKBindCommand;
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       Special Ordinals
-//! @relates    MKBindAction
-//!
-//
-typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
-    MKLibraryOrdinalSelf                = BIND_SPECIAL_DYLIB_SELF,
-    MKLibraryOrdinalMainExecutable      = BIND_SPECIAL_DYLIB_MAIN_EXECUTABLE,
-    MKLibraryOrdinalFlatLookup          = BIND_SPECIAL_DYLIB_FLAT_LOOKUP
-};
-
-
-
-//----------------------------------------------------------------------------//
 @interface MKBindAction : MKAddressedNode {
 @package
 	mk_vm_offset_t _nodeOffset;
-    MKLibraryOrdinal _sourceLibraryOrdinal;
-    MKDependentLibrary *_sourceLibrary;
-    NSString *_symbolName;
     MKSegment *_segment;
     MKOptional<MKSection*> *_section;
     mk_vm_offset_t _offset;
-    int64_t _addend;
-    MKBindSymbolFlags _symbolOptions;
     MKBindType _type;
 }
 
@@ -105,21 +86,6 @@ typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
 //! The bind action type.
 @property (nonatomic, readonly) MKBindType type;
 
-//!
-@property (nonatomic, readonly) MKLibraryOrdinal sourceLibraryOrdinal;
-
-//!
-@property (nonatomic, readonly, nullable) MKDependentLibrary *sourceLibrary;
-
-//!
-@property (nonatomic, readonly) NSString *symbolName;
-
-//!
-@property (nonatomic, readonly) MKBindSymbolFlags symbolFlags;
-
-//!
-@property (nonatomic, readonly) int64_t addend;
-
 //! The segment where bind location resides.
 @property (nonatomic, readonly) MKSegment *segment;
 
@@ -132,18 +98,6 @@ typedef NS_ENUM(int64_t, MKLibraryOrdinal) {
 //! The section where the bind location resides.
 @property (nonatomic, readonly) MKOptional<MKSection*> *section;
 
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface MKWeakBindAction : MKBindAction
-@end
-
-
-
-//----------------------------------------------------------------------------//
-@interface MKLazyBindAction : MKBindAction
 @end
 
 NS_ASSUME_NONNULL_END

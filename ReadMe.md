@@ -161,6 +161,7 @@ Mach-O Kit currently supports executables, dynamic shared libraries (dylibs and 
         * Standard ✔
         * Weak ✔
         * Lazy ✔
+        * Threaded ✔ (*needs further testing*)
     * Exports Information ✔
     * Function Starts ✔
     * Segment Split Info
