@@ -1067,11 +1067,11 @@
 		D0079FD41895C08E00E9D0CF /* iOS-Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Application.xcconfig"; sourceTree = "<group>"; };
 		D0079FD51895C08E00E9D0CF /* iOS-Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-Base.xcconfig"; sourceTree = "<group>"; };
 		D0079FD61895C08E00E9D0CF /* iOS-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "iOS-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
-		D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Application.xcconfig"; sourceTree = "<group>"; };
-		D0079FD91895C0BA00E9D0CF /* Mac-Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Base.xcconfig"; sourceTree = "<group>"; };
-		D0079FDA1895C0BA00E9D0CF /* Mac-DynamicLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-DynamicLibrary.xcconfig"; sourceTree = "<group>"; };
-		D0079FDB1895C0BA00E9D0CF /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
-		D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
+		D0079FD81895C0BA00E9D0CF /* macOS-Application.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Application.xcconfig"; sourceTree = "<group>"; };
+		D0079FD91895C0BA00E9D0CF /* macOS-Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Base.xcconfig"; sourceTree = "<group>"; };
+		D0079FDA1895C0BA00E9D0CF /* macOS-DynamicLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-DynamicLibrary.xcconfig"; sourceTree = "<group>"; };
+		D0079FDB1895C0BA00E9D0CF /* macOS-Framework.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-Framework.xcconfig"; sourceTree = "<group>"; };
+		D0079FDC1895C0BA00E9D0CF /* macOS-StaticLibrary.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		D0079FDF1895CC0100E9D0CF /* MachOKit-Tests-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "MachOKit-Tests-Info.plist"; sourceTree = "<group>"; };
 		D0079FE11895D15900E9D0CF /* macho.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = macho.c; sourceTree = "<group>"; };
 		D0079FE31895D16E00E9D0CF /* macho.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = macho.h; sourceTree = "<group>"; };
@@ -1500,7 +1500,7 @@
 		D0848AF01A959E6C0076976F /* symbol_table_internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = symbol_table_internal.h; sourceTree = "<group>"; };
 		D08634E01C76F2D80094330F /* _mach_trie.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = _mach_trie.c; sourceTree = "<group>"; };
 		D08634E11C76F2D80094330F /* _mach_trie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _mach_trie.h; sourceTree = "<group>"; };
-		D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Mac-XCTest.xcconfig"; sourceTree = "<group>"; };
+		D087E8B61FEAE554009AEABC /* macOS-XCTest.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "macOS-XCTest.xcconfig"; sourceTree = "<group>"; };
 		D087E8C51FEAE5F5009AEABC /* iOS-Extension.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Extension.xcconfig"; sourceTree = "<group>"; };
 		D08B3BDA1FFCA9E600471513 /* MKRebaseContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKRebaseContext.h; sourceTree = "<group>"; };
 		D08B43751CBC96A80059BB43 /* MKObjCCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjCCategory.h; sourceTree = "<group>"; };
@@ -1920,7 +1920,7 @@
 				D0079FCA1895BFB100E9D0CF /* Base */,
 				D0079FD31895C07D00E9D0CF /* iOS */,
 				D0355ABE1BC75DD400708C4F /* tvOS */,
-				D0079FD71895C0A300E9D0CF /* OS X */,
+				D0079FD71895C0A300E9D0CF /* macOS */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -1970,18 +1970,17 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		D0079FD71895C0A300E9D0CF /* OS X */ = {
+		D0079FD71895C0A300E9D0CF /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				D0079FD91895C0BA00E9D0CF /* Mac-Base.xcconfig */,
-				D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */,
-				D0079FDA1895C0BA00E9D0CF /* Mac-DynamicLibrary.xcconfig */,
-				D0079FDB1895C0BA00E9D0CF /* Mac-Framework.xcconfig */,
-				D0079FDC1895C0BA00E9D0CF /* Mac-StaticLibrary.xcconfig */,
-				D087E8B61FEAE554009AEABC /* Mac-XCTest.xcconfig */,
+				D0079FD91895C0BA00E9D0CF /* macOS-Base.xcconfig */,
+				D0079FD81895C0BA00E9D0CF /* macOS-Application.xcconfig */,
+				D0079FDA1895C0BA00E9D0CF /* macOS-DynamicLibrary.xcconfig */,
+				D0079FDB1895C0BA00E9D0CF /* macOS-Framework.xcconfig */,
+				D0079FDC1895C0BA00E9D0CF /* macOS-StaticLibrary.xcconfig */,
+				D087E8B61FEAE554009AEABC /* macOS-XCTest.xcconfig */,
 			);
-			name = "OS X";
-			path = "Mac OS X";
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		D0079FDD1895CB2500E9D0CF /* Resource */ = {
@@ -4727,7 +4726,7 @@
 		};
 		D02FEB621890FF88004E88ED /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
+			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* macOS-Application.xcconfig */;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
@@ -4738,7 +4737,7 @@
 		};
 		D02FEB631890FF88004E88ED /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* Mac-Application.xcconfig */;
+			baseConfigurationReference = D0079FD81895C0BA00E9D0CF /* macOS-Application.xcconfig */;
 			buildSettings = {
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Tests-Prefix.pch";
 				INFOPLIST_FILE = "Resources/MachOKit-Tests-Info.plist";
