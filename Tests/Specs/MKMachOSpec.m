@@ -482,6 +482,7 @@ SpecBegin(MKMachOImage)
                         MKFunction *function = machoFunctions[i];
                         
                         expect(function.description).to.equal(dyldFunctionStarts[i][@"address"]);
+                        expect(function.thumb).to.equal(dyldFunctionStarts[i][@"thumb"]);
                     }
                 });
             });
@@ -569,7 +570,7 @@ SpecBegin(MKMachOImage)
                             
                             MKRegularSymbol *machoRegularSymbol = (MKRegularSymbol*)machoSymbol;
                             
-                            expect(machoRegularSymbol.name.description).to.equal(nmDarwinSymbol[@"name"]);
+                            expect([machoRegularSymbol.name.description stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]).to.equal(nmDarwinSymbol[@"name"]);
                             expect(machoRegularSymbol.section.description).to.equal(nmDarwinSymbol[@"section"]);
                             expect([MKNodeFieldSymbolType.sharedInstance.formatter stringForObjectValue:[machoRegularSymbol valueForKey:@"symbolType"]]).to.equal(nmDarwinSymbol[@"type"]);
                             expect(machoRegularSymbol.external).to.equal([nmDarwinSymbol[@"external"] boolValue]);

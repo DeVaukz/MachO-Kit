@@ -131,6 +131,7 @@
 //! function start.  Each dictionary contains the following keys:
 //!
 //!     address: vm address of the function
+//!     thumb: YES if the function is thumb
 //!     symbol: Symbol name.  May not always be present.
 //!
 + (NSArray*)parseFunctionStarts:(NSString*)input;

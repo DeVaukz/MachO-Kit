@@ -309,14 +309,21 @@
                 return (BOOL)([evaluatedObject stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]].length > 0);
             }]];
             
-            if (components.count > 1 && [components[1] isEqualToString:@"?"] == NO) {
+            BOOL isThumb = [components[1] isEqualToString:@"[thumb]"];
+            NSString *symbolName = components.count > 2 ? components[2] : components[1];
+            if ([symbolName isEqualToString:@"?"])
+                symbolName = nil;
+            
+            if (symbolName) {
                 [result addObject:@{
                     @"address": components[0],
-                    @"symbol": components[1]
+                    @"thumb" : [NSNumber numberWithBool:isThumb],
+                    @"symbol": symbolName
                 }];
             } else {
                 [result addObject:@{
-                    @"address": components[0]
+                    @"address": components[0],
+                    @"thumb" : [NSNumber numberWithBool:isThumb]
                 }];
             }
         }

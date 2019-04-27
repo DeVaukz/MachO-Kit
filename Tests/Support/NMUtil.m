@@ -297,6 +297,18 @@
             }
         };
         
+        // Attributes
+        void (^parseAttributes)(void) = ^{
+            NSString *current = tokens.firstObject;
+            if (current == nil)
+                return;
+            
+            if ([current isEqualToString:@"[Thumb]"]) {
+                [output setObject:@(YES) forKey:@"thumb"];
+                [tokens removeObjectAtIndex:0];
+            }
+        };
+        
         // Name
         void (^parseName)(void) = ^{
             NSMutableString *symbolname = [NSMutableString new];
@@ -334,6 +346,7 @@
         parseAddress();
         parseTypeAndSection();
         parseExternal();
+        parseAttributes();
         parseName();
         parseSourceLibrary();
         

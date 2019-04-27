@@ -58,6 +58,7 @@
 //!     weak [Optional]: The symbol is weak
 //!     external [Optional]: The symbol is external
 //!     privateExternal [Optional]: The symbol is private-external
+//!     thumb [Optional]: The symbol is a thumb function
 //!     name: The symbol name
 //!     sourceLibrary [Optional]: The library where the symbol is defined
 //!

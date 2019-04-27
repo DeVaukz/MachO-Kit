@@ -29,6 +29,8 @@
 #import "MKInternal.h"
 #import "MKFunctionStarts.h"
 #import "MKFunctionOffset.h"
+#import "MKMachO.h"
+#import "MKNode+MachO.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKFunction
@@ -58,7 +60,23 @@
 #pragma mark -  Values
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-@synthesize address = _address;
+//|++++++++++++++++++++++++++++++++++++|//
+- (mk_vm_address_t)address
+{
+    if (mk_architecture_get_cpu_type(self.macho.architecture) == CPU_TYPE_ARM)
+        return _address & (mk_vm_address_t)-2;
+    else
+        return _address;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (BOOL)isThumb
+{
+    if (mk_architecture_get_cpu_type(self.macho.architecture) == CPU_TYPE_ARM)
+        return !!(_address & 1);
+    else
+        return NO;
+}
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
@@ -78,8 +96,16 @@
     address.description = @"Address";
     address.options = MKNodeFieldOptionDisplayAsDetail;
     
+    MKNodeFieldBuilder *thumb = [MKNodeFieldBuilder
+        builderWithProperty:MK_PROPERTY(thumb)
+        type:MKNodeFieldTypeBoolean.sharedInstance
+    ];
+    thumb.description = @"Thumb";
+    thumb.options = MKNodeFieldOptionDisplayAsDetail;
+    
     return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        address.build
+        address.build,
+        thumb.build
     ]];
 }
 
