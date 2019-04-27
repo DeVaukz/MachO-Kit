@@ -96,6 +96,7 @@
 {
     [_magic release];
     [_uuid release];
+	
     [super dealloc];
 }
 

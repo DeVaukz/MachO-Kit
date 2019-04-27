@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Returns the subclass of \ref MKBindCommand that is most suitable to
 //! represent the bind action for the provided \a bindContext
-+ (nullable Class)classForContext:(struct MKBindContext*)bindContext;
++ (Class)classForContext:(struct MKBindContext*)bindContext;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Subclassing MKBindAction

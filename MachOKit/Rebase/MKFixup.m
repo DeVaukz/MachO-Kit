@@ -50,7 +50,9 @@
     
     // Lookup the segment
     _segment = [self.macho.segments[@(rebaseContext->segmentIndex)] retain];
+    // dyld will refuse to load a Mach-O if the segment index is out of bounds.
     if (_segment == nil) {
+        // TODO - Do we care?  Could this be a warning instead?
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", rebaseContext->segmentIndex];
         [self release]; return nil;
     }
@@ -60,7 +62,9 @@
     mk_vm_address_t segmentAddress = _segment.vmAddress;
     
     mk_vm_range_t segmentRange = mk_vm_range_make(segmentAddress, _segment.vmSize);
+    // dyld will refuse to load a Mach-O if a fixup address is not within the segment.
     if ((err = mk_vm_range_contains_address(segmentRange, _offset, segmentAddress))) {
+        // TODO - Do we care?  Could this be a warning instead?
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"The offset [%" MK_VM_PRIuOFFSET "] is not within the %@ segement (index %u).", rebaseContext->offset, _segment, rebaseContext->segmentIndex];
         [self release]; return nil;
     }

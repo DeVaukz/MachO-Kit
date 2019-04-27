@@ -40,7 +40,7 @@
 @synthesize initialProtection = _initialProtection;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithSharedCache:(MKSharedCache*)sharedCache vmAddress:(mk_vm_address_t)vmAddress vmSize:(mk_vm_size_t)vmSize fileOffset:(mk_vm_offset_t)fileOffset initialProtection:(vm_prot_t)initialProtection maximumProtection:(vm_prot_t)aximumProtection error:(NSError**)error
+- (instancetype)initWithSharedCache:(MKSharedCache*)sharedCache vmAddress:(mk_vm_address_t)vmAddress vmSize:(mk_vm_size_t)vmSize fileOffset:(mk_vm_offset_t)fileOffset initialProtection:(vm_prot_t)initialProtection maximumProtection:(vm_prot_t)maximumProtection error:(NSError**)error
 {
     mk_error_t err;
     NSParameterAssert(sharedCache);
@@ -51,7 +51,7 @@
     _vmAddress = vmAddress;
     _vmSize = vmSize;
     _fileOffset = fileOffset;
-    _maximumProtection = aximumProtection;
+    _maximumProtection = maximumProtection;
     _initialProtection = initialProtection;
     
     // contextAddress := vmAddress + slide - fileOffset
@@ -103,7 +103,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithParent:(MKNode*)parent error:(NSError**)error
 {
-    NSAssert([parent isKindOfClass:MKDSCMappingInfo.class], @"");
+    NSAssert([parent isKindOfClass:MKDSCMappingInfo.class], @"Parent must be a MKDSCMappingInfo.");
     return [self initWithDescriptor:(id)parent error:error];
 }
 

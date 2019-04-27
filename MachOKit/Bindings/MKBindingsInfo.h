@@ -54,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! For binaries that use threaded binds (i.e, arm64e), this array will
 //! also contain rebase actions (represented by instances of
 //! \ref MKBindActionThreadedRebase).  Filter the array for subclasses of
-//! \ref MKBindActionBind if you are only interesting in the bindings.
+//! \ref MKBindActionBind if you are only interested in the bindings.
 @property (nonatomic, readonly) NSArray<__kindof MKBindAction*> *actions;
 
 @end

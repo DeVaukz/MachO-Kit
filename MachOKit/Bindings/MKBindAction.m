@@ -48,7 +48,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (nullable Class)classForContext:(struct MKBindContext*)bindContext
++ (Class)classForContext:(struct MKBindContext*)bindContext
 {
     // If we have one or more compatible subclasses, return the best match.
     {

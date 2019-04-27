@@ -59,7 +59,7 @@
         // The provided offset must be within the range of our parent node.
         mk_vm_range_t parentRange = mk_vm_range_make(parentAddress, parentSize);
         if ((err = mk_vm_range_contains_address(parentRange, offset, parentAddress))) {
-            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Provided offset [%" MK_VM_PRIuOFFSET "] is not within parent node: %@.", offset, parent.nodeDescription];
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Provided offset [%" MK_VM_PRIuOFFSET "] is not within parent node: %@.", offset, parent.nodeDescription];
             [self release]; return nil;
         }
         

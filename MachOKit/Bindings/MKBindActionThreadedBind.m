@@ -47,7 +47,7 @@
     uint16_t ordinal = bindContext->threadedBindValue.raw & 0xFFFF;
     
     if (ordinal >= bindContext->ordinalTable.count) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"No entry in ordinalTable for ordinal [% " PRIu16 "].", ordinal];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EOUT_OF_RANGE description:@"No entry in ordinalTable for index [% " PRIu16 "].", ordinal];
         [self release]; return nil;
     }
     
