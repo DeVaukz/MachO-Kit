@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldCPUType.m
+//|             MKNodeFieldCPUSubTypeARM6432.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,53 +25,32 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldCPUType.h"
+#import "MKNodeFieldCPUSubTypeARM6432.h"
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldCPUType
+@implementation MKNodeFieldCPUSubTypeARM6432
 
-static NSDictionary *s_CPUTypes = nil;
+static NSDictionary *s_Types = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldCPUType)
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM6432)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize
 {
-    if (s_CPUTypes != nil && s_Formatter != nil)
+    if (s_Types != nil && s_Formatter != nil)
         return;
     
-    s_CPUTypes = [@{
-        _$(CPU_TYPE_ANY): @"CPU_TYPE_ANY",
-        _$(CPU_TYPE_VAX): @"CPU_TYPE_VAX",
-        /* skip                ((cpu_type_t) 2)    */
-        /* skip                ((cpu_type_t) 3)    */
-        /* skip                ((cpu_type_t) 4)    */
-        /* skip                ((cpu_type_t) 5)    */
-        _$(CPU_TYPE_MC680x0): @"CPU_TYPE_MC680x0",
-        _$(CPU_TYPE_X86): @"CPU_TYPE_X86",
-        _$(CPU_TYPE_X86_64): @"CPU_TYPE_X86_64",
-        /* skip CPU_TYPE_MIPS        ((cpu_type_t) 8)    */
-        /* skip             ((cpu_type_t) 9)    */
-        _$(CPU_TYPE_MC98000): @"CPU_TYPE_MC98000",
-        _$(CPU_TYPE_HPPA): @"CPU_TYPE_HPPA",
-        _$(CPU_TYPE_ARM): @"CPU_TYPE_ARM",
-        _$(CPU_TYPE_ARM64): @"CPU_TYPE_ARM64",
-        _$(CPU_TYPE_ARM64_32): @"CPU_TYPE_ARM64_32",
-        _$(CPU_TYPE_MC88000): @"CPU_TYPE_MC88000",
-        _$(CPU_TYPE_SPARC): @"CPU_TYPE_SPARC",
-        _$(CPU_TYPE_I860): @"CPU_TYPE_I860",
-        /* skip    CPU_TYPE_ALPHA        ((cpu_type_t) 16)    */
-        /* skip                ((cpu_type_t) 17)    */
-        _$(CPU_TYPE_POWERPC): @"CPU_TYPE_POWERPC",
-        _$(CPU_TYPE_POWERPC64): @"CPU_TYPE_POWERPC64"
+    s_Types = [@{
+        _$(CPU_SUBTYPE_ARM64_32_ALL): @"CPU_SUBTYPE_ARM64_32_ALL",
+        _$(CPU_SUBTYPE_ARM64_32_V8): @"CPU_SUBTYPE_ARM64_32_V8"
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];
-    formatter.name = @"CPU_TYPE";
-    formatter.elements = s_CPUTypes;
+    formatter.name = @"CPU_SUBTYPE_ARM64_32";
+    formatter.elements = s_Types;
     formatter.fallbackFormatter = NSFormatter.mk_decimalNumberFormatter;
     s_Formatter = formatter;
 }
@@ -82,7 +61,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKNodeFieldEnumerationElements*)elements
-{ return s_CPUTypes; }
+{ return s_Types; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
@@ -90,7 +69,7 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"CPU Type"; }
+{ return @"ARM64_32 CPU Subtype"; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter

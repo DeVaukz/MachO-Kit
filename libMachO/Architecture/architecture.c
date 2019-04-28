@@ -123,6 +123,11 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
             }
             break;
         }
+        case CPU_TYPE_ARM64_32:
+        {
+            description = "arm64_32";
+            break;
+        }
         case CPU_TYPE_MC88000:
             description = "MC88000";
             break;

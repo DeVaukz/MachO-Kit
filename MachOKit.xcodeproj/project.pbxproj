@@ -422,6 +422,8 @@
 		D074B6DD1A88859B00B5E3E5 /* segment.c in Sources */ = {isa = PBXBuildFile; fileRef = D074B6D91A88859B00B5E3E5 /* segment.c */; };
 		D074B6DE1A88859B00B5E3E5 /* segment.h in Headers */ = {isa = PBXBuildFile; fileRef = D074B6DA1A88859B00B5E3E5 /* segment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D074B6E01A88859B00B5E3E5 /* segment.h in Headers */ = {isa = PBXBuildFile; fileRef = D074B6DA1A88859B00B5E3E5 /* segment.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D076CE232260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.h in Headers */ = {isa = PBXBuildFile; fileRef = D076CE212260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D076CE242260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.m in Sources */ = {isa = PBXBuildFile; fileRef = D076CE222260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.m */; };
 		D07727771A55E14600A517D3 /* MKSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = D07727751A55E14600A517D3 /* MKSymbol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D07727781A55E14600A517D3 /* MKSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = D07727761A55E14600A517D3 /* MKSymbol.m */; };
 		D07985B2200D823A00FF91C8 /* MKMachO+Functions.h in Headers */ = {isa = PBXBuildFile; fileRef = D07985B0200D823900FF91C8 /* MKMachO+Functions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1476,6 +1478,8 @@
 		D07194B82011B69E00B609DB /* MKNodeFieldPointerType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldPointerType.h; sourceTree = "<group>"; };
 		D074B6D91A88859B00B5E3E5 /* segment.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = segment.c; sourceTree = "<group>"; };
 		D074B6DA1A88859B00B5E3E5 /* segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = segment.h; sourceTree = "<group>"; };
+		D076CE212260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldCPUSubTypeARM6432.h; sourceTree = "<group>"; };
+		D076CE222260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldCPUSubTypeARM6432.m; sourceTree = "<group>"; };
 		D07727751A55E14600A517D3 /* MKSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKSymbol.h; sourceTree = "<group>"; };
 		D07727761A55E14600A517D3 /* MKSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKSymbol.m; sourceTree = "<group>"; };
 		D07985B0200D823900FF91C8 /* MKMachO+Functions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MKMachO+Functions.h"; sourceTree = "<group>"; };
@@ -3038,6 +3042,8 @@
 				D082FD3020071F5A00E6C3E5 /* MKNodeFieldCPUSubTypeARM.m */,
 				D082FD332007292600E6C3E5 /* MKNodeFieldCPUSubTypeARM64.h */,
 				D082FD342007292600E6C3E5 /* MKNodeFieldCPUSubTypeARM64.m */,
+				D076CE212260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.h */,
+				D076CE222260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.m */,
 				D082FD3B20072F6F00E6C3E5 /* MKNodeFieldCPUSubTypePowerPC.h */,
 				D082FD3C20072F6F00E6C3E5 /* MKNodeFieldCPUSubTypePowerPC.m */,
 			);
@@ -3621,6 +3627,7 @@
 				D0E30A821E623B480005A882 /* MKNodeFieldNodeType.h in Headers */,
 				D0AE1F59226C36E9009994A9 /* MKBindActionThreadedRebase.h in Headers */,
 				D01C74F91CA73A9F00648CA6 /* MKBindSetDylibOrdinalULEB.h in Headers */,
+				D076CE232260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.h in Headers */,
 				D0E30A891E6289AB0005A882 /* MKNodeFieldTypeOptionSet.h in Headers */,
 				D0A1D8AA19E4EEB80095870C /* _load_command_dyld_info.h in Headers */,
 				D057DB8720C469FD006CB7D3 /* MKNodeFieldObjCClassFlagsType.h in Headers */,
@@ -4199,6 +4206,7 @@
 				D01C750A1CA744DD00648CA6 /* MKBindSetAddendSLEB.m in Sources */,
 				D04269F81DD96EF30091AB2A /* MKOffsetNode+AddressBasedInitialization.m in Sources */,
 				D0A2303B20CDD8D50027249D /* MKUStringSection.m in Sources */,
+				D076CE242260416D00130F2B /* MKNodeFieldCPUSubTypeARM6432.m in Sources */,
 				D0B64B841E5414F000DFBFAD /* MKNodeFieldDeprecated.m in Sources */,
 				D0B9F6D61E580B8000D0B35A /* MKNodeFieldTypeQuadWord.m in Sources */,
 				D0E30A7C1E613A870005A882 /* MKObjectFormatter.m in Sources */,

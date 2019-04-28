@@ -78,6 +78,13 @@ static MKNodeFieldBitfieldMasks *s_Bits = nil;
                 s_ARM64Type = [[MKNodeFieldCPUSubType alloc] initWithCPUSubType:MKNodeFieldCPUSubTypeARM64.sharedInstance];
             return s_ARM64Type;
         }
+        case CPU_TYPE_ARM64_32:
+        {
+            static MKNodeFieldCPUSubType *s_ARM6432Type = nil;
+            if (s_ARM6432Type == nil)
+                s_ARM6432Type = [[MKNodeFieldCPUSubType alloc] initWithCPUSubType:MKNodeFieldCPUSubTypeARM6432.sharedInstance];
+            return s_ARM6432Type;
+        }
         case CPU_TYPE_POWERPC:
         {
             static MKNodeFieldCPUSubType *s_PowerPCType = nil;

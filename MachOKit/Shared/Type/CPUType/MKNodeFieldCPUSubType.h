@@ -39,6 +39,7 @@
 #import <MachOKit/MKNodeFieldCPUSubTypeX86.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeARM.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeARM64.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM6432.h>
 #import <MachOKit/MKNodeFieldCPUSubTypePowerPC.h>
 
 NS_ASSUME_NONNULL_BEGIN

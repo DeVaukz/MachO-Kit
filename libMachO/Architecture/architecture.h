@@ -103,6 +103,10 @@ static const mk_architecture_t mk_architecture_arm64 = { CPU_TYPE_ARM64, CPU_SUB
 _mk_swift_name(mk_architecture_s.arm64e)
 static const mk_architecture_t mk_architecture_arm64e = { CPU_TYPE_ARM64, CPU_SUBTYPE_ARM64E };
 
+//! Architecture for 64-bit ARM CPUs with 32-bit wide pointers.
+_mk_swift_name(mk_architecture_s.arm64_32)
+static const mk_architecture_t mk_architecture_arm64_32 = { CPU_TYPE_ARM64_32, CPU_SUBTYPE_ARM64_32_ALL };
+
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Creating An Architecture

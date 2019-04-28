@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldCPUType.h
+//! @file       MKNodeFieldCPUSubTypeARM6432.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -28,44 +28,24 @@
 #include <MachOKit/macho.h>
 @import Foundation;
 
-#include <mach/machine.h>
-
-#import <MachOKit/MKNodeFieldTypeDoubleWord.h>
-#import <MachOKit/MKNodeFieldEnumerationType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       CPU Types
-//! @relates    MKNodeFieldCPUType
+//! @name       ARM64_32 CPU SubTypes
+//! @relates    MKNodeFieldCPUSubTypeARM6432
 //!
 //
-typedef cpu_type_t MKCPUType NS_TYPED_EXTENSIBLE_ENUM;
-
-static const MKCPUType MKCPUTypeAny               = CPU_TYPE_ANY;
-static const MKCPUType MKCPUTypeVax               = CPU_TYPE_VAX;
-/* skip 2,3,4,5 */
-static const MKCPUType MKCPUTypeMC680x0           = CPU_TYPE_MC680x0;
-static const MKCPUType MKCPUTypeI386              = CPU_TYPE_I386;
-static const MKCPUType MKCPUTypeX86               = CPU_TYPE_X86;
-static const MKCPUType MKCPUTypeX8664             = CPU_TYPE_X86_64;
-/* skip 8,9 */
-static const MKCPUType MKCPUTypeMC98000           = CPU_TYPE_MC98000;
-static const MKCPUType MKCPUTypeHPPA              = CPU_TYPE_HPPA;
-static const MKCPUType MKCPUTypeARM               = CPU_TYPE_ARM;
-static const MKCPUType MKCPUTypeARM64             = CPU_TYPE_ARM64;
-static const MKCPUType MKCPUTypeARM6432           = CPU_TYPE_ARM64_32;
-static const MKCPUType MKCPUTypeMC88000           = CPU_TYPE_MC88000;
-static const MKCPUType MKCPUTypeSPARC             = CPU_TYPE_SPARC;
-static const MKCPUType MKCPUTypeI860              = CPU_TYPE_I860;
-/* skip 16,17 */
-static const MKCPUType MKCPUTypePowerPC           = CPU_TYPE_POWERPC;
-static const MKCPUType MKCPUTypePowerPC64         = CPU_TYPE_POWERPC64;
+NS_SWIFT_NAME(MKCPUSubType.ARM64_32_ALL)
+static const MKCPUSubType MKARM6432CPUSubTypeAll    = CPU_SUBTYPE_ARM64_32_ALL;
+NS_SWIFT_NAME(MKCPUSubType.ARM64_32_V8)
+static const MKCPUSubType MKARM6432CPUSubTypeV8     = CPU_SUBTYPE_ARM64_32_V8;
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+@interface MKNodeFieldCPUSubTypeARM6432 : MKNodeFieldCPUSubTypeAny
 
 + (instancetype)sharedInstance;
 
