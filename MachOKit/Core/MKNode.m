@@ -182,10 +182,12 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
             if (class_getSuperclass(classes[i]) == objc_getClass("SPTSpec"))
                 continue;
             
-            if ([classes[i] isSubclassOfClass:self] == NO)
-                continue;
-            
-            [subclasses addObject:classes[i]];
+            // Calling +isSubclassOfClass: causes the receiver's +initialize
+            // to run (if it has one).  Avoid that.
+            for (Class s = classes[i]; s != nil; s = class_getSuperclass(s)) {
+                if (s == self)
+                    [subclasses addObject:classes[i]];
+            }
         }
         
         retValue = [subclasses copy];
