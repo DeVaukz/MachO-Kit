@@ -35,7 +35,6 @@
 #import "MKSection.h"
 
 _mk_internal NSString * const MKAllSegments = @"MKAllSegments";
-_mk_internal NSString * const MKIndexedSegments = @"MKIndexedSegments";
 _mk_internal NSString * const MKSegmentsByLoadCommand = @"MKSegmentsByLoadCommand";
 _mk_internal NSString * const MKAllSections = @"MKAllSections";
 _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
@@ -52,10 +51,8 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 {
     if (_segments == nil)
     @autoreleasepool {
-        NSMutableArray<MKSegment*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
-        NSMutableDictionary<NSNumber*, MKSegment*> *segmentsByIndex = [[NSMutableDictionary alloc] init];
-        NSMapTable *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
-        NSInteger segmentIndex = -1;
+        NSMutableArray<MKOptional<MKSegment*>*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
+        NSMapTable<id<MKLCSegment>, MKOptional<MKSegment*>*> *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
         
         NSMutableArray<MKSection*> *sections = [[NSMutableArray alloc] init];
         NSMutableDictionary<NSNumber*, MKSection*> *sectionsByIndex = [[NSMutableDictionary alloc] init];
@@ -69,17 +66,22 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             if ([lc conformsToProtocol:@protocol(MKLCSegment)] == NO)
                 continue;
             
-            segmentIndex++;
-            
             MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&segmentError];
-            if (segment == nil) {
-                MK_PUSH_WARNING_WITH_ERROR(segments, MK_EINTERNAL_ERROR, segmentError, @"Could not create segment for load command: %@", lc);
+            if (segment) {
+                MKOptional *segmentOpt = [[MKOptional alloc] initWithValue:segment];
+                [segments addObject:segmentOpt];
+                [segmentsByLoadCommand setObject:segmentOpt forKey:lc];
+                [segmentOpt release];
+            } else {
+                NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:segmentError description:@"Could not create segment for load command: %@", lc];
+                
+                MKOptional *segmentOpt = [[MKOptional alloc] initWithError:error];
+                [segments addObject:segmentOpt];
+                [segmentsByLoadCommand setObject:segmentOpt forKey:lc];
+                [segmentOpt release];
+                
                 continue;
             }
-            
-            [segments addObject:segment];
-            [segmentsByIndex setObject:segment forKey:@(segmentIndex)];
-            [segmentsByLoadCommand setObject:segment forKey:lc];
             
             // Copy all sections from the segment into the sections dictionary
             // for the image.  The index of the section is derived from
@@ -107,16 +109,18 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             }
         }
         
+        NSArray *finalSegments = [segments copy];
+        
         _segments = [@{
-            MKAllSegments: segments,
-            MKIndexedSegments: segmentsByIndex,
+            MKAllSegments: finalSegments,
             MKSegmentsByLoadCommand: segmentsByLoadCommand,
             MKAllSections: sections,
             MKIndexedSections: [NSDictionary dictionaryWithDictionary:sectionsByIndex]
         } retain];
         
+        [finalSegments release];
+        
         [segments release];
-        [segmentsByIndex release];
         [segmentsByLoadCommand release];
         [sections release];
         [sectionsByIndex release];
@@ -126,14 +130,33 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSDictionary*)segments
-{ return self._segments[MKIndexedSegments]; }
+- (NSArray*)segments
+{ return self._segments[MKAllSegments]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)segmentAtIndex:(NSUInteger)index
+{
+    NSArray<MKOptional<MKSegment*>*> *segments = self._segments[MKAllSegments];
+    
+    if (index < segments.count)
+        return segments[index];
+    else
+        return [MKOptional optional];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)segmentForLoadCommand:(id<MKLCSegment>)segmentLoadCommand
+{
+    NSMapTable<id<MKLCSegment>, MKOptional<MKSegment*>*> *segmentsByLoadCommand = self._segments[MKSegmentsByLoadCommand];
+    
+    return [segmentsByLoadCommand objectForKey:segmentLoadCommand] ?: [MKOptional optional];
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)segmentsWithName:(NSString*)name
 {
     // TODO - Check what DYLD would do with duplicate segments.
-    return [self._segments[MKAllSegments] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"name MATCHES %@", name]];
+    return [self._segments[MKAllSegments] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"value.name MATCHES %@", name]];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -160,7 +183,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSArray*)sectionsWithName:(NSString*)sectName inSegmentWithName:(NSString*)segName
-{ return [self sectionsWithName:sectName inSegment:[self segmentsWithName:segName].firstObject]; }
+{ return [self sectionsWithName:sectName inSegment:[self segmentsWithName:segName].firstObject.value]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKPointer
@@ -169,7 +192,11 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKSegment *segment in self._segments[MKAllSegments]) {
+    for (MKOptional<MKSegment*> *s in self._segments[MKAllSegments]) {
+        MKSegment *segment = s.value;
+        if (segment == nil)
+            continue;
+        
         mk_vm_range_t range = mk_vm_range_make(segment.nodeVMAddress, segment.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
             MKOptional *child = [segment childNodeOccupyingVMAddress:address targetClass:targetClass];

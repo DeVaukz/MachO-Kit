@@ -49,13 +49,18 @@
     _offset = rebaseContext->offset;
     
     // Lookup the segment
-    _segment = [self.macho.segments[@(rebaseContext->segmentIndex)] retain];
+    MKOptional<MKSegment*> *segment = [self.macho segmentAtIndex:rebaseContext->segmentIndex];
     // dyld will refuse to load a Mach-O if the segment index is out of bounds.
-    if (_segment == nil) {
+    if (segment.value == nil) {
         // TODO - Do we care?  Could this be a warning instead?
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", rebaseContext->segmentIndex];
+        if (segment.error) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:segment.error description:@"Could not load segment at index [%u].", rebaseContext->segmentIndex];
+        } else {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", rebaseContext->segmentIndex];
+        }
         [self release]; return nil;
     }
+    _segment = [segment.value retain];
     
     // Verify that the fixup location is within the segment
     mk_error_t err;

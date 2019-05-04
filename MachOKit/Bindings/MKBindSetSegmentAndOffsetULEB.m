@@ -84,11 +84,16 @@
     bindContext->derivedOffset = self.offset;
     
     // Lookup the segment
-    bindContext->segment = [self.macho.segments[@(bindContext->segmentIndex)] retain];
-    if (bindContext->segment == nil) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", bindContext->segmentIndex];
+    MKOptional<MKSegment*> *segment = [self.macho segmentAtIndex:bindContext->segmentIndex];
+    if (segment.value == nil) {
+        if (segment.error) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:segment.error description:@"Could not load segment at index [%u].", bindContext->segmentIndex];
+        } else {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No segment at index [%u].", bindContext->segmentIndex];
+        }
         return NO;
     }
+    bindContext->segment = segment.value; // No retain
     
     return YES;
 }

@@ -46,9 +46,13 @@
     boolean_t expectLinkEdit = (image.header.filetype != MH_OBJECT);
     
     // Make sure there is a __LINKEDIT segment.
-    MKSegment *linkeditSegment = [image segmentsWithName:@SEG_LINKEDIT].firstObject;
-    if (linkeditSegment == nil && expectLinkEdit) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not have a __LINKEDIT segment."];
+    MKOptional<MKSegment*> *linkeditSegment = [image segmentsWithName:@SEG_LINKEDIT].firstObject;
+    if (linkeditSegment.value == nil && expectLinkEdit) {
+        if (linkeditSegment.error) {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:linkeditSegment.error description:@"Could not load __LINKEDIT segment."];
+        } else {
+            MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Image does not have a __LINKEDIT segment."];
+        }
         [self release]; return nil;
     }
     
@@ -57,21 +61,21 @@
     
     // Despite the image being our real parent node, all of our data should
     // be within the __LINKEDIT segment.
-    _memoryMap = expectLinkEdit ? linkeditSegment.memoryMap : image.memoryMap;
+    _memoryMap = expectLinkEdit ? linkeditSegment.value.memoryMap : image.memoryMap;
     NSParameterAssert(_memoryMap);
     
     if (image.isFromMemory)
     {
         // MH_OBJECT files should never be loaded from memory.
-        NSAssert(linkeditSegment, @"Memory mapped images must have a __LINKEDIT segment.");
+        NSAssert(linkeditSegment.value, @"Memory mapped images must have a __LINKEDIT segment.");
         
-        if ((err = mk_vm_address_apply_offset(linkeditSegment.vmAddress, offset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, linkeditSegment.vmAddress, offset);
+        if ((err = mk_vm_address_apply_offset(linkeditSegment.value.vmAddress, offset, &_nodeContextAddress))) {
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, linkeditSegment.value.vmAddress, offset);
             [self release]; return nil;
         }
         
-        if ((err = mk_vm_address_subtract(_nodeContextAddress, linkeditSegment.fileOffset, &_nodeContextAddress))) {
-            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, _nodeContextAddress, linkeditSegment.fileOffset);
+        if ((err = mk_vm_address_subtract(_nodeContextAddress, linkeditSegment.value.fileOffset, &_nodeContextAddress))) {
+            MK_ERROR_OUT = MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(err, _nodeContextAddress, linkeditSegment.value.fileOffset);
             [self release]; return nil;
         }
         

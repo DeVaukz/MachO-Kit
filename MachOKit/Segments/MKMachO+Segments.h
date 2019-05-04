@@ -45,9 +45,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! The segments referenced by any \c LC_SEGMENT or \c LC_SEGMENT64 present
 //! in the Mach-O load commands.
-@property (nonatomic, readonly) NSDictionary<NSNumber*, MKSegment*> *segments;
+@property (nonatomic, readonly) NSArray<MKOptional<__kindof MKSegment*>*> *segments;
 
-- (NSArray<__kindof MKSegment*> *)segmentsWithName:(NSString*)name;
+- (MKOptional<__kindof MKSegment*> *)segmentAtIndex:(NSUInteger)index;
+
+- (MKOptional<__kindof MKSegment*> *)segmentForLoadCommand:(id<MKLCSegment>)segmentLoadCommand;
+
+- (NSArray<MKOptional<__kindof MKSegment*>*> *)segmentsWithName:(NSString*)name;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Sections
