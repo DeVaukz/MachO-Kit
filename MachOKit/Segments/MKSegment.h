@@ -50,7 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
     //
     NSString *_name;
     id<MKLCSegment> _loadCommand;
-    NSSet<__kindof MKSection*> *_sections;
+    NSArray<MKOptional<MKSection*>*> *_sections;
+    NSMapTable<id<MKLCSection>, MKOptional<MKSection*>*> *_sectionsByLoadCommand;
     //
     mk_vm_address_t _vmAddress;
     mk_vm_size_t _vmSize;
@@ -115,13 +116,17 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Sections
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-//! A set of \ref MKSection instances, each representing a section within
+//! A list of \ref MKSection instances, each representing a section within
 //! the segment.
-@property (nonatomic, readonly) NSSet<__kindof MKSection*> *sections;
+@property (nonatomic, readonly) NSArray<MKOptional<__kindof MKSection*>*> *sections;
+
+//! Returns the \ref MKSection from the \ref sections array at the given
+//! \a index.
+- (MKOptional<__kindof MKSection*> *)segmentAtIndex:(NSUInteger)index;
 
 //! Returns the \ref MKSection from the \ref sections array that is identified
 //! by the provided load command.
-- (nullable MKSection*)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand;
+- (MKOptional<__kindof MKSection*> *)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand;
 
 @end
 

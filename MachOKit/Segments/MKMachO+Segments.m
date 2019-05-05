@@ -92,7 +92,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
                 NSArray *sectionLoadCommands = segment.loadCommand.sections;
                 
                 for (uint32_t i=0; i<sectionLoadCommands.count; i++) {
-                    id section = [segment sectionForLoadCommand:sectionLoadCommands[i]];
+                    id section = [segment sectionForLoadCommand:sectionLoadCommands[i]].value;
                     
                     // If the section for a load command could not be created,
                     // skip all remaining sections in this segment.

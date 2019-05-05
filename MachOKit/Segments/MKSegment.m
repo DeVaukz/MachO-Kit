@@ -176,20 +176,29 @@
             MK_PUSH_WARNING(sections, MK_EINVALID_DATA, @"Segment load command specifies [%" PRIu32 "] sections but only [%" PRIuPTR "] were parsed by the load command.", [(MKLCSegment*)segmentLoadCommand nsects], sections.count);
         }
         
-        NSMutableSet *segmentSections = [[NSMutableSet alloc] init];
+        NSMutableArray<MKOptional<MKSection*>*> *segmentSections = [[NSMutableArray alloc] init];
+        NSMapTable<id<MKLCSection>, MKOptional<MKSection*>*> *segmentSectionsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:0];
         
         for (id<MKLCSection> sectionLoadCommand in sections) {
             NSError *sectionError = nil;
             
             MKSection *section = [MKSection sectionWithLoadCommand:sectionLoadCommand inSegment:self error:&sectionError];
-            if (section == nil) {
-                MK_PUSH_WARNING_WITH_ERROR(sections, MK_EINTERNAL_ERROR, sectionError, @"Could not create section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]);
-                continue;
+            if (section) {
+                MKOptional *sectionOpt = [[MKOptional alloc] initWithValue:section];
+                [segmentSections addObject:sectionOpt];
+                [segmentSectionsByLoadCommand setObject:sectionOpt forKey:sectionLoadCommand];
+                [sectionOpt release];
+            } else {
+                NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:sectionError description:@"Could not create section for load command: %@", [(MKNode*)sectionLoadCommand nodeDescription]];
+                
+                MKOptional *sectionOpt = [[MKOptional alloc] initWithError:error];
+                [segmentSections addObject:sectionOpt];
+                [segmentSectionsByLoadCommand setObject:sectionOpt forKey:sectionLoadCommand];
+                [sectionOpt release];
             }
-            
-            [segmentSections addObject:section];
         }
         
+        _sectionsByLoadCommand = segmentSectionsByLoadCommand;
         _sections = [segmentSections copy];
         [segmentSections release];
     }
@@ -211,6 +220,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_sectionsByLoadCommand release];
     [_sections release];
     [_loadCommand release];
     [_name release];
@@ -239,14 +249,20 @@
 @synthesize sections = _sections;
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKSection*)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand
+- (MKOptional*)segmentAtIndex:(NSUInteger)index
 {
-    for (MKSection *section in self.sections) {
-        if ([section.loadCommand isEqual:sectionLoadCommand])
-            return section;
-    }
+    NSArray<MKOptional<MKSection*>*> *sections = _sections;
     
-    return nil;
+    if (index < sections.count)
+        return sections[index];
+    else
+        return [MKOptional optional];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKOptional*)sectionForLoadCommand:(id<MKLCSection>)sectionLoadCommand
+{
+    return [_sectionsByLoadCommand objectForKey:sectionLoadCommand] ?: [MKOptional optional];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -256,7 +272,11 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKSection *section in self.sections) {
+    for (MKOptional<MKSection*> *s in self.sections) {
+        MKSection *section = s.value;
+        if (section == nil)
+            continue;
+        
         mk_vm_range_t range = mk_vm_range_make(section.nodeVMAddress, section.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
             MKOptional *child = [section childNodeOccupyingVMAddress:address targetClass:targetClass];
