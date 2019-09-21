@@ -4699,7 +4699,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D000F4001AF4B3E90004DAF6 /* Framework.xcconfig */;
 			buildSettings = {
-				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Prefix.pch";
@@ -4717,7 +4716,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D000F4001AF4B3E90004DAF6 /* Framework.xcconfig */;
 			buildSettings = {
-				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				FRAMEWORK_VERSION = A;
 				GCC_PREFIX_HEADER = "Resources/MachOKit-Prefix.pch";
@@ -4758,7 +4756,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FD21895C06F00E9D0CF /* StaticLibrary.xcconfig */;
 			buildSettings = {
-				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				PRODUCT_NAME = MachO;
 			};
@@ -4768,7 +4765,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0079FD21895C06F00E9D0CF /* StaticLibrary.xcconfig */;
 			buildSettings = {
-				"ARCHS[sdk=macosx*]" = "$(ARCHS_STANDARD_32_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				PRODUCT_NAME = MachO;
 			};
