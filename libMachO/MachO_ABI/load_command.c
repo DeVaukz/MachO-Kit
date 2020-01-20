@@ -78,6 +78,8 @@ extern const struct _mk_load_command_vtable _mk_load_command_version_min_tvos_cl
 extern const struct _mk_load_command_vtable _mk_load_command_version_min_watchos_class;
 extern const struct _mk_load_command_vtable _mk_load_command_note_class;
 extern const struct _mk_load_command_vtable _mk_load_command_build_version_class;
+extern const struct _mk_load_command_vtable _mk_load_command_dyld_exports_trie_class;
+extern const struct _mk_load_command_vtable _mk_load_command_dyld_chained_fixups_class;
 
 const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     &_mk_load_command_segment_class,
@@ -130,7 +132,9 @@ const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     &_mk_load_command_version_min_tvos_class,
     &_mk_load_command_version_min_watchos_class,
     &_mk_load_command_note_class,
-    &_mk_load_command_build_version_class
+    &_mk_load_command_build_version_class,
+    &_mk_load_command_dyld_exports_trie_class,
+    &_mk_load_command_dyld_chained_fixups_class,
 };
 const uint32_t _mk_load_command_classes_count = sizeof(_mk_load_command_classes)/sizeof(struct _mk_load_command_vtable*);
 
@@ -387,6 +391,12 @@ mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_comman
             break;
         case LC_BUILD_VERSION:
             load_command->vtable = &_mk_load_command_build_version_class;
+            break;
+        case LC_DYLD_EXPORTS_TRIE:
+            load_command->vtable = &_mk_load_command_dyld_exports_trie_class;
+            break;
+        case LC_DYLD_CHAINED_FIXUPS:
+            load_command->vtable = &_mk_load_command_dyld_chained_fixups_class;
             break;
         default:
             _mkl_error(mk_type_get_context(image.macho), "Unknown load command type [%" PRIu32 "].", lc->cmd);

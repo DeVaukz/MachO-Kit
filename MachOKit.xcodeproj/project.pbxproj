@@ -196,6 +196,18 @@
 		D038B7091A0FFF3A008621AE /* MKDataModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D038B7071A0FFF3A008621AE /* MKDataModel.m */; };
 		D038B70C1A1021AA008621AE /* NSError+MK.h in Headers */ = {isa = PBXBuildFile; fileRef = D038B70A1A1021AA008621AE /* NSError+MK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D038B70D1A1021AA008621AE /* NSError+MK.m in Sources */ = {isa = PBXBuildFile; fileRef = D038B70B1A1021AA008621AE /* NSError+MK.m */; };
+		D0399E3523D50C6D0055C2D4 /* load_command_dyld_exports_trie.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E3323D50C6D0055C2D4 /* load_command_dyld_exports_trie.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E3623D50C6D0055C2D4 /* load_command_dyld_exports_trie.c in Sources */ = {isa = PBXBuildFile; fileRef = D0399E3423D50C6D0055C2D4 /* load_command_dyld_exports_trie.c */; };
+		D0399E4523D50D2E0055C2D4 /* load_command_dyld_exports_trie.c in Sources */ = {isa = PBXBuildFile; fileRef = D0399E3423D50C6D0055C2D4 /* load_command_dyld_exports_trie.c */; };
+		D0399E4623D50D360055C2D4 /* load_command_dyld_exports_trie.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E3323D50C6D0055C2D4 /* load_command_dyld_exports_trie.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E4923D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E4723D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E4A23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E4723D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E4B23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c in Sources */ = {isa = PBXBuildFile; fileRef = D0399E4823D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c */; };
+		D0399E4C23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c in Sources */ = {isa = PBXBuildFile; fileRef = D0399E4823D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c */; };
+		D0399E4F23D511850055C2D4 /* MKLCDyldExportsTrie.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E4D23D511850055C2D4 /* MKLCDyldExportsTrie.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E5023D511850055C2D4 /* MKLCDyldExportsTrie.m in Sources */ = {isa = PBXBuildFile; fileRef = D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */; };
+		D0399E5323D5124E0055C2D4 /* MKLCDyldChainedFixups.h in Headers */ = {isa = PBXBuildFile; fileRef = D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D0399E5423D5124E0055C2D4 /* MKLCDyldChainedFixups.m in Sources */ = {isa = PBXBuildFile; fileRef = D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */; };
 		D03AB4EE20369B8100B492C9 /* MKNodeFieldRebaseType.h in Headers */ = {isa = PBXBuildFile; fileRef = D03AB4EC20369B8100B492C9 /* MKNodeFieldRebaseType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D03AB4EF20369B8100B492C9 /* MKNodeFieldRebaseType.m in Sources */ = {isa = PBXBuildFile; fileRef = D03AB4ED20369B8100B492C9 /* MKNodeFieldRebaseType.m */; };
 		D03CD1621E4FD25300D76CFE /* MKObjCIVarOffset.h in Headers */ = {isa = PBXBuildFile; fileRef = D03CD1601E4FD25300D76CFE /* MKObjCIVarOffset.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1260,6 +1272,14 @@
 		D038B7071A0FFF3A008621AE /* MKDataModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MKDataModel.m; sourceTree = "<group>"; };
 		D038B70A1A1021AA008621AE /* NSError+MK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+MK.h"; sourceTree = "<group>"; };
 		D038B70B1A1021AA008621AE /* NSError+MK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+MK.m"; sourceTree = "<group>"; };
+		D0399E3323D50C6D0055C2D4 /* load_command_dyld_exports_trie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = load_command_dyld_exports_trie.h; sourceTree = "<group>"; };
+		D0399E3423D50C6D0055C2D4 /* load_command_dyld_exports_trie.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = load_command_dyld_exports_trie.c; sourceTree = "<group>"; };
+		D0399E4723D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = load_command_dyld_chained_fixups.h; sourceTree = "<group>"; };
+		D0399E4823D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = load_command_dyld_chained_fixups.c; sourceTree = "<group>"; };
+		D0399E4D23D511850055C2D4 /* MKLCDyldExportsTrie.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKLCDyldExportsTrie.h; sourceTree = "<group>"; };
+		D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKLCDyldExportsTrie.m; sourceTree = "<group>"; };
+		D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKLCDyldChainedFixups.h; sourceTree = "<group>"; };
+		D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKLCDyldChainedFixups.m; sourceTree = "<group>"; };
 		D03AB4EC20369B8100B492C9 /* MKNodeFieldRebaseType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldRebaseType.h; sourceTree = "<group>"; };
 		D03AB4ED20369B8100B492C9 /* MKNodeFieldRebaseType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldRebaseType.m; sourceTree = "<group>"; };
 		D03CD1601E4FD25300D76CFE /* MKObjCIVarOffset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKObjCIVarOffset.h; sourceTree = "<group>"; };
@@ -2280,8 +2300,12 @@
 				D0A1D86919E4EEB80095870C /* load_command_data_in_code.c */,
 				D0A1D86C19E4EEB80095870C /* load_command_dsymtab.h */,
 				D0A1D86B19E4EEB80095870C /* load_command_dsymtab.c */,
+				D0399E4723D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h */,
+				D0399E4823D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c */,
 				D0A1D86E19E4EEB80095870C /* load_command_dyld_environment.h */,
 				D0A1D86D19E4EEB80095870C /* load_command_dyld_environment.c */,
+				D0399E3323D50C6D0055C2D4 /* load_command_dyld_exports_trie.h */,
+				D0399E3423D50C6D0055C2D4 /* load_command_dyld_exports_trie.c */,
 				D0A1D87019E4EEB80095870C /* load_command_dyld_info.h */,
 				D0A1D86F19E4EEB80095870C /* load_command_dyld_info.c */,
 				D0A1D87219E4EEB80095870C /* load_command_dyld_info_only.h */,
@@ -3342,6 +3366,10 @@
 				D02C80961F90862E00EB9393 /* MKLCNote.m */,
 				D0492C4F1F931669009DDD18 /* MKLCBuildVersion.h */,
 				D0492C501F931669009DDD18 /* MKLCBuildVersion.m */,
+				D0399E4D23D511850055C2D4 /* MKLCDyldExportsTrie.h */,
+				D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */,
+				D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */,
+				D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */,
 			);
 			name = "Load Commands";
 			path = Load_Commands;
@@ -3496,6 +3524,7 @@
 				D0B9F6CA1E58076300D0B35A /* MKInternal.h in Headers */,
 				D030302C1A23BF3800288B3E /* MKLCSubClient.h in Headers */,
 				D061B16A1FF71AAC004A3047 /* MKExportTrieBranch.h in Headers */,
+				D0399E4923D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h in Headers */,
 				D03030481A23CE1700288B3E /* MKLCUUID.h in Headers */,
 				D05E7ECE203936E3000C72B7 /* MKRegularSymbol.h in Headers */,
 				D06618701CBB4B18006979A1 /* MKObjCClassData.h in Headers */,
@@ -3521,6 +3550,7 @@
 				D06D596E2013BB6700A99173 /* MKNodeFieldMachOFileType.h in Headers */,
 				D01731791C67EE24007CB0A1 /* MKDSCSlideInfoBitmap.h in Headers */,
 				D0A1E9201B69F3080061843F /* MKDSCMappingInfo.h in Headers */,
+				D0399E4F23D511850055C2D4 /* MKLCDyldExportsTrie.h in Headers */,
 				D0A1D8BC19E4EEB80095870C /* load_command_dyld_info_only.h in Headers */,
 				D0A1D8C619E4EEB80095870C /* load_command_id_dylib.h in Headers */,
 				D06C874A21F53D000006574C /* MKNodeFieldSplitSegmentInfoV1OpcodeType.h in Headers */,
@@ -3534,6 +3564,7 @@
 				D0539BE41A24175700D3A5F0 /* MKMinVersionLoadCommand.h in Headers */,
 				D09145A01E5124B600959648 /* MKNodeFieldDataRecipe.h in Headers */,
 				D0B9F6DC1E58206B00D0B35A /* MKNodeFieldRecipe.h in Headers */,
+				D0399E4623D50D360055C2D4 /* load_command_dyld_exports_trie.h in Headers */,
 				D01C74E91CA7342C00648CA6 /* MKBindingsInfo.h in Headers */,
 				D03030101A22F77700288B3E /* MKLCLoadDylib.h in Headers */,
 				D01C75211CA74C8B00648CA6 /* MKBindDoBindULEBTimesSkippingULEB.h in Headers */,
@@ -3726,6 +3757,7 @@
 				D09A1952203004DD0053181B /* MKNodeFieldExportKindType.h in Headers */,
 				D0A1E90C1B69E4130061843F /* MKDSCHeader.h in Headers */,
 				D0A1D8BA19E4EEB80095870C /* load_command_dyld_info.h in Headers */,
+				D0399E5323D5124E0055C2D4 /* MKLCDyldChainedFixups.h in Headers */,
 				D06D59C720156DB500A99173 /* MKNodeFieldBooleanType.h in Headers */,
 				D09145A81E51320900959648 /* MKNodeFieldOperationReadKeyPath.h in Headers */,
 				D0A1D8D419E4EEB80095870C /* load_command_reexport_dylib.h in Headers */,
@@ -3930,6 +3962,7 @@
 				D0A3BBB41A68ECBF00D663A0 /* load_command_function_starts.h in Headers */,
 				D0A3BBAC1A68ECBF00D663A0 /* load_command_dyld_info_only.h in Headers */,
 				D0A3BB8B1A68EC9D00D663A0 /* memory_map_task.h in Headers */,
+				D0399E4A23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.h in Headers */,
 				D0A3BB8A1A68EC9D00D663A0 /* memory_map.h in Headers */,
 				D0A3BBBC1A68ECBF00D663A0 /* load_command_load_dylinker.h in Headers */,
 				D0C563FD1A944E2800443090 /* symbol.h in Headers */,
@@ -3953,6 +3986,7 @@
 				D08634E51C76F2D80094330F /* _mach_trie.h in Headers */,
 				D0A3BB861A68EC9D00D663A0 /* core.h in Headers */,
 				D0A3BBA41A68ECBF00D663A0 /* load_command_data_in_code.h in Headers */,
+				D0399E3523D50C6D0055C2D4 /* load_command_dyld_exports_trie.h in Headers */,
 				D0A3BB831A68EC9D00D663A0 /* macho.h in Headers */,
 				D0A3BBB01A68ECBF00D663A0 /* load_command_encryption_info.h in Headers */,
 				D0A3BBC01A68ECBF00D663A0 /* load_command_main.h in Headers */,
@@ -4230,6 +4264,8 @@
 				D082FD3220071F5A00E6C3E5 /* MKNodeFieldCPUSubTypeARM.m in Sources */,
 				D0A1D8AB19E4EEB80095870C /* _load_command_dylib.c in Sources */,
 				D01C74FA1CA73A9F00648CA6 /* MKBindSetDylibOrdinalULEB.m in Sources */,
+				D0399E4B23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c in Sources */,
+				D0399E5023D511850055C2D4 /* MKLCDyldExportsTrie.m in Sources */,
 				D08C4BFE1A35271600866B93 /* MKNodeField.m in Sources */,
 				D0A1D8B519E4EEB80095870C /* load_command_dsymtab.c in Sources */,
 				D0A1D8C119E4EEB80095870C /* load_command_encryption_info_64.c in Sources */,
@@ -4267,6 +4303,7 @@
 				D082FD3E20072F6F00E6C3E5 /* MKNodeFieldCPUSubTypePowerPC.m in Sources */,
 				D06618511CBB2813006979A1 /* MKObjCElementList.m in Sources */,
 				D0A92F3D2002D9530001C18D /* MKNodeFieldCPUType.m in Sources */,
+				D0399E5423D5124E0055C2D4 /* MKLCDyldChainedFixups.m in Sources */,
 				D0A1D8B919E4EEB80095870C /* load_command_dyld_info.c in Sources */,
 				D096B04A201C2B77003DA008 /* MKNodeFieldSectionType.m in Sources */,
 				D0FF4F28201B05250095106A /* MKNodeFieldSegmentFlagsType.m in Sources */,
@@ -4511,6 +4548,7 @@
 				D0539BCD1A23DCD700D3A5F0 /* MKDylibLoadCommand.m in Sources */,
 				D08E5ECE1B771E1E009185FE /* MKDSCDylibInfos.m in Sources */,
 				D09145B21E51431D00959648 /* NSFormatter+MKNodeField.m in Sources */,
+				D0399E4523D50D2E0055C2D4 /* load_command_dyld_exports_trie.c in Sources */,
 				D068865A21F050B500F5E158 /* MKSplitSegmentInfoV1Terminator.m in Sources */,
 				D01C75061CA743EE00648CA6 /* MKBindSetTypeImmediate.m in Sources */,
 				D0A1D8E319E4EEB80095870C /* load_command_sub_client.c in Sources */,
@@ -4594,6 +4632,7 @@
 				D00EA1A41C61CD51002B0696 /* load_command_version_min_watchos.c in Sources */,
 				D0A3BBBF1A68ECBF00D663A0 /* load_command_load_weak_dylib.c in Sources */,
 				D0A3BBC91A68ECBF00D663A0 /* load_command_routines_64.c in Sources */,
+				D0399E3623D50C6D0055C2D4 /* load_command_dyld_exports_trie.c in Sources */,
 				D0A3BBBD1A68ECBF00D663A0 /* load_command_load_dylinker.c in Sources */,
 				D0A3BB781A68EC8600D663A0 /* macho.c in Sources */,
 				D0A3BBB91A68ECBF00D663A0 /* load_command_id_dylinker.c in Sources */,
@@ -4639,6 +4678,7 @@
 				D0A3BBC71A68ECBF00D663A0 /* load_command_routines.c in Sources */,
 				D0A3BBA51A68ECBF00D663A0 /* load_command_data_in_code.c in Sources */,
 				D0A3BB7D1A68EC8600D663A0 /* memory_object.c in Sources */,
+				D0399E4C23D50E7C0055C2D4 /* load_command_dyld_chained_fixups.c in Sources */,
 				D0A3BBDF1A68ECBF00D663A0 /* load_command_uuid.c in Sources */,
 				D0492C3E1F928A87009DDD18 /* load_command_build_version.c in Sources */,
 				D0A3BB801A68EC8600D663A0 /* memory_map_self.c in Sources */,
