@@ -126,7 +126,7 @@
     
     for (MKNodeFieldTypeBitfieldMask *bits in _bits) {
         NSNumber *mask = bits.mask;
-        if (mask)
+        if (mask != nil)
             [masks addObject:mask];
     }
     

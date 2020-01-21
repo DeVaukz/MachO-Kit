@@ -38,6 +38,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (uint32_t)canInstantiateWithSectionLoadCommand:(id<MKLCSection>)sectionLoadCommand inSegment:(MKSegment*)segment
 {
+#pragma unused (segment)
     if (self != MKCFStringSection.class)
         return 0;
     

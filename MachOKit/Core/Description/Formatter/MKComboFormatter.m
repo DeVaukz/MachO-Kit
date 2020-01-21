@@ -72,7 +72,7 @@
 {
     [aCoder encodeObject:self.rawValueFormatter forKey:@"rawValueFormatter"];
     [aCoder encodeObject:self.refinedValueFormatter forKey:@"refinedValueFormatter"];
-    [aCoder encodeInteger:self.style forKey:@"style"];
+    [aCoder encodeInteger:(NSInteger)self.style forKey:@"style"];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

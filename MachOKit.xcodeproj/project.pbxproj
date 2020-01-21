@@ -4072,7 +4072,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D0A3BB731A68EB9D00D663A0 = {
@@ -4082,7 +4082,7 @@
 			};
 			buildConfigurationList = D02FEB301890FF88004E88ED /* Build configuration list for PBXProject "MachOKit" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,

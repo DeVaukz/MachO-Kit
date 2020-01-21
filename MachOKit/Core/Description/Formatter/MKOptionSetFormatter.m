@@ -68,7 +68,7 @@
 - (void)encodeWithCoder:(NSCoder*)aCoder
 {
     [aCoder encodeObject:self.options forKey:@"options"];
-    [aCoder encodeInteger:self.zeroBehavior forKey:@"zeroBehavior"];
+    [aCoder encodeInteger:(NSInteger)self.zeroBehavior forKey:@"zeroBehavior"];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

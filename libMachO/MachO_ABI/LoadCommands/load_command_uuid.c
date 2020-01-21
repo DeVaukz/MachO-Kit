@@ -31,7 +31,7 @@
 static size_t
 _mk_load_command_uuid_copy_description(mk_load_command_ref load_command, char *output, size_t output_len)
 {
-    struct uuid_command *mach_uuid_command = (struct uuid_command*)load_command.load_command->mach_load_command;
+    struct uuid_command *mach_uuid_command;
     char uuid_pretty_print[sizeof(mach_uuid_command->uuid) * 2 + 4 + 1];
     mk_load_command_uuid_copy_prety_uuid(load_command, true, uuid_pretty_print, sizeof(uuid_pretty_print));
     

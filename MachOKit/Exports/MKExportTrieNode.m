@@ -154,7 +154,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 		NSError *branchError = nil;
 		
 		if ([self.memoryMap copyBytesAtOffset:offset fromAddress:self.nodeContextAddress into:&_childCount length:sizeof(uint8_t) requireFull:YES error:&branchError] < sizeof(uint8_t)) {
-			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:branchError description:@"Could not read child count."];;
+			MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:branchError description:@"Could not read child count."];
 			[self release]; return nil;
 		}
 		if ((err = mk_vm_offset_add(offset, 1, &offset))) {

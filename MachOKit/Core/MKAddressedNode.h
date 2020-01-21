@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       Node Address Types
 //! @relates    MKAddressedNode
 //!
-typedef NS_ENUM(NSUInteger, MKNodeAddressType) {
+typedef NS_CLOSED_ENUM(NSUInteger, MKNodeAddressType) {
 	//! The address of the node with respect to its \ref memoryMap.
 	//!
 	//! @details

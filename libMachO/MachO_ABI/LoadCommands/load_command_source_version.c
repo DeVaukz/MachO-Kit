@@ -97,7 +97,7 @@ mk_load_command_source_version_copy_version_string(mk_load_command_ref load_comm
     _MK_LOAD_COMMAND_NOT_NULL(load_command, return 0);
     _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_source_version_class, return 0);
     
-    uint32_t components[5];
+    uint32_t components[5] = {0};
     mk_load_command_source_version_copy_components(load_command, components);
     
     return (size_t)snprintf(output, output_len, "%i.%i.%i.%i.%i", components[0], components[1], components[2], components[3], components[4]);
