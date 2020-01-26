@@ -104,6 +104,7 @@
         case MH_OBJECT:
         case MH_EXECUTE:
         case MH_DYLIB:
+        case MH_DYLINKER:
             break;
         default:
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unsupported file type: %" PRIx32 ".", _header.filetype];
@@ -381,6 +382,9 @@
             break;
         case MH_DYLIB:
             kind = @"Shared Library";
+            break;
+        case MH_DYLINKER:
+            kind = @"Dynamic Link Editor";
             break;
         default:
             kind = @"Mach-O Image";

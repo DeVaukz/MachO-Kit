@@ -99,6 +99,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     switch (header.filetype) {
         case MH_EXECUTE:
         case MH_DYLIB:
+        case MH_DYLINKER:
         case MH_BUNDLE:
             break;
         default:
