@@ -266,7 +266,7 @@
 - (BOOL)isFromSharedCache
 {
     // 0x80000000 is the private in-shared-cache bit
-    return !!(self.header.flags & 0x80000000);
+    return !!(self.header.flags & MH_DYLIB_IN_CACHE);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
