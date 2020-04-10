@@ -27,8 +27,6 @@
 
 #include "core_internal.h"
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-
 //----------------------------------------------------------------------------//
 #pragma mark -  Classes
 //----------------------------------------------------------------------------//
@@ -249,5 +247,3 @@ mk_memory_map_task_free(mk_memory_map_task_t *task_map)
     
     return MK_ESUCCESS;
 }
-
-#endif

@@ -28,8 +28,6 @@
 #import "_MKTaskMemoryMap.h"
 #import "MKInternal.h"
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-
 //----------------------------------------------------------------------------//
 @implementation _MKTaskMemoryMap
 
@@ -227,5 +225,3 @@
 }
 
 @end
-
-#endif

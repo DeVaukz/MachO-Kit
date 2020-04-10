@@ -38,10 +38,36 @@
 #include "base.h"
 
 #include <mach/mach.h>
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-#   include <mach/mach_vm.h>
-#   define MK_HAVE_MACH_VM 1
-#endif
+
+kern_return_t mach_vm_allocate
+(
+        vm_map_t target,
+        mach_vm_address_t *address,
+        mach_vm_size_t size,
+        int flags
+);
+
+kern_return_t mach_vm_deallocate
+(
+    vm_map_t target,
+    mach_vm_address_t address,
+    mach_vm_size_t size
+);
+
+kern_return_t mach_vm_map
+(
+    vm_map_t target_task,
+    mach_vm_address_t *address,
+    mach_vm_size_t size,
+    mach_vm_offset_t mask,
+    int flags,
+    mem_entry_name_port_t object,
+    memory_object_offset_t offset,
+    boolean_t copy,
+    vm_prot_t cur_protection,
+    vm_prot_t max_protection,
+    vm_inherit_t inheritance
+);
 
 //! @addtogroup CORE
 //! @{
@@ -94,25 +120,13 @@
 #define MK_VM_PRIiSLIDE PRIi64
 
 //! Architecture-independent VM address type.
-#if MK_HAVE_MACH_VM
-    typedef mach_vm_address_t mk_vm_address_t;
-#else
-    typedef uint64_t mk_vm_address_t;
-#endif
+typedef mach_vm_address_t mk_vm_address_t;
 
 //! Architecture-independent VM size type.
-#if MK_HAVE_MACH_VM
-    typedef mach_vm_size_t mk_vm_size_t;
-#else
-    typedef uint64_t mk_vm_size_t;
-#endif
+typedef mach_vm_size_t mk_vm_size_t;
 
 //! Architecture-independent VM offset type.
-#if MK_HAVE_MACH_VM
-	typedef mach_vm_offset_t mk_vm_offset_t;
-#else
-	typedef uint64_t mk_vm_offset_t;
-#endif
+typedef mach_vm_offset_t mk_vm_offset_t;
 
 //! Architecture-independent VM slide type.
 typedef int64_t mk_vm_slide_t;

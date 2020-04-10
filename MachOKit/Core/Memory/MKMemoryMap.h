@@ -44,11 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
 //! at the provided \a fileURL.
 + (nullable instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error;
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 //! Creates and returns an \ref MKMemoryMap for the contents of another
 //! task's memory.
 + (nullable instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error;
-#endif
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  About Context Memory
