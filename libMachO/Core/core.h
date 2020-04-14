@@ -201,6 +201,10 @@ mk_vm_range_start(mk_vm_range_t range);
 _mk_export mk_vm_address_t
 mk_vm_range_end(mk_vm_range_t range);
 
+//! Returns the length of \a range.
+_mk_export mk_vm_size_t
+mk_vm_range_length(mk_vm_range_t range);
+
 //! Returns \ref MK_ESUCCESS if (\a address + \a offset) is within \a range.
 _mk_export mk_error_t
 mk_vm_range_contains_address(mk_vm_range_t range, mk_vm_offset_t offset, mk_vm_address_t address);
@@ -281,6 +285,12 @@ mk_vm_size_multiply(mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result
 //! \a result is unmodified.
 _mk_export mk_error_t
 mk_vm_size_add_with_multiply(mk_vm_size_t base, mk_vm_size_t size, uint64_t multiplier, mk_vm_size_t *result);
+
+//! Safely computes \a left - \a right and stores the result in \a result.
+//! If \a right > \a left, \ref MK_EUNDERFLOW is returned and \a result is
+//! unmodified.
+_mk_export mk_error_t
+mk_vm_size_subtract_offset(mk_vm_size_t left, mk_vm_offset_t right, mk_vm_size_t *result);
 
 
 //----------------------------------------------------------------------------//

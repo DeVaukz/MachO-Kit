@@ -36,7 +36,7 @@ _mk_mach_trie_copy_uleb128(const uint8_t* p, const uint8_t* end, uint64_t *outpu
     int		 bit = 0;
     
     do {
-        if (&p[i] == end)
+        if (&p[i] >= end)
             return MK_EOUT_OF_RANGE;
         
         uint64_t slice = p[i] & 0x7f;
@@ -64,7 +64,7 @@ _mk_mach_trie_copy_sleb128(const uint8_t* p, const uint8_t* end, int64_t *output
     uint8_t byte;
     
     do {
-        if (&p[i] == end)
+        if (&p[i] >= end)
             return MK_EOUT_OF_RANGE;
         
         byte = p[i++];

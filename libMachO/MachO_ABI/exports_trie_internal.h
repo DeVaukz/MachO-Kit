@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       macho_abi_internal.h
+//! @file       exports_trie_internal.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,24 +25,34 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#ifndef _macho_abi_internal_h
-#define _macho_abi_internal_h
+#ifndef _exports_trie_internal_h
+#define _exports_trie_internal_h
+#ifndef DOXYGEN
 
-#include "core_internal.h"
-#include "macho_abi.h"
+#include "exports_trie.h"
 
-#include "_mach_lcstr.h"
-#include "_mach_trie.h"
+//! @addtogroup MACH
+//! @{
+//!
 
-#include "macho_image_internal.h"
-#include "load_command_internal.h"
-#include "segment_internal.h"
-#include "section_internal.h"
-#include "export_internal.h"
-#include "symbol_internal.h"
-#include "string_table_internal.h"
-#include "exports_trie_internal.h"
-#include "symbol_table_internal.h"
-#include "indirect_symbol_table_internal.h"
+//----------------------------------------------------------------------------//
+#pragma mark -  Classes
+//! @name       Classes
+//----------------------------------------------------------------------------//
 
-#endif /* _macho_abi_internal_h */
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+//! Member function table declaration for the \c exports_trie type.
+//
+struct _mk_exports_trie_vtable {
+    __MK_RUNTIME_TYPE_BASE
+};
+
+//! The member function table for the \c exports_trie type.
+_mk_internal_extern
+const struct _mk_exports_trie_vtable _mk_exports_trie_class;
+
+
+//! @} MACH !//
+
+#endif
+#endif /* _exports_trie_internal_h */

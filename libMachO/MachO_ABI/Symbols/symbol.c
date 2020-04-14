@@ -68,12 +68,12 @@ mk_symbol_init(mk_symbol_table_ref symbol_table, mk_macho_nlist_ptr nlist, mk_sy
     
     nlist_address = mk_memory_object_unmap_address(mapping, 0, (vm_address_t)nlist.any, nlist_size, NULL);
     if (nlist_address == MK_VM_ADDRESS_INVALID) {
-        _mkl_error(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
+        _mkl_debug(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
         return MK_EINVAL;
     }
     
     if (mk_vm_range_contains_range(mk_symbol_table_get_target_range(symbol_table), mk_vm_range_make(nlist_address, nlist_size), false)) {
-        _mkl_error(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
+        _mkl_debug(mk_type_get_context(symbol_table.symbol_table), "nlist is not within symbol_table.");
         return MK_EINVAL;
     }
     
