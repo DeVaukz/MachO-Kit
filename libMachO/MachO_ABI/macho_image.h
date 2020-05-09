@@ -54,9 +54,8 @@ typedef struct mk_macho_s {
     // See \ref mk_data_model
     mk_data_model_ref data_model;
     
-    // The image's dyld-reported reported vmaddr slide.  This will be zero
-    // for binaries on disk.
-    intptr_t slide;
+    // The slide applied to the image's segments (in the target address space).
+    mk_vm_slide_t slide;
     // The binary image's name/path.
     const char *name;
     
@@ -99,11 +98,12 @@ _mk_export intptr_t mk_macho_image_type;
 //!         The name of the Mach-O binary from which the Mach-O image was
 //!         loaded.  This is only used for logging.
 //! @param  slide
-//!         The slide applied to the Mach-O image.  If parsing a Mach-O image
-//!         loaded in the current process, the slide can be retrieved using the
-//!         \c _dyld_get_image_vmaddr_slide() API.
-//! @param  header_addr
-//!         The address of the Mach-O image in the address space of the
+//!         The slide applied to the segments in the Mach-O image.  All of the
+//!         segments in a Mach-O image have the same slide applied.  If parsing
+//!         a Mach-O image loaded in the current process, the slide can be
+//!         retrieved using the \c _dyld_get_image_vmaddr_slide() API.
+//! @param  address
+//!         The load address of the Mach-O image in the address space of the
 //!         target, accessible via the provided \a memory_map.
 //!         If parsing a Mach-O image loaded in the current process, this
 //!         should be the load address of the image as reported by dyld.
@@ -113,8 +113,13 @@ _mk_export intptr_t mk_macho_image_type;
 //! @param  image
 //!         A valid \ref mk_macho_t structure.
 _mk_export mk_error_t
-mk_macho_init(mk_context_t* ctx, const char* name, intptr_t slide, mk_vm_address_t header_addr,
-              mk_memory_map_ref memory_map, mk_macho_t* image);
+mk_macho_init_with_slide(mk_context_t* ctx, const char* name, mk_vm_slide_t slide, mk_vm_address_t address, mk_memory_map_ref memory_map, mk_macho_t* image);
+
+//! Initializes a Mach-O image object and attempt to derive the slide that
+//! has been applied to image's segments (if any).  If the slide can not
+//! be determined, the initialization fails with \ref MK_EDERIVED.
+_mk_export mk_error_t
+mk_macho_init(mk_context_t* ctx, const char* name, mk_vm_address_t address, mk_memory_map_ref memory_map, mk_macho_t* image);
 
 //! Cleans up resources held by a Mach-O image object.
 _mk_export void
@@ -136,7 +141,7 @@ _mk_export const mk_byteorder_t*
 mk_macho_get_byte_order(mk_macho_ref image);
     
 //! Returns the slide of the specified Mach-O image.
-_mk_export intptr_t
+_mk_export mk_vm_slide_t
 mk_macho_get_slide(mk_macho_ref image);
     
 //! Returns the name that the specified Mach-O image.

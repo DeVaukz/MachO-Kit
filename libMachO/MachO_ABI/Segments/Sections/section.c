@@ -101,7 +101,7 @@ mk_section_init(mk_segment_ref segment, mk_load_command_section section_command,
     
     // Slide the vmAddress
     {
-        mk_vm_slide_t slide = (mk_vm_slide_t)mk_macho_get_slide(image);
+        mk_vm_slide_t slide = mk_macho_get_slide(image);
         
         if ((err = mk_vm_address_apply_slide(vm_address, slide, &vm_address))) {
             _mkl_debug(mk_type_get_context(segment.type), "Arithmetic error [%s] applying slide [%" MK_VM_PRIiSLIDE "] to section VM address [0x%" MK_VM_PRIxADDR "].", mk_error_string(err), slide, vm_address);
@@ -164,9 +164,9 @@ mk_segment_ref mk_section_get_segment(mk_section_ref section)
 mk_vm_range_t
 mk_section_get_target_range(mk_section_ref section)
 {
-    intptr_t slide = mk_macho_get_slide(mk_section_get_macho(section));
+    mk_vm_slide_t slide = mk_macho_get_slide(mk_section_get_macho(section));
     // Safely applying the slide to addr was checked in the initializer.
-    return mk_vm_range_make(mk_section_get_addr(section) + (vm_offset_t)slide, mk_section_get_size(section));
+    return mk_vm_range_make(mk_section_get_addr(section) + (mk_vm_offset_t)slide, mk_section_get_size(section));
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
