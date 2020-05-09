@@ -14,9 +14,7 @@ Mach-O Kit is designed to be easy to use while still exposing all the details of
 
 ## Getting Started
 
-Mach-O Kit supports 32/64 bit OS X 10.10+, iOS 8.0+, and tvOS 9.0+.
-
-*NOTE*: Mach-O Kit can build with older versions of Xcode.  However, the unit tests require the latest Xcode or command line tools to pass.
+Mach-O Kit supports macOS 10.10+, iOS 8.0+, and tvOS 9.0+ (and possibly older verions).
 
 ### Obtaining Mach-O Kit
 
