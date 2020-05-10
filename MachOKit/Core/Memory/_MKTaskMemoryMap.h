@@ -27,7 +27,7 @@
 
 #include <MachOKit/macho.h>
 #include <mach/mach.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #if TARGET_OS_MAC && !TARGET_OS_IPHONE
 

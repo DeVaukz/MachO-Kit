@@ -25,7 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #define OTOOL_PATH "/usr/bin/otool"
 #define XCRUN_PATH "/usr/bin/xcrun"
