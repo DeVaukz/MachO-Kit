@@ -31,7 +31,7 @@
 @implementation NSArray (MKTests)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (void)mk_sliceWithTest:(BOOL (^)(id obj))test andEnumerate:(void (^)(id seperator, NSArray<id> *slice))enumerator
+- (void)mk_sliceWithTest:(NS_NOESCAPE BOOL (^)(id obj))test andEnumerate:(NS_NOESCAPE void (^)(id seperator, NSArray<id> *slice))enumerator
 {
     NSRange range = NSMakeRange(0, 0);
     
@@ -54,7 +54,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (void)mk_sliceWithHeirarchyTest:(NSUInteger (^)(id obj))test andEnumerate:(void (^)(id header, NSArray<id> *children))enumerator
+- (void)mk_sliceWithHeirarchyTest:(NS_NOESCAPE NSUInteger (^)(id obj))test andEnumerate:(NS_NOESCAPE void (^)(id header, NSArray<id> *children))enumerator
 {
     if (self.count < 1)
         return;

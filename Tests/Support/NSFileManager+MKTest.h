@@ -31,6 +31,7 @@
 typedef NS_OPTIONS(NSUInteger, MKExecutableType) {
     MKFrameworkTypeOSX                          = 1<<0,
     MKFrameworkTypeiOSMac                       = 1<<1,
+    MKFrameworkTypeiOSSimulator                 = 1<<2,
     MKFrameworkTypeAll                          = 0xFF,
 };
 
