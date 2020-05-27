@@ -27,6 +27,7 @@
 
 #import "MKPtr.h"
 #import "MKInternal.h"
+#import "MKMachO.h"
 #import "MKPointer.h"
 
 #define OPAQUE_RESERVED_MASK            (uintptr_t)(7U)
@@ -65,6 +66,20 @@ bool
 MKPtrInitialize(struct MKPtr *ptr, MKBackedNode *node, mk_vm_address_t addr, NSDictionary *ctx, __unused NSError **error)
 {
     NSCParameterAssert([node isKindOfClass:MKBackedNode.class]);
+    
+    // If the image has been processed by dyld, the pointer points to the actual
+    // (slid) address of the pointee. MKPtr instead expects the address to follow
+    // MKNodeVMAddress semantics, so we must adjust for that.
+    // TODO - Add a test for this situation, and check if there are edge cases
+    // where dyld doesn't slide the pointer
+    MKMachOImage *image = [node nearestAncestorOfType:MKMachOImage.class];
+    if (image && image.isFromMemory) {
+        // TODO - For some reason, mk_vm_address_remove_slide thinks that
+        // `(mk_vm_address_t)(slide * -1) > addr` is true, so it returns
+        // MK_EUNDERFLOW. I'm not sure whether that's a bug here or in
+        // that function, but it should probably be looked into.
+        addr -= image.slide;
+    }
     
     ptr->parent = node;
     ptr->address = addr;
