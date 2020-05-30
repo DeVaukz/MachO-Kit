@@ -202,7 +202,7 @@ mk_vm_address_remove_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_addr
         
     } else {
         // Check for underflow
-        if ((mk_vm_address_t)(slide * -1) > addr)
+        if ((mk_vm_address_t)slide > addr)
             return MK_EUNDERFLOW;
         
         if (result != NULL)
