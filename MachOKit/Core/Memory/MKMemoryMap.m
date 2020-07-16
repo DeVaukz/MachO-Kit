@@ -128,7 +128,7 @@
     __block NSError *localError;
     
     [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:requireFull withHandler:^(vm_address_t address, vm_size_t mappingLength, NSError *error) {
-        localError = error;
+        localError = [error retain];
         if (error)
             return;
         
@@ -136,7 +136,7 @@
         retValue = (vm_size_t)length;
     }];
     
-    MK_ERROR_OUT = localError;
+    MK_ERROR_OUT = [localError autorelease];
     return retValue;
 }
 
