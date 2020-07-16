@@ -173,18 +173,18 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
         
         unsigned classCount;
         Class *classes = objc_copyClassList(&classCount);
-        
+        Class specClass = objc_getClass("SPTSpec");
+
         for (unsigned int i=0; i<classCount; i++) {
-            if (class_getClassMethod(classes[i], @selector(isSubclassOfClass:)) == NULL)
-                continue;
-            
+            Class cls = classes[i];
+
             // Without this, Specta breaks.  Technically only needed during testing.
-            if (class_getSuperclass(classes[i]) == objc_getClass("SPTSpec"))
+            if (specClass && class_getSuperclass(cls) == specClass)
                 continue;
-            
+
             // Calling +isSubclassOfClass: causes the receiver's +initialize
             // to run (if it has one).  Avoid that.
-            for (Class s = classes[i]; s != nil; s = class_getSuperclass(s)) {
+            for (Class s = cls; s != nil; s = class_getSuperclass(s)) {
                 if (s == self)
                     [subclasses addObject:classes[i]];
             }
@@ -197,13 +197,6 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
         
         if (cache)
             objc_storeWeak(cache, retValue);
-        
-        // We autorelease the returned set in order to force our cached
-        // subclasses to be flushed when the autorelease pool next drains.
-        // We can't cache the subclasses for too long because our client may
-        // load additional bundles or frameworks at runtime which may augment
-        // the available subclasses.
-        [retValue autorelease];
     }
     
     NSAssert(retValue != nil, @"Expected to have a list of subclasses before returning.");
