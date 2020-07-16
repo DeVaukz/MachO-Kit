@@ -50,7 +50,7 @@ intptr_t mk_macho_image_type = (intptr_t)&_mk_macho_image_class;
 
 //|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
-mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address_t header_addr, mk_memory_map_ref memory_map, mk_macho_t *image)
+mk_macho_init_with_slide(mk_context_t *ctx, const char *name, mk_vm_slide_t slide, mk_vm_address_t address, mk_memory_map_ref memory_map, mk_macho_t *image)
 {
     if (image == NULL) return MK_EINVAL;
     if (name == NULL) return MK_EINVAL;
@@ -58,7 +58,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     
     // TODO - Support negative slides.
     if (slide < 0) {
-        _mkl_debug(ctx, "Negative slide [%" PRIiPTR "] is not currently supported.", slide);
+        _mkl_debug(ctx, "Negative slide [%" MK_VM_PRIiSLIDE "] is not currently supported.", slide);
         return MK_EINVAL;
     }
     
@@ -70,7 +70,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     image->name = name;
     
     struct mach_header header;
-    if (mk_memory_map_copy_bytes(memory_map, 0, header_addr, &header, sizeof(header), true, &err) < sizeof(header)) {
+    if (mk_memory_map_copy_bytes(memory_map, 0, address, &header, sizeof(header), true, &err) < sizeof(header)) {
         _mkl_debug(ctx, "Failed to read the Mach-O header.");
         return err;
     }
@@ -99,6 +99,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     switch (header.filetype) {
         case MH_EXECUTE:
         case MH_DYLIB:
+        case MH_DYLINKER:
         case MH_BUNDLE:
             break;
         default:
@@ -107,7 +108,7 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     }
     
     // Map in the header + load commands.
-    if (mk_memory_map_init_object(memory_map, 0, header_addr, (mk_vm_size_t)header.sizeofcmds + image->header_size, true, &image->header_mapping)) {
+    if (mk_memory_map_init_object(memory_map, 0, address, (mk_vm_size_t)header.sizeofcmds + image->header_size, true, &image->header_mapping)) {
         _mkl_debug(ctx, "Failed to map Mach-O header.");
         return err;
     }
@@ -122,6 +123,105 @@ mk_macho_init(mk_context_t *ctx, const char *name, intptr_t slide, mk_vm_address
     
     image->vtable = &_mk_macho_image_class;
     return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_macho_init(mk_context_t *ctx, const char *name, mk_vm_address_t address, mk_memory_map_ref memory_map, mk_macho_t *image)
+{
+    mk_error_t err;
+    
+    err = mk_macho_init_with_slide(ctx, name, 0, address, memory_map, image);
+    if (err != MK_ESUCCESS)
+        return err;
+    
+    // dyld has two approaches to computing the image slide.
+    //
+    // In dyld2 mode, when mapping an image that requires sliding
+    // ImageLoaderMachO::assignSegmentAddresses() computes the slide as
+    // the difference between the start of the mapping for the first sgement
+    // and the preferred load address of the first segment (that is, the value
+    // in the 'vmaddr' field of the segment load command).  Here,
+    // 'first segment' refers to the segment with the lowest preferred load
+    // address.
+    //
+    // NOTE: This approach is not used for determining the slide of the main
+    // executable.  The executable's slide is provided to dyld by the kernel.
+    //
+    // Another approach, implemented in both ImageLoaderMachO::computeSlide()
+    // (for dyld2) and MachOLoaded::getSlide() (for dyld3), computes the slide
+    // as the difference between the load address of the image (i.e, the address
+    // of the Mach-O header) and the preferred load address of the first segment
+    // with the name '__TEXT' that appears in the list of load commands.
+    //
+    // The slide value returned by _dyld_get_image_vmaddr_slide() is
+    // computed using the second approach in both dyld2 and dyld3 mode.
+    //
+    // The 'side' argument passed to a callback registered with
+    // _dyld_register_func_for_add_image() is computed using the first approach
+    // in dyld2 mode and the second approach in dyld3 mode.
+    //
+    // The first approach will be used to determine the slide here.
+    const uint32_t SEGMENT_COMMAND = mk_macho_is_64_bit(image) ? LC_SEGMENT_64 : LC_SEGMENT;
+    mk_vm_address_t low_address = (mk_vm_address_t)(-1);
+    struct load_command *lc = NULL;
+    
+    while ((lc = mk_macho_next_command_type(image, lc, SEGMENT_COMMAND, NULL)) != NULL) {
+        mk_load_command_t load_command;
+        
+        if ((err = mk_load_command_init(image, (struct load_command*)lc, &load_command)))
+            goto slide_fail;
+        
+        mk_vm_address_t segment_vmaddr;
+        mk_vm_size_t segment_vmsize;
+        mk_vm_size_t segment_filesize;
+        
+        if (mk_macho_is_64_bit(image)) {
+            segment_vmaddr = mk_load_command_segment_64_get_vmaddr(&load_command);
+            segment_vmsize = mk_load_command_segment_64_get_vmsize(&load_command);
+            segment_filesize = mk_load_command_segment_64_get_filesize(&load_command);
+            // Sanity check
+            if (segment_vmaddr == UINT64_MAX || segment_vmsize == UINT64_MAX || segment_filesize == UINT64_MAX)
+                goto slide_fail;
+        } else {
+            segment_vmaddr = mk_load_command_segment_get_vmaddr(&load_command);
+            segment_vmsize = mk_load_command_segment_get_vmsize(&load_command);
+            segment_filesize = mk_load_command_segment_get_filesize(&load_command);
+            // Sanity check
+            if (segment_vmaddr == UINT32_MAX || segment_vmsize == UINT32_MAX || segment_filesize == UINT32_MAX)
+                goto slide_fail;
+        }
+        
+        // We need to one additional check to skip the first zero-fill segment
+        // that is not present on disk (__PAGEZERO).  dyld does not skip
+        // this segment when determining the first segment, but it should never
+        // appear in a library (xnu maps the main executable's segments and
+        // tells dyld what their slide is).  It is not clear if dyld would
+        // accept a library or bundle image containing a __PAGEZERO segment,
+        // and what the affect would be on the computation of that image's slide
+        // (TODO).
+        if (segment_vmaddr == 0 && segment_vmsize != 0 && segment_filesize == 0)
+            continue;
+        
+        if (segment_vmaddr < low_address)
+            low_address = segment_vmaddr;
+    }
+    
+    // This assumes that the Mach-O header (the image's load address) is at the
+    // start of the first mapped segment.  It is not clear whether it would be
+    // possible to craft a Mach-O that violates this assumption but would still
+    // be accepted by xnu/dyld (TODO).
+    mk_vm_slide_t slide;
+    if ((err = mk_vm_address_difference(address, low_address, &slide)))
+        goto slide_fail;
+    
+    image->slide = slide;
+    
+    return MK_ESUCCESS;
+    
+slide_fail:
+    mk_macho_free(image);
+    return MK_EDERIVED;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -150,7 +250,7 @@ const mk_byteorder_t* mk_macho_get_byte_order(mk_macho_ref image)
 { return mk_data_model_get_byte_order(image.macho->data_model); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-intptr_t mk_macho_get_slide(mk_macho_ref image)
+mk_vm_slide_t mk_macho_get_slide(mk_macho_ref image)
 { return image.macho->slide; }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -195,7 +295,7 @@ bool mk_macho_is_64_bit(mk_macho_ref image)
 
 //|++++++++++++++++++++++++++++++++++++|//
 bool mk_macho_is_from_shared_cache(mk_macho_ref image)
-{ return !!(mk_macho_get_flags(image) & 0x80000000); }
+{ return !!(mk_macho_get_flags(image) & MH_DYLIB_IN_CACHE); }
 
 //----------------------------------------------------------------------------//
 #pragma mark -  Enumerating Load Commands

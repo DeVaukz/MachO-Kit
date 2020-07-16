@@ -27,7 +27,7 @@
 
 #include <MachOKit/macho.h>
 #include <mach/mach.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #import <MachOKit/MKMemoryMap.h>
 

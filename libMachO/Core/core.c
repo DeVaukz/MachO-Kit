@@ -101,6 +101,13 @@ mk_vm_range_end(mk_vm_range_t range)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
+mk_vm_size_t
+mk_vm_range_length(mk_vm_range_t range)
+{
+    return range.length;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 mk_error_t
 mk_vm_range_contains_address(mk_vm_range_t range, mk_vm_offset_t offset, mk_vm_address_t address)
 {
@@ -195,7 +202,7 @@ mk_vm_address_remove_slide(mk_vm_address_t addr, mk_vm_slide_t slide, mk_vm_addr
         
     } else {
         // Check for underflow
-        if ((mk_vm_address_t)(slide * -1) > addr)
+        if ((mk_vm_address_t)slide > addr)
             return MK_EUNDERFLOW;
         
         if (result != NULL)
@@ -315,6 +322,20 @@ mk_vm_size_add_with_multiply(mk_vm_size_t base, mk_vm_size_t size, uint64_t mult
     
     if (result)
         *result = base + temp;
+    
+    return MK_ESUCCESS;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+mk_error_t
+mk_vm_size_subtract_offset(mk_vm_size_t left, mk_vm_offset_t right, mk_vm_size_t *result)
+{
+    // Check for underflow
+    if (right > left)
+        return MK_EUNDERFLOW;
+    
+    if (result)
+        *result = left - right;
     
     return MK_ESUCCESS;
 }

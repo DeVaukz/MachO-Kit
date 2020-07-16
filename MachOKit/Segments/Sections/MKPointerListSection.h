@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #include <MachOKit/macho.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #import <MachOKit/MKSection.h>
 #import <MachOKit/MKPointerNode.h>

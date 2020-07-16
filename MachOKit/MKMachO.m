@@ -104,6 +104,8 @@
         case MH_OBJECT:
         case MH_EXECUTE:
         case MH_DYLIB:
+        case MH_DYLINKER:
+        case MH_BUNDLE:
             break;
         default:
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"Unsupported file type: %" PRIx32 ".", _header.filetype];
@@ -265,7 +267,7 @@
 - (BOOL)isFromSharedCache
 {
     // 0x80000000 is the private in-shared-cache bit
-    return !!(self.header.flags & 0x80000000);
+    return !!(self.header.flags & MH_DYLIB_IN_CACHE);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -381,6 +383,12 @@
             break;
         case MH_DYLIB:
             kind = @"Shared Library";
+            break;
+        case MH_DYLINKER:
+            kind = @"Dynamic Link Editor";
+            break;
+        case MH_BUNDLE:
+            kind = @"Loadable Bundle";
             break;
         default:
             kind = @"Mach-O Image";

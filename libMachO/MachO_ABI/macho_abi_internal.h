@@ -38,8 +38,10 @@
 #include "load_command_internal.h"
 #include "segment_internal.h"
 #include "section_internal.h"
+#include "export_internal.h"
 #include "symbol_internal.h"
 #include "string_table_internal.h"
+#include "exports_trie_internal.h"
 #include "symbol_table_internal.h"
 #include "indirect_symbol_table_internal.h"
 

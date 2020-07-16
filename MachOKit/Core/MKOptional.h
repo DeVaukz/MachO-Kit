@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #include <MachOKit/macho.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

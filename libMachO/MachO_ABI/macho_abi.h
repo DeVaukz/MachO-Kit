@@ -43,6 +43,7 @@
 #include "load_command.h"
 #include "segment.h"
 #include "string_table.h"
+#include "exports_trie.h"
 #include "symbol_table.h"
 #include "indirect_symbol_table.h"
 

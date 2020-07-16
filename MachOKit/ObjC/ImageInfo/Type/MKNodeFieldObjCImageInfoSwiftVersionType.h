@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #include <MachOKit/macho.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #import <MachOKit/MKNodeFieldTypeByte.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>

@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #include <MachOKit/macho.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #include <mach-o/loader.h>
 
@@ -65,7 +65,10 @@ typedef NS_OPTIONS(uint32_t, MKMachOFlags) {
     MKMachOFlagDeadStrippableDylib             = MH_DEAD_STRIPPABLE_DYLIB,
     MKMachOFlagHasTLVDescriptors               = MH_HAS_TLV_DESCRIPTORS,
     MKMachOFlagNoHeapExecution                 = MH_NO_HEAP_EXECUTION,
-    MKMachOFlagAppExtensionSafe                = MH_APP_EXTENSION_SAFE
+    MKMachOFlagAppExtensionSafe                = MH_APP_EXTENSION_SAFE,
+    MKMachOFlagNListOutOfSyncWithDyldInfo      = MH_NLIST_OUTOFSYNC_WITH_DYLDINFO,
+    MKMachOFlagSimSupport                      = MH_SIM_SUPPORT,
+    MKMachOFlagInCache                         = MH_DYLIB_IN_CACHE
 };
 
 

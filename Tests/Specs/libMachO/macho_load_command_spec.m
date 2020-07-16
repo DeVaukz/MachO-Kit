@@ -59,7 +59,7 @@ SpecBegin(macho_load_command)
             snprintf(dummy->commands.lc_id_dylinker.dylinker, sizeof(dummy->commands.lc_id_dylinker.dylinker), TEST_STRING);
             
             mk_macho_t *macho = malloc(sizeof(*macho));
-            NSParameterAssert(mk_macho_init(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
             mk_load_command_t *load_command = malloc(sizeof(*load_command));
             NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_id_dylinker, load_command) == MK_ESUCCESS);
             
@@ -128,7 +128,7 @@ SpecBegin(macho_load_command)
             dummy->commands.extra.term = '\0';
             
             mk_macho_t *macho = malloc(sizeof(*macho));
-            NSParameterAssert(mk_macho_init(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
             mk_load_command_t *load_command = malloc(sizeof(*load_command));
             NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_id_dylinker, load_command) == MK_ESUCCESS);
             
@@ -189,7 +189,7 @@ SpecBegin(macho_load_command)
             snprintf(dummy->commands.lc_id_dylinker.dylinker, sizeof(dummy->commands.lc_id_dylinker.dylinker), TEST_STRING);
             
             mk_macho_t *macho = malloc(sizeof(*macho));
-            NSParameterAssert(mk_macho_init(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
             mk_load_command_t *load_command = malloc(sizeof(*load_command));
             NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_id_dylinker, load_command) == MK_ESUCCESS);
             
@@ -243,7 +243,7 @@ SpecBegin(macho_load_command)
             lc_build_version_ld->version = 64;
             
             mk_macho_t *macho = malloc(sizeof(*macho));
-            NSParameterAssert(mk_macho_init(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
             mk_load_command_t *load_command = malloc(sizeof(*load_command));
             NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_build_version, load_command) == MK_ESUCCESS);
             

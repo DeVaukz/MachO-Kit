@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #include <MachOKit/macho.h>
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 #import <MachOKit/MKAddressedNode.h>
 #import <MachOKit/MKRebaseFieldType.h>

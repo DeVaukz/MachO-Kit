@@ -46,7 +46,7 @@ SpecBegin(macho_image)
         
         describe([[[NSString stringWithCString:name encoding:NSUTF8StringEncoding] componentsSeparatedByString:@"/"] lastObject], ^{
             mk_macho_t *image = malloc(sizeof(*image));
-            mk_error_t err = mk_macho_init(NULL, name, slide, loadAddress, memory_map, image);
+            mk_error_t err = mk_macho_init_with_slide(NULL, name, slide, loadAddress, memory_map, image);
             it(@"should initialize", ^{
                 expect(err).to.equal(MK_ESUCCESS);
             });
