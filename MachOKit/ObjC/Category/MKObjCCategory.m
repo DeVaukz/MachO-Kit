@@ -28,6 +28,7 @@
 #import "MKObjCCategory.h"
 #import "MKInternal.h"
 #import "MKPointer+Node.h"
+#import "MKPointerNode.h"
 #import "MKObjCProtocolList.h"
 #import "MKObjCClassMethodList.h"
 #import "MKObjCClassPropertyList.h"
@@ -75,7 +76,7 @@ struct objc_cat_32 {
         }
         
         _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
-        _cls = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), cls) fromParent:self error:error];
+        _cls = [[MKPointerNode alloc] initWithOffset:offsetof(typeof(var), cls) fromParent:self error:error];
         _instanceMethods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), instanceMethods) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
         _classMethods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), classMethods) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
         _protocols = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), protocols) fromParent:self targetClass:MKObjCProtocolList.class error:error];
@@ -95,7 +96,7 @@ struct objc_cat_32 {
         }
         
         _name = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), name) fromParent:self targetClass:MKCString.class error:error];
-        _cls = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), cls) fromParent:self error:error];
+        _cls = [[MKPointerNode alloc] initWithOffset:offsetof(typeof(var), cls) fromParent:self error:error];
         _instanceMethods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), instanceMethods) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
         _classMethods = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), classMethods) fromParent:self targetClass:MKObjCClassMethodList.class error:error];
         _protocols = [[MKPointer alloc] initWithOffset:offsetof(typeof(var), protocols) fromParent:self targetClass:MKObjCProtocolList.class error:error];

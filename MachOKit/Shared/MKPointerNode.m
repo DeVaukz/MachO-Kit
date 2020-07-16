@@ -36,7 +36,7 @@
 @implementation MKPointerNode
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(NSDictionary*)context error:(NSError**)error
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent mask:(mk_vm_address_t)mask context:(NSDictionary*)context error:(NSError**)error
 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
@@ -44,7 +44,7 @@
     mk_vm_address_t address;
     NSError *memoryMapError = nil;
     
-    address = [self.memoryMap readPointerAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:self.dataModel error:&memoryMapError];
+    address = [self.memoryMap readPointerAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:self.dataModel error:&memoryMapError] & mask;
     
     if (memoryMapError) {
         MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read pointer value."];
@@ -59,7 +59,11 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(Class)targetClass error:(NSError**)error
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(NSDictionary*)context error:(NSError**)error
+{ return [self initWithOffset:offset fromParent:parent mask:~(mk_vm_address_t)0 context:context error:error]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent mask:(mk_vm_address_t)mask targetClass:(Class)targetClass error:(NSError**)error
 {
     NSDictionary *context = nil;
     if (targetClass) {
@@ -68,8 +72,12 @@
         };
     }
     
-    return [self initWithOffset:offset fromParent:parent context:context error:error];
+    return [self initWithOffset:offset fromParent:parent mask:mask context:context error:error];
 }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(Class)targetClass error:(NSError**)error
+{ return [self initWithOffset:offset fromParent:parent mask:~(mk_vm_address_t)0 targetClass:targetClass error:error]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent error:(NSError**)error
