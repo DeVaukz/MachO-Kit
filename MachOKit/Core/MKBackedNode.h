@@ -90,6 +90,42 @@ NS_ASSUME_NONNULL_BEGIN
 //! Returns the child node at \a address.
 - (MKOptional<__kindof MKBackedNode*> *)childNodeAtVMAddress:(mk_vm_address_t)address;
 
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Node Array Sorting
+//! @name       Node Array Sorting
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! Sorts \a array in place
++ (void)sortNodeArray:(NSMutableArray<__kindof MKBackedNode *> *)array;
+
+//! Returns a sorted version of \a array
++ (NSArray<__kindof MKBackedNode *> *)sortedNodeArray:(NSArray<__kindof MKBackedNode *> *)array;
+
+//! Sorts \a array in place
++ (void)sortOptionalNodeArray:(NSMutableArray<MKOptional<__kindof MKBackedNode *> *> *)array;
+
+//! Returns a sorted version of \a array
++ (NSArray<MKOptional<__kindof MKBackedNode *> *> *)sortedOptionalNodeArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array;
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Node Array Searching
+//! @name       Node Array Searching
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//! Performs a fast binary search for the child node occupying \a address inside \a array
+//!
+//! @pre
+//! \a array must be sorted in ascending order of \c nodeContextAddress. This may be done
+//! using a method in \ref Node Array Sorting if required
++ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedArray:(NSArray<__kindof MKBackedNode *> *)array;
+
+//! Performs a fast binary search for the child node occupying \a address inside \a array
+//!
+//! @pre
+//! \a array must be sorted in ascending order of \c nodeContextAddress. This may be done
+//! using a method in \ref Node Array Sorting if required
++ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedOptionalArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array;
+
 @end
 
 NS_ASSUME_NONNULL_END

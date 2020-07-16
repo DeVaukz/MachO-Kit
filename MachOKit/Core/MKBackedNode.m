@@ -125,6 +125,116 @@
 { return [self childNodeAtVMAddress:address targetClass:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Node Array Sorting
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
++ (NSComparisonResult)compareNodesWithLeft:(MKBackedNode *)left right:(MKBackedNode *)right
+{
+    mk_vm_address_t leftAddr = left.nodeVMAddress;
+    mk_vm_address_t rightAddr = right.nodeVMAddress;
+    if (leftAddr == rightAddr) return NSOrderedSame;
+    else if (leftAddr < rightAddr) return NSOrderedAscending;
+    else return NSOrderedDescending;
+}
+
++ (void)sortNodeArray:(NSMutableArray<__kindof MKBackedNode *> *)array
+{
+    [array sortUsingComparator:^NSComparisonResult(MKBackedNode *left, MKBackedNode *right) {
+        return [self compareNodesWithLeft:left right:right];
+    }];
+}
+
++ (NSArray<__kindof MKBackedNode *> *)sortedNodeArray:(NSArray<__kindof MKBackedNode *> *)array
+{
+    NSMutableArray *arrayMutableCopy = [array mutableCopy];
+    [self sortNodeArray:arrayMutableCopy];
+    NSArray *arrayCopy = [arrayMutableCopy copy];
+    [arrayMutableCopy release];
+    return [arrayCopy autorelease];
+}
+
++ (void)sortOptionalNodeArray:(NSMutableArray<MKOptional<__kindof MKBackedNode *> *> *)array
+{
+    [array sortUsingComparator:^NSComparisonResult(MKOptional<MKBackedNode *> *left, MKOptional<MKBackedNode *> *right) {
+        if (left.none && right.none) return NSOrderedSame;
+        else if (left.none) return NSOrderedAscending; // none < some
+        else if (right.none) return NSOrderedDescending;
+        else return [self compareNodesWithLeft:left.value right:right.value];
+    }];
+}
+
++ (NSArray<MKOptional<__kindof MKBackedNode *> *> *)sortedOptionalNodeArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array
+{
+    NSMutableArray *arrayMutableCopy = [array mutableCopy];
+    [self sortOptionalNodeArray:arrayMutableCopy];
+    NSArray *arrayCopy = [arrayMutableCopy copy];
+    [arrayMutableCopy release];
+    return [arrayCopy autorelease];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Node Array Searching
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
++ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedArray:(NSArray<__kindof MKBackedNode *> *)array {
+    NSInteger lo = 0;
+    NSInteger hi = (NSInteger)array.count - 1;
+    while (lo <= hi) {
+        NSInteger mid = (lo + hi) / 2;
+        MKBackedNode *midElement = array[(NSUInteger)mid];
+        mk_vm_address_t midAddress = midElement.nodeVMAddress;
+        
+        // do this check first since if address is lower than midAddress, midElement can't
+        // contain it and we can skip the range check
+        if (address < midAddress) {
+            hi = mid - 1;
+            continue;
+        }
+        
+        // if address >= midAddress, check if it's within midElement's range
+        mk_vm_range_t range = mk_vm_range_make(midAddress, midElement.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [midElement childNodeOccupyingVMAddress:address targetClass:targetClass];
+        } else {
+            // address is higher than midElement
+            lo = mid + 1;
+        }
+    }
+    return [MKOptional optional];
+}
+
++ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedOptionalArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array {
+    NSUInteger lo = 0;
+    NSUInteger hi = array.count - 1;
+    while (lo <= hi) {
+        NSUInteger mid = (lo + hi) / 2;
+        MKOptional<MKBackedNode *> *midElementOptional = array[mid];
+
+        if (midElementOptional.none) {
+            // midAddress is effectively = 0, so address > midAddress
+            lo = mid + 1;
+            continue;
+        }
+
+        MKBackedNode *midElement = midElementOptional.value;
+        mk_vm_address_t midAddress = midElement.nodeVMAddress;
+        
+        if (address < midAddress) {
+            hi = mid - 1;
+            continue;
+        }
+        
+        mk_vm_range_t range = mk_vm_range_make(midAddress, midElement.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [midElement childNodeOccupyingVMAddress:address targetClass:targetClass];
+        } else {
+            lo = mid + 1;
+        }
+    }
+    return [MKOptional optional];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 

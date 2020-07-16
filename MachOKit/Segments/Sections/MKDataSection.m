@@ -65,20 +65,17 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    __block MKOptional *child = nil;
-    
-    [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
-        if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
-            child = [child retain];
-            *stop = YES;
-        } else
-            child = nil;
-    }];
-    
-    if (child)
-        return [child autorelease];
-    else
-        return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+    // While we could also check whether `address` is _within_ any children, a dict lookup results
+    // in a *net* 60x speed-up, and in most cases `address` directly corresponds to a child anyway.
+    // It might be possible to increase efficiency of the other lookup method using a trie or a
+    // binary search tree but that will probably have a negligible memory improvement and a measurable
+    // impact on performance.
+
+    MKOptional *child = [_children[@(address)] childNodeOccupyingVMAddress:address targetClass:targetClass];
+    if (child.value)
+        return child;
+
+    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
