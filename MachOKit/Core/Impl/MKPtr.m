@@ -28,6 +28,7 @@
 #import "MKPtr.h"
 #import "MKInternal.h"
 #import "MKMachO.h"
+#import "MKNode+MachO.h"
 #import "MKPointer.h"
 
 #define OPAQUE_RESERVED_MASK            (uintptr_t)(7U)
@@ -72,7 +73,7 @@ MKPtrInitialize(struct MKPtr *ptr, MKBackedNode *node, mk_vm_address_t addr, NSD
     // MKNodeVMAddress semantics, so we must adjust for that.
     // TODO - Add a test for this situation, and check if there are edge cases
     // where dyld doesn't slide the pointer
-    MKMachOImage *image = [node nearestAncestorOfType:MKMachOImage.class];
+    MKMachOImage *image = node.macho;
     if (image && image.isFromMemory) {
         // TODO - For some reason, mk_vm_address_remove_slide thinks that
         // `(mk_vm_address_t)(slide * -1) > addr` is true, so it returns
