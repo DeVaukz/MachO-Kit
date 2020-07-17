@@ -75,11 +75,8 @@ MKPtrInitialize(struct MKPtr *ptr, MKBackedNode *node, mk_vm_address_t addr, NSD
     // where dyld doesn't slide the pointer
     MKMachOImage *image = node.macho;
     if (image && image.isFromMemory) {
-        // TODO - For some reason, mk_vm_address_remove_slide thinks that
-        // `(mk_vm_address_t)(slide * -1) > addr` is true, so it returns
-        // MK_EUNDERFLOW. I'm not sure whether that's a bug here or in
-        // that function, but it should probably be looked into.
-        addr -= image.slide;
+        if (mk_vm_address_remove_slide(addr, image.slide, &addr) != MK_ESUCCESS)
+            return false;
     }
     
     ptr->parent = node;
