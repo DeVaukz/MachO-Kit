@@ -35,6 +35,7 @@
 #import "MKSection.h"
 
 _mk_internal NSString * const MKAllSegments = @"MKAllSegments";
+_mk_internal NSString * const MKSortedSegments = @"MKSortedSegments";
 _mk_internal NSString * const MKSegmentsByLoadCommand = @"MKSegmentsByLoadCommand";
 _mk_internal NSString * const MKAllSections = @"MKAllSections";
 _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
@@ -109,11 +110,12 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             }
         }
         
-        [MKBackedNode sortOptionalNodeArray:(NSMutableArray *)segments];
         NSArray *finalSegments = [segments copy];
+        NSArray *sortedSegments = [MKBackedNode sortNodeArray:(NSArray *)segments];
         
         _segments = [@{
             MKAllSegments: finalSegments,
+            MKSortedSegments: sortedSegments,
             MKSegmentsByLoadCommand: segmentsByLoadCommand,
             MKAllSections: sections,
             MKIndexedSections: [NSDictionary dictionaryWithDictionary:sectionsByIndex]
@@ -193,7 +195,7 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedOptionalArray:self._segments[MKAllSegments]];
+    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:self._segments[MKSortedSegments]];
     if (child.value)
         return child;
 

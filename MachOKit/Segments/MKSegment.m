@@ -198,7 +198,7 @@
             }
         }
         
-        [MKBackedNode sortOptionalNodeArray:(NSMutableArray *)segmentSections];
+        _sortedSections = [[MKBackedNode sortNodeArray:(NSArray *)segmentSections] retain];
         _sectionsByLoadCommand = segmentSectionsByLoadCommand;
         _sections = [segmentSections copy];
         [segmentSections release];
@@ -223,6 +223,7 @@
 {
     [_sectionsByLoadCommand release];
     [_sections release];
+    [_sortedSections release];
     [_loadCommand release];
     [_name release];
     
@@ -273,7 +274,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedOptionalArray:(NSArray *)self.sections];
+    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:(NSArray *)_sortedSections];
     if (child.value)
         return child;
     
