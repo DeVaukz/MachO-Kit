@@ -58,12 +58,17 @@
 - (mk_vm_size_t)mappingSizeAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error
 {
     __block mk_vm_size_t retValue = 0;
-    
-    [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, __unused NSError *e) {
-        MK_ERROR_OUT = e;
+    __block NSError *localError = nil;
+
+    [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, NSError *error) {
+        localError = [error retain];
+        if (error)
+            return;
+
         retValue = l;
     }];
-    
+
+    MK_ERROR_OUT = [localError autorelease];
     return retValue;
 }
 
@@ -75,12 +80,17 @@
 - (BOOL)hasMappingAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length error:(NSError**)error
 {
     __block BOOL retValue = NO;
+    __block NSError *localError = nil;
     
-    [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, NSError *e) {
-        MK_ERROR_OUT = e;
+    [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:NO withHandler:^(vm_address_t __unused address, vm_size_t l, NSError *error) {
+        localError = [error retain];
+        if (error)
+            return;
+
         retValue = (l >= length);
     }];
-    
+
+    MK_ERROR_OUT = [localError autorelease];
     return retValue;
 }
 
@@ -110,14 +120,14 @@
     __block NSError *localError = nil;
     
     [self remapBytesAtOffset:offset fromAddress:contextAddress length:length requireFull:requireFull withHandler:^(vm_address_t address, vm_size_t length, NSError *error) {
-        localError = error;
+        localError = [error retain];
         if (error)
             return;
         
         retValue = [[NSData alloc] initWithBytes:(void*)address length:length];
     }];
     
-    MK_ERROR_OUT = localError;
+    MK_ERROR_OUT = [localError autorelease];
     return [retValue autorelease];
 }
 
