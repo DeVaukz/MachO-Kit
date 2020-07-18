@@ -142,11 +142,11 @@
             totalLength = verifiedLength;
     }
     
-    mach_vm_address_t mappingAddress = 0x0;
+    vm_address_t mappingAddress = 0x0;
     mach_vm_size_t mappedLength = 0;
     
     // Reserve enough pages to contain the mapping.
-    kern_return_t err = mach_vm_allocate(mach_task_self(), &mappingAddress, totalLength, VM_FLAGS_ANYWHERE);
+    kern_return_t err = vm_allocate(mach_task_self(), &mappingAddress, totalLength, VM_FLAGS_ANYWHERE);
     if (err != KERN_SUCCESS) {
         NSError *error = [NSError mk_errorWithDomain:NSMachErrorDomain code:err description:@"Failed to allocate a target page range for the page remapping."];
         handler(0, 0, error);
@@ -165,7 +165,7 @@
         if (err != KERN_SUCCESS)
         {
             // Cleanup the reserved pages
-            err = mach_vm_deallocate(mach_task_self(), mappingAddress, totalLength);
+            err = vm_deallocate(mach_task_self(), mappingAddress, totalLength);
             if (err != KERN_SUCCESS) {
                 // TODO - Log this.  We're leaking pages.
             }
@@ -177,12 +177,12 @@
         
         // Map the pages into our local task, overwriting the allocation used to
         // reserve the target space above.
-        mach_vm_address_t targetAddress = mappingAddress + mappedLength;
-        err = mach_vm_map(mach_task_self(), &targetAddress, entryLength, 0x0, VM_FLAGS_FIXED|VM_FLAGS_OVERWRITE, memHandle, 0x0, true, VM_PROT_READ, VM_PROT_READ, VM_INHERIT_COPY);
+        vm_address_t targetAddress = mappingAddress + mappedLength;
+        err = vm_map(mach_task_self(), &targetAddress, entryLength, 0x0, VM_FLAGS_FIXED|VM_FLAGS_OVERWRITE, memHandle, 0x0, true, VM_PROT_READ, VM_PROT_READ, VM_INHERIT_COPY);
         if (err != KERN_SUCCESS)
         {
             // Cleanup the reserved pages
-            err = mach_vm_deallocate(mach_task_self(), mappingAddress, totalLength);
+            err = vm_deallocate(mach_task_self(), mappingAddress, totalLength);
             if (err != KERN_SUCCESS) {
                 // TODO - Log this.  We're leaking pages.
             }
@@ -218,7 +218,7 @@
     handler((vm_address_t)contextAddress, (vm_size_t)length, nil);
     
     // Cleanup
-    err = mach_vm_deallocate(mach_task_self(), mappingAddress, mappedLength);
+    err = vm_deallocate(mach_task_self(), mappingAddress, mappedLength);
     if (err != KERN_SUCCESS) {
         // TODO - Warning
     }
