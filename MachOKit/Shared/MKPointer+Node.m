@@ -70,7 +70,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(Class)targetClass error:(NSError**)error
 {
-    return [self initWithOffset:offset fromParent:parent mask:(mk_vm_address_t)(~0) targetClass:targetClass error:error];
+    return [self initWithOffset:offset fromParent:parent mask:~(mk_vm_address_t)0 targetClass:targetClass error:error];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
