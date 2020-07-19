@@ -35,4 +35,8 @@
 + (Class)classForGenericArgumentAtIndex:(__unused NSUInteger)index
 { return MKObjCClassMethod.class; }
 
+//|++++++++++++++++++++++++++++++++++++|//
++ (uint32_t)flagsMask
+{ return 3; }
+
 @end
