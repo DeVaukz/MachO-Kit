@@ -209,6 +209,7 @@ MKPtrPointee(struct MKPtr *ptr)
             NSMutableDictionary *threadDict = NSThread.currentThread.threadDictionary;
             threadDict[key] = previousContext[key];
         }];
+        [previousContext release];
 		
     done:
 		if (pointee == nil || pointee.none) {
