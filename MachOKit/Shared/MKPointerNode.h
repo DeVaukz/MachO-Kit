@@ -43,7 +43,11 @@ NS_ASSUME_NONNULL_BEGIN
     uintptr_t _pointee;
 }
 
-- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(nullable NSDictionary<NSString*, id>*)context error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent mask:(mk_vm_address_t)mask context:(nullable NSDictionary<NSString*, id>*)context error:(NSError**)error NS_DESIGNATED_INITIALIZER;
+
+- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent context:(nullable NSDictionary<NSString*, id>*)context error:(NSError**)error;
+
+- (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent mask:(mk_vm_address_t)mask targetClass:(nullable Class)targetClass error:(NSError**)error;
 
 - (nullable instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode*)parent targetClass:(nullable Class)targetClass error:(NSError**)error;
 

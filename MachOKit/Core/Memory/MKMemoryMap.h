@@ -44,11 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
 //! at the provided \a fileURL.
 + (nullable instancetype)memoryMapWithContentsOfFile:(NSURL*)fileURL error:(NSError**)error;
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 //! Creates and returns an \ref MKMemoryMap for the contents of another
 //! task's memory.
 + (nullable instancetype)memoryMapWithTask:(mach_port_t)task error:(NSError**)error;
-#endif
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  About Context Memory
@@ -89,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! @note
 //! The address passed to the provided \a handler should only be considered
 //! valid for the duration of the handler's execution.
-- (void)remapBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull withHandler:(void (^)(vm_address_t address, vm_size_t length, NSError *error))handler;
+- (void)remapBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull withHandler:(void (^)(vm_address_t address, vm_size_t length, NSError * _Nullable error))handler;
 
 - (nullable NSData*)dataAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error;
 

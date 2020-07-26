@@ -30,8 +30,10 @@
 
 #import <MachOKit/MKOffsetNode.h>
 #import <MachOKit/MKPointer.h>
+#import <MachOKit/MKPointerNode.h>
 #import <MachOKit/MKCString.h>
 
+@class MKObjCClass;
 @class MKObjCClassMethodList;
 @class MKObjCClassPropertyList;
 @class MKObjCProtocolList;
@@ -42,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKObjCCategory : MKOffsetNode {
 @package
     MKPointer *_name;
-    MKPointer *_cls;
+    MKPointerNode *_cls;
     MKPointer *_instanceMethods;
     MKPointer *_classMethods;
     MKPointer *_protocols;
@@ -52,7 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) MKPointer<MKCString*> *name;
 
-@property (nonatomic, readonly) MKPointer *cls;
+@property (nonatomic, readonly) MKPointerNode<MKObjCClass*> *cls;
 
 @property (nonatomic, readonly) MKPointer<MKObjCClassMethodList*> *instanceMethods;
 

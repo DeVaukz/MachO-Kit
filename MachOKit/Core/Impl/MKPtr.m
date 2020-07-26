@@ -27,6 +27,8 @@
 
 #import "MKPtr.h"
 #import "MKInternal.h"
+#import "MKMachO.h"
+#import "MKNode+MachO.h"
 #import "MKPointer.h"
 
 #define OPAQUE_RESERVED_MASK            (uintptr_t)(7U)
@@ -65,6 +67,17 @@ bool
 MKPtrInitialize(struct MKPtr *ptr, MKBackedNode *node, mk_vm_address_t addr, NSDictionary *ctx, __unused NSError **error)
 {
     NSCParameterAssert([node isKindOfClass:MKBackedNode.class]);
+    
+    // If the image has been processed by dyld, the pointer points to the actual
+    // (slid) address of the pointee. MKPtr instead expects the address to follow
+    // MKNodeVMAddress semantics, so we must adjust for that.
+    // TODO - Add a test for this situation, and check if there are edge cases
+    // where dyld doesn't slide the pointer
+    MKMachOImage *image = node.macho;
+    if (image && image.isFromMemory) {
+        if (mk_vm_address_remove_slide(addr, image.slide, &addr) != MK_ESUCCESS)
+            return false;
+    }
     
     ptr->parent = node;
     ptr->address = addr;
@@ -196,6 +209,7 @@ MKPtrPointee(struct MKPtr *ptr)
             NSMutableDictionary *threadDict = NSThread.currentThread.threadDictionary;
             threadDict[key] = previousContext[key];
         }];
+        [previousContext release];
 		
     done:
 		if (pointee == nil || pointee.none) {

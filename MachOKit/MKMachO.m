@@ -241,6 +241,8 @@
     
     [_name release];
     [_dataModel release];
+
+    [_mapping release];
     
     [super dealloc];
 }

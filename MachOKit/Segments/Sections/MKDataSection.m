@@ -65,33 +65,48 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    __block MKOptional *child = nil;
-    
-    [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
-        if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
-            child = [child retain];
-            *stop = YES;
-        } else
-            child = nil;
-    }];
-    
-    if (child)
-        return [child autorelease];
-    else
+    mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
+    if (mk_vm_range_contains_address(nodeRange, 0, address) != MK_ESUCCESS)
         return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+
+    __block MKOptional *child = nil;
+
+     [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
+         if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
+             child = [child retain];
+             *stop = YES;
+         } else
+             child = nil;
+     }];
+
+     if (child)
+         return [child autorelease];
+     else
+         return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
+    mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
+    if (mk_vm_range_contains_address(nodeRange, 0, address) != MK_ESUCCESS)
+        return [super childNodeAtVMAddress:address targetClass:targetClass];
+
     if (_children == nil)
         _children = [[NSMutableDictionary alloc] init];
     
     MKOffsetNode *child = _children[@(address)];
     if (child == nil && targetClass) {
         NSError *error = nil;
-        
-        child = [[[targetClass alloc] initWithVMAddress:address inImage:self.macho error:&error] autorelease];
+
+        // this is safe; we already know address is >= nodeVMAddress due to the range check above
+        mk_vm_offset_t childOffset = address - self.nodeVMAddress;
+
+        // All children of MKDataSection are defined to have the section as their parent. See
+        // https://github.com/DeVaukz/MachO-Kit/pull/13#discussion_r456934940 for the rationale
+        // behind this
+        child = [[[targetClass alloc] initWithOffset:childOffset fromParent:self error:&error] autorelease];
+
         if (child)
             _children[@(address)] = child;
         else if (error)

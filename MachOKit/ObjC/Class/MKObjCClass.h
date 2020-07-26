@@ -30,6 +30,7 @@
 
 #import <MachOKit/MKOffsetNode.h>
 #import <MachOKit/MKPointer.h>
+#import <MachOKit/MKPointerNode.h>
 
 @class MKObjCClassData;
 
@@ -39,18 +40,20 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKObjCClass : MKOffsetNode {
 @package
     MKPointer *_metaClass;
-    MKPointer *_superClass;
+    MKPointerNode *_superClass;
     MKPointer *_cache;
     uint32_t _mask;
     uint32_t _occupied;
     MKPointer *_classData;
+    BOOL _isSwiftLegacy;
+    BOOL _isSwiftStable;
 }
 
 //!
 @property (nonatomic, readonly) MKPointer<MKObjCClass*> *metaClass;
 
 //!
-@property (nonatomic, readonly) MKPointer<MKObjCClass*> *superClass;
+@property (nonatomic, readonly) MKPointerNode<MKObjCClass*> *superClass;
 
 //!
 @property (nonatomic, readonly) MKPointer *cache;
@@ -63,6 +66,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 //!
 @property (nonatomic, readonly) MKPointer<MKObjCClassData*> *classData;
+
+@property (nonatomic, readonly) BOOL isSwiftLegacy;
+
+@property (nonatomic, readonly) BOOL isSwiftStable;
 
 @end
 

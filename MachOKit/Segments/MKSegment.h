@@ -51,6 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *_name;
     id<MKLCSegment> _loadCommand;
     NSArray<MKOptional<MKSection*>*> *_sections;
+    NSArray<MKSection*> *_sortedSections;
     NSMapTable<id<MKLCSection>, MKOptional<MKSection*>*> *_sectionsByLoadCommand;
     //
     mk_vm_address_t _vmAddress;

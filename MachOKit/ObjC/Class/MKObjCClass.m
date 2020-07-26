@@ -28,7 +28,10 @@
 #import "MKObjCClass.h"
 #import "MKInternal.h"
 #import "MKPointer+Node.h"
+#import "MKPointerNode.h"
 #import "MKObjCClassData.h"
+#import "MKMachO.h"
+#import "MKNode+MachO.h"
 
 struct objc_class_64 {
     uint64_t meta_class;
@@ -36,7 +39,7 @@ struct objc_class_64 {
     uint64_t cache;
     uint32_t mask;
     uint32_t occupied;
-    uint64_t data;
+    uint64_t tagged_data;
 };
 
 struct objc_class_32 {
@@ -45,8 +48,17 @@ struct objc_class_32 {
     uint32_t cache;
     uint16_t mask;
     uint16_t occupied;
-    uint32_t data;
+    uint32_t tagged_data;
 };
+
+// from https://opensource.apple.com/source/objc4/objc4-781/runtime/objc-runtime-new.h.auto.html
+// class is a Swift class from the pre-stable Swift ABI
+#define FAST_IS_SWIFT_LEGACY    (1UL<<0)
+// class is a Swift class from the stable Swift ABI
+#define FAST_IS_SWIFT_STABLE    (1UL<<1)
+// data pointer
+#define FAST_DATA_MASK_64       0x00007ffffffffff8UL
+#define FAST_DATA_MASK_32       0xfffffffcUL
 
 //----------------------------------------------------------------------------//
 @implementation MKObjCClass
@@ -71,9 +83,11 @@ struct objc_class_32 {
         }
         
         _metaClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, meta_class) fromParent:self targetClass:MKObjCClass.class error:error];
-        _superClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
+        _superClass = [[MKPointerNode alloc] initWithOffset:offsetof(struct objc_class_64, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _cache = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, cache) fromParent:self error:error];
-        _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, data) fromParent:self targetClass:MKObjCClassData.class error:error];
+        _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, tagged_data) fromParent:self mask:FAST_DATA_MASK_64 targetClass:MKObjCClassData.class error:error];
+        _isSwiftLegacy = cls.tagged_data & FAST_IS_SWIFT_LEGACY;
+        _isSwiftStable = cls.tagged_data & FAST_IS_SWIFT_STABLE;
         _mask = MKSwapLValue32(cls.mask, dataModel);
         _occupied = MKSwapLValue32(cls.occupied, dataModel);
     }
@@ -88,9 +102,11 @@ struct objc_class_32 {
         }
         
         _metaClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, meta_class) fromParent:self targetClass:MKObjCClass.class error:error];
-        _superClass = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
+        _superClass = [[MKPointerNode alloc] initWithOffset:offsetof(struct objc_class_32, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _cache = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, cache) fromParent:self error:error];
-        _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, data) fromParent:self targetClass:MKObjCClassData.class error:error];
+        _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, tagged_data) fromParent:self mask:FAST_DATA_MASK_32 targetClass:MKObjCClassData.class error:error];
+        _isSwiftLegacy = cls.tagged_data & FAST_IS_SWIFT_LEGACY;
+        _isSwiftStable = cls.tagged_data & FAST_IS_SWIFT_STABLE;
         _mask = MKSwapLValue16(cls.mask, dataModel);
         _occupied = MKSwapLValue16(cls.occupied, dataModel);
     }
@@ -124,6 +140,8 @@ struct objc_class_32 {
 @synthesize mask = _mask;
 @synthesize occupied = _occupied;
 @synthesize classData = _classData;
+@synthesize isSwiftLegacy = _isSwiftLegacy;
+@synthesize isSwiftStable = _isSwiftStable;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNode
@@ -193,8 +211,8 @@ struct objc_class_32 {
     MKNodeFieldBuilder *classData = [MKNodeFieldBuilder
         builderWithProperty:MK_PROPERTY(classData)
         type:[MKNodeFieldTypePointer pointerWithType:FIELD_TYPE(MKNodeFieldTypeUnsignedQuadWord, MKNodeFieldTypeUnsignedDoubleWord)]
-        offset:FIELD_OFFSET(data)
-        size:FIELD_SIZE(data)
+        offset:FIELD_OFFSET(tagged_data)
+        size:FIELD_SIZE(tagged_data)
     ];
     classData.description = @"Class Data";
     classData.options = MKNodeFieldOptionDisplayAsChild;

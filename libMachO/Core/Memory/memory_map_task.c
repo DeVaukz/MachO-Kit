@@ -27,8 +27,6 @@
 
 #include "core_internal.h"
 
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-
 //----------------------------------------------------------------------------//
 #pragma mark -  Classes
 //----------------------------------------------------------------------------//
@@ -116,11 +114,11 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
             total_length = verified_length;
     }
     
-    mach_vm_address_t mapping_address = 0x0;
+    vm_address_t mapping_address = 0x0;
     mach_vm_size_t mapped_length = 0;
     
     // Reserve enough pages to contain the mapping.
-    kern_return_t kr = mach_vm_allocate(mach_task_self(), &mapping_address, total_length, VM_FLAGS_ANYWHERE);
+    kern_return_t kr = vm_allocate(mach_task_self(), &mapping_address, total_length, VM_FLAGS_ANYWHERE);
     if (kr != KERN_SUCCESS) {
         _mkl_error(ctx, "Failed to allocate space for mapping memory from target task.  mach_vm_allocate() returned error [%i].", kr);
         return MK_EINTERNAL_ERROR;
@@ -138,7 +136,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         if (kr != KERN_SUCCESS)
         {
             // Cleanup the reserved pages
-            kr = mach_vm_deallocate(mach_task_self(), mapping_address, total_length);
+            kr = vm_deallocate(mach_task_self(), mapping_address, total_length);
             if (kr != KERN_SUCCESS) {
                 _mkl_inform(ctx, "Failed to drop memory entry send right.  mach_port_mod_refs() returned error [%i].  #Port #Leak", kr);
             }
@@ -151,12 +149,12 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
         
         // Map the pages into our local task, overwriting the allocation used to
         // reserve the target space above.
-        mach_vm_address_t targetAddress = mapping_address + mapped_length;
-        kr = mach_vm_map(mach_task_self(), &targetAddress, entry_length, 0x0, VM_FLAGS_FIXED|VM_FLAGS_OVERWRITE, mem_handle, 0x0, true, VM_PROT_READ, VM_PROT_READ, VM_INHERIT_COPY);
+        vm_address_t targetAddress = mapping_address + mapped_length;
+        kr = vm_map(mach_task_self(), &targetAddress, entry_length, 0x0, VM_FLAGS_FIXED|VM_FLAGS_OVERWRITE, mem_handle, 0x0, true, VM_PROT_READ, VM_PROT_READ, VM_INHERIT_COPY);
         if (kr != KERN_SUCCESS)
         {
             // Cleanup the reserved pages
-            kr = mach_vm_deallocate(mach_task_self(), mapping_address, total_length);
+            kr = vm_deallocate(mach_task_self(), mapping_address, total_length);
             if (kr != KERN_SUCCESS) {
                 _mkl_inform(ctx, "Failed to deallocate space for mapping target process memory.  mach_vm_deallocate() returned error [%i].  #Memory #Leak", kr);
             }
@@ -201,7 +199,7 @@ __mk_memory_map_task_init_object(mk_memory_map_ref self, mk_vm_offset_t offset, 
 static void
 __mk_memory_map_task_free_object(mk_memory_map_ref self, mk_memory_object_t* memory_object)
 {
-    kern_return_t err = mach_vm_deallocate(mach_task_self(), memory_object->reserved1, memory_object->reserved2);
+    kern_return_t err = vm_deallocate(mach_task_self(), memory_object->reserved1, memory_object->reserved2);
     if (err != KERN_SUCCESS) {
         _mkl_inform(mk_type_get_context(self.memory_map), "Failed to cleanup mapped target memory.  mach_vm_deallocate() returned error [%i].  #Memory #Leak", err);
     }
@@ -249,5 +247,3 @@ mk_memory_map_task_free(mk_memory_map_task_t *task_map)
     
     return MK_ESUCCESS;
 }
-
-#endif

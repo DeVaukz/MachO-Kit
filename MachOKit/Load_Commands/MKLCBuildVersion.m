@@ -140,6 +140,8 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (void)dealloc
 {
+    [_minos release];
+    [_sdk release];
     [_tools release];
     
     [super dealloc];

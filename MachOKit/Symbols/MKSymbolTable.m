@@ -168,16 +168,9 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKSymbol *symbol in self.symbols) {
-        mk_vm_range_t range = mk_vm_range_make(symbol.nodeVMAddress, symbol.nodeSize);
-        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            MKOptional *child = [symbol childNodeOccupyingVMAddress:address targetClass:targetClass];
-            if (child.value)
-                return child;
-            // else, fallthrough and call the super's implementation.
-            // The caller may actually be looking for *this* node.
-        }
-    }
+    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:(NSArray *)self.symbols];
+    if (child.value)
+        return child;
     
     return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }

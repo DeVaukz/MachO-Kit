@@ -38,10 +38,6 @@
 #include "base.h"
 
 #include <mach/mach.h>
-#if TARGET_OS_MAC && !TARGET_OS_IPHONE
-#   include <mach/mach_vm.h>
-#   define MK_HAVE_MACH_VM 1
-#endif
 
 //! @addtogroup CORE
 //! @{
@@ -94,25 +90,13 @@
 #define MK_VM_PRIiSLIDE PRIi64
 
 //! Architecture-independent VM address type.
-#if MK_HAVE_MACH_VM
-    typedef mach_vm_address_t mk_vm_address_t;
-#else
-    typedef uint64_t mk_vm_address_t;
-#endif
+typedef mach_vm_address_t mk_vm_address_t;
 
 //! Architecture-independent VM size type.
-#if MK_HAVE_MACH_VM
-    typedef mach_vm_size_t mk_vm_size_t;
-#else
-    typedef uint64_t mk_vm_size_t;
-#endif
+typedef mach_vm_size_t mk_vm_size_t;
 
 //! Architecture-independent VM offset type.
-#if MK_HAVE_MACH_VM
-	typedef mach_vm_offset_t mk_vm_offset_t;
-#else
-	typedef uint64_t mk_vm_offset_t;
-#endif
+typedef mach_vm_offset_t mk_vm_offset_t;
 
 //! Architecture-independent VM slide type.
 typedef int64_t mk_vm_slide_t;

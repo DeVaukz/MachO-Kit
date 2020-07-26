@@ -198,6 +198,7 @@
             }
         }
         
+        _sortedSections = [[MKBackedNode sortNodeArray:(NSArray *)segmentSections] retain];
         _sectionsByLoadCommand = segmentSectionsByLoadCommand;
         _sections = [segmentSections copy];
         [segmentSections release];
@@ -222,6 +223,7 @@
 {
     [_sectionsByLoadCommand release];
     [_sections release];
+    [_sortedSections release];
     [_loadCommand release];
     [_name release];
     
@@ -272,20 +274,9 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    for (MKOptional<MKSection*> *s in self.sections) {
-        MKSection *section = s.value;
-        if (section == nil)
-            continue;
-        
-        mk_vm_range_t range = mk_vm_range_make(section.nodeVMAddress, section.nodeSize);
-        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            MKOptional *child = [section childNodeOccupyingVMAddress:address targetClass:targetClass];
-            if (child.value)
-                return child;
-            // else, fallthrough and call the super's implementation.
-            // The caller may actually be looking for *this* node.
-        }
-    }
+    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:(NSArray *)_sortedSections];
+    if (child.value)
+        return child;
     
     return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }

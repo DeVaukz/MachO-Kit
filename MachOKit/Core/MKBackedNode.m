@@ -125,6 +125,54 @@
 { return [self childNodeAtVMAddress:address targetClass:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Node Array Searching & Sorting
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
++ (NSArray<__kindof MKBackedNode *> *)sortNodeArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array
+{
+    NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity:array.count];
+    for (MKOptional *node in array) {
+        if (node.value)
+            [filteredArray addObject:node.value];
+    }
+    [filteredArray sortUsingComparator:^NSComparisonResult(MKBackedNode *left, MKBackedNode *right) {
+        mk_vm_address_t leftAddr = left.nodeVMAddress;
+        mk_vm_address_t rightAddr = right.nodeVMAddress;
+        if (leftAddr == rightAddr) return NSOrderedSame;
+        else if (leftAddr < rightAddr) return NSOrderedAscending;
+        else return NSOrderedDescending;
+    }];
+    return [[filteredArray copy] autorelease];
+}
+
++ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedArray:(NSArray<__kindof MKBackedNode *> *)array {
+    NSInteger lo = 0;
+    NSInteger hi = (NSInteger)array.count - 1;
+    while (lo <= hi) {
+        NSInteger mid = (lo + hi) / 2;
+        MKBackedNode *midElement = array[(NSUInteger)mid];
+        mk_vm_address_t midAddress = midElement.nodeVMAddress;
+        
+        // do this check first since if address is lower than midAddress, midElement can't
+        // contain it and we can skip the range check
+        if (address < midAddress) {
+            hi = mid - 1;
+            continue;
+        }
+        
+        // if address >= midAddress, check if it's within midElement's range
+        mk_vm_range_t range = mk_vm_range_make(midAddress, midElement.nodeSize);
+        if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
+            return [midElement childNodeOccupyingVMAddress:address targetClass:targetClass];
+        } else {
+            // address is higher than midElement
+            lo = mid + 1;
+        }
+    }
+    return [MKOptional optional];
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  NSObject
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
