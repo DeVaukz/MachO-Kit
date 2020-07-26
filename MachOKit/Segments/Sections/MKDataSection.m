@@ -65,14 +65,24 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    // See https://github.com/DeVaukz/MachO-Kit/pull/13#discussion_r456934940 for an explanation of why
-    // this doesn't check for "parent" nodes within the section which may contain `address`
+    mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
+    if (mk_vm_range_contains_address(nodeRange, 0, address) != MK_ESUCCESS)
+        return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 
-    MKOptional *child = [_children[@(address)] childNodeOccupyingVMAddress:address targetClass:targetClass];
-    if (child.value)
-        return child;
+    __block MKOptional *child = nil;
 
-    return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
+     [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
+         if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
+             child = [child retain];
+             *stop = YES;
+         } else
+             child = nil;
+     }];
+
+     if (child)
+         return [child autorelease];
+     else
+         return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
