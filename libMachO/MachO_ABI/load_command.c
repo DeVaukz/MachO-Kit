@@ -72,7 +72,7 @@ extern const struct _mk_load_command_vtable _mk_load_command_data_in_code_class;
 extern const struct _mk_load_command_vtable _mk_load_command_source_version_class;
 extern const struct _mk_load_command_vtable _mk_load_command_code_sign_drs_class;
 extern const struct _mk_load_command_vtable _mk_load_command_encryption_info_64_class;
-// LC_LINKER_OPTION - Not Implemented
+extern const struct _mk_load_command_vtable _mk_load_command_linker_option_class;
 // LC_LINKER_OPTIMIZATION_HINT - Not Implemented
 extern const struct _mk_load_command_vtable _mk_load_command_version_min_tvos_class;
 extern const struct _mk_load_command_vtable _mk_load_command_version_min_watchos_class;
@@ -127,7 +127,7 @@ const struct _mk_load_command_vtable* _mk_load_command_classes[] = {
     &_mk_load_command_source_version_class,
     &_mk_load_command_code_sign_drs_class,
     &_mk_load_command_encryption_info_64_class,
-    // LC_LINKER_OPTION - Not Implemented
+    &_mk_load_command_linker_option_class,
     // LC_LINKER_OPTIMIZATION_HINT - Not Implemented
     &_mk_load_command_version_min_tvos_class,
     &_mk_load_command_version_min_watchos_class,
@@ -374,9 +374,9 @@ mk_load_command_init(mk_macho_ref image, struct load_command* lc, mk_load_comman
         case LC_ENCRYPTION_INFO_64:
             load_command->vtable = &_mk_load_command_encryption_info_64_class;
             break;
-        //case LC_LINKER_OPTION: - Not implemented
-        //  load_command->vtable =
-        //  break;
+        case LC_LINKER_OPTION:
+            load_command->vtable = &_mk_load_command_linker_option_class;
+            break;
         //case LC_LINKER_OPTIMIZATION_HINT: - Not implemented
         //  load_command->vtable =
         //  break;
