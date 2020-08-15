@@ -969,10 +969,12 @@
 		D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */; };
 		D0FF4F3D201B0CD30095106A /* MKNodeFieldTypeSize.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FF4F3E201B0CD30095106A /* MKNodeFieldTypeSize.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */; };
+		F37857C724CCD0D9009D37AB /* MKLCLinkerOption.m in Sources */ = {isa = PBXBuildFile; fileRef = F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */; };
 		F37857F524CCD4CF009D37AB /* load_command_linker_option.c in Sources */ = {isa = PBXBuildFile; fileRef = F37857F324CCD4CF009D37AB /* load_command_linker_option.c */; };
 		F37857F624CCD4CF009D37AB /* load_command_linker_option.c in Sources */ = {isa = PBXBuildFile; fileRef = F37857F324CCD4CF009D37AB /* load_command_linker_option.c */; };
 		F37857F724CCD4CF009D37AB /* load_command_linker_option.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857F424CCD4CF009D37AB /* load_command_linker_option.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F37857F824CCD4CF009D37AB /* load_command_linker_option.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857F424CCD4CF009D37AB /* load_command_linker_option.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F37857F924CCDFE6009D37AB /* MKLCLinkerOption.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1932,6 +1934,8 @@
 		D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldVMProtectionType.m; sourceTree = "<group>"; };
 		D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeSize.h; sourceTree = "<group>"; };
 		D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeSize.m; sourceTree = "<group>"; };
+		F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKLCLinkerOption.h; sourceTree = "<group>"; };
+		F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKLCLinkerOption.m; sourceTree = "<group>"; };
 		F37857F324CCD4CF009D37AB /* load_command_linker_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_command_linker_option.c; sourceTree = "<group>"; };
 		F37857F424CCD4CF009D37AB /* load_command_linker_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load_command_linker_option.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3408,6 +3412,8 @@
 				D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */,
 				D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */,
 				D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */,
+				F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */,
+				F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */,
 			);
 			name = "Load Commands";
 			path = Load_Commands;
@@ -3588,6 +3594,7 @@
 				D0399E5E23D643F00055C2D4 /* exports_trie_internal.h in Headers */,
 				D0B16D611CA8968900E2116C /* MKIndirectSymbolTable.h in Headers */,
 				D0678A49225977D9007E0C8E /* load_command_lazy_load_dylib.h in Headers */,
+				F37857F924CCDFE6009D37AB /* MKLCLinkerOption.h in Headers */,
 				D01731751C671891007CB0A1 /* MKDSCSlideInfo.h in Headers */,
 				D01B986F1B768ECC0035F464 /* MKDSCStringTable.h in Headers */,
 				D0CC85841C6FBBEF001FB7C7 /* MKDSCImagesInfo.h in Headers */,
@@ -4498,6 +4505,7 @@
 				D01C751A1CA74AC100648CA6 /* MKBindDoBindAddAddressULEB.m in Sources */,
 				D0995A121A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */,
 				D0F6B50F21DAA7E10040E72D /* MKStaticSymbol.m in Sources */,
+				F37857C724CCD0D9009D37AB /* MKLCLinkerOption.m in Sources */,
 				D030304D1A23CEB200288B3E /* MKLCRPath.m in Sources */,
 				D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */,
 				D0A1D84D19E4EE480095870C /* memory_object.c in Sources */,

@@ -133,6 +133,7 @@
     #import <MachOKit/MKLCBuildVersion.h>
     #import <MachOKit/MKLCDyldExportsTrie.h>
     #import <MachOKit/MKLCDyldChainedFixups.h>
+    #import <MachOKit/MKLCLinkerOption.h>
 #import <MachOKit/MKMachO+Libraries.h>
     #import <MachOKit/MKDependentLibrary.h>
 #import <MachOKit/MKMachO+Segments.h>
