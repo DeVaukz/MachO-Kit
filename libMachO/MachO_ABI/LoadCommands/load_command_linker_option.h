@@ -51,7 +51,7 @@ mk_load_command_linker_option_copy_string(mk_load_command_ref load_command, uint
 //! Iterate over the strings using a block.
 _mk_export void
 mk_load_command_linker_option_enumerate_strings(mk_load_command_ref load_command,
-                                                void (^enumerator)(const char* string, uint32_t index, bool* stop));
+                                                void (^enumerator)(const char *string, uint32_t index, bool *stop));
 #endif
 
 //! @} LOAD_COMMANDS !//
