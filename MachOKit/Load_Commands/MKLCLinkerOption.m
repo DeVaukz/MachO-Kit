@@ -59,7 +59,7 @@
                 NSError *stringError = nil;
                 MKCString *string = [[MKCString alloc] initWithOffset:offset fromParent:self error:&stringError];
                 if (string == nil) {
-                    MK_PUSH_UNDERLYING_WARNING(strings, stringError, @"Failed to instantiate build tool version at index " PRIi32 "", (self.nstrings - stringCount));
+                    MK_PUSH_UNDERLYING_WARNING(strings, stringError, @"Failed to read string at index " PRIi32 "", (self.nstrings - (stringCount + 1 /** as already decremented */)));
                     break;
                 }
                 
