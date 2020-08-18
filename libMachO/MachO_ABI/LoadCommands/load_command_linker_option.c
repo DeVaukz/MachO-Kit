@@ -131,12 +131,15 @@ mk_load_command_linker_option_copy_string(mk_load_command_ref load_command, uint
     size_t current_string_len = 0;
     const char *current_option_start = mk_load_command_linker_option_get_string(load_command, requested_index, &current_string_len);
     
-    if (current_option_start != NULL && (current_string_len + 1 /* NULL char */) <= output_len) {
-        memcpy(output, current_option_start, current_string_len + 1 /* NULL char */);
-        return current_string_len;
+    if (output != NULL && output_len > 0) {
+        size_t bytes_to_copy = MIN(current_string_len, output_len - 1 /* NULL char */);
+        memcpy(output, current_option_start, bytes_to_copy);
+        output[bytes_to_copy] = '\0';
+        
+        return bytes_to_copy;
     }
     
-    return 0;
+    return current_string_len;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//

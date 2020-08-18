@@ -83,12 +83,12 @@ SpecBegin(macho_load_command)
                 expect(copy_result).to.equal(0);
             });
             
-            it(@"fails to copy to small buffer", ^{
-                char buffer[4];
+            it(@"partial copy to small buffer", ^{
+                char buffer[7];
                 size_t copy_result = mk_load_command_linker_option_copy_string(load_command, 0, buffer, sizeof(buffer));
-                expect(copy_result).to.equal(0);
-                copy_result = mk_load_command_linker_option_copy_string(load_command, 1, buffer, sizeof(buffer));
-                expect(copy_result).to.equal(0);
+                expect(copy_result).to.equal(6 /* # chars without NULL char */);
+                int cmp_result = strncmp(buffer, "-frame", MIN(sizeof(buffer), strlen("-frame") + 1));
+                expect(cmp_result).to.equal(0);
             });
             
             it(@"copies description", ^{
@@ -127,6 +127,17 @@ SpecBegin(macho_load_command)
                 });
                 
                 expect(count).to.equal(1);
+            });
+            
+            it(@"returns required buffer size", ^{
+                size_t string_length = mk_load_command_linker_option_copy_string(load_command, 0, NULL, 0);
+                expect(string_length).notTo.equal(0);
+                size_t buffer_size = string_length + 1 /* NULL char */;
+                char *buffer = malloc(buffer_size);
+                size_t actual_string_length = mk_load_command_linker_option_copy_string(load_command, 0, buffer, buffer_size);
+                expect(actual_string_length).to.equal(string_length);
+                expect(strncmp(buffer, "-framework", buffer_size)).to.equal(0);
+                free(buffer);
             });
         });
         
