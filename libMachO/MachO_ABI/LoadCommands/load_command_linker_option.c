@@ -89,9 +89,6 @@ mk_load_command_linker_option_get_nstrings(mk_load_command_ref load_command)
 
 static const char*
 mk_load_command_linker_option_get_string(mk_load_command_ref load_command, uint32_t requested_index, size_t *string_length) {
-    _MK_LOAD_COMMAND_NOT_NULL(load_command, return NULL);
-    _MK_LOAD_COMMAND_IS_A(load_command, _mk_load_command_linker_option_class, return NULL);
-    
     uint32_t nstrings = mk_load_command_linker_option_get_nstrings(load_command);
     if (nstrings == UINT32_MAX || requested_index >= nstrings) {
         return NULL;
