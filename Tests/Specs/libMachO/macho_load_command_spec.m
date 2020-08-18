@@ -106,7 +106,7 @@ SpecBegin(macho_load_command)
             
             it(@"enumerates using block", ^{
                 __block uint32_t count = 0;
-                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, char *__unused stop) {
+                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, bool *__unused stop) {
                     const char *expected_string = (index == 0 ? "-framework" : "CoreFoundation");
                     int cmp = strcmp(string, expected_string);
                     expect(cmp).to.equal(0);
@@ -118,7 +118,7 @@ SpecBegin(macho_load_command)
             
             it(@"enumerates using block with stop", ^{
                 __block uint32_t count = 0;
-                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, char *__unused stop) {
+                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, bool *__unused stop) {
                     int cmp = strcmp(string, "-framework");
                     expect(cmp).to.equal(0);
                     expect(index).to.equal(0);

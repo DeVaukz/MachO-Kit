@@ -146,7 +146,7 @@ mk_load_command_linker_option_copy_string(mk_load_command_ref load_command, uint
 #if __BLOCKS__
 void
 mk_load_command_linker_option_enumerate_strings(mk_load_command_ref load_command,
-                                              void (^enumerator)(const char* string, uint32_t index, char* stop))
+                                              void (^enumerator)(const char* string, uint32_t index, bool* stop))
 {
     uint32_t nstrings = mk_load_command_linker_option_get_nstrings(load_command);
     if (nstrings == UINT32_MAX || enumerator == NULL) {
@@ -156,7 +156,7 @@ mk_load_command_linker_option_enumerate_strings(mk_load_command_ref load_command
     for (uint32_t i = 0; i < nstrings; ++i) {
         const char *string = mk_load_command_linker_option_get_string(load_command, i, NULL);
         if (string != NULL) {
-            char stop = false;
+            bool stop = false;
             enumerator(string, i, &stop);
             if (stop) {
                 break;
