@@ -969,6 +969,12 @@
 		D0FF4F3A201B0B230095106A /* MKNodeFieldVMProtectionType.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */; };
 		D0FF4F3D201B0CD30095106A /* MKNodeFieldTypeSize.h in Headers */ = {isa = PBXBuildFile; fileRef = D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0FF4F3E201B0CD30095106A /* MKNodeFieldTypeSize.m in Sources */ = {isa = PBXBuildFile; fileRef = D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */; };
+		F37857C724CCD0D9009D37AB /* MKLCLinkerOption.m in Sources */ = {isa = PBXBuildFile; fileRef = F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */; };
+		F37857F524CCD4CF009D37AB /* load_command_linker_option.c in Sources */ = {isa = PBXBuildFile; fileRef = F37857F324CCD4CF009D37AB /* load_command_linker_option.c */; };
+		F37857F624CCD4CF009D37AB /* load_command_linker_option.c in Sources */ = {isa = PBXBuildFile; fileRef = F37857F324CCD4CF009D37AB /* load_command_linker_option.c */; };
+		F37857F724CCD4CF009D37AB /* load_command_linker_option.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857F424CCD4CF009D37AB /* load_command_linker_option.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F37857F824CCD4CF009D37AB /* load_command_linker_option.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857F424CCD4CF009D37AB /* load_command_linker_option.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F37857F924CCDFE6009D37AB /* MKLCLinkerOption.h in Headers */ = {isa = PBXBuildFile; fileRef = F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1928,6 +1934,10 @@
 		D0FF4F38201B0B230095106A /* MKNodeFieldVMProtectionType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldVMProtectionType.m; sourceTree = "<group>"; };
 		D0FF4F3B201B0CD30095106A /* MKNodeFieldTypeSize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldTypeSize.h; sourceTree = "<group>"; };
 		D0FF4F3C201B0CD30095106A /* MKNodeFieldTypeSize.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldTypeSize.m; sourceTree = "<group>"; };
+		F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKLCLinkerOption.h; sourceTree = "<group>"; };
+		F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKLCLinkerOption.m; sourceTree = "<group>"; };
+		F37857F324CCD4CF009D37AB /* load_command_linker_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = load_command_linker_option.c; sourceTree = "<group>"; };
+		F37857F424CCD4CF009D37AB /* load_command_linker_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = load_command_linker_option.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2304,6 +2314,8 @@
 		D036504219DA732100418D1D /* Load Commands */ = {
 			isa = PBXGroup;
 			children = (
+				F37857F324CCD4CF009D37AB /* load_command_linker_option.c */,
+				F37857F424CCD4CF009D37AB /* load_command_linker_option.h */,
 				D0A1D86019E4EEB80095870C /* _load_command_dyld_info.h */,
 				D0A1D85F19E4EEB80095870C /* _load_command_dyld_info.c */,
 				D0A1D86219E4EEB80095870C /* _load_command_dylib.h */,
@@ -3400,6 +3412,8 @@
 				D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */,
 				D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */,
 				D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */,
+				F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */,
+				F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */,
 			);
 			name = "Load Commands";
 			path = Load_Commands;
@@ -3580,6 +3594,7 @@
 				D0399E5E23D643F00055C2D4 /* exports_trie_internal.h in Headers */,
 				D0B16D611CA8968900E2116C /* MKIndirectSymbolTable.h in Headers */,
 				D0678A49225977D9007E0C8E /* load_command_lazy_load_dylib.h in Headers */,
+				F37857F924CCDFE6009D37AB /* MKLCLinkerOption.h in Headers */,
 				D01731751C671891007CB0A1 /* MKDSCSlideInfo.h in Headers */,
 				D01B986F1B768ECC0035F464 /* MKDSCStringTable.h in Headers */,
 				D0CC85841C6FBBEF001FB7C7 /* MKDSCImagesInfo.h in Headers */,
@@ -3736,6 +3751,7 @@
 				D05F8A7E21DAF4750094F805 /* MKObjectFileNameSymbol.h in Headers */,
 				D0A1D84219E4EE170095870C /* core.h in Headers */,
 				D010F7201CB8710F004025F5 /* MKObjCClassReferencesSection.h in Headers */,
+				F37857F724CCD4CF009D37AB /* load_command_linker_option.h in Headers */,
 				D010F7141CB87019004025F5 /* MKObjCConstSection.h in Headers */,
 				D06D59AA20151F7500A99173 /* MKBooleanFormatter.h in Headers */,
 				D04269E51DD931E40091AB2A /* MKPtr.h in Headers */,
@@ -3988,6 +4004,7 @@
 				D0A3BBDA1A68ECBF00D663A0 /* load_command_symtab.h in Headers */,
 				D0A3BBCA1A68ECBF00D663A0 /* load_command_rpath.h in Headers */,
 				D017179A1A99607700F234EF /* indirect_symbol_table.h in Headers */,
+				F37857F824CCD4CF009D37AB /* load_command_linker_option.h in Headers */,
 				D0848AE41A959E390076976F /* symbol_table.h in Headers */,
 				D0A3BB8E1A68EC9D00D663A0 /* macho_image.h in Headers */,
 				D02C80921F907F8C00EB9393 /* load_command_note.h in Headers */,
@@ -4488,6 +4505,7 @@
 				D01C751A1CA74AC100648CA6 /* MKBindDoBindAddAddressULEB.m in Sources */,
 				D0995A121A6B8DC9007134CE /* MKIndirectSymbol.m in Sources */,
 				D0F6B50F21DAA7E10040E72D /* MKStaticSymbol.m in Sources */,
+				F37857C724CCD0D9009D37AB /* MKLCLinkerOption.m in Sources */,
 				D030304D1A23CEB200288B3E /* MKLCRPath.m in Sources */,
 				D0B16D491CA8503800E2116C /* MKWeakBindingsInfo.m in Sources */,
 				D0A1D84D19E4EE480095870C /* memory_object.c in Sources */,
@@ -4505,6 +4523,7 @@
 				D0995A2A1A6C914D007134CE /* MKFatArch.m in Sources */,
 				D06D596F2013BB6700A99173 /* MKNodeFieldMachOFileType.m in Sources */,
 				D0B16D641CA8968900E2116C /* MKStringTable.m in Sources */,
+				F37857F524CCD4CF009D37AB /* load_command_linker_option.c in Sources */,
 				D06CEC5322629736001FF343 /* MKBindThreaded.m in Sources */,
 				D096B04E201C2EFF003DA008 /* MKNodeFieldSectionFlagsType.m in Sources */,
 				D0539BA91A23D28400D3A5F0 /* MKLCVersionMinMacOSX.m in Sources */,
@@ -4717,6 +4736,7 @@
 				D0A3BBA11A68ECBF00D663A0 /* _load_command_linkedit.c in Sources */,
 				D0A3BB811A68EC8600D663A0 /* macho_image.c in Sources */,
 				D0A3BBDD1A68ECBF00D663A0 /* load_command_twolevel_hints.c in Sources */,
+				F37857F624CCD4CF009D37AB /* load_command_linker_option.c in Sources */,
 				D0A3BBD51A68ECBF00D663A0 /* load_command_sub_client.c in Sources */,
 				D0399E5C23D643D60055C2D4 /* exports_trie.c in Sources */,
 				D0A3BBC31A68ECBF00D663A0 /* load_command_prebind_cksum.c in Sources */,

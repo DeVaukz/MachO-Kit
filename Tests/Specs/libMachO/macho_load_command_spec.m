@@ -5,6 +5,7 @@
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//|             Copyright (c) 2020-2020 Milen Dzhumerov. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -30,6 +31,191 @@ SpecBegin(macho_load_command)
     mk_memory_map_self_t *memory_map = malloc(sizeof(*memory_map));
     mk_error_t err = mk_memory_map_self_init(NULL, memory_map);
     if (err != MK_ESUCCESS) return;
+
+    #define FRAMEWORK_PARAM_STRING "-framework"
+    #define CORE_FOUNDATION_STRING "CoreFoundation"
+    
+    describe(@"LC_LINKER_OPTION", ^{
+        describe(@"with valid command", ^{
+            struct _dummy {
+                struct mach_header_64 header;
+                struct {
+                    struct __attribute__((packed)) {
+                        struct linker_option_command cmd;
+                        char framework_param[sizeof(FRAMEWORK_PARAM_STRING)];
+                        char cf_param[sizeof(CORE_FOUNDATION_STRING)];
+                    } lc_linker_option;
+                } commands;
+            };
+            struct _dummy *dummy = malloc(sizeof(*dummy));
+            
+            struct mach_header_64 *header = &dummy->header;
+            header->magic = MH_MAGIC_64;
+            header->filetype = MH_EXECUTE;
+            header->sizeofcmds = sizeof(dummy->commands);
+            
+            struct linker_option_command *lc_linker_option = &dummy->commands.lc_linker_option.cmd;
+            lc_linker_option->cmd = LC_LINKER_OPTION;
+            lc_linker_option->cmdsize = sizeof(dummy->commands.lc_linker_option);
+            lc_linker_option->count = 2;
+            snprintf(dummy->commands.lc_linker_option.framework_param, sizeof(dummy->commands.lc_linker_option.framework_param), FRAMEWORK_PARAM_STRING);
+            snprintf(dummy->commands.lc_linker_option.cf_param, sizeof(dummy->commands.lc_linker_option.cf_param), CORE_FOUNDATION_STRING);
+            
+            mk_macho_t *macho = malloc(sizeof(*macho));
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            mk_load_command_t *load_command = malloc(sizeof(*load_command));
+            NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_linker_option, load_command) == MK_ESUCCESS);
+            
+            it(@"gets number of strings", ^{
+                uint32_t nstrings = mk_load_command_linker_option_get_nstrings(load_command);
+                expect(nstrings).to.equal(2);
+            });
+            
+            it(@"copies strings", ^{
+                char buffer[512];
+                bzero(buffer, sizeof(buffer));
+                size_t copy_result = mk_load_command_linker_option_copy_string(load_command, 0, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(strlen(FRAMEWORK_PARAM_STRING));
+                copy_result = mk_load_command_linker_option_copy_string(load_command, 1, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(strlen(CORE_FOUNDATION_STRING));
+                // request out of bounds of index
+                copy_result = mk_load_command_linker_option_copy_string(load_command, 2, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(0);
+            });
+            
+            it(@"partial copy to small buffer", ^{
+                char buffer[7];
+                size_t copy_result = mk_load_command_linker_option_copy_string(load_command, 0, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(6 /* # chars without NULL char */);
+                int cmp_result = strncmp(buffer, "-frame", MIN(sizeof(buffer), strlen("-frame") + 1));
+                expect(cmp_result).to.equal(0);
+            });
+            
+            it(@"copies description", ^{
+                char description_buffer[512];
+                bzero(description_buffer, sizeof(description_buffer));
+                size_t copy_result = mk_type_copy_description(load_command, description_buffer, sizeof(description_buffer));
+                expect(copy_result).notTo.equal(0);
+                
+                char expected_buffer[512];
+                snprintf(expected_buffer, sizeof(expected_buffer), "<LC_LINKER_OPTION %p> {\n\t-framework\n\tCoreFoundation\n}", load_command);
+                
+                int cmp = strcmp(description_buffer, expected_buffer);
+                expect(cmp).to.equal(0);
+            });
+            
+            it(@"enumerates using block", ^{
+                __block uint32_t count = 0;
+                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, bool *__unused stop) {
+                    const char *expected_string = (index == 0 ? "-framework" : "CoreFoundation");
+                    int cmp = strcmp(string, expected_string);
+                    expect(cmp).to.equal(0);
+                    ++count;
+                });
+                
+                expect(count).to.equal(2);
+            });
+            
+            it(@"enumerates using block with stop", ^{
+                __block uint32_t count = 0;
+                mk_load_command_linker_option_enumerate_strings(load_command, ^(const char *string, uint32_t index, bool *__unused stop) {
+                    int cmp = strcmp(string, "-framework");
+                    expect(cmp).to.equal(0);
+                    expect(index).to.equal(0);
+                    ++count;
+                    *stop = true;
+                });
+                
+                expect(count).to.equal(1);
+            });
+            
+            it(@"returns required buffer size", ^{
+                size_t string_length = mk_load_command_linker_option_copy_string(load_command, 0, NULL, 0);
+                expect(string_length).notTo.equal(0);
+                size_t buffer_size = string_length + 1 /* NULL char */;
+                char *buffer = malloc(buffer_size);
+                size_t actual_string_length = mk_load_command_linker_option_copy_string(load_command, 0, buffer, buffer_size);
+                expect(actual_string_length).to.equal(string_length);
+                expect(strncmp(buffer, "-framework", buffer_size)).to.equal(0);
+                free(buffer);
+            });
+        });
+        
+        describe(@"with invalid string count", ^{
+            struct _dummy {
+                struct mach_header_64 header;
+                struct {
+                    struct __attribute__((packed)) {
+                        struct linker_option_command cmd;
+                        char framework_param[sizeof(FRAMEWORK_PARAM_STRING)];
+                        char cf_param[sizeof(CORE_FOUNDATION_STRING)];
+                    } lc_linker_option;
+                } commands;
+            };
+            struct _dummy *dummy = malloc(sizeof(*dummy));
+            
+            struct mach_header_64 *header = &dummy->header;
+            header->magic = MH_MAGIC_64;
+            header->filetype = MH_EXECUTE;
+            header->sizeofcmds = sizeof(dummy->commands);
+            
+            struct linker_option_command *lc_linker_option = &dummy->commands.lc_linker_option.cmd;
+            lc_linker_option->cmd = LC_LINKER_OPTION;
+            lc_linker_option->cmdsize = sizeof(dummy->commands.lc_linker_option);
+            // Declared string count larger than actual number of strings (2)
+            lc_linker_option->count = 3;
+            snprintf(dummy->commands.lc_linker_option.framework_param, sizeof(dummy->commands.lc_linker_option.framework_param), FRAMEWORK_PARAM_STRING);
+            snprintf(dummy->commands.lc_linker_option.cf_param, sizeof(dummy->commands.lc_linker_option.cf_param), CORE_FOUNDATION_STRING);
+            
+            mk_macho_t *macho = malloc(sizeof(*macho));
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            mk_load_command_t *load_command = malloc(sizeof(*load_command));
+            NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_linker_option, load_command) == MK_ESUCCESS);
+            
+            it(@"handles out of bounds string", ^{
+                char buffer[512];
+                size_t copy_result = mk_load_command_linker_option_copy_string(load_command, 2, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(0);
+            });
+        });
+        
+        describe(@"with non-null terminated string", ^{
+            struct _dummy {
+                struct mach_header_64 header;
+                struct {
+                    struct __attribute__((packed)) {
+                        struct linker_option_command cmd;
+                        char string[16];
+                    } lc_linker_option;
+                } commands;
+            };
+            struct _dummy *dummy = malloc(sizeof(*dummy));
+            
+            struct mach_header_64 *header = &dummy->header;
+            header->magic = MH_MAGIC_64;
+            header->filetype = MH_EXECUTE;
+            header->sizeofcmds = sizeof(dummy->commands);
+            
+            struct linker_option_command *lc_linker_option = &dummy->commands.lc_linker_option.cmd;
+            // Fill whole command with 'a' chars _without_ a terminating NULL char
+            memset(&dummy->commands.lc_linker_option, 'a', sizeof(struct linker_option_command));
+            
+            lc_linker_option->cmd = LC_LINKER_OPTION;
+            lc_linker_option->cmdsize = sizeof(dummy->commands.lc_linker_option);
+            lc_linker_option->count = 1;
+            
+            mk_macho_t *macho = malloc(sizeof(*macho));
+            NSParameterAssert(mk_macho_init_with_slide(NULL, "Test", 0, (mk_vm_address_t)dummy, memory_map, macho) == MK_ESUCCESS);
+            mk_load_command_t *load_command = malloc(sizeof(*load_command));
+            NSParameterAssert(mk_load_command_init(macho, (struct load_command*)&dummy->commands.lc_linker_option, load_command) == MK_ESUCCESS);
+            
+            it(@"correctly fails to copy string", ^{
+                char buffer[512];
+                size_t copy_result = mk_load_command_linker_option_copy_string(load_command, 0, buffer, sizeof(buffer));
+                expect(copy_result).to.equal(0);
+            });
+        });
+    });
     
     //------------------------------------------------------------------------//
     describe(@"LC_ID_DYLINKER", ^{

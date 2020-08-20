@@ -112,6 +112,7 @@ _mk_export intptr_t mk_load_command_type;
 #include "load_command_build_version.h"
 #include "load_command_dyld_exports_trie.h"
 #include "load_command_dyld_chained_fixups.h"
+#include "load_command_linker_option.h"
 
 
 //----------------------------------------------------------------------------//
