@@ -127,13 +127,13 @@
     #import <MachOKit/MKLCSourceVersion.h>
     #import <MachOKit/MKLCDylibCodeSignDrs.h>
     #import <MachOKit/MKLCEncryptionInfo64.h>
+    #import <MachOKit/MKLCLinkerOption.h>
     #import <MachOKit/MKLCVersionMinTVOS.h>
     #import <MachOKit/MKLCVersionMinWatchOS.h>
     #import <MachOKit/MKLCNote.h>
     #import <MachOKit/MKLCBuildVersion.h>
     #import <MachOKit/MKLCDyldExportsTrie.h>
     #import <MachOKit/MKLCDyldChainedFixups.h>
-    #import <MachOKit/MKLCLinkerOption.h>
 #import <MachOKit/MKMachO+Libraries.h>
     #import <MachOKit/MKDependentLibrary.h>
 #import <MachOKit/MKMachO+Segments.h>

@@ -53,7 +53,7 @@
     
     // Load Strings
     {
-        NSMutableDictionary<NSNumber*, MKCString*> *strings = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary<NSNumber*, MKCString*> *strings = [NSMutableDictionary new];
         mk_vm_offset_t offset = 0;
         
         // Cast to mk_vm_size_t is safe; nodeSize can't be larger than UINT32_MAX.

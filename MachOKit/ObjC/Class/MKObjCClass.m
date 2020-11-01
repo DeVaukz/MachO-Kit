@@ -86,8 +86,8 @@ struct objc_class_32 {
         _superClass = [[MKPointerNode alloc] initWithOffset:offsetof(struct objc_class_64, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _cache = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, cache) fromParent:self error:error];
         _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_64, tagged_data) fromParent:self mask:FAST_DATA_MASK_64 targetClass:MKObjCClassData.class error:error];
-        _isSwiftLegacy = cls.tagged_data & FAST_IS_SWIFT_LEGACY;
-        _isSwiftStable = cls.tagged_data & FAST_IS_SWIFT_STABLE;
+        _isSwiftLegacy = !!(cls.tagged_data & FAST_IS_SWIFT_LEGACY);
+        _isSwiftStable = !!(cls.tagged_data & FAST_IS_SWIFT_STABLE);
         _mask = MKSwapLValue32(cls.mask, dataModel);
         _occupied = MKSwapLValue32(cls.occupied, dataModel);
     }
@@ -105,8 +105,8 @@ struct objc_class_32 {
         _superClass = [[MKPointerNode alloc] initWithOffset:offsetof(struct objc_class_32, super_class) fromParent:self targetClass:MKObjCClass.class error:error];
         _cache = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, cache) fromParent:self error:error];
         _classData = [[MKPointer alloc] initWithOffset:offsetof(struct objc_class_32, tagged_data) fromParent:self mask:FAST_DATA_MASK_32 targetClass:MKObjCClassData.class error:error];
-        _isSwiftLegacy = cls.tagged_data & FAST_IS_SWIFT_LEGACY;
-        _isSwiftStable = cls.tagged_data & FAST_IS_SWIFT_STABLE;
+        _isSwiftLegacy = !!(cls.tagged_data & FAST_IS_SWIFT_LEGACY);
+        _isSwiftStable = !!(cls.tagged_data & FAST_IS_SWIFT_STABLE);
         _mask = MKSwapLValue16(cls.mask, dataModel);
         _occupied = MKSwapLValue16(cls.occupied, dataModel);
     }

@@ -87,6 +87,7 @@ mk_load_command_linker_option_get_nstrings(mk_load_command_ref load_command)
     return mk_macho_get_byte_order(load_command.load_command->image)->swap32( linker_option_command->count );
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
 static const char*
 mk_load_command_linker_option_get_string(mk_load_command_ref load_command, uint32_t requested_index, size_t *string_length) {
     uint32_t nstrings = mk_load_command_linker_option_get_nstrings(load_command);
@@ -122,6 +123,7 @@ mk_load_command_linker_option_get_string(mk_load_command_ref load_command, uint3
     return NULL;
 }
 
+//|++++++++++++++++++++++++++++++++++++|//
 size_t
 mk_load_command_linker_option_copy_string(mk_load_command_ref load_command, uint32_t requested_index, char *output, size_t output_len)
 {

@@ -2314,8 +2314,6 @@
 		D036504219DA732100418D1D /* Load Commands */ = {
 			isa = PBXGroup;
 			children = (
-				F37857F324CCD4CF009D37AB /* load_command_linker_option.c */,
-				F37857F424CCD4CF009D37AB /* load_command_linker_option.h */,
 				D0A1D86019E4EEB80095870C /* _load_command_dyld_info.h */,
 				D0A1D85F19E4EEB80095870C /* _load_command_dyld_info.c */,
 				D0A1D86219E4EEB80095870C /* _load_command_dylib.h */,
@@ -2356,6 +2354,8 @@
 				D0A1D87D19E4EEB80095870C /* load_command_id_dylinker.c */,
 				D0678A47225977D9007E0C8E /* load_command_lazy_load_dylib.h */,
 				D0678A48225977D9007E0C8E /* load_command_lazy_load_dylib.c */,
+				F37857F424CCD4CF009D37AB /* load_command_linker_option.h */,
+				F37857F324CCD4CF009D37AB /* load_command_linker_option.c */,
 				D0A1D88019E4EEB80095870C /* load_command_load_dylib.h */,
 				D0A1D87F19E4EEB80095870C /* load_command_load_dylib.c */,
 				D0A1D88219E4EEB80095870C /* load_command_load_dylinker.h */,
@@ -3400,6 +3400,8 @@
 				D0539BC31A23D62A00D3A5F0 /* MKLCDylibCodeSignDrs.m */,
 				D0539BC61A23D69D00D3A5F0 /* MKLCEncryptionInfo64.h */,
 				D0539BC71A23D69D00D3A5F0 /* MKLCEncryptionInfo64.m */,
+				F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */,
+				F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */,
 				D00EA1A71C61CEF2002B0696 /* MKLCVersionMinTVOS.h */,
 				D00EA1A81C61CEF2002B0696 /* MKLCVersionMinTVOS.m */,
 				D00EA1AB1C61CF5B002B0696 /* MKLCVersionMinWatchOS.h */,
@@ -3412,8 +3414,6 @@
 				D0399E4E23D511850055C2D4 /* MKLCDyldExportsTrie.m */,
 				D0399E5123D5124E0055C2D4 /* MKLCDyldChainedFixups.h */,
 				D0399E5223D5124E0055C2D4 /* MKLCDyldChainedFixups.m */,
-				F37857C424CCD0D9009D37AB /* MKLCLinkerOption.h */,
-				F37857C524CCD0D9009D37AB /* MKLCLinkerOption.m */,
 			);
 			name = "Load Commands";
 			path = Load_Commands;
@@ -4132,7 +4132,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				LastUpgradeCheck = 1210;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D0A3BB731A68EB9D00D663A0 = {

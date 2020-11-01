@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! Initializes the receiver with the provided \a parent node.  Subclasses
 //! are expected to override this method and may place restrictions on
-//! the type(s) of nodes may be provided as a parent.
+//! the type(s) of nodes that can be provided as a parent.
 - (nullable instancetype)initWithParent:(null_unspecified MKNode*)parent error:(NSError**)error NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! may have reimplemented -description.
 //!
 //!	@note
-//!	Never call \c -nodeDescription from within your subclasse's \c -description
+//!	Never call \c -nodeDescription from within your subclass \c -description
 //!	method.
 @property (nonatomic, readonly) NSString *nodeDescription;
 
