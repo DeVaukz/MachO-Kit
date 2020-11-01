@@ -70,7 +70,6 @@ describe(@"a file memory map", ^{
     
     it(@"should report that it has valid mappings", ^{
         expect([map hasMappingAtOffset:4096 fromAddress:0 length:5484640]).to.beTruthy();
-        expect([map hasMappingAtOffset:5492736 fromAddress:0 length:4994016]).to.beTruthy();
     });
 });
 
