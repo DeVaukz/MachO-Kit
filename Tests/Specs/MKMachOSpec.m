@@ -457,6 +457,17 @@ SpecBegin(MKMachOImage)
                         expect(export.description).to.equal(dyldInfoExports[i]);
                     }
                 });
+                
+                // -childNodeOccupyingVMAddress:targetClass:inSortedArray: relies
+                // on entires being sorted.
+                it(@"should sort the entires by address", ^{
+                    mk_vm_address_t lastAddress = 0;
+                    for (MKBackedNode *entry in machoExports) {
+                        mk_vm_address_t entryVMAddress = entry.nodeVMAddress;
+                        expect(entryVMAddress).to.beGreaterThanOrEqualTo(lastAddress);
+                        lastAddress = entryVMAddress;
+                    }
+                });
             });
             
             //----------------------------------------------------------------//
@@ -512,6 +523,17 @@ SpecBegin(MKMachOImage)
                         expect([NSString stringWithFormat:@"0x%.8" PRIx32 "", entry.offset]).to.equal(dyldDataInCodeEntries[i][@"offset"]);
                         expect([NSString stringWithFormat:@"%" PRIi16 "", entry.length]).to.equal(dyldDataInCodeEntries[i][@"length"]);
                         expect([NSString stringWithFormat:@"0x%.4" PRIx16 "", entry.kind]).to.equal(dyldDataInCodeEntries[i][@"kind"]);
+                    }
+                });
+                
+                // -childNodeOccupyingVMAddress:targetClass:inSortedArray: relies
+                // on entires being sorted.
+                it(@"should sort the entires by address", ^{
+                    mk_vm_address_t lastAddress = 0;
+                    for (MKBackedNode *entry in machoDataInCodeEntries) {
+                        mk_vm_address_t entryVMAddress = entry.nodeVMAddress;
+                        expect(entryVMAddress).to.beGreaterThanOrEqualTo(lastAddress);
+                        lastAddress = entryVMAddress;
                     }
                 });
             });
@@ -578,6 +600,17 @@ SpecBegin(MKMachOImage)
                         }
                     }
                 });
+                
+                // -childNodeOccupyingVMAddress:targetClass:inSortedArray: relies
+                // on entires being sorted.
+                it(@"should sort the entires by address", ^{
+                    mk_vm_address_t lastAddress = 0;
+                    for (MKBackedNode *entry in machoSymbols) {
+                        mk_vm_address_t entryVMAddress = entry.nodeVMAddress;
+                        expect(entryVMAddress).to.beGreaterThanOrEqualTo(lastAddress);
+                        lastAddress = entryVMAddress;
+                    }
+                });
             });
             
             //----------------------------------------------------------------//
@@ -607,6 +640,17 @@ SpecBegin(MKMachOImage)
                         expect(machoIndirectSymbol.local).to.equal([otoolEntry[@"local"] boolValue]);
                         expect(machoIndirectSymbol.absolute).to.equal([otoolEntry[@"absolute"] boolValue]);
                         expect(machoIndirectSymbol.index).to.equal([otoolEntry[@"index"] unsignedIntValue]);
+                    }
+                });
+                
+                // -childNodeOccupyingVMAddress:targetClass:inSortedArray: relies
+                // on entires being sorted.
+                it(@"should sort the entires by address", ^{
+                    mk_vm_address_t lastAddress = 0;
+                    for (MKBackedNode *entry in machoIndirectSymbols) {
+                        mk_vm_address_t entryVMAddress = entry.nodeVMAddress;
+                        expect(entryVMAddress).to.beGreaterThanOrEqualTo(lastAddress);
+                        lastAddress = entryVMAddress;
                     }
                 });
             });
@@ -769,6 +813,17 @@ SpecBegin(MKMachOImage)
                                             
                                             it(@"should have the correct count", ^{
                                                 expect([NSString stringWithFormat:@"%" PRIu32 "", elementList.count]).to.equal(otoolElementList[@"count"]);
+                                            });
+                                            
+                                            // -childNodeOccupyingVMAddress:targetClass:inSortedArray: relies
+                                            // on entires being sorted.
+                                            it(@"should sort the entires by address", ^{
+                                                mk_vm_address_t lastAddress = 0;
+                                                for (MKBackedNode *entry in elementList.elements) {
+                                                    mk_vm_address_t entryVMAddress = entry.nodeVMAddress;
+                                                    expect(entryVMAddress).to.beGreaterThanOrEqualTo(lastAddress);
+                                                    lastAddress = entryVMAddress;
+                                                }
                                             });
                                             
                                             NSArray *otoolElements = otoolElementList[@"elements"];
