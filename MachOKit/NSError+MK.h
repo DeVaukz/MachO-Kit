@@ -59,22 +59,22 @@ NS_ASSUME_NONNULL_BEGIN
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! applying \a OFFSET to \a ADDRESS.
 #define MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(CODE, ADDRESS, OFFSET) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] adding offset '%s' [%" MK_VM_PRIuOFFSET "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #OFFSET, OFFSET, #ADDRESS, ADDRESS]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] adding offset '%s' [%" MK_VM_PRIuOFFSET "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #OFFSET, OFFSET, #ADDRESS, ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! applying \a SLIDE to \a ADDRESS.
 #define MK_MAKE_VM_ADDRESS_APPLY_SLIDE_ARITHMETIC_ERROR(CODE, ADDRESS, SLIDE) \
-[NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] applying slide '%s' [%" MK_VM_PRIiSLIDE "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #SLIDE, SLIDE, #ADDRESS, ADDRESS]
+[NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] applying slide '%s' [%" MK_VM_PRIiSLIDE "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #SLIDE, SLIDE, #ADDRESS, ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! removing \a SLIDE from \a ADDRESS.
 #define MK_MAKE_VM_ADDRESS_REMOVE_SLIDE_ARITHMETIC_ERROR(CODE, ADDRESS, SLIDE) \
-[NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] removing slide '%s' [%" MK_VM_PRIiSLIDE "] from address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #SLIDE, SLIDE, #ADDRESS, ADDRESS]
+[NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] removing slide '%s' [%" MK_VM_PRIiSLIDE "] from address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #SLIDE, SLIDE, #ADDRESS, ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! adding \a RHS_ADDRESS to \a LHS_ADDRESS.
 #define MK_MAKE_VM_ADDRESS_ADD_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] adding address '%s' [%" MK_VM_PRIxADDR "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] adding address '%s' [%" MK_VM_PRIxADDR "] to address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! subtracting \a RHS_ADDRESS from \a LHS_ADDRESS.
@@ -84,34 +84,34 @@ NS_ASSUME_NONNULL_BEGIN
 //! Creates an \c NSError describing the arithmetic error that ocurred while
 //! subtracting \a RHS_ADDRESS from \a LHS_ADDRESS.
 #define MK_MAKE_VM_ADDRESS_DEFFERENCE_ARITHMETIC_ERROR(CODE, LHS_ADDRESS, RHS_ADDRESS) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] while subtracting address '%s' [%" MK_VM_PRIxADDR "] from address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] while subtracting address '%s' [%" MK_VM_PRIxADDR "] from address '%s' [%" MK_VM_PRIxADDR "].", mk_error_string(CODE), #RHS_ADDRESS, RHS_ADDRESS, #LHS_ADDRESS, LHS_ADDRESS]
 
 //! Creates an \c NSError describing the overflow condition
 //! that would be triggered if the provided \a LENGTH was added to the
 //! provided \a ADDRESS.
 #define MK_MAKE_VM_LENGTH_CHECK_ERROR(CODE, ADDRESS, LENGTH) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Adding '%s' [%" MK_VM_PRIuSIZE "] to address '%s' [%" MK_VM_PRIxADDR "] would result in an arithmetic error [%s].", #LENGTH, LENGTH, #ADDRESS, ADDRESS, mk_error_string(CODE)];
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Adding '%s' [%" MK_VM_PRIuSIZE "] to address '%s' [%" MK_VM_PRIxADDR "] would result in an arithmetic error [%s].", #LENGTH, LENGTH, #ADDRESS, ADDRESS, mk_error_string(CODE)];
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! adding \a RHS_SIZE to \a LHS_OFFSET.
 #define MK_MAKE_VM_OFFSET_ADD_ARITHMETIC_ERROR(CODE, LHS_OFFSET, RHS_SIZE) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] while adding '%s' [%" MK_VM_PRIuSIZE "] to offset '%s' [%" MK_VM_PRIuOFFSET "].", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_OFFSET, LHS_OFFSET]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] while adding '%s' [%" MK_VM_PRIuSIZE "] to offset '%s' [%" MK_VM_PRIuOFFSET "].", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_OFFSET, LHS_OFFSET]
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! adding \a RHS_SIZE to \a LHS_SIZE.
 #define MK_MAKE_VM_SIZE_ADD_ARITHMETIC_ERROR(CODE, LHS_SIZE, RHS_SIZE) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] while adding '%s' [%" MK_VM_PRIuSIZE "] to '%s' [%" MK_VM_PRIuSIZE "].", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_SIZE, LHS_SIZE]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] while adding '%s' [%" MK_VM_PRIuSIZE "] to '%s' [%" MK_VM_PRIuSIZE "].", mk_error_string(CODE), #RHS_SIZE, RHS_SIZE, #LHS_SIZE, LHS_SIZE]
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! multiplying \a LHS_SIZE by \a RHS_MULTIPLIER.
 #define MK_MAKE_VM_SIZE_MULTIPLY_ARITHMETIC_ERROR(CODE, LHS_SIZE, RHS_MULTIPLIER) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] while multiplying '%s' [%" MK_VM_PRIuSIZE "] by '%s' [%" PRIu64 "].", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] while multiplying '%s' [%" MK_VM_PRIuSIZE "] by '%s' [%" PRIu64 "].", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER]
 
 //! Creates an \c NSError describing the arithmetic error that occurred while
 //! multiplying \a LHS_SIZE by \a RHS_MULTIPLIER and adding the result to
 //! \a BASE.
 #define MK_MAKE_VM_SIZE_ADD_WITH_MULTIPLY_ARITHMETIC_ERROR(CODE, BASE, LHS_SIZE, RHS_MULTIPLIER) \
-    [NSError mk_errorWithDomain:MKErrorDomain code:CODE description:@"Arithmetic error [%s] while multiplying '%s' [%" MK_VM_PRIuSIZE "] by '%s' [%" PRIu64 "] and adding the result to '%s' [%" MK_VM_PRIuSIZE "].", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER, #BASE, BASE]
+    [NSError mk_errorWithDomain:MKErrorDomain code:(NSInteger)CODE description:@"Arithmetic error [%s] while multiplying '%s' [%" MK_VM_PRIuSIZE "] by '%s' [%" PRIu64 "] and adding the result to '%s' [%" MK_VM_PRIuSIZE "].", mk_error_string(CODE), #LHS_SIZE, LHS_SIZE, #RHS_MULTIPLIER, RHS_MULTIPLIER, #BASE, BASE]
 
 //----------------------------------------------------------------------------//
 //! @name       Error Domains
