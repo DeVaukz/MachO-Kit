@@ -59,21 +59,21 @@
     
     // Lookup the symbol referenced by the index.
     while (1) {
-        MKOptional<MKSymbolTable*> *symbolTable = image.symbolTable;
+        MKResult<MKSymbolTable*> *symbolTable = image.symbolTable;
         if (symbolTable.value == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:symbolTable.error description:@"Could not load the symbol table."];
-            _symbol = [[MKOptional alloc] initWithError:error];
+            _symbol = [[MKResult alloc] initWithError:error];
             break;
         }
         
         MKSymbol *symbol = _index < symbolTable.value.symbols.count ? symbolTable.value.symbols[_index] : nil;
         if (symbol == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"Symbol table does not have an entry for index [%" PRIu32 "].", _index];
-            _symbol = [[MKOptional alloc] initWithError:error];
+            _symbol = [[MKResult alloc] initWithError:error];
             break;
         }
             
-        _symbol = [[MKOptional alloc] initWithValue:symbol];
+        _symbol = [[MKResult alloc] initWithValue:symbol];
         break;
     }
     
@@ -91,13 +91,13 @@
             if (position >= sectionIndirectSymbolTableRange.location &&
                 position < sectionIndirectSymbolTableRange.location + sectionIndirectSymbolTableRange.length)
             {
-                _section = [[MKOptional alloc] initWithValue:section];
+                _section = [[MKResult alloc] initWithValue:section];
                 break;
             }
         }
         
         if (_section == nil)
-            _section = [MKOptional new];
+            _section = [MKResult new];
     }
     
     return self;

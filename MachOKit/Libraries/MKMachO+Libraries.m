@@ -42,7 +42,7 @@
 {
     if (_dependentLibraries == nil)
     @autoreleasepool {
-        NSMutableArray<MKOptional<MKDependentLibrary*>*> *libraries = [[NSMutableArray alloc] init];
+        NSMutableArray<MKResult<MKDependentLibrary*>*> *libraries = [[NSMutableArray alloc] init];
         
         for (MKDylibLoadCommand *lc in self.loadCommands) {
             NSError *libraryError = nil;
@@ -52,9 +52,9 @@
             
             MKDependentLibrary *library = [[MKDependentLibrary alloc] initWithLoadCommand:lc error:&libraryError];
             if (library)
-                [libraries addObject:[MKOptional optionalWithValue:library]];
+                [libraries addObject:[MKResult resultWithValue:library]];
             else
-                [libraries addObject:[MKOptional optionalWithError:libraryError]];
+                [libraries addObject:[MKResult resultWithError:libraryError]];
             
             [library release];
         }

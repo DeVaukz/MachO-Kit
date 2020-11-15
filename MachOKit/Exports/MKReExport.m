@@ -54,7 +54,7 @@
 	_sourceLibraryOrdinal = terminalNode.ordinal;
     if (_sourceLibraryOrdinal > 0) {
         NSArray *libraries = self.macho.dependentLibraries;
-        MKOptional<MKDependentLibrary*> *library = nil;
+        MKResult<MKDependentLibrary*> *library = nil;
         
         // Lookup the library
         if ((NSUInteger)_sourceLibraryOrdinal <= libraries.count)

@@ -57,7 +57,7 @@
     if (self.sourceLibraryOrdinal > SELF_LIBRARY_ORDINAL && self.sourceLibraryOrdinal <= MAX_LIBRARY_ORDINAL)
     {
         NSArray *libraries = self.macho.dependentLibraries;
-        MKOptional<MKDependentLibrary*> *library = nil;
+        MKResult<MKDependentLibrary*> *library = nil;
         
         // Lookup the library
         if ((NSUInteger)self.sourceLibraryOrdinal <= libraries.count)

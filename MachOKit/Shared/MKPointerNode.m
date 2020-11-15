@@ -102,7 +102,7 @@
 { return MKPtrTargetClass(mk_ptr_struct(self)); }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)pointee
+- (MKResult*)pointee
 { return MKPtrPointee(mk_ptr_struct(self)); }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

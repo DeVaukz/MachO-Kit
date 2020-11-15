@@ -53,14 +53,14 @@
     MKMachOImage *image = self.macho;
     
     // Lookup the original symbol name in the string table.
-    _targetName = [[MKOptional optional] retain];
+    _targetName = [[MKResult result] retain];
     while (_value != 0)
     {
-        MKOptional<MKStringTable*> *stringTable = image.stringTable;
+        MKResult<MKStringTable*> *stringTable = image.stringTable;
         if (stringTable.value == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:stringTable.error description:@"Could not load the string table."];
             [_targetName release];
-            _targetName = [[MKOptional alloc] initWithError:error];
+            _targetName = [[MKResult alloc] initWithError:error];
             break;
         }
         
@@ -68,12 +68,12 @@
         if (string == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"String table does not contain an entry for index [%" PRIu32 "].", _value];
             [_targetName release];
-            _targetName = [[MKOptional alloc] initWithError:error];
+            _targetName = [[MKResult alloc] initWithError:error];
             break;
         }
         
         [_targetName release];
-        _targetName = [[MKOptional alloc] initWithValue:string];
+        _targetName = [[MKResult alloc] initWithValue:string];
         break;
     }
     

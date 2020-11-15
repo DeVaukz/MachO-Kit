@@ -39,7 +39,7 @@
 /* CORE */
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKNodeDescription.h>
-#import <MachOKit/MKOptional.h>
+#import <MachOKit/MKResult.h>
 #import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNode.h>
 #import <MachOKit/MKAddressedNode.h>

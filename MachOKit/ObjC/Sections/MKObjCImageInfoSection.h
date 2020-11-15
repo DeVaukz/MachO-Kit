@@ -37,10 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKObjCImageInfoSection : MKSection {
 @package
-    MKOptional<MKObjCImageInfo*> *_imageInfo;
+    MKResult<MKObjCImageInfo*> *_imageInfo;
 }
 
-@property (nonatomic, readonly) MKOptional<MKObjCImageInfo*> *imageInfo;
+@property (nonatomic, readonly) MKResult<MKObjCImageInfo*> *imageInfo;
 
 @end
 

@@ -156,21 +156,21 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
     // have a zero string index.
     while (_strx != 0)
     {
-        MKOptional<MKStringTable*> *stringTable = image.stringTable;
+        MKResult<MKStringTable*> *stringTable = image.stringTable;
         if (stringTable.value == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:stringTable.error description:@"Could not load the string table."];
-            _name = [[MKOptional alloc] initWithError:error];
+            _name = [[MKResult alloc] initWithError:error];
             break;
         }
         
         MKCString *string = stringTable.value.strings[@(_strx)];
         if (string == nil) {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"String table does not contain an entry for index [%" PRIu32 "].", _strx];
-            _name = [[MKOptional alloc] initWithError:error];
+            _name = [[MKResult alloc] initWithError:error];
             break;
         }
         
-        _name = [[MKOptional alloc] initWithValue:string];
+        _name = [[MKResult alloc] initWithValue:string];
         break;
     }
     
@@ -179,15 +179,15 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
     {
         MKSection *section = image.sections[@(_sect - 1)];
         if (section) {
-            _section = [[MKOptional alloc] initWithValue:section];
+            _section = [[MKResult alloc] initWithValue:section];
         } else {
             NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND description:@"No section at index [%" PRIu8 "].", _sect];
-            _section = [[MKOptional alloc] initWithError:error];
+            _section = [[MKResult alloc] initWithError:error];
         }
     }
     else
     {
-        _section = [MKOptional new];
+        _section = [MKResult new];
     }
     
     return self;

@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! The rebasing information.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no rebasing information.
-@property (nonatomic, readonly) MKOptional<MKRebaseInfo*> *rebaseInfo;
+@property (nonatomic, readonly) MKResult<MKRebaseInfo*> *rebaseInfo;
 
 @end
 

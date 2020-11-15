@@ -38,7 +38,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)functionStarts
+- (MKResult*)functionStarts
 {
     if (_functionStarts == nil)
     {
@@ -46,11 +46,11 @@
         
         MKFunctionStarts *functionStarts = [[MKFunctionStarts alloc] initWithParent:self error:&functionStartsError];
         if (functionStarts)
-            _functionStarts = [[MKOptional alloc] initWithValue:functionStarts];
+            _functionStarts = [[MKResult alloc] initWithValue:functionStarts];
         else if (functionStartsError /* Only failed if we have an error */)
-            _functionStarts = [[MKOptional alloc] initWithError:functionStartsError];
+            _functionStarts = [[MKResult alloc] initWithError:functionStartsError];
         else
-            _functionStarts = [MKOptional new];
+            _functionStarts = [MKResult new];
         
         [functionStarts release];
     }

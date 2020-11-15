@@ -27,7 +27,7 @@
 
 #import "MKNodeFieldExtractSortedDictionaryValues.h"
 #import "MKInternal.h"
-#import "MKOptional.h"
+#import "MKResult.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
@@ -62,9 +62,9 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input
+- (MKResult*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input
 {
-    MKOptional<NSDictionary*> *value = [_recipe valueForField:field ofNode:input];
+    MKResult<NSDictionary*> *value = [_recipe valueForField:field ofNode:input];
     if (value.value == nil)
         return value;
     
@@ -79,7 +79,7 @@
         [result addObject:[dict objectForKey:key]];
     }
     
-    value = [MKOptional optionalWithValue:result];
+    value = [MKResult resultWithValue:result];
     [result release];
     
     return value;

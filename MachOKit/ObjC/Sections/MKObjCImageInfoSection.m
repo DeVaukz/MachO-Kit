@@ -61,9 +61,9 @@
         
         MKObjCImageInfo *imageInfo = [[MKObjCImageInfo alloc] initWithOffset:0 fromParent:self error:&imageInfoError];
         if (imageInfo)
-            _imageInfo = [[MKOptional alloc] initWithValue:imageInfo];
+            _imageInfo = [[MKResult alloc] initWithValue:imageInfo];
         else
-            _imageInfo = [[MKOptional alloc] initWithError:imageInfoError];
+            _imageInfo = [[MKResult alloc] initWithError:imageInfoError];
         
         [imageInfo release];
     }
@@ -84,13 +84,13 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
     MKObjCImageInfo *imageInfo = self.imageInfo.value;
     if (imageInfo) {
         mk_vm_range_t range = mk_vm_range_make(imageInfo.nodeVMAddress, imageInfo.nodeSize);
         if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS) {
-            MKOptional *child = [imageInfo childNodeOccupyingVMAddress:address targetClass:targetClass];
+            MKResult *child = [imageInfo childNodeOccupyingVMAddress:address targetClass:targetClass];
             if (child.value)
                 return child;
             // else, fallthrough and call the super's implementation.

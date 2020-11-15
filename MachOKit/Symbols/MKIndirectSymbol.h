@@ -42,15 +42,15 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKIndirectSymbol : MKOffsetNode {
 @package
     uint32_t _index;
-    MKOptional<MKSymbol*> *_symbol;
-    MKOptional<MKSection*> *_section;
+    MKResult<MKSymbol*> *_symbol;
+    MKResult<MKSection*> *_section;
 }
 
 //! The symbol referenced by this entry.
-@property (nonatomic, readonly) MKOptional<MKSymbol*> *symbol;
+@property (nonatomic, readonly) MKResult<MKSymbol*> *symbol;
 
 //!
-@property (nonatomic, readonly) MKOptional<MKSection*> *section;
+@property (nonatomic, readonly) MKResult<MKSection*> *section;
 
 //!
 @property (nonatomic, readonly, getter=isLocal) BOOL local;

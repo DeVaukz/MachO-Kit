@@ -27,7 +27,7 @@
 
 #import "MKNodeFieldOperationReturnConstant.h"
 #import "MKInternal.h"
-#import "MKOptional.h"
+#import "MKResult.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldOperationReturnConstant
@@ -60,12 +60,12 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)valueForField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
+- (MKResult*)valueForField:(__unused MKNodeField*)field ofNode:(__unused MKNode*)input
 {
-    if ([_constant isKindOfClass:MKOptional.class])
+    if ([_constant isKindOfClass:MKResult.class])
         return _constant;
     else
-        return [MKOptional optionalWithValue:_constant];
+        return [MKResult resultWithValue:_constant];
 }
 
 @end

@@ -38,7 +38,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)rebaseInfo
+- (MKResult*)rebaseInfo
 {
     if (_rebaseInfo == nil)
     {
@@ -46,11 +46,11 @@
         
         MKRebaseInfo *rebaseInfo = [[MKRebaseInfo alloc] initWithParent:self error:&rebaseInfoError];
         if (rebaseInfo)
-            _rebaseInfo = [[MKOptional alloc] initWithValue:rebaseInfo];
+            _rebaseInfo = [[MKResult alloc] initWithValue:rebaseInfo];
         else if (rebaseInfoError /* Only failed if we have an error */)
-            _rebaseInfo = [[MKOptional alloc] initWithError:rebaseInfoError];
+            _rebaseInfo = [[MKResult alloc] initWithError:rebaseInfoError];
         else
-            _rebaseInfo = [MKOptional new];
+            _rebaseInfo = [MKResult new];
         
         [rebaseInfo release];
     }

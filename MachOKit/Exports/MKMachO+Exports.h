@@ -44,7 +44,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! The exports information.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no exports information.
-@property (nonatomic, readonly) MKOptional<MKExportsInfo*> *exportsInfo;
+@property (nonatomic, readonly) MKResult<MKExportsInfo*> *exportsInfo;
 
 @end
 

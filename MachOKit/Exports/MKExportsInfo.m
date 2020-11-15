@@ -114,7 +114,7 @@
 						continue;
 					}
 					
-					MKOptional<MKExportTrieNode*> *targetNode = (typeof(targetNode))[self childNodeAtVMAddress:targetAddress targetClass:MKExportTrieNode.class];
+					MKResult<MKExportTrieNode*> *targetNode = (typeof(targetNode))[self childNodeAtVMAddress:targetAddress targetClass:MKExportTrieNode.class];
 					if (targetNode.value == nil) {
 						traversalError = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:targetNode.error description:@"No trie node at address [0x%" MK_VM_PRIxADDR "]", targetAddress];
 						MK_PUSH_WARNING_WITH_ERROR(exports, MK_ENOT_FOUND, traversalError, @"Could not locate the trie node referenced by branch %@ of %@.", branch.nodeDescription, branch.parent.nodeDescription);
@@ -215,9 +215,9 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:(NSArray *)self.nodes];
+    MKResult *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:(NSArray *)self.nodes];
     if (child.value)
         return child;
 	

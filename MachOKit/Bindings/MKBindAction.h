@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 @package
 	mk_vm_offset_t _nodeOffset;
     MKSegment *_segment;
-    MKOptional<MKSection*> *_section;
+    MKResult<MKSection*> *_section;
     mk_vm_offset_t _offset;
     MKBindType _type;
 }
@@ -96,7 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) mk_vm_address_t address;
 
 //! The section where the bind location resides.
-@property (nonatomic, readonly) MKOptional<MKSection*> *section;
+@property (nonatomic, readonly) MKResult<MKSection*> *section;
 
 @end
 

@@ -45,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! The data in code entries table.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no data in code entries
 //! information.
-@property (nonatomic, readonly) MKOptional<MKDataInCode*> *dataInCode;
+@property (nonatomic, readonly) MKResult<MKDataInCode*> *dataInCode;
 
 @end
 

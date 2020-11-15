@@ -28,7 +28,7 @@
 #include <MachOKit/macho.h>
 #import <Foundation/Foundation.h>
 
-@class MKOptional;
+@class MKResult;
 @class MKNodeField;
 @class MKNode;
 
@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @protocol MKNodeFieldValueRecipe <NSObject>
 
-- (MKOptional*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input;
+- (MKResult*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input;
 
 @end
 

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKOptional.h
+//! @file       MKResult.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -33,19 +33,29 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 //! A type that can represent either none, a value, or an error.
 //!
-@interface MKOptional<ObjectType> : NSObject {
+@interface MKResult<ObjectType> : NSObject {
 @package
     id _value;
 }
 
-//! Creates and returns a new optional with no value.
-+ (instancetype)optional;
+//! Creates and returns a result with no value.
+//!
+//! A result with no value and no error indicates an operation was sucessful,
+//! but has no data to return.  For example, a search completed without any
+//! errors but did not find a match.
++ (instancetype)result;
 
-//! Creates and returns a new optional with the provided \a value.
-+ (instancetype)optionalWithValue:(ObjectType)value;
+//! Creates and returns a result with the provided \a value.
++ (instancetype)resultWithValue:(ObjectType)value;
 
-//! Creates and returns a new optional with the provided \a error.
-+ (instancetype)optionalWithError:(NSError*)error;
+//! Creates and returns a result with the provided \a error.
++ (instancetype)resultWithError:(NSError*)error;
+
+//! Creates and returns a new optional with the result of invoking \a builder.
+//!
+//! @important
+//! This method expects \a builder to return an object at a +1 retain count.
++ (instancetype)newResultWith:(NS_NOESCAPE NS_RETURNS_RETAINED ObjectType __nullable (^)(NSError **error))builder NS_RETURNS_RETAINED;
 
 //! Initializes the receiver with no value.
 - (instancetype)init;
@@ -56,16 +66,34 @@ NS_ASSUME_NONNULL_BEGIN
 //! Initializes the receiver with the provided \a error.
 - (instancetype)initWithError:(NSError*)error;
 
-//! \c YES if the optional is empty - does not contain a value and does not
+//! \c YES if the result is empty - does not contain a value and does not
 //! contain an error.
 @property (readonly) BOOL none;
 
-//!
+//! The result value.
 @property (readonly, nullable) ObjectType value;
 
 //! If \c value is \c nil, an error describing why no value could be provided.
 @property (readonly, nullable) NSError *error;
 
 @end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKResult<ObjectType> (Deprecated)
+
+//! Creates and returns a result with no value.
++ (instancetype)optional __attribute__((deprecated("Use +result.")));
+
+//! Creates and returns a result with the provided \a value.
++ (instancetype)optionalWithValue:(ObjectType)value __attribute__((deprecated("Use +resultWithValue:.")));
+
+//! Creates and returns a result with the provided \a error.
++ (instancetype)optionalWithError:(NSError*)error __attribute__((deprecated("Use +resultWithError:.")));
+
+@end
+
+@compatibility_alias MKOptional MKResult;
 
 NS_ASSUME_NONNULL_END

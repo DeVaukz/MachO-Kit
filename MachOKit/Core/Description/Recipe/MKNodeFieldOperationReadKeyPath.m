@@ -27,7 +27,7 @@
 
 #import "MKNodeFieldOperationReadKeyPath.h"
 #import "MKInternal.h"
-#import "MKOptional.h"
+#import "MKResult.h"
 #import "MKNode.h"
 
 //----------------------------------------------------------------------------//
@@ -63,16 +63,16 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input
+- (MKResult*)valueForField:(MKNodeField*)field ofNode:(MKNode*)input
 {
     NSString *keyPath = _keyPath ?: field.name;
     
     id value = [input valueForKeyPath:keyPath];
     
-    if ([value isKindOfClass:MKOptional.class])
+    if ([value isKindOfClass:MKResult.class])
         return value;
     else
-        return [MKOptional optionalWithValue:value];
+        return [MKResult resultWithValue:value];
 }
 
 @end

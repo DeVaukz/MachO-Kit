@@ -40,20 +40,15 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)stringTable
+- (MKResult*)stringTable
 {
     if (_stringTable == nil)
     {
-        NSError *stringTableError = nil;
+        MKResult<MKStringTable*> *stringTable = [MKResult newResultWith:^(NSError **error) {
+            return [[MKStringTable alloc] initWithParent:self error:error];
+        }];
         
-        MKStringTable *stringTable = [[MKStringTable alloc] initWithParent:self error:&stringTableError];
-        if (stringTable)
-            _stringTable = [[MKOptional alloc] initWithValue:stringTable];
-        else if (stringTableError /* Only failed if we have an error */)
-            _stringTable = [[MKOptional alloc] initWithError:stringTableError];
-        else
-            _stringTable = [MKOptional new];
-        
+        _stringTable = [stringTable retain];
         [stringTable release];
     }
     
@@ -61,20 +56,15 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)symbolTable
+- (MKResult*)symbolTable
 {
     if (_symbolTable == nil)
     {
-        NSError *symbolTableError = nil;
+        MKResult<MKSymbolTable*> *symbolTable = [MKResult newResultWith:^(NSError **error) {
+            return [[MKSymbolTable alloc] initWithParent:self error:error];
+        }];
         
-        MKSymbolTable *symbolTable = [[MKSymbolTable alloc] initWithParent:self error:&symbolTableError];
-        if (symbolTable)
-            _symbolTable = [[MKOptional alloc] initWithValue:symbolTable];
-        else if (symbolTableError /* Only failed if we have an error */)
-            _symbolTable = [[MKOptional alloc] initWithError:symbolTableError];
-        else
-            _symbolTable = [MKOptional new];
-        
+        _symbolTable = [symbolTable retain];
         [symbolTable release];
     }
     
@@ -82,19 +72,15 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)indirectSymbolTable
+- (MKResult*)indirectSymbolTable
 {
     if (_indirectSymbolTable == nil)
     {
-        NSError *indirectSymbolTableError = nil;
+        MKResult<MKIndirectSymbolTable*> *indirectSymbolTable = [MKResult newResultWith:^(NSError **error) {
+            return [[MKIndirectSymbolTable alloc] initWithParent:self error:error];
+        }];
         
-        MKIndirectSymbolTable *indirectSymbolTable = [[MKIndirectSymbolTable alloc] initWithParent:self error:&indirectSymbolTableError];
-        if (indirectSymbolTable)
-            _indirectSymbolTable = [[MKOptional alloc] initWithValue:indirectSymbolTable];
-        else if (indirectSymbolTableError /* Only failed if we have an error */)
-            _indirectSymbolTable = [[MKOptional alloc] initWithError:indirectSymbolTableError];
-        else
-            _indirectSymbolTable = [MKOptional new];
+        _indirectSymbolTable = [indirectSymbolTable retain];
         
         [indirectSymbolTable release];
     }

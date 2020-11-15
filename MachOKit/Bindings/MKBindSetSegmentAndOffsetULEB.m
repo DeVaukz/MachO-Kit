@@ -84,7 +84,7 @@
     bindContext->derivedOffset = self.offset;
     
     // Lookup the segment
-    MKOptional<MKSegment*> *segment = [self.macho segmentAtIndex:bindContext->segmentIndex];
+    MKResult<MKSegment*> *segment = [self.macho segmentAtIndex:bindContext->segmentIndex];
     if (segment.value == nil) {
         if (segment.error) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:segment.error description:@"Could not load segment at index [%u].", bindContext->segmentIndex];

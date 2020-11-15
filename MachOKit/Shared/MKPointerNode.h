@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) Class targetClass;
 
 //! The node referenced by the pointer.
-@property (nonatomic, readonly) MKOptional<Pointee> *pointee;
+@property (nonatomic, readonly) MKResult<Pointee> *pointee;
 
 @end
 

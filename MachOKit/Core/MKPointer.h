@@ -28,12 +28,12 @@
 #include <MachOKit/macho.h>
 #import <Foundation/Foundation.h>
 
-#import <MachOKit/MKOptional.h>
+#import <MachOKit/MKResult.h>
 #import <MachOKit/MKBackedNode.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef MKOptional<NSDictionary*>* _Nullable (^MKDeferredContextProvider)(void);
+typedef MKResult<NSDictionary*>* _Nullable (^MKDeferredContextProvider)(void);
 
 //----------------------------------------------------------------------------//
 //! @name       Constants
@@ -71,7 +71,7 @@ extern NSString * const MKInitializationContextDeferredProvider;
 @property (nonatomic, readonly, nullable) Class targetClass;
 
 //! The node referenced by the pointer.
-@property (nonatomic, readonly) MKOptional<Pointee> *pointee;
+@property (nonatomic, readonly) MKResult<Pointee> *pointee;
 
 @end
 

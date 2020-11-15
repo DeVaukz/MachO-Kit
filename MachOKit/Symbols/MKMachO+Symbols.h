@@ -46,15 +46,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 //! The link-edit string table.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no string table.
-@property (nonatomic, readonly) MKOptional<MKStringTable*> *stringTable;
+@property (nonatomic, readonly) MKResult<MKStringTable*> *stringTable;
 
 //! The link-edit symbol table.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no symbol table.
-@property (nonatomic, readonly) MKOptional<MKSymbolTable*> *symbolTable;
+@property (nonatomic, readonly) MKResult<MKSymbolTable*> *symbolTable;
 
 //! The indirect symbol table.  The returned optional may contain a \c nil
 //! value and a \c nil error if the image has no indirect symbol table.
-@property (nonatomic, readonly) MKOptional<MKIndirectSymbolTable*> *indirectSymbolTable;
+@property (nonatomic, readonly) MKResult<MKIndirectSymbolTable*> *indirectSymbolTable;
 
 @end
 

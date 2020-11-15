@@ -106,7 +106,7 @@ MKPtrTargetClass(struct MKPtr *ptr)
 		case DISCRIMINATOR_CLASS:
 			return OPAQUE_GET_VALUE(ptr->__opaque);
 		case DISCRIMINATOR_POINTEE: {
-			MKOptional *pointee = OPAQUE_GET_VALUE(ptr->__opaque);
+			MKResult *pointee = OPAQUE_GET_VALUE(ptr->__opaque);
 			if (pointee.value)
 				return [pointee.value class];
 			else if (pointee.error)
@@ -120,15 +120,15 @@ MKPtrTargetClass(struct MKPtr *ptr)
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-MKOptional*
+MKResult*
 MKPtrPointee(struct MKPtr *ptr)
 {
 // Silence the analyzer - the analyzer gets confused because it doesn't see
 // ptr->__opaque as holding a strong reference.  So it incorrectly reports leaks.
 #ifndef __clang_analyzer__
     if (ptr->address != 0x0 && (OPAQUE_GET_FLAGS(ptr->__opaque) & HAS_ATTEMPTED_RESOLUTION) == 0) {
-		MKOptional<MKBackedNode*> *boundingNode;
-		MKOptional<MKBackedNode*> *pointee;
+		MKResult<MKBackedNode*> *boundingNode;
+		MKResult<MKBackedNode*> *pointee;
         NSDictionary *context = nil;
         
 		if (OPAQUE_GET_DISCRIMINATOR(ptr->__opaque) == DISCRIMINATOR_CONTEXT) {
@@ -140,7 +140,7 @@ MKPtrPointee(struct MKPtr *ptr)
 		// Retrieve the deferred context.
 		MKDeferredContextProvider deferredContextProvider = context[MKInitializationContextDeferredProvider];
 		if (deferredContextProvider) {
-			MKOptional<NSDictionary*> *deferredContext = deferredContextProvider();
+			MKResult<NSDictionary*> *deferredContext = deferredContextProvider();
 			if (deferredContext.value) {
 				NSMutableDictionary *newContext = [context mutableCopy];
 				[newContext addEntriesFromDictionary:deferredContext.value];
@@ -158,7 +158,7 @@ MKPtrPointee(struct MKPtr *ptr)
 				
 				NSError *error = [[NSError alloc] initWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR userInfo:userInfo];
 				
-				pointee = [[MKOptional optionalWithError:error] retain];
+				pointee = [[MKResult resultWithError:error] retain];
 				
 				[error release];
 				[userInfo release];
@@ -185,7 +185,7 @@ MKPtrPointee(struct MKPtr *ptr)
 			
 			NSError *error = [[NSError alloc] initWithDomain:MKErrorDomain code:MK_ENOT_FOUND userInfo:userInfo];
 			
-			pointee = [[MKOptional optionalWithError:error] retain];
+			pointee = [[MKResult resultWithError:error] retain];
 			
 			[error release];
 			[userInfo release];
@@ -216,7 +216,7 @@ MKPtrPointee(struct MKPtr *ptr)
 			// If we did not find a pointee or encounter an error, save away the target
 			// class (if there is one) for any further calls to MKPtrTargetClass().
 			ptr->__opaque = OPAQUE_WITH_VALUE(HAS_ATTEMPTED_RESOLUTION, context[MKInitializationContextTargetClass], DISCRIMINATOR_CLASS);
-			// Need to release 'pointee' because it may be an empty MKOptional.
+			// Need to release 'pointee' because it may be an empty MKResult.
 			[pointee release];
         } else {
 			ptr->__opaque = OPAQUE_WITH_VALUE(HAS_ATTEMPTED_RESOLUTION, pointee, DISCRIMINATOR_POINTEE);
@@ -229,5 +229,5 @@ MKPtrPointee(struct MKPtr *ptr)
     if (OPAQUE_GET_DISCRIMINATOR(ptr->__opaque) == DISCRIMINATOR_POINTEE)
         return OPAQUE_GET_VALUE(ptr->__opaque);
     else
-        return MKOptional.optional;
+        return [MKResult result];
 }

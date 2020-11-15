@@ -81,27 +81,27 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
     MKMachHeader *_header;
     NSArray<MKLoadCommand*> *_loadCommands;
     // Dependents //
-    NSArray<MKOptional<MKDependentLibrary*>*>  *_dependentLibraries;
+    NSArray<MKResult<MKDependentLibrary*>*>  *_dependentLibraries;
     // Segments //
     NSDictionary *_segments;
     // Function Starts //
-    MKOptional<MKFunctionStarts*> *_functionStarts;
+    MKResult<MKFunctionStarts*> *_functionStarts;
     // Rebase //
-    MKOptional<MKRebaseInfo*> *_rebaseInfo;
+    MKResult<MKRebaseInfo*> *_rebaseInfo;
     // Data In Code //
-    MKOptional<MKDataInCode*> *_dataInCode;
+    MKResult<MKDataInCode*> *_dataInCode;
     // Split Segment //
-    MKOptional<MKSplitSegmentInfo*> *_splitSegment;
+    MKResult<MKSplitSegmentInfo*> *_splitSegment;
     // Bindings //
-    MKOptional<MKBindingsInfo*> *_bindingsInfo;
-    MKOptional<MKWeakBindingsInfo*> *_weakBindingsInfo;
-    MKOptional<MKLazyBindingsInfo*> *_lazyBindingsInfo;
+    MKResult<MKBindingsInfo*> *_bindingsInfo;
+    MKResult<MKWeakBindingsInfo*> *_weakBindingsInfo;
+    MKResult<MKLazyBindingsInfo*> *_lazyBindingsInfo;
     // Exports //
-    MKOptional<MKExportsInfo*> *_exportsInfo;
+    MKResult<MKExportsInfo*> *_exportsInfo;
     // Symbols //
-    MKOptional<MKStringTable*> *_stringTable;
-    MKOptional<MKSymbolTable*> *_symbolTable;
-    MKOptional<MKIndirectSymbolTable*> *_indirectSymbolTable;
+    MKResult<MKStringTable*> *_stringTable;
+    MKResult<MKSymbolTable*> *_symbolTable;
+    MKResult<MKIndirectSymbolTable*> *_indirectSymbolTable;
 }
 
 - (nullable instancetype)initWithName:(nullable const char*)name flags:(MKMachOImageFlags)flags atAddress:(mk_vm_address_t)contextAddress inMapping:(MKMemoryMap*)mapping error:(NSError**)error NS_DESIGNATED_INITIALIZER;

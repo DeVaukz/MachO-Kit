@@ -44,8 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKSymbol : MKOffsetNode {
 @package
-    MKOptional<MKCString*> *_name;
-    MKOptional<MKSection*> *_section;
+    MKResult<MKCString*> *_name;
+    MKResult<MKSection*> *_section;
     uint32_t _strx;
     uint8_t _type;
     uint8_t _sect;

@@ -52,8 +52,8 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 {
     if (_segments == nil)
     @autoreleasepool {
-        NSMutableArray<MKOptional<MKSegment*>*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
-        NSMapTable<id<MKLCSegment>, MKOptional<MKSegment*>*> *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
+        NSMutableArray<MKResult<MKSegment*>*> *segments = [[NSMutableArray alloc] initWithCapacity:4];
+        NSMapTable<id<MKLCSegment>, MKResult<MKSegment*>*> *segmentsByLoadCommand = [[NSMapTable alloc] initWithKeyOptions:NSMapTableObjectPointerPersonality valueOptions:NSMapTableStrongMemory capacity:4];
         
         NSMutableArray<MKSection*> *sections = [[NSMutableArray alloc] init];
         NSMutableDictionary<NSNumber*, MKSection*> *sectionsByIndex = [[NSMutableDictionary alloc] init];
@@ -69,14 +69,14 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
             
             MKSegment *segment = [MKSegment segmentWithLoadCommand:lc error:&segmentError];
             if (segment) {
-                MKOptional *segmentOpt = [[MKOptional alloc] initWithValue:segment];
+                MKResult *segmentOpt = [[MKResult alloc] initWithValue:segment];
                 [segments addObject:segmentOpt];
                 [segmentsByLoadCommand setObject:segmentOpt forKey:lc];
                 [segmentOpt release];
             } else {
                 NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:segmentError description:@"Could not create segment for load command: %@", lc];
                 
-                MKOptional *segmentOpt = [[MKOptional alloc] initWithError:error];
+                MKResult *segmentOpt = [[MKResult alloc] initWithError:error];
                 [segments addObject:segmentOpt];
                 [segmentsByLoadCommand setObject:segmentOpt forKey:lc];
                 [segmentOpt release];
@@ -137,22 +137,22 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 { return self._segments[MKAllSegments]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)segmentAtIndex:(NSUInteger)index
+- (MKResult*)segmentAtIndex:(NSUInteger)index
 {
-    NSArray<MKOptional<MKSegment*>*> *segments = self._segments[MKAllSegments];
+    NSArray<MKResult<MKSegment*>*> *segments = self._segments[MKAllSegments];
     
     if (index < segments.count)
         return segments[index];
     else
-        return [MKOptional optional];
+        return [MKResult result];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)segmentForLoadCommand:(id<MKLCSegment>)segmentLoadCommand
+- (MKResult*)segmentForLoadCommand:(id<MKLCSegment>)segmentLoadCommand
 {
-    NSMapTable<id<MKLCSegment>, MKOptional<MKSegment*>*> *segmentsByLoadCommand = self._segments[MKSegmentsByLoadCommand];
+    NSMapTable<id<MKLCSegment>, MKResult<MKSegment*>*> *segmentsByLoadCommand = self._segments[MKSegmentsByLoadCommand];
     
-    return [segmentsByLoadCommand objectForKey:segmentLoadCommand] ?: [MKOptional optional];
+    return [segmentsByLoadCommand objectForKey:segmentLoadCommand] ?: [MKResult result];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -193,9 +193,9 @@ _mk_internal NSString * const MKIndexedSections = @"MKIndexedSections";
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-    MKOptional *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:self._segments[MKSortedSegments]];
+    MKResult *child = [MKBackedNode childNodeOccupyingVMAddress:address targetClass:targetClass inSortedArray:self._segments[MKSortedSegments]];
     if (child.value)
         return child;
 

@@ -63,13 +63,13 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
     mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
     if (mk_vm_range_contains_address(nodeRange, 0, address) != MK_ESUCCESS)
         return [super childNodeOccupyingVMAddress:address targetClass:targetClass];
 
-    __block MKOptional *child = nil;
+    __block MKResult *child = nil;
 
      [_children enumerateKeysAndObjectsUsingBlock:^(__unused NSNumber *key, MKOffsetNode *obj, BOOL *stop) {
          if ((child = [obj childNodeOccupyingVMAddress:address targetClass:targetClass]).value) {
@@ -86,7 +86,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
     mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
     if (mk_vm_range_contains_address(nodeRange, 0, address) != MK_ESUCCESS)
@@ -110,11 +110,11 @@
         if (child)
             _children[@(address)] = child;
         else if (error)
-            return [MKOptional optionalWithError:error];
+            return [MKResult resultWithError:error];
     }
     
     if (child)
-        return [MKOptional optionalWithValue:child];
+        return [MKResult resultWithValue:child];
     else
         return [super childNodeAtVMAddress:address targetClass:targetClass];
 }

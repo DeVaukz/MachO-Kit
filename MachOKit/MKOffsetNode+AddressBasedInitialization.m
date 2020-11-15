@@ -35,7 +35,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)nodeVMAddress:(mk_vm_address_t)address inImage:(MKMachOImage*)image error:(NSError**)error
 {
-    MKOptional<MKBackedNode*> *existing = [image childNodeAtVMAddress:address];
+    MKResult<MKBackedNode*> *existing = [image childNodeAtVMAddress:address];
     
     if (existing.value) {
         if ([existing.value isKindOfClass:self]) {

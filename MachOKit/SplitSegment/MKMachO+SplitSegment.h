@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //!
-@property (nonatomic, readonly) MKOptional<MKSplitSegmentInfo*> *splitSegmentInfo;
+@property (nonatomic, readonly) MKResult<MKSplitSegmentInfo*> *splitSegmentInfo;
 
 @end
 

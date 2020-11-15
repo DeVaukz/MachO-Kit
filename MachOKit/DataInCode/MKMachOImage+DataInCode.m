@@ -38,7 +38,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)dataInCode
+- (MKResult*)dataInCode
 {
     if (_dataInCode == nil)
     {
@@ -46,11 +46,11 @@
         
         MKDataInCode *dataInCode = [[MKDataInCode alloc] initWithParent:self error:&dataInCodeError];
         if (dataInCode)
-            _dataInCode = [[MKOptional alloc] initWithValue:dataInCode];
+            _dataInCode = [[MKResult alloc] initWithValue:dataInCode];
         else if (dataInCodeError /* Only failed if we have an error */)
-            _dataInCode = [[MKOptional alloc] initWithError:dataInCodeError];
+            _dataInCode = [[MKResult alloc] initWithError:dataInCodeError];
         else
-            _dataInCode = [MKOptional new];
+            _dataInCode = [MKResult new];
         
         [dataInCode release];
     }

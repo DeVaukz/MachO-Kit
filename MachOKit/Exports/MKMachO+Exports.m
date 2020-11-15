@@ -38,7 +38,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)exportsInfo
+- (MKResult*)exportsInfo
 {
     if (_exportsInfo == nil)
     {
@@ -46,11 +46,11 @@
         
         MKExportsInfo *exportsInfo = [[MKExportsInfo alloc] initWithParent:self error:&exportsInfoError];
 		if (exportsInfo)
-			_exportsInfo = [[MKOptional alloc] initWithValue:exportsInfo];
+			_exportsInfo = [[MKResult alloc] initWithValue:exportsInfo];
 		else if (exportsInfoError /* Only failed if we have an error */)
-			_exportsInfo = [[MKOptional alloc] initWithError:exportsInfoError];
+			_exportsInfo = [[MKResult alloc] initWithError:exportsInfoError];
 		else
-			_exportsInfo = [MKOptional new];
+			_exportsInfo = [MKResult new];
 		
 		[exportsInfo release];
     }

@@ -38,7 +38,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)splitSegmentInfo
+- (MKResult*)splitSegmentInfo
 {
     if (_splitSegment == nil)
     {
@@ -46,11 +46,11 @@
         
         MKSplitSegmentInfo *splitSegmentInfo = [[MKSplitSegmentInfo alloc] initWithParent:self error:&splitSegmentInfoError];
         if (splitSegmentInfo)
-            _splitSegment = [[MKOptional alloc] initWithValue:splitSegmentInfo];
+            _splitSegment = [[MKResult alloc] initWithValue:splitSegmentInfo];
         else if (splitSegmentInfoError /* Only failed if we have an error */)
-            _splitSegment = [[MKOptional alloc] initWithError:splitSegmentInfoError];
+            _splitSegment = [[MKResult alloc] initWithError:splitSegmentInfoError];
         else
-            _splitSegment = [MKOptional new];
+            _splitSegment = [MKResult new];
         
         [splitSegmentInfo release];
     }

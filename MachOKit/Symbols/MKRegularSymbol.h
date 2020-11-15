@@ -40,10 +40,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MKRegularSymbol : MKSymbol
 
 //! The entry in the string table referenced by this symbol.
-@property (nonatomic, readonly) MKOptional<MKCString*> *name;
+@property (nonatomic, readonly) MKResult<MKCString*> *name;
 
 //! The section referenced by this symbol.
-@property (nonatomic, readonly) MKOptional<MKSection*> *section;
+@property (nonatomic, readonly) MKResult<MKSection*> *section;
 
 //! The symbol type.
 @property (nonatomic, readonly) MKSymbolType symbolType;

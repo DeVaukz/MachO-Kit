@@ -40,10 +40,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) MKSTABType stabType;
 
 //! The entry in the string table referenced by this symbol.
-@property (nonatomic, readonly) MKOptional<MKCString*> *name;
+@property (nonatomic, readonly) MKResult<MKCString*> *name;
 
 //! The section referenced by this symbol.
-@property (nonatomic, readonly) MKOptional<MKSection*> *section;
+@property (nonatomic, readonly) MKResult<MKSection*> *section;
 
 @end
 

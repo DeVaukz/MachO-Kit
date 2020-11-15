@@ -110,23 +110,23 @@ struct objc_protocol_32 {
                 // Note that a nil value without an error is not an error, the
                 // protocol may not have any of that kind of method.
                 
-                MKOptional<MKObjCClassMethodList*> *instanceMethods = ((MKObjCProtocol*)weakSelf)->_instanceMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *instanceMethods = ((MKObjCProtocol*)weakSelf)->_instanceMethods.pointee;
                 if (instanceMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:instanceMethods.error description:@"Could not retrieve the instance method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:instanceMethods.error description:@"Could not retrieve the instance method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *classMethods = ((MKObjCProtocol*)weakSelf)->_classMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *classMethods = ((MKObjCProtocol*)weakSelf)->_classMethods.pointee;
                 if (classMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:classMethods.error description:@"Could not retrieve the class method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:classMethods.error description:@"Could not retrieve the class method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *optionalInstanceMethods = ((MKObjCProtocol*)weakSelf)->_optionalInstanceMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *optionalInstanceMethods = ((MKObjCProtocol*)weakSelf)->_optionalInstanceMethods.pointee;
                 if (optionalInstanceMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalInstanceMethods.error description:@"Could not retrieve the optional instance method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalInstanceMethods.error description:@"Could not retrieve the optional instance method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *optionalClassMethods = ((MKObjCProtocol*)weakSelf)->_optionalClassMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *optionalClassMethods = ((MKObjCProtocol*)weakSelf)->_optionalClassMethods.pointee;
                 if (optionalClassMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalClassMethods.error description:@"Could not retrieve the optional class method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalClassMethods.error description:@"Could not retrieve the optional class method count."]];
                 
-                return [MKOptional optionalWithValue:@{
+                return [MKResult resultWithValue:@{
                     @"ExtendedTypeInfoCount": @(instanceMethods.value.count +
                                                 classMethods.value.count +
                                                 optionalInstanceMethods.value.count +
@@ -178,23 +178,23 @@ struct objc_protocol_32 {
                 // Note that a nil value without an error is not an error, the
                 // protocol may not have any of that kind of method.
                 
-                MKOptional<MKObjCClassMethodList*> *instanceMethods = ((MKObjCProtocol*)weakSelf)->_instanceMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *instanceMethods = ((MKObjCProtocol*)weakSelf)->_instanceMethods.pointee;
                 if (instanceMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:instanceMethods.error description:@"Could not retrieve the instance method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:instanceMethods.error description:@"Could not retrieve the instance method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *classMethods = ((MKObjCProtocol*)weakSelf)->_classMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *classMethods = ((MKObjCProtocol*)weakSelf)->_classMethods.pointee;
                 if (classMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:classMethods.error description:@"Could not retrieve the class method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:classMethods.error description:@"Could not retrieve the class method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *optionalInstanceMethods = ((MKObjCProtocol*)weakSelf)->_optionalInstanceMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *optionalInstanceMethods = ((MKObjCProtocol*)weakSelf)->_optionalInstanceMethods.pointee;
                 if (optionalInstanceMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalInstanceMethods.error description:@"Could not retrieve the optional instance method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalInstanceMethods.error description:@"Could not retrieve the optional instance method count."]];
                 
-                MKOptional<MKObjCClassMethodList*> *optionalClassMethods = ((MKObjCProtocol*)weakSelf)->_optionalClassMethods.pointee;
+                MKResult<MKObjCClassMethodList*> *optionalClassMethods = ((MKObjCProtocol*)weakSelf)->_optionalClassMethods.pointee;
                 if (optionalClassMethods.error)
-                    return [MKOptional optionalWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalClassMethods.error description:@"Could not retrieve the optional class method count."]];
+                    return [MKResult resultWithError:[NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:optionalClassMethods.error description:@"Could not retrieve the optional class method count."]];
                 
-                return [MKOptional optionalWithValue:@{
+                return [MKResult resultWithValue:@{
                     @"ExtendedTypeInfoCount": @(instanceMethods.value.count +
                                                 classMethods.value.count +
                                                 optionalInstanceMethods.value.count +

@@ -29,7 +29,7 @@
 #import <Foundation/Foundation.h>
 
 #import <MachOKit/MKBackedNode.h>
-#import <MachOKit/MKOptional.h>
+#import <MachOKit/MKResult.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -62,7 +62,7 @@ _mk_internal_extern __nullable Class
 MKPtrTargetClass(struct MKPtr *ptr);
 
 //!
-_mk_internal_extern MKOptional<__kindof MKBackedNode*> *
+_mk_internal_extern MKResult<__kindof MKBackedNode*> *
 MKPtrPointee(struct MKPtr *ptr);
 
 NS_ASSUME_NONNULL_END

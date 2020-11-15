@@ -40,7 +40,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)bindingsInfo
+- (MKResult*)bindingsInfo
 {
     if (_bindingsInfo == nil)
     {
@@ -48,11 +48,11 @@
         
         MKBindingsInfo *bindingsInfo = [[MKBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
         if (bindingsInfo)
-            _bindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+            _bindingsInfo = [[MKResult alloc] initWithValue:bindingsInfo];
         else if (bindingsInfoError /* Only failed if we have an error */)
-            _bindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+            _bindingsInfo = [[MKResult alloc] initWithError:bindingsInfoError];
         else
-            _bindingsInfo = [MKOptional new];
+            _bindingsInfo = [MKResult new];
         
         [bindingsInfo release];
     }
@@ -61,7 +61,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)weakBindingsInfo
+- (MKResult*)weakBindingsInfo
 {
     if (_weakBindingsInfo == nil)
     {
@@ -69,11 +69,11 @@
         
         MKWeakBindingsInfo *bindingsInfo = [[MKWeakBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
         if (bindingsInfo)
-            _weakBindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+            _weakBindingsInfo = [[MKResult alloc] initWithValue:bindingsInfo];
         else if (bindingsInfoError /* Only failed if we have an error */)
-            _weakBindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+            _weakBindingsInfo = [[MKResult alloc] initWithError:bindingsInfoError];
         else
-            _weakBindingsInfo = [MKOptional new];
+            _weakBindingsInfo = [MKResult new];
         
         [bindingsInfo release];
     }
@@ -82,7 +82,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)lazyBindingsInfo
+- (MKResult*)lazyBindingsInfo
 {
     if (_lazyBindingsInfo == nil)
     {
@@ -90,11 +90,11 @@
         
         MKLazyBindingsInfo *bindingsInfo = [[MKLazyBindingsInfo alloc] initWithParent:self error:&bindingsInfoError];
         if (bindingsInfo)
-            _lazyBindingsInfo = [[MKOptional alloc] initWithValue:bindingsInfo];
+            _lazyBindingsInfo = [[MKResult alloc] initWithValue:bindingsInfo];
         else if (bindingsInfoError /* Only failed if we have an error */)
-            _lazyBindingsInfo = [[MKOptional alloc] initWithError:bindingsInfoError];
+            _lazyBindingsInfo = [[MKResult alloc] initWithError:bindingsInfoError];
         else
-            _lazyBindingsInfo = [MKOptional new];
+            _lazyBindingsInfo = [MKResult new];
         
         [bindingsInfo release];
     }

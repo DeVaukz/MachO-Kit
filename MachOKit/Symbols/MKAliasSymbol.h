@@ -39,14 +39,14 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @interface MKAliasSymbol : MKRegularSymbol {
 @package
-    MKOptional<MKCString*> *_targetName;
+    MKResult<MKCString*> *_targetName;
 }
 
 //! Symbol flags.
 @property (nonatomic, readonly) MKDefinedSymbolFlagsType symbolFlags;
 
 //! The other symbol's name.
-@property (nonatomic, readonly, nullable) MKOptional<MKCString*> *targetName;
+@property (nonatomic, readonly, nullable) MKResult<MKCString*> *targetName;
 
 @end
 

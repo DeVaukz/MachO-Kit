@@ -63,7 +63,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)ancestorNodeOccupyingAddress:(mk_vm_address_t)address type:(MKNodeAddressType)addressType targetClass:(Class)targetClass includeReceiver:(BOOL)includeReceiver
+- (MKResult*)ancestorNodeOccupyingAddress:(mk_vm_address_t)address type:(MKNodeAddressType)addressType targetClass:(Class)targetClass includeReceiver:(BOOL)includeReceiver
 {
 	MKBackedNode *node = includeReceiver ? self : (MKBackedNode*)self.parent;
 	
@@ -76,13 +76,13 @@
 		
 		// TODO - Rework MKMachOImage so that we don't need this hack.
 		if (nodeRange.length == 0)
-			return [MKOptional optionalWithValue:node];
+			return [MKResult resultWithValue:node];
 		
 		if (mk_vm_range_contains_address(nodeRange, 0, address) == MK_ESUCCESS)
-			return [MKOptional optionalWithValue:node];
+			return [MKResult resultWithValue:node];
 	}
 	
-	return [MKOptional optional];
+	return [MKResult result];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -90,19 +90,19 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
 	mk_vm_range_t range = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
 	if (mk_vm_range_contains_address(range, 0, address) == MK_ESUCCESS && (targetClass == nil || [self isKindOfClass:targetClass]))
-		return [MKOptional optionalWithValue:self];
+		return [MKResult resultWithValue:self];
 	else
-		return [MKOptional optional];
+		return [MKResult result];
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
+- (MKResult*)childNodeAtVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass
 {
-	MKOptional<MKBackedNode*> *child = [self childNodeOccupyingVMAddress:address targetClass:nil];
+	MKResult<MKBackedNode*> *child = [self childNodeOccupyingVMAddress:address targetClass:nil];
 	
 	// Some nodes may want to 'create' the child node upon request.
 	if (child.value && child.value != self)
@@ -114,24 +114,24 @@
 			return child;
 		else
 			// Did not find a child node at address, or the class did not match
-			return [MKOptional optional];
+			return [MKResult result];
 	} else
 		// There was an error finding (or creating) the child node at address.
 		return child;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)childNodeAtVMAddress:(mk_vm_address_t)address
+- (MKResult*)childNodeAtVMAddress:(mk_vm_address_t)address
 { return [self childNodeAtVMAddress:address targetClass:nil]; }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Node Array Searching & Sorting
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
-+ (NSArray<__kindof MKBackedNode *> *)sortNodeArray:(NSArray<MKOptional<__kindof MKBackedNode *> *> *)array
++ (NSArray<__kindof MKBackedNode *> *)sortNodeArray:(NSArray<MKResult<__kindof MKBackedNode *> *> *)array
 {
     NSMutableArray *filteredArray = [NSMutableArray arrayWithCapacity:array.count];
-    for (MKOptional *node in array) {
+    for (MKResult *node in array) {
         if (node.value)
             [filteredArray addObject:node.value];
     }
@@ -145,7 +145,7 @@
     return [[filteredArray copy] autorelease];
 }
 
-+ (MKOptional<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedArray:(NSArray<__kindof MKBackedNode *> *)array {
++ (MKResult<__kindof MKBackedNode *> *)childNodeOccupyingVMAddress:(mk_vm_address_t)address targetClass:(Class)targetClass inSortedArray:(NSArray<__kindof MKBackedNode *> *)array {
     NSInteger lo = 0;
     NSInteger hi = (NSInteger)array.count - 1;
     while (lo <= hi) {
@@ -169,7 +169,7 @@
             lo = mid + 1;
         }
     }
-    return [MKOptional optional];
+    return [MKResult result];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

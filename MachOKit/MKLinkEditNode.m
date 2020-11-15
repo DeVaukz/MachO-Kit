@@ -46,7 +46,7 @@
     boolean_t expectLinkEdit = (image.header.filetype != MH_OBJECT);
     
     // Make sure there is a __LINKEDIT segment.
-    MKOptional<MKSegment*> *linkeditSegment = [image segmentsWithName:@SEG_LINKEDIT].firstObject;
+    MKResult<MKSegment*> *linkeditSegment = [image segmentsWithName:@SEG_LINKEDIT].firstObject;
     if (linkeditSegment.value == nil && expectLinkEdit) {
         if (linkeditSegment.error) {
             MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:linkeditSegment.error description:@"Could not load __LINKEDIT segment."];

@@ -53,11 +53,11 @@
 { return self.value; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (MKOptional*)section
+- (MKResult*)section
 {
     // The 'n_sect' field is used to store the cpuSubType.  N_OSO stabs do not
     // have an associated section.
-    return [MKOptional optional];
+    return [MKResult result];
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//

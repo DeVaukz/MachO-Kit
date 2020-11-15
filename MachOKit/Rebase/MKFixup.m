@@ -49,7 +49,7 @@
     _offset = rebaseContext->offset;
     
     // Lookup the segment
-    MKOptional<MKSegment*> *segment = [self.macho segmentAtIndex:rebaseContext->segmentIndex];
+    MKResult<MKSegment*> *segment = [self.macho segmentAtIndex:rebaseContext->segmentIndex];
     // dyld will refuse to load a Mach-O if the segment index is out of bounds.
     if (segment.value == nil) {
         // TODO - Do we care?  Could this be a warning instead?

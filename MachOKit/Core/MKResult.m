@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKOptional.m
+//|             MKResult.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,30 +25,62 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKOptional.h"
+#import "MKResult.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKOptional
+@implementation MKResult
+
+extern void OBJC_CLASS_$_MKResult;
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)optional
++ (instancetype)result
 {
-    static MKOptional *kOptionalNone = nil;
+    static MKResult *kResultNone = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        kOptionalNone = [self new];
+        kResultNone = [self new];
     });
     
-    return kOptionalNone;
+    return kResultNone;
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)optionalWithValue:(id)value
++ (instancetype)resultWithValue:(id)value
 { return [[[self alloc] initWithValue:value] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-+ (instancetype)optionalWithError:(NSError*)error
++ (instancetype)resultWithError:(NSError*)error
 { return [[[self alloc] initWithError:error] autorelease]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)newResultWith:(NS_NOESCAPE id (^)(NSError **error))builder
+{
+    NSError *error = nil;
+    id object = builder(&error);
+    
+    MKResult *result;
+    
+    if (self == &OBJC_CLASS_$_MKResult) {
+        // Optimization - Bypass the -initWith: call.
+        result = [MKResult new];
+        if (result)
+            result->_value = object;
+        else if (error /* Only fail if we have an error */)
+            result->_value = [error retain];
+        
+    } else {
+        if (object)
+            result = [[self alloc] initWithObject:object];
+        else if (error /* Only fail if we have an error */)
+            result = [[self alloc] initWithError:error];
+        else
+            result = [self new];
+        
+        [object release];
+    }
+    
+    return result;
+}
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (instancetype)init
@@ -121,7 +153,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)isEqual:(id)object
 {
-    if (self.none && [object isKindOfClass:MKOptional.class] && [object none])
+    if (self.none && [object isKindOfClass:MKResult.class] && [object none])
         return YES;
     else
         return [_value isEqual:object];
@@ -132,5 +164,24 @@
 {
     return [self.value description];
 }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKResult (Deprecated)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optional
+{ return [self result]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optionalWithValue:(id)value
+{ return [self resultWithValue:value]; }
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (instancetype)optionalWithError:(NSError*)error
+{ return [self resultWithError:error]; }
 
 @end
