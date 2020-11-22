@@ -3105,6 +3105,8 @@
 				D038B70B1A1021AA008621AE /* NSError+MK.m */,
 				D061346A204528A200173476 /* NSNumber+MK.h */,
 				D061346B204528A200173476 /* NSNumber+MK.m */,
+				D010F6FC1CB868EF004025F5 /* MKResult.h */,
+				D010F6FD1CB868EF004025F5 /* MKResult.m */,
 				D0C3B2ED19F463C000CAFE58 /* Core */,
 				D061B18E1FFAC84B004A3047 /* Shared */,
 				D09959EC1A6A29B8007134CE /* Fat */,
@@ -3316,8 +3318,6 @@
 				D0302FFC1A22DA6D00288B3E /* Description */,
 				D06C83EA2561EB0D00BBC938 /* Data Model */,
 				D057DB8B20C47E36006CB7D3 /* Impl */,
-				D010F6FC1CB868EF004025F5 /* MKResult.h */,
-				D010F6FD1CB868EF004025F5 /* MKResult.m */,
 				D0C3B2EE19F463EA00CAFE58 /* MKNode.h */,
 				D0C3B2EF19F463EA00CAFE58 /* MKNode.m */,
 				D061B1741FF8BD7C004A3047 /* MKAddressedNode.h */,
@@ -4840,7 +4840,7 @@
 			baseConfigurationReference = D0079FCD1895C04E00E9D0CF /* Debug.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.devaukz.${PRODUCT_NAME:rfc1034identifier}";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator";
@@ -4853,7 +4853,7 @@
 			baseConfigurationReference = D0079FCF1895C04E00E9D0CF /* Release.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 1;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.devaukz.${PRODUCT_NAME:rfc1034identifier}";
 				SUPPORTED_PLATFORMS = "macosx iphoneos iphonesimulator appletvos appletvsimulator";

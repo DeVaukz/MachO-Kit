@@ -63,7 +63,7 @@ extern void OBJC_CLASS_$_MKResult;
     if (self == &OBJC_CLASS_$_MKResult) {
         // Optimization - Bypass the -initWith: call.
         result = [MKResult new];
-        if (result)
+        if (object)
             result->_value = object;
         else if (error /* Only fail if we have an error */)
             result->_value = [error retain];

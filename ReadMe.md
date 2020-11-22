@@ -14,7 +14,7 @@ Mach-O Kit is designed to be easy to use while still exposing all the details of
 
 ## Getting Started
 
-Mach-O Kit supports macOS 10.10+, iOS 8.0+, and tvOS 9.0+ (and possibly older verions).
+Mach-O Kit supports macOS 10.10+, iOS 9.0+, and tvOS 9.0+ (and possibly older verions).
 
 ### Obtaining Mach-O Kit
 

@@ -35,11 +35,11 @@
 
 #import <MachOKit/NSError+MK.h>
 #import <MachOKit/NSNumber+MK.h>
+#import <MachOKit/MKResult.h>
 
 /* CORE */
 #import <MachOKit/MKMemoryMap.h>
 #import <MachOKit/MKNodeDescription.h>
-#import <MachOKit/MKResult.h>
 #import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNode.h>
 #import <MachOKit/MKAddressedNode.h>

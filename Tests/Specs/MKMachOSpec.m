@@ -771,7 +771,7 @@ SpecBegin(MKMachOImage)
                                     });
                                     
                                     it(@"should have the correct flags", ^{
-                                        expect([NSString stringWithFormat:@"0x%" PRIx32 "", clsData.flags]).to.equal(otoolClassData[@"flags"]);
+                                        expect([NSString stringWithFormat:@"0x%02" PRIx32 "", clsData.flags]).to.equal(otoolClassData[@"flags"]);
                                     });
                                     
                                     it(@"should have the correct instanceStart", ^{
