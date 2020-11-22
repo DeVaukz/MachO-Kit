@@ -163,7 +163,7 @@ SpecBegin(MKMachOImage)
             //----------------------------------------------------------------//
             describe(@"dylibs", ^{
                 NSArray<NSDictionary*> *dyldDependentLibraries = otoolArchitecture.dependentLibraries;
-                NSArray<MKOptional<MKDependentLibrary*>*> *machoDependentLibraries = macho.dependentLibraries;
+                NSArray<MKResult<MKDependentLibrary*>*> *machoDependentLibraries = macho.dependentLibraries;
                 
                 it(@"should exist", ^{
                     expect(machoDependentLibraries).toNot.beNil();

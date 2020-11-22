@@ -459,7 +459,7 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
                 NSMutableDictionary *classDict = [NSMutableDictionary new];
                 
                 [lines mk_sliceWithHeirarchyTest:^NSUInteger(NSString *line) {
-                    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9a-z]+" options:0 error:NULL];
                     line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"    "];
                     NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
                     return loc;
@@ -481,7 +481,7 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
                         NSMutableDictionary *dataDict = [NSMutableDictionary new];
                         
                         [lines mk_sliceWithHeirarchyTest:^(NSString *line) {
-                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9a-z]+" options:0 error:NULL];
                             line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"        "];
                             NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
                             return loc;
@@ -576,16 +576,22 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
                                 };
                             };
                             
-                            id (^parseProtocols)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray *lines) {
+                            id (^parseProtocols)(NSString*, NSArray*) = ^(NSString *headerValue, NSArray<NSString*> *lines) {
                                 if (lines.count == 0)
                                     return (id)headerValue;
                                 
                                 __block NSString *count;
                                 NSMutableArray *elements = [NSMutableArray new];
                                 
-                                NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"list\\[[0-9]+\\]" options:0 error:NULL];
+                                // This is gross, not that the rest of this parser is any less gross.
+                                NSString *firstLine = [lines.firstObject stringByReplacingOccurrencesOfString:@"\t" withString:@"    "];
+                                NSRegularExpression *nonWhitespaceRegex = [NSRegularExpression regularExpressionWithPattern:@"[0-9a-z]+" options:0 error:NULL];
+                                NSUInteger indentLength = [nonWhitespaceRegex rangeOfFirstMatchInString:firstLine options:0 range:NSMakeRange(0, firstLine.length)].location;
+                                NSString *indent = [firstLine substringWithRange:NSMakeRange(0, indentLength)];
+                                
+                                NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithFormat:@"%@list\\[[0-9]+\\]", indent] options:0 error:NULL];
                                 [lines mk_sliceWithTest:^(NSString *obj) {
-                                    return (BOOL)([regex numberOfMatchesInString:obj options:0 range:NSMakeRange(0, obj.length)] > 0);
+                                    return (BOOL)([regex rangeOfFirstMatchInString:obj options:0 range:NSMakeRange(0, obj.length)].location == 0);
                                 } andEnumerate:^(id seperator, NSArray *lines) {
                                     if (seperator == nil) {
                                         NSArray *components = [[lines.lastObject componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
@@ -594,14 +600,9 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
                                         NSMutableDictionary *protoDict = [NSMutableDictionary new];
                                         
                                         [lines mk_sliceWithHeirarchyTest:^NSUInteger(NSString *line) {
-                                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9]+" options:0 error:NULL];
+                                            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"[0-9a-z]+" options:0 error:NULL];
                                             line = [line stringByReplacingOccurrencesOfString:@"\t" withString:@"        "];
                                             NSUInteger loc = [regex rangeOfFirstMatchInString:line options:0 range:NSMakeRange(0, line.length)].location;
-                                            
-                                            if ([pointerAddress isEqualToString:@"000000000027c318"]) {
-                                                
-                                            }
-                                            
                                             return loc;
                                         } andEnumerate:^(NSString *header, NSArray *children) {
                                             NSArray *headerComponents = [[header componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]];
