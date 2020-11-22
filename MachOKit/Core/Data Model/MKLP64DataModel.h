@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMemoryMap+Pointer.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKLP64DataModel.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,29 +25,30 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMemoryMap+Pointer.h"
-#import "MKInternal.h"
+#import <MachOKit/MKAbstractDataModel.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@implementation MKMemoryMap (Pointer)
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
-{
-	NSParameterAssert(dataModel != nil);
-	size_t pointerSize = dataModel.pointerSize;
-	
-	switch (pointerSize) {
-		case 8:
-			return [self readQuadWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		case 4:
-			return [self readDoubleWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		default:
-		{
-			NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
-			@throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-		}
-	}
+//! Concrete implementation of \ref MKDataModel for the LP64 data model.
+//!
+@interface MKLP64DataModel : MKDataModel {
+@package
+    MKDataEndianness _endianness;
 }
 
+//! Returns a \c MKLP64DataModel with an endianness that matches the
+//! endianness of the current process.
++ (MKLP64DataModel*)dataModelWithHostEndianness;
+
+//! Returns a \c MKLP64DataModel with an endianness that is opposite the
+//! endianness of the current process.
++ (MKLP64DataModel*)dataModelWithByteSwappedEndianness;
+
+- (instancetype)initWithDataSource:(MKDataModel*)dataSource endianness:(MKDataEndianness)endianness;
+
+- (instancetype)initWithEndianness:(MKDataEndianness)endianness;
+
 @end
+
+NS_ASSUME_NONNULL_END

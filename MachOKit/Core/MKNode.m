@@ -105,7 +105,7 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 { return self.parent.memoryMap; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id<MKDataModel>)dataModel
+- (MKDataModel*)dataModel
 { return self.parent.dataModel; }
 
 //|++++++++++++++++++++++++++++++++++++|//

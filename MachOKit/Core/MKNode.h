@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! An instance of \c MKNode parses a portion of the Mach-O.
 //!
 //! Mach-O Kit represents a parsed Mach-O as a tree of nodes.
-//
+//!
 @interface MKNode : NSObject {
 @package
     /*__weak*/ MKNode *_parent;
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
 //! the data model of this node's parent.  Subclasses should override the
 //! getter for this property to provide the \ref MKDataModel that is to be used
 //! by their child nodes.
-@property (nonatomic, readonly) id<MKDataModel> dataModel;
+@property (nonatomic, readonly) MKDataModel* dataModel;
 
 //! An array of warnings raised while initiaizing the node.  Each warning
 //! is represented by an instance of \c NSError.

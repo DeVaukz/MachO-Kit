@@ -239,6 +239,7 @@
 #import <MachOKit/MKCFString.h>
     #import <MachOKit/MKCFStringSection.h>
 
+#import <MachOKit/MKDataModel+ObjC.h>
 #import <MachOKit/MKObjCElementList.h>
 #import <MachOKit/MKObjCImageInfo.h>
 #import <MachOKit/MKObjCClass.h>

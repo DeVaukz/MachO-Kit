@@ -61,7 +61,7 @@ typedef NS_OPTIONS(NSUInteger, MKSharedCacheFlags) {
 @interface MKSharedCache : MKBackedNode {
 @package
     MKMemoryMap *_memoryMap;
-    id<MKDataModel> _dataModel;
+    MKDataModel* _dataModel;
     MKSharedCacheFlags _flags;
     NSUInteger _version;
     cpu_type_t _cpuType;

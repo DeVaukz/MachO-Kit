@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMemoryMap+Pointer.m
+//|             MKDataModel+ObjC.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,29 +25,39 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMemoryMap+Pointer.h"
+#import "MKDataModel+ObjC.h"
 #import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKMemoryMap (Pointer)
+@implementation MKDataModel (ObjC)
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
-{
-	NSParameterAssert(dataModel != nil);
-	size_t pointerSize = dataModel.pointerSize;
-	
-	switch (pointerSize) {
-		case 8:
-			return [self readQuadWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		case 4:
-			return [self readDoubleWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		default:
-		{
-			NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
-			@throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-		}
-	}
-}
+- (size_t)objcIVarOffsetSize
+{ return self.longSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.longAlignment; }
+
+@end
+
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKDarwinARM64DataModel (ObjC)
+@end
+@implementation MKDarwinARM64DataModel (ObjC)
+
+/* The AARCH64 architecture uses 32-bit ivar offsets.  See
+ * <https://github.com/apple/swift-clang/blob/stable/lib/CodeGen/CGObjCMac.cpp#L5467> */
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetSize
+{ return self.intSize; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (size_t)objcIVarOffsetAlignment
+{ return self.intAlignment; }
 
 @end

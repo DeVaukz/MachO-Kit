@@ -30,7 +30,7 @@
 SpecBegin(MKDataModel)
 
 describe(@"The ILP32 Data Model", ^{
-    MKILP32DataModel *ilp32 = [MKILP32DataModel sharedDataModel];
+    MKILP32DataModel *ilp32 = [[MKILP32DataModel alloc] initWithEndianness:MKDataEndiannessLittle];
     
     it(@"should have 4 byte pointers", ^{
         expect(ilp32.pointerSize).to.equal(@(4));
@@ -52,7 +52,7 @@ describe(@"The ILP32 Data Model", ^{
 
 
 describe(@"The LP64 Data Model", ^{
-    MKLP64DataModel *lp64 = [MKLP64DataModel sharedDataModel];
+    MKLP64DataModel *lp64 = [[MKLP64DataModel alloc] initWithEndianness:MKDataEndiannessLittle];
     
     it(@"should have 4 byte pointers", ^{
         expect(lp64.pointerSize).to.equal(@(8));

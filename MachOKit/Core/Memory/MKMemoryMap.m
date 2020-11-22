@@ -151,7 +151,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error
+- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
 {
 #pragma unused (dataModel)
     
@@ -166,7 +166,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error
+- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
 {
     uint16_t retValue;
     mach_vm_size_t readSize;
@@ -182,7 +182,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error
+- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
 {
     uint32_t retValue;
     mach_vm_size_t readSize;
@@ -198,7 +198,7 @@
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error
+- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
 {
     uint64_t retValue;
     mach_vm_size_t readSize;

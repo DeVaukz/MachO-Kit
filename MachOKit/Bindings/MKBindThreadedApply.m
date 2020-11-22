@@ -56,7 +56,7 @@
 //|++++++++++++++++++++++++++++++++++++|//
 - (BOOL)bind:(void (^)(void))binder withContext:(struct MKBindContext*)bindContext error:(NSError**)error
 {
-    id<MKDataModel> dataModel = self.dataModel;
+    MKDataModel* dataModel = self.dataModel;
     NSAssert(dataModel != nil, @"Missing datamodel");
     
     // Threaded bind opcodes should only appear in 64-bit binaries

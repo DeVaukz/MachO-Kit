@@ -1,10 +1,10 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMemoryMap+Pointer.m
-//|
-//|             D.V.
-//|             Copyright (c) 2014-2015 D.V. All rights reserved.
+//! @file       MKDataModel.h
+//!
+//! @author     D.V.
+//! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,29 +25,28 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMemoryMap+Pointer.h"
-#import "MKInternal.h"
+#include <MachOKit/macho.h>
+#import <Foundation/Foundation.h>
 
-//----------------------------------------------------------------------------//
-@implementation MKMemoryMap (Pointer)
+#import <MachOKit/MKAbstractDataModel.h>
+#import <MachOKit/MKILP32DataModel.h>
+#import <MachOKit/MKLP64DataModel.h>
+#import <MachOKit/MKX86DataModel.h>
+#import <MachOKit/MKARMDataModel.h>
 
-//|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
-{
-	NSParameterAssert(dataModel != nil);
-	size_t pointerSize = dataModel.pointerSize;
-	
-	switch (pointerSize) {
-		case 8:
-			return [self readQuadWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		case 4:
-			return [self readDoubleWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		default:
-		{
-			NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
-			@throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-		}
-	}
-}
+#import <MachOKit/MKDarwinDataModels.h>
 
-@end
+#define MKSwapLValue16(LVALUE, DATA_MODEL) \
+    (LVALUE = DATA_MODEL.byteOrder->swap16( LVALUE ))
+#define MKSwapLValue32(LVALUE, DATA_MODEL) \
+    (LVALUE = DATA_MODEL.byteOrder->swap32( LVALUE ))
+#define MKSwapLValue64(LVALUE, DATA_MODEL) \
+    (LVALUE = DATA_MODEL.byteOrder->swap64( LVALUE ))
+
+#define MKSwapLValue16s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int16_t)DATA_MODEL.byteOrder->swap16( (uint16_t)LVALUE ))
+#define MKSwapLValue32s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int32_t)DATA_MODEL.byteOrder->swap32( (uint32_t)LVALUE ))
+#define MKSwapLValue64s(LVALUE, DATA_MODEL) \
+    (LVALUE = (int32_t)DATA_MODEL.byteOrder->swap64( (uint32_t)LVALUE ))
+

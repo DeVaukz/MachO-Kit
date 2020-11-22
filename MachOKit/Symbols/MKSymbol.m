@@ -65,7 +65,7 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
 {
     NSCParameterAssert(node.dataModel != nil);
     
-    id<MKDataModel> dataModel = node.dataModel;
+    MKDataModel* dataModel = node.dataModel;
     size_t pointerSize = dataModel.pointerSize;
     
     if (pointerSize == 8)

@@ -70,7 +70,7 @@ typedef NS_OPTIONS(NSUInteger, MKMachOImageFlags) {
 @package
     mk_context_t _context;
     MKMemoryMap *_mapping;
-    id<MKDataModel> _dataModel;
+    MKDataModel* _dataModel;
     MKMachOImageFlags _flags;
     NSString *_name;
     // Address //

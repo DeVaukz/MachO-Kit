@@ -93,13 +93,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (vm_size_t)copyBytesAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress into:(void*)buffer length:(mk_vm_size_t)length requireFull:(BOOL)requireFull error:(NSError**)error;
 
-- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint8_t)readByteAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable MKDataModel*)dataModel error:(NSError**)error;
 
-- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint16_t)readWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable MKDataModel*)dataModel error:(NSError**)error;
 
-- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint32_t)readDoubleWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable MKDataModel*)dataModel error:(NSError**)error;
 
-- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable id<MKDataModel>)dataModel error:(NSError**)error;
+- (uint64_t)readQuadWordAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(nullable MKDataModel*)dataModel error:(NSError**)error;
 
 @end
 

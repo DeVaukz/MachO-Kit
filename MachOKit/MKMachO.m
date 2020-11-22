@@ -70,12 +70,14 @@
     switch (magic) {
         case MH_CIGAM:
         case MH_MAGIC:
-            _dataModel = [[MKILP32DataModel sharedDataModel] retain];
+            // All 32-bit darwin ABIs use ILP32
+            _dataModel = (magic == MH_MAGIC) ? [MKILP32DataModel dataModelWithHostEndianness] : [MKILP32DataModel dataModelWithByteSwappedEndianness];
             _header = [[MKMachHeader alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         case MH_CIGAM_64:
         case MH_MAGIC_64:
-            _dataModel = [[MKLP64DataModel sharedDataModel] retain];
+            // All 64-bit darwin ABIs use LP64
+            _dataModel = (magic == MH_MAGIC_64) ? [MKLP64DataModel dataModelWithHostEndianness] : [MKLP64DataModel dataModelWithByteSwappedEndianness];
             _header = [[MKMachHeader64 alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         default:
@@ -89,11 +91,15 @@
     }
     
     // Now that the header is loaded, further specialize the data model based
-    // on the architecutre if needed.
+    // on the architecture, if needed.
     switch (self.header.cputype) {
         case CPU_TYPE_ARM64:
             [_dataModel release];
-            _dataModel = [[MKAARCH64DataModel sharedDataModel] retain];
+            _dataModel = [[MKDarwinARM64DataModel sharedDataModel] retain];
+            break;
+        case CPU_TYPE_X86_64:
+            [_dataModel release];
+            _dataModel = [[MKDarwinIntel64DataModel sharedDataModel] retain];
             break;
         default:
             break;

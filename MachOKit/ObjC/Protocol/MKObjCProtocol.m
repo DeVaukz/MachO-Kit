@@ -75,7 +75,7 @@ struct objc_protocol_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    id<MKDataModel> dataModel = self.dataModel;
+    MKDataModel* dataModel = self.dataModel;
     size_t pointerSize = dataModel.pointerSize;
     
 #define HAS_EXTENDED_METHOD_TYPES (var.size >= offsetof(typeof(var), extendedMethodTypes))

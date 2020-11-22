@@ -43,7 +43,7 @@ struct objc_entlist {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    id<MKDataModel> dataModel = self.dataModel;
+    MKDataModel* dataModel = self.dataModel;
     
     __block NSError *memoryMapError = nil;
     mk_error_t err;

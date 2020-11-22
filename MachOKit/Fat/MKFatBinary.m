@@ -117,8 +117,8 @@
 { return _memoryMap; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (id<MKDataModel>)dataModel
-{ return [MKPPC32DataModel sharedDataModel]; }
+- (MKDataModel*)dataModel
+{ return [MKDarwinPPC32DataModel sharedDataModel]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (mk_vm_size_t)nodeSize

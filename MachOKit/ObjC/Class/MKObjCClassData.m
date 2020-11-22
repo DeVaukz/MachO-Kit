@@ -70,7 +70,7 @@ struct objc_class_data_32 {
     self = [super initWithOffset:offset fromParent:parent error:error];
     if (self == nil) return nil;
     
-    id<MKDataModel> dataModel = self.dataModel;
+    MKDataModel* dataModel = self.dataModel;
     size_t pointerSize = dataModel.pointerSize;
     
     if (pointerSize == 8)

@@ -51,7 +51,7 @@ struct objc_protocollist_64 {
     __block NSError *memoryMapError = nil;
     mk_error_t err;
     
-    id<MKDataModel> dataModel = self.dataModel;
+    MKDataModel* dataModel = self.dataModel;
     size_t pointerSize = dataModel.pointerSize;
     size_t entsize = dataModel.pointerSize;
     

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKMemoryMap+Pointer.m
+//|             MKX86DataModel.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,29 +25,39 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKMemoryMap+Pointer.h"
+#import "MKDataModel.h"
 #import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKMemoryMap (Pointer)
+@implementation MKX86DataModel
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error
-{
-	NSParameterAssert(dataModel != nil);
-	size_t pointerSize = dataModel.pointerSize;
-	
-	switch (pointerSize) {
-		case 8:
-			return [self readQuadWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		case 4:
-			return [self readDoubleWordAtOffset:offset fromAddress:contextAddress withDataModel:dataModel error:error];
-		default:
-		{
-			NSString *reason = [NSString stringWithFormat:@"Unsupported pointer size [%zu].", pointerSize];
-			@throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-		}
-	}
-}
+- (MKDataEndianness)endianness
+{ return MKDataEndiannessLittle; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+// X86 uses the full pointer width.
+- (uint64_t)pointerMask
+{ return 0xFFFFFFFF; }
+
+// Defer to data source for everything else.
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKAMD64DataModel
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKDataEndianness)endianness
+{ return MKDataEndiannessLittle; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+// amd64 reserves the upper 16 bits.
+- (uint64_t)pointerMask
+{ return 0x00FFFFFFFFFFFF; }
+
+// Defer to data source for everything else.
 
 @end

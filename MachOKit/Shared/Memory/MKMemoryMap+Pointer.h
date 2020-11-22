@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 //----------------------------------------------------------------------------//
 @interface MKMemoryMap (Pointer)
 
-- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(id<MKDataModel>)dataModel error:(NSError**)error;
+- (mk_vm_address_t)readPointerAtOffset:(mk_vm_offset_t)offset fromAddress:(mk_vm_address_t)contextAddress withDataModel:(MKDataModel*)dataModel error:(NSError**)error;
 
 @end
 

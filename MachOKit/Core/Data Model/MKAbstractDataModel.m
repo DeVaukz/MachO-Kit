@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKObjCIVarOffset.m
+//|             MKAbstractDataModel.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,75 +25,100 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKObjCIVarOffset.h"
-#import "NSError+MK.h"
-#import "MKDataModel+ObjC.h"
+#import "MKDataModel.h"
+#import "MKInternal.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKObjCIVarOffset
-
-@synthesize offset = _offset;
+@implementation MKDataModel
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (instancetype)initWithOffset:(mk_vm_offset_t)offset fromParent:(MKBackedNode *)parent error:(NSError **)error
+- (instancetype)initWithDataSource:(MKDataModel*)dataSource
 {
-    self = [super initWithOffset:offset fromParent:parent error:error];
-    if (self == nil) return nil;
+    NSParameterAssert(dataSource != nil);
     
-    MKDataModel* dataModel = self.dataModel;
-    size_t objcIVarOffsetSize = dataModel.objcIVarOffsetSize;
+    self = [super init];
     
-    NSError *memoryMapError = nil;
-    
-    if (objcIVarOffsetSize == 8)
-        _offset = [self.memoryMap readQuadWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&memoryMapError];
-    else if (objcIVarOffsetSize == 4)
-        _offset = [self.memoryMap readDoubleWordAtOffset:0 fromAddress:self.nodeContextAddress withDataModel:dataModel error:&memoryMapError];
-    else
-    {
-        NSString *reason = [NSString stringWithFormat:@"Unsupported ivar offset size [%zu].", objcIVarOffsetSize];
-        @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reason userInfo:nil];
-    }
-    
-    if (memoryMapError) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read ivar offset."];;
-        [self release]; return nil;
+    if (dataSource == self) {
+        _dataSource = dataSource; // do not retain
+    } else {
+        _dataSource = [dataSource retain];
     }
     
     return self;
 }
 
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNode
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
 //|++++++++++++++++++++++++++++++++++++|//
-- (mk_vm_size_t)nodeSize
-{ return self.dataModel.pointerSize; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeDescription*)layout
+- (instancetype)init
 {
-    MKNodeFieldBuilder *offset = [MKNodeFieldBuilder
-        builderWithProperty:MK_PROPERTY(offset)
-        type:MKNodeFieldTypeUnsignedQuadWord.sharedInstance
-        offset:0
-        size:self.dataModel.objcIVarOffsetSize
-    ];
-    offset.description = @"Offset";
-    offset.options = MKNodeFieldOptionDisplayAsDetail;
+    [self doesNotRecognizeSelector:_cmd];
+    return nil;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (void)dealloc
+{
+    if (_dataSource != self)
+        [_dataSource release];
     
-    return [MKNodeDescription nodeDescriptionWithParentDescription:super.layout fields:@[
-        offset.build
-    ]];
+    [super dealloc];
+}
+
+#define MAKE_GETTER_FORWARDER(return_type, name) \
+- (return_type)name \
+{ \
+    if (_dataSource == nil || _dataSource == self) \
+[self doesNotRecognizeSelector:_cmd]; \
+    return [_dataSource name]; \
 }
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  NSObject
+#pragma mark -  Byte Order
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
+MAKE_GETTER_FORWARDER(MKDataEndianness, endianness)
+
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)description
-{ return [NSString stringWithFormat:@"0x%" PRIu64 "", self.offset]; }
+- (const mk_byteorder_t *)byteOrder
+{
+    MKDataEndianness endianness = self.endianness;
+    
+    switch (endianness) {
+        case MKDataEndiannessBig:
+#if TARGET_RT_BIG_ENDIAN
+            return &mk_byteorder_direct;
+#else
+            return &mk_byteorder_swapped;
+#endif
+        case MKDataEndiannessLittle:
+#if TARGET_RT_BIG_ENDIAN
+            return &mk_byteorder_swapped;
+#else
+            return &mk_byteorder_direct;
+#endif
+        default:
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:@"Unknown endianness." userInfo:nil];
+    }
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Pointers
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+MAKE_GETTER_FORWARDER(size_t, pointerSize)
+MAKE_GETTER_FORWARDER(size_t, pointerAlignment)
+MAKE_GETTER_FORWARDER(uint64_t, pointerMask)
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  Fundamental (C) Types
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+MAKE_GETTER_FORWARDER(size_t, shortSize)
+MAKE_GETTER_FORWARDER(size_t, shortAlignment)
+MAKE_GETTER_FORWARDER(size_t, intSize)
+MAKE_GETTER_FORWARDER(size_t, intAlignment)
+MAKE_GETTER_FORWARDER(size_t, longSize)
+MAKE_GETTER_FORWARDER(size_t, longAlignment)
+MAKE_GETTER_FORWARDER(size_t, longlongSize)
+MAKE_GETTER_FORWARDER(size_t, longlongAlignment)
 
 @end
