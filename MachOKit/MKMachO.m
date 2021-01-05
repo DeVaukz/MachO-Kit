@@ -71,13 +71,13 @@
         case MH_CIGAM:
         case MH_MAGIC:
             // All 32-bit darwin ABIs use ILP32
-            _dataModel = (magic == MH_MAGIC) ? [MKILP32DataModel dataModelWithHostEndianness] : [MKILP32DataModel dataModelWithByteSwappedEndianness];
+            _dataModel = [(magic == MH_MAGIC) ? [MKILP32DataModel dataModelWithHostEndianness] : [MKILP32DataModel dataModelWithByteSwappedEndianness] retain];
             _header = [[MKMachHeader alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         case MH_CIGAM_64:
         case MH_MAGIC_64:
             // All 64-bit darwin ABIs use LP64
-            _dataModel = (magic == MH_MAGIC_64) ? [MKLP64DataModel dataModelWithHostEndianness] : [MKLP64DataModel dataModelWithByteSwappedEndianness];
+            _dataModel = [(magic == MH_MAGIC_64) ? [MKLP64DataModel dataModelWithHostEndianness] : [MKLP64DataModel dataModelWithByteSwappedEndianness] retain];
             _header = [[MKMachHeader64 alloc] initWithOffset:0 fromParent:self error:&localError];
             break;
         default:
