@@ -132,13 +132,13 @@
                 
                 if ((err = mk_vm_address_apply_offset(context.address, nextOffset, &context.address))) {
                     fixupError = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, context.address, nextOffset);
-                    MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, fixupError, @"Fixup list generation failed at offset: %@.", context.offset.nodeDescription);
+                    MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, fixupError, @"Fixup list generation failed at offset: %@.", context.offset.compactDescription);
                     break;
                 }
                 
                 MKSplitSegmentInfoV1Fixup *fixup = [[MKSplitSegmentInfoV1Fixup alloc] initWithContext:&context error:&fixupError];
                 if (fixup == nil) {
-                    MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, fixupError, @"Fixup list generation failed at offset: %@.", context.offset.nodeDescription);
+                    MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, fixupError, @"Fixup list generation failed at offset: %@.", context.offset.compactDescription);
                     break;
                 }
                 

@@ -177,7 +177,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)nodeDescription
+- (NSString*)compactDescription
 {
 	IMP nodeDescriptionMethod = [MKBackedNode instanceMethodForSelector:@selector(description)];
 	IMP descriptionMethod = [self methodForSelector:@selector(description)];

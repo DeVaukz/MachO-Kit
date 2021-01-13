@@ -95,14 +95,14 @@
             
             if ((err = mk_vm_address_apply_offset(context.address, nextFunctionOffset, &context.address))) {
                 functionError = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, context.address, nextFunctionOffset);
-                MK_PUSH_WARNING_WITH_ERROR(functions, MK_EINTERNAL_ERROR, functionError, @"Function list generation failed at offset: %@.", context.offset.nodeDescription);
+                MK_PUSH_WARNING_WITH_ERROR(functions, MK_EINTERNAL_ERROR, functionError, @"Function list generation failed at offset: %@.", context.offset.compactDescription);
                 break;
             }
             
             MKFunction *function = [[MKFunction alloc] initWithContext:&context error:&functionError];
             
             if (function == nil) {
-                MK_PUSH_WARNING_WITH_ERROR(functions, MK_EINTERNAL_ERROR, functionError, @"Function list generation failed at offset: %@.", context.offset.nodeDescription);
+                MK_PUSH_WARNING_WITH_ERROR(functions, MK_EINTERNAL_ERROR, functionError, @"Function list generation failed at offset: %@.", context.offset.compactDescription);
                 break;
             }
             

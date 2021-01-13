@@ -71,7 +71,7 @@ _mk_internal const char * const AssociatedDescription = "AssociatedDescription";
 { return [[MKNodeDescription new] autorelease]; }
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)nodeDescription
+- (NSString*)compactDescription
 {
     IMP nodeDescriptionMethod = [MKNode instanceMethodForSelector:@selector(description)];
     IMP descriptionMethod = [self methodForSelector:@selector(description)];

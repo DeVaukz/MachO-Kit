@@ -70,7 +70,7 @@
     NSError *memoryMapError = nil;
 	
     if ([parent.memoryMap copyBytesAtOffset:offset fromAddress:parent.nodeContextAddress into:&opcode length:sizeof(uint8_t) requireFull:YES error:&memoryMapError] < sizeof(uint8_t)) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read opcode at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read opcode at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.compactDescription];
         return nil;
     }
     

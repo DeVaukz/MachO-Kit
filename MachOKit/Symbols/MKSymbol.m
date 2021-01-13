@@ -108,7 +108,7 @@ bool ReadNList(struct nlist_64 *result, mk_vm_offset_t offset, MKBackedNode *nod
     struct nlist_64 nlist;
     
     if (ReadNList(&nlist, offset, parent, &memoryMapError) == false) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read nlist at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read nlist at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.compactDescription];
         return nil;
     }
     

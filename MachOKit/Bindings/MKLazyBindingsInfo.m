@@ -87,7 +87,7 @@
             
             if (keepGoing == NO) {
                 if (bindingError) {
-                    MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Lazy binding actions list generation failed at command: %@.", context.command.nodeDescription);
+                    MK_PUSH_WARNING_WITH_ERROR(actions, MK_EINTERNAL_ERROR, bindingError, @"Lazy binding actions list generation failed at command: %@.", context.command.compactDescription);
                 }
                 
                 break;

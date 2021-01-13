@@ -110,14 +110,14 @@
 					
 					if ((err = mk_vm_address_apply_offset(self.nodeVMAddress, branch.offset, &targetAddress))) {
 						traversalError = MK_MAKE_VM_ADDRESS_APPLY_OFFSET_ARITHMETIC_ERROR(err, self.nodeVMAddress, branch.offset);
-						MK_PUSH_WARNING_WITH_ERROR(exports, MK_ENOT_FOUND, traversalError, @"Could not locate the trie node referenced by branch %@ of %@.", branch.nodeDescription, branch.parent.nodeDescription);
+						MK_PUSH_WARNING_WITH_ERROR(exports, MK_ENOT_FOUND, traversalError, @"Could not locate the trie node referenced by branch %@ of %@.", branch.compactDescription, branch.parent.compactDescription);
 						continue;
 					}
 					
 					MKResult<MKExportTrieNode*> *targetNode = (typeof(targetNode))[self childNodeAtVMAddress:targetAddress targetClass:MKExportTrieNode.class];
 					if (targetNode.value == nil) {
 						traversalError = [NSError mk_errorWithDomain:MKErrorDomain code:MK_ENOT_FOUND underlyingError:targetNode.error description:@"No trie node at address [0x%" MK_VM_PRIxADDR "]", targetAddress];
-						MK_PUSH_WARNING_WITH_ERROR(exports, MK_ENOT_FOUND, traversalError, @"Could not locate the trie node referenced by branch %@ of %@.", branch.nodeDescription, branch.parent.nodeDescription);
+						MK_PUSH_WARNING_WITH_ERROR(exports, MK_ENOT_FOUND, traversalError, @"Could not locate the trie node referenced by branch %@ of %@.", branch.compactDescription, branch.parent.compactDescription);
 						continue;
 					}
 					
@@ -136,7 +136,7 @@
 						if (export) {
 							[exports addObject:export];
 						} else {
-							MK_PUSH_WARNING_WITH_ERROR(exports, MK_EINTERNAL_ERROR, exportError, @"Could not create export for terminal node %@.", next.nodeDescription);
+							MK_PUSH_WARNING_WITH_ERROR(exports, MK_EINTERNAL_ERROR, exportError, @"Could not create export for terminal node %@.", next.compactDescription);
 						}
 					}
 					

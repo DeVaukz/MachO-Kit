@@ -84,7 +84,7 @@
     
     // Verify that a stub size was specified in the load command.
     if (_stubSize == 0) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"No stub size specified in load command: %@", [(MKNode*)sectionLoadCommand nodeDescription]];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINVALID_DATA description:@"No stub size specified in load command: %@", [(MKNode*)sectionLoadCommand compactDescription]];
         [self release]; return nil;
     }
     

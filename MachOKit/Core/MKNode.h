@@ -78,9 +78,9 @@ NS_ASSUME_NONNULL_BEGIN
 //! may have reimplemented -description.
 //!
 //!	@note
-//!	Never call \c -nodeDescription from within your subclass \c -description
+//!	Never call \c -compactDescription from within your subclass \c -description
 //!	method.
-@property (nonatomic, readonly) NSString *nodeDescription;
+@property (nonatomic, readonly) NSString *compactDescription;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  Accessing Related Objects

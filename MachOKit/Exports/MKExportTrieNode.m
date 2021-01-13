@@ -92,7 +92,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 	size_t ulebSize;
 	
 	if (ReadTerminalSize(&terminalSize, &ulebSize, offset, parent, &memoryMapError) == false) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read terminal size at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.nodeDescription];
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read terminal size at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset, parent.compactDescription];
 		return nil;
 	}
 	
@@ -107,7 +107,7 @@ bool ReadTerminalSize(uint64_t *result, size_t *size, mk_vm_offset_t offset, MKB
 	}];
 	
 	if (memoryMapError) {
-		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read terminal information at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset + ulebSize, parent.nodeDescription];
+		MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:memoryMapError description:@"Could not read terminal information at offset [%" MK_VM_PRIuOFFSET "] from %@.", offset + ulebSize, parent.compactDescription];
 		return false;
 	}
 	

@@ -84,7 +84,7 @@ struct objc_entlist {
     mk_vm_range_t parentRange = mk_vm_range_make([(MKBackedNode*)self.parent nodeVMAddress], [(MKBackedNode*)self.parent nodeSize]);
     mk_vm_range_t nodeRange = mk_vm_range_make(self.nodeVMAddress, self.nodeSize);
     if (mk_vm_range_contains_range(parentRange, nodeRange, false)) {
-        MK_PUSH_WARNING(nil, MK_EOUT_OF_RANGE, @"Element list size [%" MK_VM_PRIuSIZE "] extends beyond parent node: %@.", self.nodeSize, self.parent.nodeDescription);
+        MK_PUSH_WARNING(nil, MK_EOUT_OF_RANGE, @"Element list size [%" MK_VM_PRIuSIZE "] extends beyond parent node: %@.", self.nodeSize, self.parent.compactDescription);
     }
     
     // Load elements

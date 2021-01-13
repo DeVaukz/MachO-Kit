@@ -65,7 +65,7 @@
 {
     Class segmentClass = [self classForSegmentLoadCommand:segmentLoadCommand];
     if (segmentClass == NULL) {
-        NSString *reason = [NSString stringWithFormat:@"No segment for load command: %@.", [(MKNode*)segmentLoadCommand nodeDescription]];
+        NSString *reason = [NSString stringWithFormat:@"No segment for load command: %@.", [(MKNode*)segmentLoadCommand compactDescription]];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
     }
     
@@ -189,7 +189,7 @@
                 [segmentSectionsByLoadCommand setObject:sectionOpt forKey:sectionLoadCommand];
                 [sectionOpt release];
             } else {
-                NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:sectionError description:@"Could not create section for load command: %@", [(MKNode*)sectionLoadCommand nodeDescription]];
+                NSError *error = [NSError mk_errorWithDomain:MKErrorDomain code:MK_EINTERNAL_ERROR underlyingError:sectionError description:@"Could not create section for load command: %@", [(MKNode*)sectionLoadCommand compactDescription]];
                 
                 MKResult *sectionOpt = [[MKResult alloc] initWithError:error];
                 [segmentSections addObject:sectionOpt];

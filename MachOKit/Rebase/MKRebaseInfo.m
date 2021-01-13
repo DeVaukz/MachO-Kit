@@ -123,7 +123,7 @@
             
             if (keepGoing == NO) {
 				if (rebaseError) {
-					MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, rebaseError, @"Fixup list generation failed at command: %@.", context.command.nodeDescription);
+					MK_PUSH_WARNING_WITH_ERROR(fixups, MK_EINTERNAL_ERROR, rebaseError, @"Fixup list generation failed at command: %@.", context.command.compactDescription);
 				}
                 break;
             }

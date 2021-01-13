@@ -54,7 +54,7 @@
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 
 //|++++++++++++++++++++++++++++++++++++|//
-- (NSString*)nodeDescription
+- (NSString*)compactDescription
 {
 	IMP nodeDescriptionMethod = [MKAddressedNode instanceMethodForSelector:@selector(description)];
 	IMP descriptionMethod = [self methodForSelector:@selector(description)];

@@ -67,7 +67,7 @@
 {
     Class sectionClass = [self classForSectionLoadCommand:sectionLoadCommand inSegment:segment];
     if (sectionClass == NULL) {
-        NSString *reason = [NSString stringWithFormat:@"No section for load command: %@.", [(MKNode*)sectionLoadCommand nodeDescription]];
+        NSString *reason = [NSString stringWithFormat:@"No section for load command: %@.", [(MKNode*)sectionLoadCommand compactDescription]];
         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:reason userInfo:nil];
     }
     
@@ -96,7 +96,7 @@
     
     // Verify that this section is fully within it's segment's VM memory.
     if ((err = mk_vm_range_contains_range(mk_vm_range_make(segment.vmAddress, segment.vmSize), mk_vm_range_make(_vmAddress, _size), false))) {
-        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Section [%@] is not within segment: %@.", sectionLoadCommand, segment.nodeDescription];
+        MK_ERROR_OUT = [NSError mk_errorWithDomain:MKErrorDomain code:err description:@"Section [%@] is not within segment: %@.", sectionLoadCommand, segment.compactDescription];
         [self release]; return nil;
     }
     
@@ -106,7 +106,7 @@
     // zero-fill memory of its enclosing segment and has no corresponding
     // memory in the file.
     if (!(self.type == S_ZEROFILL) && (err = mk_vm_range_contains_range(mk_vm_range_make(segment.fileOffset, segment.fileSize), mk_vm_range_make(_fileOffset, _size), false))) {
-        MK_PUSH_WARNING(fileOffset, MK_ENOT_FOUND, @"File offset [%" MK_VM_PRIxADDR "] is not within segment: %@.", _fileOffset, segment.nodeDescription);
+        MK_PUSH_WARNING(fileOffset, MK_ENOT_FOUND, @"File offset [%" MK_VM_PRIxADDR "] is not within segment: %@.", _fileOffset, segment.compactDescription);
     }
     
     // Determine the context address of this section.

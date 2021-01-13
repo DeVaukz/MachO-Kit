@@ -97,11 +97,11 @@
                 if (next.nodeOffset == c.offset)
                     branch = c;
             }
-            NSAssert(branch != nil, @"%@ is not referenced by any branches of %@.", next.nodeDescription, current.nodeDescription);
+            NSAssert(branch != nil, @"%@ is not referenced by any branches of %@.", next.compactDescription, current.compactDescription);
             
             NSString *prefix = branch.prefix.string;
             if (prefix == nil) {
-				MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Branch %@ of %@ does not contain a prefix.", branch.nodeDescription, current.nodeDescription);
+				MK_PUSH_WARNING(name, MK_EINVALID_DATA, @"Branch %@ of %@ does not contain a prefix.", branch.compactDescription, current.compactDescription);
                 break;
             }
             
