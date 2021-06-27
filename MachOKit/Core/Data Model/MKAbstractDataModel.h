@@ -25,8 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
+#import <MachOKit/MKBase.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,7 +67,7 @@ typedef NS_ENUM(int, MKDataEndianness) {
 @property (readonly) MKDataEndianness endianness;
 
 //! A structure of functions used to convert between the endianess of this
-//! data model and the emdianess of the host process.
+//! data model and the endianess of the host process.
 @property (readonly) const mk_byteorder_t *byteOrder;
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
@@ -91,7 +90,7 @@ typedef NS_ENUM(int, MKDataEndianness) {
 //! (akin to a sign extension).
 //!
 //! The OS ABI may further reduce the total possible virtual address space,
-//! which also confines the target address to a smaller subset of the pointer's
+//! which confines the target address to an even smaller subset of the pointer's
 //! bits.
 @property (readonly) uint64_t pointerMask;
 

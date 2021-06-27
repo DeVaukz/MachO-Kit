@@ -67,7 +67,7 @@
 - (return_type)name \
 { \
     if (_dataSource == nil || _dataSource == self) \
-[self doesNotRecognizeSelector:_cmd]; \
+        [self doesNotRecognizeSelector:_cmd]; \
     return [_dataSource name]; \
 }
 

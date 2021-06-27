@@ -1,10 +1,13 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldTypeBoolean.h
+//! @file       MKBase.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
+//!
+//! @brief
+//! The root include for MachOKit.
 //|
 //| Permission is hereby granted, free of charge, to any person obtaining a
 //| copy of this software and associated documentation files (the "Software"),
@@ -25,17 +28,22 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import <MachOKit/MKNodeFieldType.h>
-#import <MachOKit/MKNodeFieldBooleanType.h>
-#import <MachOKit/MKNodeFieldNumericType.h>
+#ifndef _MKBase_h
+#define _MKBase_h
 
-NS_ASSUME_NONNULL_BEGIN
+#import <Foundation/Foundation.h>
+#import <MachOKit/base.h>
+#import <MachOKit/core.h>
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldTypeBoolean : NSObject <MKNodeFieldBooleanType>
+#pragma mark -  Objective-C Annotations
+/// @name       Objective-C Annotations
+//----------------------------------------------------------------------------//
 
-+ (instancetype)sharedInstance;
+#if __has_attribute(objc_direct)
+#   define MK_DIRECT __attribute__((objc_direct))
+#else
+#   define MK_DIRECT
+#endif
 
-@end
-
-NS_ASSUME_NONNULL_END
+#endif /* _MKBase_h */

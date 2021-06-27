@@ -132,6 +132,7 @@
 		D01E7C801FFF49E400E745F7 /* MKRegularExport.m in Sources */ = {isa = PBXBuildFile; fileRef = D01E7C7E1FFF49E400E745F7 /* MKRegularExport.m */; };
 		D01E7C911FFF4C0200E745F7 /* MKReExport.h in Headers */ = {isa = PBXBuildFile; fileRef = D01E7C8F1FFF4C0200E745F7 /* MKReExport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D01E7C921FFF4C0200E745F7 /* MKReExport.m in Sources */ = {isa = PBXBuildFile; fileRef = D01E7C901FFF4C0200E745F7 /* MKReExport.m */; };
+		D020D97025ABCA2D0076C728 /* MKBase.h in Headers */ = {isa = PBXBuildFile; fileRef = D020D96F25ABCA2D0076C728 /* MKBase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D021C866211019B30054E943 /* MKNodeFieldSTABType.h in Headers */ = {isa = PBXBuildFile; fileRef = D021C864211019B30054E943 /* MKNodeFieldSTABType.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D021C867211019B30054E943 /* MKNodeFieldSTABType.m in Sources */ = {isa = PBXBuildFile; fileRef = D021C865211019B30054E943 /* MKNodeFieldSTABType.m */; };
 		D02A13E81B731BE8008FA6A5 /* MKDSCLocalSymbols.h in Headers */ = {isa = PBXBuildFile; fileRef = D02A13E61B731BE8008FA6A5 /* MKDSCLocalSymbols.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1231,6 +1232,7 @@
 		D01E7C7E1FFF49E400E745F7 /* MKRegularExport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKRegularExport.m; sourceTree = "<group>"; };
 		D01E7C8F1FFF4C0200E745F7 /* MKReExport.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKReExport.h; sourceTree = "<group>"; };
 		D01E7C901FFF4C0200E745F7 /* MKReExport.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKReExport.m; sourceTree = "<group>"; };
+		D020D96F25ABCA2D0076C728 /* MKBase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKBase.h; sourceTree = "<group>"; };
 		D021C864211019B30054E943 /* MKNodeFieldSTABType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKNodeFieldSTABType.h; sourceTree = "<group>"; };
 		D021C865211019B30054E943 /* MKNodeFieldSTABType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MKNodeFieldSTABType.m; sourceTree = "<group>"; };
 		D02A13E61B731BE8008FA6A5 /* MKDSCLocalSymbols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MKDSCLocalSymbols.h; sourceTree = "<group>"; };
@@ -3100,6 +3102,7 @@
 			children = (
 				D0CAF8DF19E638B700C833F0 /* MachOKit.h */,
 				D0CAF8E019E638B700C833F0 /* MachOKit.m */,
+				D020D96F25ABCA2D0076C728 /* MKBase.h */,
 				D0B9F6C91E58076300D0B35A /* MKInternal.h */,
 				D038B70A1A1021AA008621AE /* NSError+MK.h */,
 				D038B70B1A1021AA008621AE /* NSError+MK.m */,
@@ -3837,6 +3840,7 @@
 				D06D59C42015613600A99173 /* MKNodeFieldTypeDate.h in Headers */,
 				D00EA1A51C61CD51002B0696 /* load_command_version_min_watchos.h in Headers */,
 				D09145A41E51306B00959648 /* MKNodeFieldOperationReturnConstant.h in Headers */,
+				D020D97025ABCA2D0076C728 /* MKBase.h in Headers */,
 				D08634E41C76F2D80094330F /* _mach_trie.h in Headers */,
 				D09D5D8D2569C9F2005F9C33 /* MKLP64DataModel.h in Headers */,
 				D0B9F6DA1E581DAE00D0B35A /* MKNodeFieldEnumerationType.h in Headers */,
@@ -4186,7 +4190,7 @@
 		D02FEB2D1890FF88004E88ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1250;
 				ORGANIZATIONNAME = DeVaukz;
 				TargetAttributes = {
 					D0A3BB731A68EB9D00D663A0 = {

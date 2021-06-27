@@ -126,7 +126,7 @@
             if ([value isKindOfClass:MKNode.class]) {
                 // Only recurse on the node if we have not reached the traversal depth
                 if (traversalDepth > 0 && (field.options & MKNodeFieldOptionIgnoreContainerContents) == 0) {
-                    return [[value layout] textualDescriptionForNode:value traversalDepth:traversalDepth-1];
+                    return (NSString*)[[value layout] textualDescriptionForNode:value traversalDepth:traversalDepth-1];
                 }
                 /* else, fallthrough */
             }

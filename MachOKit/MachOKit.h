@@ -33,6 +33,7 @@
 
 #include <MachOKit/macho.h>
 
+#import <MachOKit/MKBase.h>
 #import <MachOKit/NSError+MK.h>
 #import <MachOKit/NSNumber+MK.h>
 #import <MachOKit/MKResult.h>

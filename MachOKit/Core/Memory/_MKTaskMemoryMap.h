@@ -25,11 +25,9 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#include <mach/mach.h>
-#import <Foundation/Foundation.h>
-
 #import <MachOKit/MKMemoryMap.h>
+
+#include <mach/mach.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

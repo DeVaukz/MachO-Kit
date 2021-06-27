@@ -25,9 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldType.h>
 #import <MachOKit/MKNodeFieldDateType.h>
 
 NS_ASSUME_NONNULL_BEGIN

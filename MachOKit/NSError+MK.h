@@ -25,8 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
+#import <MachOKit/MKBase.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -119,7 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 
 //! The domain for all errors originating from Mach-O Kit.
-extern NSString * const MKErrorDomain;
+extern NSErrorDomain const MKErrorDomain;
 
 //----------------------------------------------------------------------------//
 //! @name       User info dictionary keys

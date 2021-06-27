@@ -27,10 +27,10 @@
 
 #import "MKResult.h"
 
+extern void OBJC_CLASS_$_MKResult;
+
 //----------------------------------------------------------------------------//
 @implementation MKResult
-
-extern void OBJC_CLASS_$_MKResult;
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (instancetype)result
@@ -70,7 +70,7 @@ extern void OBJC_CLASS_$_MKResult;
         
     } else {
         if (object)
-            result = [[self alloc] initWithObject:object];
+            result = [[self alloc] initWithValue:object];
         else if (error /* Only fail if we have an error */)
             result = [[self alloc] initWithError:error];
         else

@@ -25,8 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
+#import <MachOKit/MKBase.h>
 
 @class MKNodeField;
 @class MKBackedNode;
