@@ -54,7 +54,7 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
 {
     const char *description = "";
     
-    switch (architecture.cputype)
+    switch (mk_architecture_get_cpu_type(architecture))
     {
         case CPU_TYPE_ANY:
             description = "ANY";
@@ -71,7 +71,7 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
             break;
         case CPU_TYPE_X86_64:
         {
-            switch (architecture.cpusubtype) {
+            switch (mk_architecture_get_cpu_subtype(architecture)) {
                 case CPU_SUBTYPE_X86_64_H:
                     description = "x86_64h";
                     break;
@@ -89,7 +89,7 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
             break;
         case CPU_TYPE_ARM:
         {
-            switch (architecture.cpusubtype) {
+            switch (mk_architecture_get_cpu_subtype(architecture)) {
                 case CPU_SUBTYPE_ARM_V7K:
                     description = "armv7k";
                     break;
@@ -113,7 +113,7 @@ mk_architecture_copy_description(mk_architecture_t architecture, char *output, s
         }
         case CPU_TYPE_ARM64:
         {
-            switch (architecture.cpusubtype) {
+            switch (mk_architecture_get_cpu_subtype(architecture)) {
                 case CPU_SUBTYPE_ARM64E:
                     description = "arm64e";
                     break;

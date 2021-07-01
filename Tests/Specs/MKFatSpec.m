@@ -84,12 +84,14 @@ SpecBegin(MKFat)
             }
             
             it(@"Should have the correct CPU type", ^{
-                expect(architecture.cputype).to.equal([otoolArchitecture[@"cputype"] integerValue]);
+                expect(mk_architecture_get_cpu_type(architecture.architecture)).to.equal([otoolArchitecture[@"cputype"] integerValue]);
             });
             
             it(@"Should have the correct CPU subtype", ^{
-                expect(architecture.cpusubtype).to.equal([otoolArchitecture[@"cpusubtype"] integerValue]);
+                expect(mk_architecture_get_cpu_subtype(architecture.architecture)).to.equal([otoolArchitecture[@"cpusubtype"] integerValue]);
             });
+            
+            // TODO - Feature flags / capabilities
             
             it(@"Should have the correct offset", ^{
                 expect(architecture.offset).to.equal([otoolArchitecture[@"offset"] integerValue]);

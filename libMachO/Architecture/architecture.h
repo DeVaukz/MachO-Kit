@@ -136,11 +136,18 @@ _mk_inine cpu_type_t
 mk_architecture_get_cpu_type(mk_architecture_t architecture)
 { return architecture.cputype; }
 
-//! Returns the CPU subtype of the specified architecture.
+//! Returns the CPU subtype of the specified architecture, without any feature
+//! flags.
 _mk_swift_name(getter:mk_architecture_s.cpuSubtype(self:))
 _mk_inine cpu_subtype_t
 mk_architecture_get_cpu_subtype(mk_architecture_t architecture)
-{ return architecture.cpusubtype; }
+{ return architecture.cpusubtype & ~(cpu_subtype_t)CPU_SUBTYPE_MASK; }
+
+//! Returns the CPU subtype feature flags.
+_mk_swift_name(getter:mk_architecture_s.featureFlags(self:))
+_mk_inine cpu_subtype_t
+mk_architecture_get_feature_flags(mk_architecture_t architecture)
+{ return architecture.cpusubtype & (cpu_subtype_t)CPU_SUBTYPE_MASK; }
 
 //! Returns \c true if the specified architecture uses a 64-bit ABI.
 _mk_swift_name(getter:mk_architecture_s.uses64bitABI(self:))

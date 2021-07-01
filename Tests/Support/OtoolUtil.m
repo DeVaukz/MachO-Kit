@@ -279,6 +279,24 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
         [dest setValue:value forKey:key];
     };
     
+    // For the capabilities field
+    ParserAction parseCapabilitiesValue =  ^(NSMutableDictionary *dest) {
+        NSString *key = tokens[0];
+        [tokens removeObjectAtIndex:0];
+        NSString *value = tokens[0];
+        [tokens removeObjectAtIndex:0];
+        
+        if ([value isEqualToString:@"PTR_AUTH_VERSION"]) {
+            __unused NSString *abi = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            __unused NSString *version = tokens[0];
+            [tokens removeObjectAtIndex:0];
+            // TODO
+        } else {
+            [dest setValue:value forKey:key];
+        }
+    };
+    
     // For the alignment field
     ParserAction parseAlignValue =  ^(NSMutableDictionary *dest) {
         NSString *key = tokens[0];
@@ -305,7 +323,7 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
         NSDictionary *actions = @{
             @"cputype": parseSingleValue,
             @"cpusubtype": parseSingleValue,
-            @"capabilities": parseSingleValue,
+            @"capabilities": parseCapabilitiesValue,
             @"offset": parseSingleValue,
             @"size": parseSingleValue,
             @"align": parseAlignValue,
