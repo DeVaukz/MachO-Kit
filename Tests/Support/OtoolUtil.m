@@ -39,6 +39,10 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
 {
     NSMutableArray *lines = [[input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] mutableCopy];
     
+    // Newer otool prints the input path on the first line
+    if ([lines[0] isEqualToString:@"Mach header"] == NO)
+        [lines removeObjectAtIndex:0];
+    
     // Expect "Mach header"
     NSAssert([lines[0] isEqualToString:@"Mach header"], @"");
     [lines removeObjectAtIndex:0];
@@ -137,24 +141,26 @@ typedef BOOL (^OptionalParserAction)(NSMutableDictionary*);
             NSString *value = tokens[0];
             [tokens removeObjectAtIndex:0];
             
-            if ([value isEqualToString:@"macos"])
+            if ([value isEqualToString:@"1"])
                 [dest setValue:@"PLATFORM_MACOS" forKey:key];
-            else if ([value isEqualToString:@"ios"])
+            else if ([value isEqualToString:@"2"])
                 [dest setValue:@"PLATFORM_IOS" forKey:key];
-            else if ([value isEqualToString:@"tvos"])
+            else if ([value isEqualToString:@"3"])
                 [dest setValue:@"PLATFORM_TVOS" forKey:key];
-            else if ([value isEqualToString:@"watchos"])
+            else if ([value isEqualToString:@"4"])
                 [dest setValue:@"PLATFORM_WATCHOS" forKey:key];
-            else if ([value isEqualToString:@"bridgeos"])
+            else if ([value isEqualToString:@"5"])
                 [dest setValue:@"PLATFORM_BRIDGEOS" forKey:key];
-            else if ([value isEqualToString:@"iosmac"])
-                [dest setValue:@"PLATFORM_IOSMAC" forKey:key];
-            else if ([value isEqualToString:@"iossimulator"])
+            else if ([value isEqualToString:@"6"])
+                [dest setValue:@"PLATFORM_MACCATALYST" forKey:key];
+            else if ([value isEqualToString:@"7"])
                 [dest setValue:@"PLATFORM_IOSSIMULATOR" forKey:key];
-            else if ([value isEqualToString:@"tvossimulator"])
+            else if ([value isEqualToString:@"8"])
                 [dest setValue:@"PLATFORM_TVOSSIMULATOR" forKey:key];
-            else if ([value isEqualToString:@"watchossimulator"])
+            else if ([value isEqualToString:@"9"])
                 [dest setValue:@"PLATFORM_WATCHOSSIMULATOR" forKey:key];
+            else if ([value isEqualToString:@"10"])
+                [dest setValue:@"PLATFORM_DRIVERKIT" forKey:key];
             else
                 [dest setValue:value forKey:key];
             

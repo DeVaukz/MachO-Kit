@@ -29,19 +29,6 @@
 #import "MKInternal.h"
 #import "MKMachO.h"
 
-#ifndef PLATFORM_IOSMAC
-#   define PLATFORM_IOSMAC 6
-#endif
-#ifndef PLATFORM_IOSSIMULATOR
-#   define PLATFORM_IOSSIMULATOR 7
-#endif
-#ifndef PLATFORM_TVOSSIMULATOR
-#   define PLATFORM_TVOSSIMULATOR 8
-#endif
-#ifndef PLATFORM_WATCHOSSIMULATOR
-#   define PLATFORM_WATCHOSSIMULATOR 9
-#endif
-
 //----------------------------------------------------------------------------//
 @implementation MKLCBuildVersion
 
@@ -160,10 +147,11 @@
             @((typeof(bvc.platform))PLATFORM_TVOS): @"PLATFORM_TVOS",
             @((typeof(bvc.platform))PLATFORM_WATCHOS): @"PLATFORM_WATCHOS",
             @((typeof(bvc.platform))PLATFORM_BRIDGEOS): @"PLATFORM_BRIDGEOS",
-            @((typeof(bvc.platform))PLATFORM_IOSMAC): @"PLATFORM_IOSMAC",
+            @((typeof(bvc.platform))PLATFORM_MACCATALYST): @"PLATFORM_MACCATALYST",
             @((typeof(bvc.platform))PLATFORM_IOSSIMULATOR): @"PLATFORM_IOSSIMULATOR",
             @((typeof(bvc.platform))PLATFORM_TVOSSIMULATOR): @"PLATFORM_TVOSSIMULATOR",
             @((typeof(bvc.platform))PLATFORM_WATCHOSSIMULATOR): @"PLATFORM_WATCHOSSIMULATOR",
+            @((typeof(bvc.platform))PLATFORM_DRIVERKIT): @"PLATFORM_DRIVERKIT",
         }]
         offset:offsetof(struct build_version_command, platform)
         size:sizeof(bvc.platform)
