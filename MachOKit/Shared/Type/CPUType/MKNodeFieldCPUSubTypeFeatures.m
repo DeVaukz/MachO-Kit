@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//|             MKNodeFieldCPUSubTypeCapability.m
+//|             MKNodeFieldCPUSubTypeFeatures.m
 //|
 //|             D.V.
 //|             Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,44 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#import "MKNodeFieldCPUSubTypeCapability.h"
+#import "MKNodeFieldCPUSubTypeFeatures.h"
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldCPUSubTypeCapability
+@implementation MKNodeFieldCPUSubTypeFeatures
 
-static NSDictionary *s_Capability = nil;
-static MKOptionSetFormatter *s_Formatter = nil;
-
-MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeCapability)
-
-//|++++++++++++++++++++++++++++++++++++|//
-+ (void)initialize
-{
-    if (s_Capability != nil && s_Formatter != nil)
-        return;
-    
-    s_Capability = [@{
-        _$((uint32_t)CPU_SUBTYPE_LIB64): @"CPU_SUBTYPE_LIB64",
-    } retain];
-    
-    MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
-    formatter.options = s_Capability;
-    s_Formatter = formatter;
-}
-
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-#pragma mark -  MKNodeFieldOptionSetType
-//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldOptionSetOptions*)options
-{ return s_Capability; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (MKNodeFieldOptionSetTraits)optionSetTraits
-{ return 0; }
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeFeatures)
 
 //◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
 #pragma mark -  MKNodeFieldType
@@ -70,10 +40,6 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeCapability)
 
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSString*)name
-{ return @"CPU Subtype Capability"; }
-
-//|++++++++++++++++++++++++++++++++++++|//
-- (NSFormatter*)formatter
-{ return s_Formatter; }
+{ return @"CPU Subtype Features"; }
 
 @end

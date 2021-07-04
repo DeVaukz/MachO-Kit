@@ -25,18 +25,16 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       ARM CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeARM
+//! @relates    MKNodeFieldCPUSubTypeARMSubType
 //!
-//
 NS_SWIFT_NAME(MKCPUSubType.ARM_All)
 static const MKCPUSubType MKARMCPUSubTypeAll     = CPU_SUBTYPE_ARM_ALL;
 NS_SWIFT_NAME(MKCPUSubType.ARM_V4T)
@@ -67,7 +65,16 @@ static const MKCPUSubType MKARMCPUSubTypeV8      = CPU_SUBTYPE_ARM_V8;
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeARM : MKNodeFieldCPUSubTypeAny
+@interface MKNodeFieldCPUSubTypeARM : MKNodeFieldCPUSubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeARMSubType : MKNodeFieldCPUSubTypeAnySubType
 
 + (instancetype)sharedInstance;
 

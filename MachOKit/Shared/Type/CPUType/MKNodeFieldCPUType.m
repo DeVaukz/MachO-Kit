@@ -28,6 +28,7 @@
 #import "MKNodeFieldCPUType.h"
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
+#import "MKDataModel+Layout_Internal.h"
 
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldCPUType
@@ -67,6 +68,10 @@ MKMakeSingletonInitializer(MKNodeFieldCPUType)
         /* skip                ((cpu_type_t) 17)    */
         _$(CPU_TYPE_POWERPC): @"CPU_TYPE_POWERPC",
         _$(CPU_TYPE_POWERPC64): @"CPU_TYPE_POWERPC64"
+        /* skip                ((cpu_type_t) 19)    */
+        /* skip                ((cpu_type_t) 20)    */
+        /* skip                ((cpu_type_t) 21)    */
+        /* skip                ((cpu_type_t) 22)    */
     } retain];
     
     MKEnumerationFormatter *formatter = [MKEnumerationFormatter new];

@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldCPUSubTypeARM6432.h
+//! @file       MKNodeFieldCPUSubTypePowerPC64.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -32,18 +32,17 @@
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       ARM64_32 CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeARM6432
+//! @name       CPU Subtype Features for PowerPC 64-bit
+//! @relates    MKNodeFieldCPUSubTypePowerPC64Features
 //!
-NS_SWIFT_NAME(MKCPUSubType.ARM64_32_ALL)
-static const MKCPUSubType MKARM6432CPUSubTypeAll    = CPU_SUBTYPE_ARM64_32_ALL;
-NS_SWIFT_NAME(MKCPUSubType.ARM64_32_V8)
-static const MKCPUSubType MKARM6432CPUSubTypeV8     = CPU_SUBTYPE_ARM64_32_V8;
+typedef NS_OPTIONS(uint32_t, MKCPUSubTypePowerPC64Features) {
+    MKCPUSubTypePowerPC64FeatureLib64                = CPU_SUBTYPE_LIB64
+};
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeARM6432 : MKNodeFieldCPUSubType
+@interface MKNodeFieldCPUSubTypePowerPC64 : MKNodeFieldCPUSubType
 
 + (instancetype)sharedInstance;
 
@@ -52,7 +51,16 @@ static const MKCPUSubType MKARM6432CPUSubTypeV8     = CPU_SUBTYPE_ARM64_32_V8;
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeARM6432SubType : MKNodeFieldCPUSubTypeAnySubType
+@interface MKNodeFieldCPUSubTypePowerPC64SubType : MKNodeFieldCPUSubTypeAnySubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypePowerPC64Features : MKNodeFieldCPUSubTypeFeatures <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

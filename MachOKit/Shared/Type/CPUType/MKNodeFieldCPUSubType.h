@@ -25,35 +25,18 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
-#include <mach/machine.h>
-
+#import <MachOKit/MKBase.h>
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldBitfieldType.h>
 
-#import <MachOKit/MKNodeFieldCPUSubTypeCapability.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeI386.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeX86.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeARM.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeARM64.h>
-#import <MachOKit/MKNodeFieldCPUSubTypeARM6432.h>
-#import <MachOKit/MKNodeFieldCPUSubTypePowerPC.h>
+#include <mach/machine.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubType : MKNodeFieldTypeDoubleWord <MKNodeFieldBitfieldType> {
-@package
-    MKNodeFieldCPUSubTypeAny *_implType;
-    NSFormatter *_formatter;
-}
+@interface MKNodeFieldCPUSubType : MKNodeFieldTypeDoubleWord <MKNodeFieldBitfieldType>
 
 + (__kindof MKNodeFieldCPUSubType*)cpuSubTypeForCPUType:(cpu_type_t)cpuType;
-
-- (instancetype)initWithCPUSubType:(nullable MKNodeFieldCPUSubTypeAny*)subtype NS_DESIGNATED_INITIALIZER;
 
 @end
 

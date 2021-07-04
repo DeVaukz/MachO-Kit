@@ -29,13 +29,65 @@
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
+extern void OBJC_CLASS_$_MKNodeFieldCPUSubTypeARM6432;
+
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldCPUSubTypeARM6432
+
+static NSFormatter *s_BitfieldFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM6432)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (self != &OBJC_CLASS_$_MKNodeFieldCPUSubTypeARM6432)
+        return;
+    
+    MKBitfieldFormatterMask *subtypeMask = [MKBitfieldFormatterMask new];
+    subtypeMask.mask = _$(~(uint32_t)CPU_SUBTYPE_MASK);
+    subtypeMask.formatter = MKNodeFieldCPUSubTypeARM6432.sharedInstance.formatter;
+    
+    MKBitfieldFormatterMask *capabilitiesMask = [MKBitfieldFormatterMask new];
+    capabilitiesMask.mask = _$((uint32_t)CPU_SUBTYPE_MASK);
+    capabilitiesMask.formatter = MKNodeFieldCPUSubTypeFeatures.sharedInstance.formatter;
+    capabilitiesMask.ignoreZero = YES;
+    
+    NSArray *bits = [[NSArray alloc] initWithObjects:capabilitiesMask, subtypeMask, nil];
+    
+    MKBitfieldFormatter *formatter = [MKBitfieldFormatter new];
+    formatter.bits = bits;
+    s_BitfieldFormatter = formatter;
+    
+    [bits release];
+    [capabilitiesMask release];
+    [subtypeMask release];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
+{
+    if ([mask isEqual:_$((uint32_t)CPU_SUBTYPE_MASK)])
+        return MKNodeFieldCPUSubTypeFeatures.sharedInstance;
+    else
+        return MKNodeFieldCPUSubTypeARM6432SubType.sharedInstance;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_BitfieldFormatter; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubTypeARM6432SubType
 
 static NSDictionary *s_Types = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM6432)
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM6432SubType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize

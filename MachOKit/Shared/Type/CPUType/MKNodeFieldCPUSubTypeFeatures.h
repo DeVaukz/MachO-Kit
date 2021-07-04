@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------//
 //|
 //|             MachOKit - A Lightweight Mach-O Parsing Library
-//! @file       MKNodeFieldCPUSubTypeCapability.h
+//! @file       MKNodeFieldCPUSubTypeFeatures.h
 //!
 //! @author     D.V.
 //! @copyright  Copyright (c) 2014-2015 D.V. All rights reserved.
@@ -25,24 +25,14 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKBase.h>
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldOptionSetType.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
-//! @name       CPU SubType Capabilities
-//! @relates    MKNodeFieldCPUSubTypeCapability
-//
-typedef NS_OPTIONS(uint32_t, MKCPUSubTypeCapability) {
-    MKCPUSubTypeCapabilityLib64                     = CPU_SUBTYPE_LIB64
-};
-
-//----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeCapability : MKNodeFieldTypeDoubleWord <MKNodeFieldOptionSetType>
+@interface MKNodeFieldCPUSubTypeFeatures : MKNodeFieldTypeDoubleWord
 
 + (instancetype)sharedInstance;
 

@@ -25,13 +25,12 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
-#include <mach/machine.h>
-
+#import <MachOKit/MKBase.h>
+#import <MachOKit/MKDataModel.h>
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
+
+#include <mach/machine.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,7 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       CPU Types
 //! @relates    MKNodeFieldCPUType
 //!
-//
 typedef cpu_type_t MKCPUType NS_TYPED_EXTENSIBLE_ENUM;
 
 static const MKCPUType MKCPUTypeAny               = CPU_TYPE_ANY;
@@ -61,6 +59,7 @@ static const MKCPUType MKCPUTypeI860              = CPU_TYPE_I860;
 /* skip 16,17 */
 static const MKCPUType MKCPUTypePowerPC           = CPU_TYPE_POWERPC;
 static const MKCPUType MKCPUTypePowerPC64         = CPU_TYPE_POWERPC64;
+/* skip 19,20,21,22 */
 
 
 

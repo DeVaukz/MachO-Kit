@@ -25,18 +25,16 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       I386 CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeI386
+//! @relates    MKNodeFieldCPUSubTypeI386SubType
 //!
-//
 NS_SWIFT_NAME(MKCPUSubType.I386_All)
 static const MKCPUSubType MKI386CPUSubTypeAll           = CPU_SUBTYPE_I386_ALL;
 NS_SWIFT_NAME(MKCPUSubType.I386_486)
@@ -79,7 +77,16 @@ static const MKCPUSubType MKI386CPUSubTypeXeonMP        = CPU_SUBTYPE_XEON_MP;
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeI386 : MKNodeFieldCPUSubTypeAny
+@interface MKNodeFieldCPUSubTypeI386 : MKNodeFieldCPUSubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeI386SubType : MKNodeFieldCPUSubTypeAnySubType
 
 + (instancetype)sharedInstance;
 

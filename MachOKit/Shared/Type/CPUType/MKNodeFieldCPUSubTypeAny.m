@@ -30,12 +30,12 @@
 #import "MKNodeDescription.h"
 
 //----------------------------------------------------------------------------//
-@implementation MKNodeFieldCPUSubTypeAny
+@implementation MKNodeFieldCPUSubTypeAnySubType
 
 static NSDictionary *s_Types = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeAny)
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeAnySubType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize

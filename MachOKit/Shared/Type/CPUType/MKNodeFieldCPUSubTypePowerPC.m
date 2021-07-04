@@ -29,13 +29,65 @@
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
+extern void OBJC_CLASS_$_MKNodeFieldCPUSubTypePowerPC;
+
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldCPUSubTypePowerPC
+
+static NSFormatter *s_BitfieldFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypePowerPC)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (self != &OBJC_CLASS_$_MKNodeFieldCPUSubTypePowerPC)
+        return;
+    
+    MKBitfieldFormatterMask *subtypeMask = [MKBitfieldFormatterMask new];
+    subtypeMask.mask = _$(~(uint32_t)CPU_SUBTYPE_MASK);
+    subtypeMask.formatter = MKNodeFieldCPUSubTypePowerPCSubType.sharedInstance.formatter;
+    
+    MKBitfieldFormatterMask *capabilitiesMask = [MKBitfieldFormatterMask new];
+    capabilitiesMask.mask = _$((uint32_t)CPU_SUBTYPE_MASK);
+    capabilitiesMask.formatter = MKNodeFieldCPUSubTypeFeatures.sharedInstance.formatter;
+    capabilitiesMask.ignoreZero = YES;
+    
+    NSArray *bits = [[NSArray alloc] initWithObjects:capabilitiesMask, subtypeMask, nil];
+    
+    MKBitfieldFormatter *formatter = [MKBitfieldFormatter new];
+    formatter.bits = bits;
+    s_BitfieldFormatter = formatter;
+    
+    [bits release];
+    [capabilitiesMask release];
+    [subtypeMask release];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
+{
+    if ([mask isEqual:_$((uint32_t)CPU_SUBTYPE_MASK)])
+        return MKNodeFieldCPUSubTypeFeatures.sharedInstance;
+    else
+        return MKNodeFieldCPUSubTypePowerPCSubType.sharedInstance;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_BitfieldFormatter; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubTypePowerPCSubType
 
 static NSDictionary *s_Types = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldCPUSubTypePowerPC)
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypePowerPCSubType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize
@@ -56,6 +108,8 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypePowerPC)
         _$(CPU_SUBTYPE_POWERPC_750): @"CPU_SUBTYPE_POWERPC_750",
         _$(CPU_SUBTYPE_POWERPC_7400): @"CPU_SUBTYPE_POWERPC_7400",
         _$(CPU_SUBTYPE_POWERPC_7450): @"CPU_SUBTYPE_POWERPC_7450",
+        // PowerPC 970 is the "G5" - unclear if this subtype could appear
+        // alongside the CPU_TYPE_POWERPC in a valid Mach-O.  TODO.
         _$(CPU_SUBTYPE_POWERPC_970): @"CPU_SUBTYPE_POWERPC_970"
     } retain];
     

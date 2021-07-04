@@ -25,37 +25,54 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       X86 CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeX86
+//! @relates    MKNodeFieldCPUSubTypeX86SubType
 //!
-//
 NS_SWIFT_NAME(MKCPUSubType.X86_All)
 static const MKCPUSubType MKX86CPUSubTypeAll         = CPU_SUBTYPE_X86_ALL;
-
-
-
-//----------------------------------------------------------------------------//
-//! @name       X86-64 CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeX86
-//!
-//
 NS_SWIFT_NAME(MKCPUSubType.X8664_All)
 static const MKCPUSubType MKX8664CPUSubTypeAll       = CPU_SUBTYPE_X86_64_ALL;
 NS_SWIFT_NAME(MKCPUSubType.X8664_Haswell)
 static const MKCPUSubType MKX8664CPUSubTypeHaswell   = CPU_SUBTYPE_X86_64_H;
 
 
+//----------------------------------------------------------------------------//
+//! @name       CPU Subtype Features for X86 64-bit
+//! @relates    MKNodeFieldCPUSubTypeX86Features
+//!
+typedef NS_OPTIONS(uint32_t, MKCPUSubTypeX86Features) {
+    MKCPUSubTypeX86FeatureLib64                     = CPU_SUBTYPE_LIB64
+};
+
+
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeX86 : MKNodeFieldCPUSubTypeAny
+@interface MKNodeFieldCPUSubTypeX86 : MKNodeFieldCPUSubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeX86SubType : MKNodeFieldCPUSubTypeAnySubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeX86Features : MKNodeFieldCPUSubTypeFeatures <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

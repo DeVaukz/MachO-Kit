@@ -25,9 +25,7 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKBase.h>
 #import <MachOKit/MKNodeFieldTypeDoubleWord.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
 
@@ -35,19 +33,21 @@ NS_ASSUME_NONNULL_BEGIN
 
 //----------------------------------------------------------------------------//
 //! @name       CPU SubTypes
-//! @relates    MKNodeFieldCPUSubTypeAny
+//! @relates    MKNodeFieldCPUSubTypeAnySubType
 //!
-//
 typedef cpu_subtype_t MKCPUSubType NS_TYPED_EXTENSIBLE_ENUM;
 
+NS_SWIFT_NAME(MKCPUSubType.Multiple)
 static const MKCPUSubType MKCPUSubTypeMultiple      = CPU_SUBTYPE_MULTIPLE;
+NS_SWIFT_NAME(MKCPUSubType.Multiple_LittleEndian)
 static const MKCPUSubType MKCPUSubTypeLittleEndian  = CPU_SUBTYPE_LITTLE_ENDIAN;
+NS_SWIFT_NAME(MKCPUSubType.Multiple_BigEndian)
 static const MKCPUSubType MKCPUSubTypeBigEndian     = CPU_SUBTYPE_BIG_ENDIAN;
 
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeAny : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
+@interface MKNodeFieldCPUSubTypeAnySubType : MKNodeFieldTypeDoubleWord <MKNodeFieldEnumerationType>
 
 + (instancetype)sharedInstance;
 

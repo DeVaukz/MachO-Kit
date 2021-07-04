@@ -25,9 +25,8 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       PowerPC CPU SubTypes
 //! @relates    MKNodeFieldCPUSubTypePowerPC
 //!
-//
 NS_SWIFT_NAME(MKCPUSubType.PowerPC_All)
 static const MKCPUSubType MKPowerPCCPUSubTypeAll     = CPU_SUBTYPE_POWERPC_ALL;
 NS_SWIFT_NAME(MKCPUSubType.PowerPC_601)
@@ -67,7 +65,16 @@ static const MKCPUSubType MKPowerPCCPUSubType970     = CPU_SUBTYPE_POWERPC_970;
 
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypePowerPC : MKNodeFieldCPUSubTypeAny
+@interface MKNodeFieldCPUSubTypePowerPC : MKNodeFieldCPUSubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypePowerPCSubType : MKNodeFieldCPUSubTypeAnySubType
 
 + (instancetype)sharedInstance;
 

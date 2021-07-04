@@ -27,3 +27,11 @@
 
 #import <MachOKit/MKNodeFieldCPUType.h>
 #import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeI386.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeX86.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM64.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeARM6432.h>
+#import <MachOKit/MKNodeFieldCPUSubTypePowerPC.h>

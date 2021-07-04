@@ -25,9 +25,8 @@
 //| SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //----------------------------------------------------------------------------//
 
-#include <MachOKit/macho.h>
-#import <Foundation/Foundation.h>
-
+#import <MachOKit/MKNodeFieldCPUSubType.h>
+#import <MachOKit/MKNodeFieldCPUSubTypeFeatures.h>
 #import <MachOKit/MKNodeFieldCPUSubTypeAny.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -36,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 //! @name       ARM64 CPU SubTypes
 //! @relates    MKNodeFieldCPUSubTypeARM64
 //!
-//
 NS_SWIFT_NAME(MKCPUSubType.ARM64_ALL)
 static const MKCPUSubType MKARM64CPUSubTypeAll     = CPU_SUBTYPE_ARM64_ALL;
 NS_SWIFT_NAME(MKCPUSubType.ARM64_V8)
@@ -45,9 +43,36 @@ NS_SWIFT_NAME(MKCPUSubType.ARM64_E)
 static const MKCPUSubType MKARM64CPUSubTypeE       = CPU_SUBTYPE_ARM64E;
 
 
+//----------------------------------------------------------------------------//
+//! @name       CPU Subtype Features for ARM64
+//! @relates    MKNodeFieldCPUSubTypeARM64Features
+//!
+typedef NS_OPTIONS(uint32_t, MKCPUSubTypeARM64Features) {
+    MKCPUSubTypeARM64FeaturePtrAuthABI              = CPU_SUBTYPE_PTRAUTH_ABI
+};
+
+
 
 //----------------------------------------------------------------------------//
-@interface MKNodeFieldCPUSubTypeARM64 : MKNodeFieldCPUSubTypeAny
+@interface MKNodeFieldCPUSubTypeARM64 : MKNodeFieldCPUSubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeARM64SubType : MKNodeFieldCPUSubTypeAnySubType
+
++ (instancetype)sharedInstance;
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@interface MKNodeFieldCPUSubTypeARM64Features : MKNodeFieldCPUSubTypeFeatures <MKNodeFieldOptionSetType>
 
 + (instancetype)sharedInstance;
 

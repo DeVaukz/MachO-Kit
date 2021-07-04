@@ -29,13 +29,65 @@
 #import "MKInternal.h"
 #import "MKNodeDescription.h"
 
+extern void OBJC_CLASS_$_MKNodeFieldCPUSubTypeARM64;
+
 //----------------------------------------------------------------------------//
 @implementation MKNodeFieldCPUSubTypeARM64
+
+static NSFormatter *s_BitfieldFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (self != &OBJC_CLASS_$_MKNodeFieldCPUSubTypeARM64)
+        return;
+    
+    MKBitfieldFormatterMask *subtypeMask = [MKBitfieldFormatterMask new];
+    subtypeMask.mask = _$(~(uint32_t)CPU_SUBTYPE_MASK);
+    subtypeMask.formatter = MKNodeFieldCPUSubTypeARM64SubType.sharedInstance.formatter;
+    
+    MKBitfieldFormatterMask *capabilitiesMask = [MKBitfieldFormatterMask new];
+    capabilitiesMask.mask = _$((uint32_t)CPU_SUBTYPE_MASK);
+    capabilitiesMask.formatter = MKNodeFieldCPUSubTypeARM64Features.sharedInstance.formatter;
+    capabilitiesMask.ignoreZero = YES;
+    
+    NSArray *bits = [[NSArray alloc] initWithObjects:capabilitiesMask, subtypeMask, nil];
+    
+    MKBitfieldFormatter *formatter = [MKBitfieldFormatter new];
+    formatter.bits = bits;
+    s_BitfieldFormatter = formatter;
+    
+    [bits release];
+    [capabilitiesMask release];
+    [subtypeMask release];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (id<MKNodeFieldNumericType>)typeForMask:(NSNumber*)mask
+{
+    if ([mask isEqual:_$((uint32_t)CPU_SUBTYPE_MASK)])
+        return MKNodeFieldCPUSubTypeARM64Features.sharedInstance;
+    else
+        return MKNodeFieldCPUSubTypeARM64SubType.sharedInstance;
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_BitfieldFormatter; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubTypeARM64SubType
 
 static NSDictionary *s_Types = nil;
 static MKEnumerationFormatter *s_Formatter = nil;
 
-MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64)
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64SubType)
 
 //|++++++++++++++++++++++++++++++++++++|//
 + (void)initialize
@@ -75,5 +127,56 @@ MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64)
 //|++++++++++++++++++++++++++++++++++++|//
 - (NSFormatter*)formatter
 { return s_Formatter; }
+
+@end
+
+
+
+//----------------------------------------------------------------------------//
+@implementation MKNodeFieldCPUSubTypeARM64Features
+
+static NSDictionary *s_Capability = nil;
+static MKOptionSetFormatter *s_CapabilityFormatter = nil;
+
+MKMakeSingletonInitializer(MKNodeFieldCPUSubTypeARM64Features)
+
+//|++++++++++++++++++++++++++++++++++++|//
++ (void)initialize
+{
+    if (s_Capability != nil && s_CapabilityFormatter != nil)
+        return;
+    
+    s_Capability = [@{
+        _$((uint32_t)CPU_SUBTYPE_PTRAUTH_ABI): @"CPU_SUBTYPE_PTRAUTH_ABI",
+    } retain];
+    
+    MKOptionSetFormatter *formatter = [MKOptionSetFormatter new];
+    formatter.options = s_Capability;
+    s_CapabilityFormatter = formatter;
+}
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldOptionSetType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetOptions*)options
+{ return s_Capability; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (MKNodeFieldOptionSetTraits)optionSetTraits
+{ return 0; }
+
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+#pragma mark -  MKNodeFieldType
+//◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦//
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSString*)name
+{ return @"ARM64 CPU Subtype Features"; }
+
+//|++++++++++++++++++++++++++++++++++++|//
+- (NSFormatter*)formatter
+{ return s_CapabilityFormatter; }
 
 @end
