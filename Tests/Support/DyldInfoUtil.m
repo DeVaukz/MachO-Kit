@@ -31,6 +31,32 @@
 @implementation DyldInfoUtil
 
 //|++++++++++++++++++++++++++++++++++++|//
++ (NSString*)extractOutputForArchitecture:(NSString*)arch fromInput:(NSString*)input
+{
+    NSMutableArray *result = [NSMutableArray array];
+    NSArray *lines = [input componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    if ([lines.firstObject rangeOfString:@"for arch "].location != 0)
+        // Only a single arch.
+        return input;
+    
+    for (NSUInteger i = 0; i < lines.count; i++) {
+        NSString *line = lines[i];
+        if ([line rangeOfString:[NSString stringWithFormat:@"for arch %@:", arch]].location == 0) {
+            for (i = i+1; i < lines.count; i++) {
+                line = lines[i];
+                if ([line rangeOfString:@"for arch "].location == 0)
+                    break;
+                
+                [result addObject:line];
+            }
+        }
+    }
+    
+    return [result componentsJoinedByString:@"\n"];
+}
+
+//|++++++++++++++++++++++++++++++++++++|//
 + (NSArray*)parseDylibs:(NSString*)input
 {
     NSMutableArray *result = [NSMutableArray array];

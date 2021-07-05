@@ -30,6 +30,7 @@
 //----------------------------------------------------------------------------//
 @implementation Architecture {
     NSArray* (^makeArgs)(NSString*, NSArray*);
+    NSString* (^dyldinfo)(NSArray*);
 }
 
 //|++++++++++++++++++++++++++++++++++++|//
@@ -52,6 +53,15 @@
         return args;
     };
     
+    dyldinfo = ^(NSArray *options) {
+        NSMutableArray *args = [NSMutableArray array];
+        [args addObject:@"dyldinfo"];
+        [args addObjectsFromArray:options];
+        [args addObject:url.path];
+        NSString *output = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:args];
+        return [DyldInfoUtil extractOutputForArchitecture:name fromInput:output];
+    };
+    
     // Mach Header
     @autoreleasepool {
         NSString *machHeader = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"otool", @[@"-h"])];
@@ -66,13 +76,13 @@
     
     // Libraries
     @autoreleasepool {
-        NSString *loadCommands = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-dylibs"])];
-        _dependentLibraries = [DyldInfoUtil parseDylibs:loadCommands];
+        NSString *libraries = dyldinfo(@[@"-dylibs"]);
+        _dependentLibraries = [DyldInfoUtil parseDylibs:libraries];
     }
     
     // Rebase & bind Commands
     @autoreleasepool {
-        NSString *opcodes = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-opcodes"])];
+        NSString *opcodes = dyldinfo(@[@"-opcodes"]);
         _rebaseCommands = [DyldInfoUtil parseRebaseCommands:opcodes];
         _bindCommands = [DyldInfoUtil parseBindCommands:opcodes];
         _weakBindCommands = [DyldInfoUtil parseWeakBindCommands:opcodes];
@@ -87,7 +97,7 @@
 {
     NSArray *fixupAddresses;
     @autoreleasepool {
-        NSString *fixups = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-rebase"])];
+        NSString *fixups = dyldinfo(@[@"-rebase"]);
         fixupAddresses = [DyldInfoUtil parseFixups:fixups];
     }
     return fixupAddresses;
@@ -98,7 +108,7 @@
 {
     NSArray *bindingAddresses;
     @autoreleasepool {
-        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-bind"])];
+        NSString *bindings = dyldinfo(@[@"-bind"]);
         bindingAddresses = [DyldInfoUtil parseBindings:bindings];
     }
     return bindingAddresses;
@@ -109,7 +119,7 @@
 {
     NSArray *bindingAddresses;
     @autoreleasepool {
-        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-weak_bind"])];
+        NSString *bindings = dyldinfo(@[@"-weak_bind"]);
         bindingAddresses = [DyldInfoUtil parseWeakBindings:bindings];
     }
     return bindingAddresses;
@@ -120,7 +130,7 @@
 {
     NSArray *bindingAddresses;
     @autoreleasepool {
-        NSString *bindings = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-lazy_bind"])];
+        NSString *bindings = dyldinfo(@[@"-lazy_bind"]);
         bindingAddresses = [DyldInfoUtil parseLazyBindings:bindings];
     }
     return bindingAddresses;
@@ -131,7 +141,7 @@
 {
 	NSArray *exportsList;
 	@autoreleasepool {
-		NSString *exports = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-export"])];
+        NSString *exports = dyldinfo(@[@"-export"]);
 		exportsList = [DyldInfoUtil parseExports:exports];
 	}
 	return exportsList;
@@ -142,7 +152,7 @@
 {
     NSArray *functionStartsList;
     @autoreleasepool {
-        NSString *functionStarts = [NSTask outputForLaunchedTaskWithLaunchPath:@XCRUN_PATH arguments:makeArgs(@"dyldinfo", @[@"-function_starts"])];
+        NSString *functionStarts = dyldinfo(@[@"-function_starts"]);
         functionStartsList = [DyldInfoUtil parseFunctionStarts:functionStarts];
     }
     return functionStartsList;

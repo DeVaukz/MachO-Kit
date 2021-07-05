@@ -30,6 +30,10 @@
 //----------------------------------------------------------------------------//
 @interface DyldInfoUtil : NSObject
 
+//! Splits the output of dyldinfo by architecture and returns only the output
+//! for the requested \a arch.
++ (NSString*)extractOutputForArchitecture:(NSString*)arch fromInput:(NSString*)input;
+
 //! Parses \a input into an array of dictionaries, each representing a single
 //! dependent library.  Each dictionary contains the following keys:
 //!
