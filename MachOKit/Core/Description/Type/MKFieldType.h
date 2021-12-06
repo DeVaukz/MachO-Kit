@@ -26,7 +26,7 @@
 //----------------------------------------------------------------------------//
 
 #import <MachOKit/MKNodeFieldType.h>
-#import <machOKit/MKNodeFieldContainerType.h>
+#import <MachOKit/MKNodeFieldContainerType.h>
 #import <MachOKit/MKNodeFieldBooleanType.h>
 #import <MachOKit/MKNodeFieldNumericType.h>
 #import <MachOKit/MKNodeFieldEnumerationType.h>
